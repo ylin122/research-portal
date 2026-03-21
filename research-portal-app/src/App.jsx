@@ -1,0 +1,575 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+import {
+  loadCompanies, insertCompany, deleteCompany as dbDeleteCompany, updateCompanyPriority,
+  loadAllFields, upsertField,
+  loadAllNotes, insertNote, deleteNote as dbDeleteNote,
+  loadNewsCache, upsertNewsCache,
+  loadSectorNotes, upsertSectorNote,
+} from "./lib/db";
+
+// ─── Helpers ──────────────────────────────────────────
+function useAutoSave(fn, ms = 700) {
+  const t = useRef(null);
+  return useCallback((...a) => { clearTimeout(t.current); t.current = setTimeout(() => fn(...a), ms); }, [fn, ms]);
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function ts() { return new Date().toISOString(); }
+function fmt(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
+function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+
+// ─── Sectors ──────────────────────────────────────────
+const SECTORS = {
+  software: { label: "Software", subs: { cloud: "Cloud Software", infrastructure: "Infrastructure", application: "Application", security: "Security", other: "Other" } },
+  aidigital: { label: "AI Digital Infrastructure", subs: { compute: "Compute & Cloud", data: "Data Infrastructure", mlops: "MLOps & AI Platforms", other: "Other" } },
+  itservices: { label: "IT Services", subs: { consulting: "Consulting", outsourcing: "Outsourcing", managed: "Managed Services", other: "Other" } },
+  hardware: { label: "Hardware & Others", subs: { semiconductors: "Semiconductors", devices: "Devices", networking: "Networking", other: "Other" } },
+  education: { label: "Education & Services", subs: { edtech: "EdTech", traditional: "Traditional", corporate: "Corporate Training", other: "Other" } },
+  healthcare: { label: "Healthcare IT", subs: { ehr: "EHR / EMR", analytics: "Analytics", digital: "Digital Health", other: "Other" } },
+  prompts: { label: "Prompt", subs: { all: "All Prompts" } },
+  sources: { label: "Source", subs: { all: "All Sources" } },
+};
+
+const FIELDS = [
+  { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
+  { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
+  { key: "customers", label: "Customer focus", ph: "Target segments, key accounts, verticals, GTM motion, deal sizes, retention, expansion, geographic focus..." },
+  { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends, regulatory environment, tailwinds/headwinds, secular shifts..." },
+  { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
+  { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
+  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
+];
+
+const PROMPT_FIELDS = [
+  { key: "overview", label: "Prompt", ph: "Paste your full prompt here. This is what gets copied or sent to Claude when you hit 'Run prompt'..." },
+  { key: "products", label: "Usage notes", ph: "When to use this prompt, what it's designed for, any context on how to modify it..." },
+];
+
+const SOURCE_FIELDS = [
+  { key: "overview", label: "Sources", ph: "Running list of sources used across company research briefs..." },
+];
+
+const PRIORITIES = ["High conviction", "Watching", "Low priority"];
+
+// ─── Theme ────────────────────────────────────────────
+const T_ = {
+  bg: "#0a0e17", bgSidebar: "#0d1220", bgPanel: "#111827", bgInput: "#161d2e",
+  border: "#283347", borderLight: "#222d40",
+  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
+  green: "#34d673", greenBg: "#0d3520", greenBorder: "#1a7a3d",
+  amber: "#f5a623", amberBg: "#332508", amberBorder: "#8a5e16",
+  grayBadge: "#3d4d60", grayBadgeText: "#b0bcc9",
+  blue: "#70b0fa", red: "#f87171", redDim: "#7f1d1d",
+};
+
+// ─── News API ─────────────────────────────────────────
+async function fetchNews(name) {
+  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
+  if (!apiKey) return [];
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514", max_tokens: 1000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{ role: "user", content: `Find the 4-6 most recent and critical news about "${name}" from the last 60 days. Focus on: funding, M&A, product launches, executive changes, partnerships, earnings, regulatory actions, and major business developments.\n\nSort results by date with the most recent first.\n\nRespond ONLY with a JSON array, no markdown backticks, no preamble. Each item:\n- "headline": string (concise, max 15 words)\n- "source": string (publication name)\n- "date": string (e.g. "Mar 15, 2026")\n- "summary": string (2-3 sentences on why this matters)\n\nIf no recent news found, return [].` }],
+      }),
+    });
+    const d = await r.json();
+    const txt = d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
+    try { const p = JSON.parse(txt.replace(/```json|```/g, "").trim()); return Array.isArray(p) ? p : []; } catch { return []; }
+  } catch { return []; }
+}
+
+// ─── App ──────────────────────────────────────────────
+export default function App() {
+  const [ready, setReady] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [sectorNotes, setSectorNotes] = useState({});
+  const [fieldsMap, setFieldsMap] = useState({});
+  const [notesMap, setNotesMap] = useState({});
+  const [newsCache, setNewsCache] = useState({});
+  const [newsLoading, setNewsLoading] = useState({});
+  const [view, setView] = useState({ type: "home" });
+  const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, true])));
+  const [adding, setAdding] = useState(null);
+  const [addName, setAddName] = useState("");
+  const [addSub, setAddSub] = useState("");
+  const [search, setSearch] = useState("");
+  const [editingField, setEditingField] = useState(null);
+  const addRef = useRef(null);
+
+  useEffect(() => {
+    (async () => {
+      const [cos, fields, notes, news, sn] = await Promise.all([
+        loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes()
+      ]);
+      setCompanies(cos);
+      setFieldsMap(fields);
+      setNotesMap(notes);
+      setNewsCache(news);
+      setSectorNotes(sn);
+      setReady(true);
+    })();
+  }, []);
+
+  const debouncedFieldSave = useAutoSave((companyId, fieldKey, text) => {
+    upsertField(companyId, fieldKey, text);
+  });
+
+  const debouncedSectorNoteSave = useAutoSave((key, text) => {
+    upsertSectorNote(key, text);
+  });
+
+  async function refreshNews(id) {
+    const co = companies.find(c => c.id === id);
+    if (!co) return;
+    setNewsLoading(p => ({ ...p, [id]: true }));
+    const news = await fetchNews(co.name);
+    const date = await upsertNewsCache(id, news);
+    setNewsCache(p => ({ ...p, [id]: { items: news, date } }));
+    setNewsLoading(p => ({ ...p, [id]: false }));
+  }
+
+  async function refreshAllNews() {
+    for (const co of companies) { await refreshNews(co.id); }
+  }
+
+  async function addCompanyHandler() {
+    if (!addName.trim() || !adding || !addSub) return;
+    const id = uid();
+    await insertCompany({ id, name: addName.trim(), sector: adding, sub: addSub });
+    const newCo = { id, name: addName.trim(), sector: adding, sub: addSub, priority: '' };
+    setCompanies(p => [...p, newCo]);
+    setAdding(null); setAddName(""); setAddSub("");
+    setView({ type: "company", id });
+    setTimeout(() => refreshNews(id), 200);
+  }
+
+  async function delCompany(id) {
+    if (!confirm("Delete this company and all data?")) return;
+    const co = companies.find(c => c.id === id);
+    await dbDeleteCompany(id);
+    setCompanies(p => p.filter(c => c.id !== id));
+    setFieldsMap(p => { const n = { ...p }; delete n[id]; return n; });
+    setNotesMap(p => { const n = { ...p }; delete n[id]; return n; });
+    setView(co ? { type: "sector", sector: co.sector } : { type: "home" });
+  }
+
+  function updateField(id, key, text) {
+    setFieldsMap(p => ({
+      ...p,
+      [id]: { ...(p[id] || {}), [key]: { text, date: ts() } }
+    }));
+    debouncedFieldSave(id, key, text);
+  }
+
+  async function setPriority(id, pr) {
+    const newPr = companies.find(c => c.id === id)?.priority === pr ? "" : pr;
+    await updateCompanyPriority(id, newPr);
+    setCompanies(p => p.map(c => c.id === id ? { ...c, priority: newPr } : c));
+  }
+
+  async function addNote(id, text) {
+    if (!text.trim()) return;
+    const noteId = uid();
+    const date = await insertNote(id, noteId, text);
+    setNotesMap(p => ({
+      ...p,
+      [id]: [{ id: noteId, text, date: date || ts() }, ...(p[id] || [])]
+    }));
+  }
+
+  async function delNote(cid, nid) {
+    await dbDeleteNote(nid);
+    setNotesMap(p => ({
+      ...p,
+      [cid]: (p[cid] || []).filter(n => n.id !== nid)
+    }));
+  }
+
+  function updateSN(key, text) {
+    const date = ts();
+    setSectorNotes(p => ({ ...p, [key]: { text, date } }));
+    debouncedSectorNoteSave(key, text);
+  }
+
+  const getCos = (sector) => companies.filter(c => c.sector === sector);
+  const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
+
+  function recentNotes(limit = 8) {
+    const all = [];
+    Object.entries(notesMap).forEach(([id, notes]) => {
+      (notes || []).forEach(n => {
+        const co = companies.find(c => c.id === id);
+        if (co) all.push({ ...n, cid: id, coName: co.name });
+      });
+    });
+    return all.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
+  }
+
+  useEffect(() => { if (adding && addRef.current) addRef.current.focus(); }, [adding]);
+
+  if (!ready) return (
+    <div style={s.wrap}>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, color: T_.textDim, fontSize: 13 }}>Loading...</div>
+    </div>
+  );
+
+  const cur = view.type === "company" ? companies.find(c => c.id === view.id) : null;
+  const curFields = cur ? (fieldsMap[cur.id] || {}) : null;
+  const curNotes = cur ? (notesMap[cur.id] || []) : null;
+  const curNews = cur ? (newsCache[cur.id] || null) : null;
+  const curPriority = cur?.priority || "";
+
+  return (
+    <div style={s.wrap}>
+      {/* SIDEBAR */}
+      <div style={s.sidebar}>
+        <div style={s.sidebarTitle} onClick={() => { setView({ type: "home" }); setEditingField(null); }}>Research Portal</div>
+        <div style={{ padding: "0 16px 14px" }}>
+          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+        <div style={s.navTree}>
+          {Object.entries(SECTORS).map(([sk, sec]) => {
+            const cos = filteredCos(getCos(sk));
+            const open = sidebarOpen[sk];
+            const total = getCos(sk).length;
+            return (
+              <div key={sk}>
+                <div style={s.sectorHdr} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {sk !== "sources" && sk !== "prompts" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
+                    <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else if (sk === "prompts") { setView({ type: "company", id: "prompt_researchbrief_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
+                  </div>
+                  {total > 0 && sk !== "sources" && sk !== "prompts" && <span style={s.badge}>{total}</span>}
+                </div>
+                {open && sk !== "sources" && sk !== "prompts" && (
+                  <>
+                    {cos.map(c => {
+                      const active = view.type === "company" && view.id === c.id;
+                      const pr = c.priority || "";
+                      return (
+                        <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}) }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
+                          {pr && <span style={{ ...s.prDot, background: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.textGhost }} />}
+                        </div>
+                      );
+                    })}
+                    <div style={s.navAdd} onClick={() => { setAdding(sk); setAddSub(Object.keys(sec.subs)[0]); }}>+ Add company</div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* MAIN */}
+      <div style={s.main}>
+        {adding && (
+          <div style={s.modalOverlay}>
+            <div style={s.modalBox}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: T_.accent, marginBottom: 16 }}>Add company to {SECTORS[adding]?.label}</div>
+              <input ref={addRef} style={s.modalInput} placeholder="Company name" value={addName}
+                onChange={e => setAddName(e.target.value)} onKeyDown={e => { if (e.key === "Enter") addCompanyHandler(); if (e.key === "Escape") { setAdding(null); setAddName(""); } }} />
+              <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
+                {Object.entries(SECTORS[adding]?.subs || {}).map(([k, v]) => (
+                  <span key={k} style={{ ...s.subPill, ...(addSub === k ? s.subPillActive : {}) }} onClick={() => setAddSub(k)}>{v}</span>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
+                <button style={s.btnAccent} onClick={addCompanyHandler}>Add</button>
+                <button style={s.btnGhost} onClick={() => { setAdding(null); setAddName(""); }}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HOME */}
+        {view.type === "home" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Research Portal</h1>
+            <p style={s.pageSub}>
+              {companies.length === 0
+                ? 'Your private company research wiki. Click "+ Add company" under any sector in the sidebar to get started.'
+                : `Tracking ${companies.length} companies across ${Object.keys(SECTORS).length} sectors.`}
+            </p>
+            {companies.length > 0 && (
+              <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+                <button style={s.btnAccent} onClick={refreshAllNews}>Refresh all news</button>
+              </div>
+            )}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 10, marginBottom: 32 }}>
+              {Object.entries(SECTORS).map(([sk, sec]) => {
+                const cos = getCos(sk);
+                return (
+                  <div key={sk} style={s.statCard} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setView({ type: "sector", sector: sk })}>
+                    <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sec.label}</div>
+                    <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{cos.length}</div>
+                    <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 3 }}>companies</div>
+                  </div>
+                );
+              })}
+            </div>
+            {recentNotes().length > 0 && (
+              <div style={s.section}>
+                <div style={s.sectionHdr}>Recent research notes</div>
+                {recentNotes().map(n => (
+                  <div key={n.id} style={{ ...s.noteEntry, cursor: "pointer" }} onClick={() => setView({ type: "company", id: n.cid })}>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: T_.accent }}>{n.coName}</span>
+                      <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: "auto" }}>{fmtShort(n.date)}</span>
+                    </div>
+                    <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7 }}>{n.text}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SECTOR */}
+        {view.type === "sector" && SECTORS[view.sector] && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>{SECTORS[view.sector].label}</h1>
+            <p style={s.pageSub}>{getCos(view.sector).length} companies</p>
+            <div style={s.section}>
+              <div style={s.sectionHdr}>
+                <span>Sector thesis</span>
+                {sectorNotes[view.sector + "_macro"]?.date && <span style={s.sectionDate}>{fmtShort(sectorNotes[view.sector + "_macro"].date)}</span>}
+              </div>
+              <textarea style={s.textarea} rows={5}
+                value={sectorNotes[view.sector + "_macro"]?.text || ""}
+                onChange={e => updateSN(view.sector + "_macro", e.target.value)}
+                placeholder="Your macro thesis for this sector. Key themes, secular trends, competitive dynamics, where the market is heading..." />
+            </div>
+            {Object.entries(SECTORS[view.sector].subs).map(([subk, subLabel]) => {
+              const cos = getCos(view.sector).filter(c => c.sub === subk);
+              if (cos.length === 0) return null;
+              return (
+                <div key={subk} style={s.section}>
+                  <div style={s.sectionHdr}><span>{subLabel}</span><span style={s.sectionDate}>{cos.length} companies</span></div>
+                  {cos.map(c => {
+                    const pr = c.priority || "";
+                    return (
+                      <div key={c.id} style={s.listRow} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                        <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{c.name}</span>
+                        {pr && <span style={{ ...s.prBadge, background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge, color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
+                        <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+            {getCos(view.sector).length === 0 && (
+              <div style={{ color: T_.textDim, fontSize: 14, padding: "24px 0", lineHeight: 1.7 }}>No companies added yet. Use "+ Add company" in the sidebar.</div>
+            )}
+          </div>
+        )}
+
+        {/* COMPANY */}
+        {view.type === "company" && cur && (
+          <div style={s.page}>
+            <div style={s.breadcrumb}>
+              <span onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
+              {cur.sector !== "sources" && cur.sector !== "prompts" && <>
+                <span style={{ color: T_.textGhost }}>&rsaquo;</span>
+                <span onClick={() => { setView({ type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.subs[cur.sub]}</span>
+              </>}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+              <h1 style={s.pageTitle}>{cur.name}</h1>
+              <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>&#8592; Back</button>
+                {cur.id !== "source_master_seed" && cur.id !== "prompt_researchbrief_seed" && <button style={{ ...s.btnGhost, color: T_.red, borderColor: T_.redDim }} onClick={() => delCompany(cur.id)}>Delete</button>}
+              </div>
+            </div>
+            {cur.sector !== "sources" && cur.sector !== "prompts" && <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>{SECTORS[cur.sector]?.subs[cur.sub]} &middot; {SECTORS[cur.sector]?.label}</div>}
+
+            {/* Priority */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+              <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+                {PRIORITIES.map(pr => (
+                  <span key={pr} style={{
+                    ...s.prPill,
+                    ...(curPriority === pr ? {
+                      background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge,
+                      color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText,
+                      borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost,
+                    } : {})
+                  }} onClick={() => setPriority(cur.id, pr)}>{pr}</span>
+                ))}
+              </div>
+            )}
+
+            {/* Run Prompt — prompts only */}
+            {cur.sector === "prompts" && curFields?.overview?.text?.trim() && (
+              <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
+                <button style={{ ...s.btnAccent, display: "flex", alignItems: "center", gap: 6 }} onClick={() => {
+                  navigator.clipboard.writeText(curFields.overview.text.trim()).then(() => {
+                    const el = document.getElementById("copyMsg");
+                    if (el) { el.textContent = "Copied to clipboard"; setTimeout(() => el.textContent = "", 2500); }
+                  });
+                }}>&#9654; Run prompt</button>
+                <button style={s.btnGhost} onClick={() => {
+                  navigator.clipboard.writeText(curFields.overview.text.trim()).then(() => {
+                    const el = document.getElementById("copyMsg");
+                    if (el) { el.textContent = "Copied!"; setTimeout(() => el.textContent = "", 2500); }
+                  });
+                }}>Copy</button>
+                <span id="copyMsg" style={{ fontSize: 13, color: T_.green, alignSelf: "center" }}></span>
+              </div>
+            )}
+
+            {/* Recent Updates */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+              <div style={s.section}>
+                <div style={s.sectionHdr}>
+                  <span>Recent updates</span>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    {curNews?.date && <span style={s.sectionDate}>Fetched {fmtShort(curNews.date)}</span>}
+                    <button style={s.btnSmall} onClick={() => refreshNews(cur.id)} disabled={newsLoading[cur.id]}>
+                      {newsLoading[cur.id] ? "Fetching..." : "Refresh news"}
+                    </button>
+                  </div>
+                </div>
+                <div style={s.newsScroll}>
+                  {newsLoading[cur.id] && !curNews && (
+                    <div style={{ color: T_.textDim, fontSize: 14, padding: "20px 0", fontStyle: "italic", lineHeight: 1.7 }}>Searching for recent news about {cur.name}...</div>
+                  )}
+                  {curNews && curNews.items.length === 0 && (
+                    <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No recent news found. Click "Refresh news" to search again.</div>
+                  )}
+                  {curNews && [...curNews.items].sort((a, b) => {
+                    try { return new Date(b.date) - new Date(a.date); } catch { return 0; }
+                  }).map((item, i) => (
+                    <div key={i} style={s.newsItem}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+                        <div style={{ fontSize: 14, color: T_.text, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{item.headline}</div>
+                        <span style={{ fontSize: 12, color: T_.textGhost, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 2 }}>{item.date}</span>
+                      </div>
+                      {item.summary && <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7, marginTop: 6 }}>{item.summary}</div>}
+                      {item.source && <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 4 }}>{item.source}</div>}
+                    </div>
+                  ))}
+                  {!curNews && !newsLoading[cur.id] && (
+                    <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>Click "Refresh news" to pull the latest updates about {cur.name}.</div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Research Notes */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+              <div style={s.section}>
+                <div style={s.sectionHdr}>
+                  <span>Research notes</span>
+                  <span style={s.sectionDate}>{(curNotes || []).length} entries</span>
+                </div>
+                <NoteInput onAdd={t => addNote(cur.id, t)} />
+                {(curNotes || []).length === 0 && (
+                  <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No notes yet. Add your first research note above.</div>
+                )}
+                {(curNotes || []).map(n => (
+                  <div key={n.id} style={s.noteEntry}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14 }}>
+                      <div style={{ fontSize: 14, color: T_.text, lineHeight: 1.8, flex: 1, whiteSpace: "pre-wrap" }}>{n.text}</div>
+                      <span style={{ fontSize: 14, color: T_.textGhost, cursor: "pointer", padding: "0 6px", flexShrink: 0, lineHeight: 1 }} onClick={() => delNote(cur.id, n.id)}>&times;</span>
+                    </div>
+                    <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 8 }}>{fmt(n.date)}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Structured Fields */}
+            {(cur.sector === "prompts" ? PROMPT_FIELDS : cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+              const fd = curFields?.[f.key];
+              const isEditing = editingField === f.key;
+              const hasContent = fd?.text?.trim();
+              return (
+                <div key={f.key} style={s.section}>
+                  <div style={s.sectionHdr}>
+                    <span>{f.label}</span>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                      {fd?.date && fd.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
+                      {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                    </div>
+                  </div>
+                  {(isEditing || !hasContent) ? (
+                    <div>
+                      <textarea style={s.textarea} rows={6}
+                        value={fd?.text || ""}
+                        onChange={e => updateField(cur.id, f.key, e.target.value)}
+                        placeholder={f.ph}
+                        autoFocus={isEditing} />
+                      {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                    </div>
+                  ) : (
+                    <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function NoteInput({ onAdd }) {
+  const [t, setT] = useState("");
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      <input style={s.noteInput} placeholder="Add a research note..." value={t}
+        onChange={e => setT(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onAdd(t); setT(""); } }} />
+      <button style={s.btnAccent} onClick={() => { onAdd(t); setT(""); }}>Add</button>
+    </div>
+  );
+}
+
+// ─── Styles ───────────────────────────────────────────
+const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+const s = {
+  wrap: { display: "flex", minHeight: "100vh", background: T_.bg, fontFamily: FONT, fontSize: 14, color: T_.text },
+  sidebar: { width: 230, background: T_.bgSidebar, borderRight: `1px solid ${T_.border}`, display: "flex", flexDirection: "column", flexShrink: 0, height: "100vh", position: "sticky", top: 0, overflowY: "auto" },
+  sidebarTitle: { padding: "22px 22px 18px", fontSize: 15, fontWeight: 500, color: T_.text, cursor: "pointer", fontFamily: FONT },
+  searchInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "8px 12px", fontSize: 13, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  navTree: { flex: 1, overflowY: "auto", padding: "6px 0" },
+  sectorHdr: { padding: "9px 18px", fontSize: 12, fontWeight: 500, color: T_.textDim, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, userSelect: "none", fontFamily: FONT },
+  badge: { fontSize: 11, color: T_.textGhost, background: T_.bgPanel, padding: "2px 8px", borderRadius: 4, fontFamily: FONT },
+  navCo: { padding: "7px 18px 7px 38px", fontSize: 13, color: T_.textMid, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, borderLeft: "2px solid transparent", transition: "all .1s", lineHeight: 1.5, fontFamily: FONT },
+  navCoActive: { background: "rgba(245,158,11,0.08)", color: T_.accent, borderLeftColor: T_.accent },
+  prDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0 },
+  navAdd: { padding: "6px 18px 6px 38px", fontSize: 12, color: T_.textGhost, cursor: "pointer", fontFamily: FONT },
+  main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative", background: T_.bg },
+  page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1020 },
+  pageTitle: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
+  pageSub: { fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.7, fontFamily: FONT },
+  breadcrumb: { fontSize: 13, color: T_.textGhost, marginBottom: 12, display: "flex", gap: 8, alignItems: "center", cursor: "pointer", fontFamily: FONT },
+  section: { marginBottom: 36 },
+  sectionHdr: { fontSize: 14, fontWeight: 500, color: T_.textDim, marginBottom: 14, paddingBottom: 10, borderBottom: `1px solid ${T_.borderLight}`, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT },
+  sectionDate: { fontSize: 12, fontWeight: 400, color: T_.textGhost, fontFamily: FONT },
+  proseBody: { fontSize: 14, lineHeight: 1.9, color: T_.text, cursor: "pointer", whiteSpace: "pre-wrap", padding: "6px 0", fontFamily: FONT },
+  textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
+  noteInput: { flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "11px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  noteEntry: { padding: "18px 0", borderBottom: `1px solid ${T_.borderLight}` },
+  newsScroll: { maxHeight: 260, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
+  newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
+  listRow: { display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" },
+  statCard: { background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: "16px 18px", cursor: "pointer" },
+  prPill: { padding: "7px 18px", fontSize: 13, borderRadius: 7, cursor: "pointer", border: `1px solid ${T_.border}`, color: T_.textGhost, transition: "all .12s", background: "transparent", fontFamily: FONT },
+  prBadge: { fontSize: 12, padding: "4px 12px", borderRadius: 6, border: "1px solid", fontFamily: FONT },
+  btnAccent: { padding: "9px 20px", fontSize: 13, fontWeight: 500, border: "none", background: T_.accent, color: T_.bg, borderRadius: 7, cursor: "pointer", fontFamily: FONT },
+  btnGhost: { padding: "7px 16px", fontSize: 13, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textMid, borderRadius: 7, cursor: "pointer", fontFamily: FONT },
+  btnSmall: { padding: "4px 12px", fontSize: 12, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textDim, borderRadius: 5, cursor: "pointer", fontFamily: FONT },
+  modalOverlay: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 },
+  modalBox: { background: T_.bgSidebar, border: `1px solid ${T_.border}`, borderRadius: 12, padding: "26px 30px", width: 420, maxWidth: "90%", fontFamily: FONT },
+  modalInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "10px 14px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  subPill: { padding: "5px 14px", fontSize: 12, color: T_.textDim, border: `1px solid ${T_.border}`, borderRadius: 6, cursor: "pointer", fontFamily: FONT },
+  subPillActive: { color: T_.accent, borderColor: T_.accent, background: "rgba(245,158,11,0.1)" },
+};

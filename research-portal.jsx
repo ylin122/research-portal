@@ -1,0 +1,1738 @@
+import { useState, useEffect, useCallback, useRef } from "react";
+
+// ─── Storage ───────────────────────────────────────────
+async function load(k, fb) {
+  try { const r = await window.storage.get(k); return r ? JSON.parse(r.value) : fb; } catch { return fb; }
+}
+async function save(k, v) {
+  try { await window.storage.set(k, JSON.stringify(v)); } catch (e) { console.error(e); }
+}
+function useAutoSave(fn, ms = 700) {
+  const t = useRef(null);
+  return useCallback((...a) => { clearTimeout(t.current); t.current = setTimeout(() => fn(...a), ms); }, [fn, ms]);
+}
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+function ts() { return new Date().toISOString(); }
+function fmt(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
+function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+
+// ─── Sectors ───────────────────────────────────────────
+const SECTORS = {
+  software: { label: "Software", subs: { cloud: "Cloud Software", infrastructure: "Infrastructure", application: "Application", security: "Security", other: "Other" } },
+  aidigital: { label: "AI Digital Infrastructure", subs: { compute: "Compute & Cloud", data: "Data Infrastructure", mlops: "MLOps & AI Platforms", other: "Other" } },
+  itservices: { label: "IT Services", subs: { consulting: "Consulting", outsourcing: "Outsourcing", managed: "Managed Services", other: "Other" } },
+  hardware: { label: "Hardware & Others", subs: { semiconductors: "Semiconductors", devices: "Devices", networking: "Networking", other: "Other" } },
+  education: { label: "Education & Services", subs: { edtech: "EdTech", traditional: "Traditional", corporate: "Corporate Training", other: "Other" } },
+  healthcare: { label: "Healthcare IT", subs: { ehr: "EHR / EMR", analytics: "Analytics", digital: "Digital Health", other: "Other" } },
+  prompts: { label: "Prompt", subs: { all: "All Prompts" } },
+  sources: { label: "Source", subs: { all: "All Sources" } },
+};
+
+const FIELDS = [
+  { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
+  { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
+  { key: "customers", label: "Customer focus", ph: "Target segments, key accounts, verticals, GTM motion, deal sizes, retention, expansion, geographic focus..." },
+  { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends, regulatory environment, tailwinds/headwinds, secular shifts..." },
+  { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
+  { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
+  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
+];
+
+const PROMPT_FIELDS = [
+  { key: "overview", label: "Prompt", ph: "Paste your full prompt here. This is what gets copied or sent to Claude when you hit 'Run prompt'..." },
+  { key: "products", label: "Usage notes", ph: "When to use this prompt, what it's designed for, any context on how to modify it..." },
+];
+
+const SOURCE_FIELDS = [
+  { key: "overview", label: "Sources", ph: "Running list of sources used across company research briefs. Added automatically when new companies are researched..." },
+];
+
+const PRIORITIES = ["High conviction", "Watching", "Low priority"];
+
+// ─── Seed data ─────────────────────────────────────────
+const SEED_COMPANIES = [
+  { id: "citrix_seed", name: "Citrix (Cloud Software Group)", sector: "software", sub: "cloud" },
+  { id: "precisely_seed", name: "Precisely", sector: "software", sub: "infrastructure" },
+  { id: "sonicwall_seed", name: "SonicWall", sector: "software", sub: "security" },
+  { id: "barracuda_seed", name: "Barracuda Networks", sector: "software", sub: "security" },
+  { id: "kofax_seed", name: "Kofax", sector: "software", sub: "application" },
+  { id: "perforce_seed", name: "Perforce", sector: "software", sub: "infrastructure" },
+  { id: "ivanti_seed", name: "Ivanti", sector: "software", sub: "security" },
+  { id: "newfold_seed", name: "Newfold Digital", sector: "software", sub: "cloud" },
+  { id: "cdk_seed", name: "CDK Global", sector: "software", sub: "application" },
+  { id: "qlik_seed", name: "Qlik", sector: "software", sub: "infrastructure" },
+  { id: "cvent_seed", name: "Cvent", sector: "software", sub: "application" },
+  { id: "smartbear_seed", name: "SmartBear", sector: "software", sub: "infrastructure" },
+  { id: "cloudera_seed", name: "Cloudera", sector: "software", sub: "infrastructure" },
+  { id: "knowbe4_seed", name: "KnowBe4", sector: "software", sub: "security" },
+  { id: "infoblox_seed", name: "Infoblox", sector: "software", sub: "security" },
+  { id: "apld_seed", name: "Applied Digital", sector: "aidigital", sub: "compute" },
+  { id: "coreweave_seed", name: "CoreWeave", sector: "aidigital", sub: "compute" },
+  { id: "terawulf_seed", name: "TeraWulf", sector: "aidigital", sub: "compute" },
+  { id: "cipher_seed", name: "Cipher Digital (fka Cipher Mining)", sector: "aidigital", sub: "compute" },
+  { id: "idera_seed", name: "Idera", sector: "software", sub: "infrastructure" },
+  { id: "prompt_researchbrief_seed", name: "Company Research Brief", sector: "prompts", sub: "all" },
+  { id: "source_master_seed", name: "Research Sources", sector: "sources", sub: "all" },
+];
+
+const SEED_DATA = {
+  citrix_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Business unit of Cloud Software Group (CSG), a private software conglomerate formed by Vista Equity Partners and Evergreen Coast Capital\n• Originally founded in 1989 by Ed Iacobucci; taken private in Sep 2022 via $16.5B leveraged buyout\n• Merged with TIBCO Software (another Vista portfolio company) to form CSG post-acquisition\n• Headquartered in Fort Lauderdale, FL with ~10,000 employees globally across 6 continents\n• Led by co-president Sridhar Mullapudi on the Citrix side; Tom Krause serves as CEO of the broader CSG entity\n• Backed by Vista Equity Partners, Evergreen Coast Capital (Elliott affiliate), and Ares Management\n• Vista closed a $5.6B continuation fund in mid-2025, extending its investment horizon and signaling long-term commitment`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Transitioning from perpetual licenses to subscription/SaaS consumption-based pricing; drives recurring revenue via Citrix DaaS and cloud platform subscriptions\n• Citrix DaaS (Desktop as a Service): Flagship cloud-hosted virtual desktop product, recognized as a Gartner Magic Quadrant Leader for DaaS in 2024 for two consecutive years\n• Citrix Virtual Apps and Desktops (CVAD): On-prem and hybrid VDI solution for enterprises managing legacy workloads; still a major revenue contributor during cloud transition\n• NetScaler: Application delivery controller (ADC) and load balancing platform; critical infrastructure for app performance, security, and traffic management\n• Citrix Secure Private Access: Zero-trust network access (ZTNA) solution replacing legacy VPNs; increasingly important as enterprises move away from perimeter-based security\n• Citrix Secure Access with Chrome Enterprise: New integration (2025) embedding zero-trust policy enforcement natively into Google Chrome for browser-based work\n• ShareFile: Content collaboration and file-sharing platform targeting regulated industries (legal, accounting, healthcare)\n• Citrix Aidrien: AI-powered operations assistant launched Nov 2025; designed to reduce IT support volume, accelerate issue resolution, and surface institutional knowledge (GA planned Q2 2026)\n• eLux OS (via Unicon acquisition): Secure endpoint OS enabling enterprises to repurpose existing hardware for VDI access, reducing device lifecycle costs\n• TIBCO portfolio (sister unit): Data management, integration middleware, and analytics — enables cross-sell into the same enterprise accounts`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      customers: {
+        text: `• Enterprise-first GTM motion targeting large organizations with complex hybrid IT environments\n• Serves ~400,000 organizations globally including a significant share of the Fortune 500 and Global 2000\n• Strongest vertical penetration in financial services, healthcare, government/public sector, and legal\n• Government focus: Advancing Citrix Cloud Government (CCG) platform toward FedRAMP High accreditation for handling Controlled Unclassified Information (CUI)\n• Channel-heavy distribution model: Recently expanded strategic partnership with Arrow Electronics as exclusive Citrix distributor for mid-market and SMB across North America and Europe (effective Mar 2025 for mid-market, Mar 2026 for CSP business)\n• Multi-cloud positioning is a key selling point — supports AWS, Azure, and GCP deployments, differentiating from cloud-native alternatives locked to a single hyperscaler\n• Enterprise deal sizes skewing larger as cloud transition drives platform consolidation; $1M+ ACV deals represent the fastest-growing segment\n• Geographic expansion into Asia-Pacific identified as a priority growth region for the combined CSG entity`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      industry: {
+        text: `• Desktop as a Service (DaaS) market projected to grow at 20%+ CAGR through 2028 driven by hybrid/remote work normalization and Windows 10 end-of-support migration\n• Virtual Desktop Infrastructure (VDI) is a mature but sticky category; enterprises with large legacy CVAD deployments face high switching costs, creating durable revenue base\n• Zero-trust security is a major secular tailwind — VPN replacement cycle benefits Citrix Secure Private Access and the broader SASE/SSE category\n• Browser-based work is an emerging theme: the browser is becoming the new enterprise endpoint, creating opportunity for Citrix's Chrome Enterprise integration play\n• AI integration into IT operations (AIOps) is an early but growing market; Citrix Aidrien positions the company in this category\n• Headwinds: Hyperscaler bundling is a structural threat — Microsoft Azure Virtual Desktop (AVD) included in many Microsoft 365 enterprise agreements at no incremental cost, pressuring Citrix's pricing power\n• Broadcom's acquisition of VMware is reshaping the virtualization competitive landscape, creating both risk (stronger competitor) and opportunity (VMware customer disruption)\n• Regulatory tailwinds in healthcare and government drive demand for FedRAMP-authorized and HIPAA-compliant virtual workspace solutions`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      competitive: {
+        text: `• Microsoft Azure Virtual Desktop (AVD): Primary competitive threat; bundled into enterprise Microsoft 365 agreements, making it effectively free for many customers. Citrix counters by positioning as multi-cloud and offering superior management/security layers on top of AVD\n• VMware Horizon (now Broadcom): Historically the closest direct competitor in on-prem VDI. Broadcom's acquisition has caused significant customer disruption and license changes, creating a potential migration opportunity for Citrix\n• Amazon WorkSpaces: AWS-native DaaS offering; strong in AWS-centric shops but lacks Citrix's multi-cloud flexibility and mature enterprise management tooling\n• Omnissa (formerly VMware EUC, spun out by Broadcom): New standalone entity competing directly in digital workspace; unclear execution path and customer confusion could benefit Citrix\n• Parallels (by Alludo/Corel): Competing in the SMB/mid-market segment of virtual app delivery, less relevant at enterprise scale\n• Key Citrix differentiators: 35+ years of enterprise VDI expertise, multi-cloud neutrality, deep Microsoft integration (Entra SSO, Teams optimization), FedRAMP government credentials, and the broadest endpoint support in the category\n• Vulnerability: Heavy debt load from the LBO constrains R&D investment relative to well-capitalized hyperscaler competitors; talent retention in competitive market is a risk`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      transactions: {
+        text: `• Dec 2025: CSG divested Jaspersoft (embedded analytics) to HCLSoftware — portfolio rationalization to reduce leverage\n• Aug 2025: CSG acquired Arctera (ex-Veritas product lines) from Carlyle Group, further expanding the portfolio\n• Jun 2025: Vista closed $5.6B continuation fund with $2.7B in new capital; existing Fund V investors received 4.1x return, signaling strong realized value\n• Mar 2025: Strategic mid-market and sole distributor agreement with Arrow Electronics for North America and Europe\n• Jan 2025: Acquired Unicon GmbH — secure endpoint OS (eLux) and management platform (Scout); enables hardware repurposing for VDI, 2.5M+ endpoints managed globally\n• Jan 2025: Acquired Strong Network SA — secure cloud development environments with DLP and compliance (NIST, ISO)\n• Jan 2025: Acquired deviceTRUST GmbH — real-time device compliance verification for zero-trust VDI environments\n• Post-close 2022: Merged with TIBCO Software (acquired by Vista in 2014 for $4.3B) to form Cloud Software Group\n• Sep 2022: Citrix secured a $4.55B cross-border term loan to support the buyout financing\n• Sep 2022: Taken private by Vista Equity Partners and Evergreen Coast Capital (Elliott affiliate) in a $16.5B leveraged buyout, one of the largest tech LBOs in recent years`,
+        date: "2026-03-17T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "cn1", text: "Arrow distribution deal is a major channel restructuring — offloading mid-market and CSP management to a distributor frees up Citrix to focus direct sales resources on enterprise. Watch for impact on mid-market retention rates.", date: "2026-03-15T00:00:00Z" },
+      { id: "cn2", text: "The Unicon acquisition is strategically smart timing — Windows 10 EOS in Oct 2025 creates a massive device refresh cycle. Enterprises can use eLux to repurpose old hardware rather than buying new. Could be a meaningful customer acquisition vector.", date: "2026-03-10T00:00:00Z" },
+      { id: "cn3", text: "Vista's $5.6B continuation fund is a strong signal. 4.1x return to Fund V investors means the PE thesis is working. Extended hold period suggests they see more value creation ahead, likely through debt paydown and eventual IPO.", date: "2026-03-05T00:00:00Z" },
+    ],
+  },
+  precisely_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private data integrity software company headquartered in Burlington, MA\n• Formed through a decade of PE-driven roll-ups: Syncsort (founded 1968) → acquired Vision Solutions (2017) → acquired Pitney Bowes software/data business for $600M (2019) → rebranded as Precisely (2020)\n• Majority owned by Clearlake Capital and TA Associates since $3.5B take-private in Q2 2021; Insight Partners and Partners Group joined as strategic investors in Apr 2022; Centerbridge retains minority stake\n• ~12,000 customers in 100+ countries, including 95 of the Fortune 100\n• Led by CEO Josh Rogers with CTO Tendü Yogurtçu and CPO Chris Hall\n• ~$4.2B in outstanding debt (per Bloomberg)\n• Clearlake and TA were exploring minority stake sale in 2022 at $7.5B+ valuation (incl debt) — signals exit path thinking\n• PE playbook: aggressive buy-and-build strategy with 5+ acquisitions since Clearlake/TA took over`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Subscription/SaaS-based pricing for the Data Integrity Suite (cloud-hosted); legacy on-prem perpetual licenses still contribute but migrating to recurring; professional services and data licensing are supplemental revenue streams\n• Precisely Data Integrity Suite: Modular cloud platform — the core commercial offering. Includes interoperable services for data integration, data quality, data governance, location intelligence, and data enrichment\n• Data Integration: High-performance data pipelines connecting mainframe, IBM i, ERP, and cloud platforms (Snowflake, Databricks, AWS, Azure). Historically the company's bread and butter from its Syncsort roots\n• Data Quality: AI-powered profiling, cleansing, matching, deduplication, and standardization. Named in Forrester Wave for Data Quality Solutions Q1 2026\n• Data Governance: Metadata management, data cataloging, lineage, and policy enforcement. FedRAMP Moderate authorized as of Jan 2026\n• Location Intelligence: Geocoding, address verification, spatial analytics. Inherited from Pitney Bowes acquisition — a unique differentiator vs pure-play data integration competitors\n• Data Enrichment: 400+ curated datasets with 9,000+ attributes for appending business, consumer, and location context to enterprise data\n• Gio AI Assistant + AI Agents: New agentic AI layer (launched Feb 2026) — automates data quality rules, normalization, enrichment, and geocoding through conversational interface\n• Winshuttle: Process automation and master data management for SAP environments (acquired Jun 2021)\n• Infogix: Data governance and observability (acquired May 2021)\n• Revenue is predominantly recurring through subscriptions and data licensing; services are transactional but support land-and-expand`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Overwhelmingly large enterprise: majority of customers are 10,000+ employees; 95 of the Fortune 100 are customers\n• Strong in highly regulated verticals: financial services, insurance, healthcare, and government — industries where data accuracy and compliance are non-negotiable\n• Government: FedRAMP authorization (Jan 2026) opens federal, state, and local government pipeline; defense and healthcare agency opportunities\n• Financial services: Banks, insurers, and asset managers use Precisely for regulatory reporting, KYC data quality, and location-based risk analytics\n• Healthcare: Data quality for patient records, claims processing, and compliance (HIPAA)\n• Manufacturing and retail: Supply chain data integration and customer data enrichment\n• GTM motion is primarily direct enterprise sales supplemented by channel partnerships and system integrators\n• Deep mainframe and IBM i installed base: Legacy Syncsort/Vision Solutions customers are a captive migration pipeline — these orgs need Precisely to connect legacy systems to modern cloud platforms\n• Buying drivers: Regulatory compliance pressure, AI/ML readiness (garbage in = garbage out), cloud migration from legacy systems, and reducing manual data management overhead\n• Geographic mix: ~80% North America, growing in EMEA and APAC`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Data integration and integrity software market valued at ~$17B in 2024, projected to reach ~$42B by 2032 (11.8% CAGR per Fortune Business Insights)\n• Precisely's estimated revenue of $600M–$700M+ puts it at ~4% of the addressable market — meaningful scale but room to grow\n• Tailwind — AI readiness: Enterprises cannot deploy AI/ML on dirty or unstructured data; Precisely's "data integrity for AI" positioning directly rides this wave. Time horizon: 3-5+ years of sustained demand\n• Tailwind — Cloud migration: Legacy mainframe and IBM i environments are modernizing to cloud data platforms (Snowflake, Databricks). Precisely's roots in mainframe connectivity make it a natural bridge. Time horizon: 5-10 years as the long tail of legacy migration continues\n• Tailwind — Regulatory pressure: GDPR, CCPA, FedRAMP, HIPAA, and evolving AI governance regulations are forcing investment in data governance and quality tooling. Time horizon: Permanent and increasing\n• Headwind — Hyperscaler bundling: AWS, Azure, and GCP all offer native data integration and quality tooling that is "good enough" for many use cases, included in platform spend. Pressures standalone vendors on pricing and mindshare\n• Headwind — Commoditization of basic ETL: Open-source tools and low-cost alternatives have commoditized basic data integration; Precisely must differentiate on breadth, data enrichment, and governance\n• Market growth over last 5 years: Estimated ~10-12% CAGR based on overall data management software growth (estimate — derived from industry reports; exact segment data for "data integrity" specifically is not independently reported)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• Informatica (public, ~$1.5B+ revenue): Largest direct competitor in data quality and governance. Broader platform, stronger brand recognition in large enterprise. Precisely wins on location intelligence, mainframe connectivity, and data enrichment breadth where Informatica has gaps\n• IBM (InfoSphere, DataStage): Legacy competitor in ETL and data quality. Deep in mainframe shops but product innovation has stalled; customers increasingly looking for modern alternatives. Precisely competes directly for IBM i and System Z migration workloads\n• Qlik/Talend (acquired 2023): Strong in open-source and mid-market data integration. Less enterprise-grade governance and limited location intelligence. Precisely competes best at enterprise scale where governance requirements are strict\n• Collibra: Pure-play data governance competitor. Strong in cataloging and lineage but lacks Precisely's data integration and enrichment capabilities. Threat in governance-first deals\n• Snowflake, Databricks (native tooling): Not direct competitors but their expanding native data quality and governance features could reduce need for third-party tools over time\n• Competitive advantage: Precisely is the only scaled platform combining data integration + quality + governance + location intelligence + enrichment in one suite. The location intelligence and 400+ curated datasets from the Pitney Bowes heritage are a unique moat no competitor can easily replicate\n• Best at: Mainframe/legacy-to-cloud integration, location intelligence, regulated industry data governance, breadth of data enrichment assets\n• Worst at: Brand awareness vs Informatica, developer mindshare vs open-source alternatives, and pricing flexibility in mid-market where lighter tools win\n• Biggest threat (3yr): Informatica and hyperscaler-native tooling continue improving, squeezing Precisely from above (enterprise) and below (platform-native). Also, heavy debt load constrains R&D and go-to-market investment relative to better-capitalized competitors\n• Largest opportunity (3yr): AI/agentic data readiness — if the market accepts that AI success depends on data integrity, Precisely is uniquely positioned. FedRAMP authorization also opens a large, sticky government revenue stream that competitors haven't secured at the same level`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• Jan 2026: Achieved FedRAMP Moderate authorization for Data Governance Service — unlocks federal procurement pipeline\n• Jan 2023: Acquired Transerve (location intelligence provider) — extended geospatial capabilities in emerging markets\n• Apr 2022: Insight Partners and Partners Group made significant strategic investment; joined Clearlake, TA, and Centerbridge as institutional investors. Valuation not disclosed but Bloomberg reported $7.5B+ EV being explored\n• Jun 2021: Acquired Winshuttle (process automation and MDM for SAP) from Symphony Technology Group — expanded into SAP ecosystem\n• May 2021: Acquired Infogix (data governance and observability) — first add-on acquisition under Clearlake/TA ownership, completed within 2 weeks of deal close\n• Q2 2021: Clearlake Capital and TA Associates acquired Precisely from Centerbridge Partners for $3.5B; Centerbridge retained minority stake\n• Dec 2019: Acquired Pitney Bowes software and data business for $600M — transformative deal that added location intelligence and data enrichment, expanded customer count from ~4,000 to ~12,000\n• 2017: Clearlake sold majority stake in Syncsort + Vision Solutions to Centerbridge Partners for $1.26B; companies merged under Syncsort banner\n• 2016: Acquired Trillium Software (data quality) under Clearlake ownership\n• 2015: Clearlake Capital acquired controlling interest in Syncsort (~$75M revenue at the time)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: `• Revenue: Estimated $600M–$700M+ annually (per CEO Josh Rogers in 2021; likely grown since given acquisition activity and organic growth)\n• Revenue growth: ~10x over 10 years through organic + inorganic; ~$75M in 2015 → ~$600M+ by 2021. Organic growth rate likely mid-to-high single digits with acquisitions driving step-function increases\n• Outstanding debt: ~$4.2B (per Bloomberg 2022 report) — significant leverage from the $3.5B LBO; debt servicing is a key financial constraint\n• Valuation: $3.5B at 2021 acquisition; $7.5B+ (incl debt) explored in 2022 — implies ~$3.3B equity value at the time, roughly 5x revenue\n• Employee count: Not precisely disclosed but estimated 3,000–4,000+ based on scale of operations across 100+ countries\n• Profitability: Not publicly reported; PE ownership implies focus on EBITDA optimization. Clearlake's O.P.S. framework typically targets margin expansion through operational efficiency\n• Key financial risk: Heavy debt load relative to revenue creates pressure on free cash flow and limits organic investment capacity. Rising interest rate environment (2022-2024) increased debt servicing costs\n• Revenue mix: Shifting from perpetual licenses to subscription/SaaS; data licensing provides high-margin recurring revenue; services are lower margin but support adoption`,
+        date: "2026-03-18T00:00:00Z"
+      }
+    },
+    notes: [
+      { id: "pn1", text: "FedRAMP authorization in Jan 2026 is a real unlock. Government data governance is a sticky, long-cycle revenue stream. Competitors like Informatica don't have this at the same level. Watch for follow-on government contract wins in the next 6-12 months.", date: "2026-03-18T00:00:00Z" },
+      { id: "pn2", text: "The agentic AI push (Gio AI Assistant + AI Agents launched Feb 2026) is the right product direction but execution risk is high. If Precisely can credibly automate data quality workflows, it justifies premium pricing vs. commoditized ETL tools. Need to see customer adoption proof points.", date: "2026-03-15T00:00:00Z" },
+      { id: "pn3", text: "Debt load is the elephant in the room. ~$4.2B on a $600-700M revenue base is aggressive. If rate environment stays elevated, the PE sponsors may need to accelerate divestitures or pursue a minority sale to de-lever before any IPO path is viable.", date: "2026-03-10T00:00:00Z" },
+    ],
+  },
+  sonicwall_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private cybersecurity company focused on network security appliances (firewalls), threat detection, and managed security services for SMBs and mid-market enterprises\n• Founded in 1991 in Silicon Valley as Sonic Systems (originally made Ethernet cards for Apple); pivoted to firewall appliances in the late 1990s and rebranded to SonicWall\n• IPO'd on NASDAQ in 1999 (SNWL); taken private by Thoma Bravo in 2010; acquired by Dell in 2012 as part of Dell Software\n• Carved out from Dell in Jun 2016 and sold to Francisco Partners and Elliott Management — current owners\n• Francisco Partners and Elliott explored a ~$2.5B sale in mid-2021 (hired Morgan Stanley), but the process did not result in a transaction\n• Headquartered in Milpitas, CA with ~1,500–3,000 employees and operations across 215+ countries/territories\n• ~500,000+ customers and 1M+ security devices deployed globally\n• Led by CEO Bob VanKirk (appointed Jul 2022, formerly CRO) with CFO Jeff Dolce\n• After a 14-year M&A drought, made 3 acquisitions in 4 months (late 2023 – early 2024), signaling a strategic transformation from pure-play firewall vendor to broader cybersecurity platform`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Hardware appliance sales (one-time) + subscription security services and licenses layered on top (recurring); increasingly shifting toward recurring managed services and cloud-native offerings. Hardware is the entry point, subscriptions are the margin driver\n• Next-gen Firewalls (NGFW): Core product line — TZ series (SMB/branch), NSa series (mid-range), NSsp series (enterprise/data center). Physical appliances with integrated IPS, anti-malware, content filtering, app control. Still the majority of revenue\n• Cloud-native Security (SonicWall CSE): Cloud Secure Edge platform for ZTNA and SSE, built on the Banyan Security acquisition (Jan 2024). Enables secure remote access without VPNs — the company's key growth bet\n• Managed Detection & Response (MDR): SOC-as-a-service capability acquired through Solutions Granted (Nov 2023). Specifically designed for MSPs/MSSPs with month-to-month, no-minimum contracts\n• SonicWall Capture ATP: Cloud-based multi-engine sandbox for advanced threat detection, including ransomware and zero-days. Real-Time Deep Memory Inspection (RTDMI) is a patented technology differentiator\n• Email Security: Anti-phishing, anti-spam, and email threat protection — on-prem and hosted options\n• Secure Mobile Access (SMA): SSL VPN appliances for remote workforce access to corporate networks\n• Endpoint Security: Trapmine acquisition (2024) added AI-based endpoint detection and response (EDR) capabilities\n• SonicWall Capture Client: Unified endpoint protection combining next-gen antivirus with EDR\n• Cyber warranties: Partnership with Cysurance (Nov 2024) offers $100K–$200K cybersecurity warranties bundled with firewall purchases — first-to-market differentiator for channel partners\n• Revenue mix: Shifting from hardware-heavy to subscription/services; cloud-native business grew 700% YoY in 2024 per CEO; managed services in double-digit growth`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: SMB and mid-market enterprises — historically SonicWall's sweet spot. Companies with 50–5,000 employees that need enterprise-grade security without enterprise-grade IT staff or budgets\n• Increasingly targeting MSPs and MSSPs as the primary go-to-market channel — this is the strategic pivot under VanKirk. Partner/transacting partner numbers have seen triple-digit growth for 4-5 consecutive quarters\n• 100% channel-driven sales model: SonicWall does not sell direct. Over 10,000 channel partners globally through the SecureFirst partner program\n• Key verticals: Retail (PCI-DSS compliance), healthcare (HIPAA), education (K-12 and higher ed), government (state/local), and professional services. Diversified but concentrated in regulated SMB segments\n• Geography: Predominantly North America (~60-65% estimated); meaningful presence in EMEA (~20-25%); growing in APAC and Middle East (new Digital Planets partnership in Oct 2025 for MEA region); LATAM is smallest\n• Buying drivers: Compliance requirements (PCI, HIPAA), ransomware fear (SonicWall's annual threat report is widely cited), need for affordable enterprise-grade security, and increasingly the desire to consolidate security vendors through a single MSP/MSSP\n• Installed base opportunity: More than half of SonicWall's installed base is still running Gen 6 or older hardware — represents a significant upgrade/refresh cycle opportunity for both the company and its partners`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Global network security/firewall market estimated at ~$20B+ in 2025, growing at 10-12% CAGR. SonicWall at $350-480M revenue represents ~2% share — a smaller player competing in a market dominated by much larger vendors\n• Managed security services (MSSP/MDR) market is the faster-growing adjacent segment at 15-18% CAGR, driven by SMBs outsourcing security operations they can't staff internally\n• Tailwind — Ransomware epidemic: Attack volumes continue to rise (SonicWall reported record ransomware numbers in 2024). SMBs are prime targets because they lack dedicated security teams. Time horizon: Permanent and intensifying\n• Tailwind — SMB cybersecurity spending: SMBs historically underinvested in security; regulatory pressure (PCI 4.0, updated HIPAA rules, state privacy laws) and cyber insurance requirements are forcing spend increases. Time horizon: 3-5+ years\n• Tailwind — SASE/SSE adoption: Zero-trust and cloud-delivered security are replacing legacy VPN/firewall-only architectures. SonicWall's Banyan acquisition positions it here. Time horizon: 5-7 years of growth runway\n• Headwind — Platform consolidation: Enterprises and SMBs increasingly want single-vendor security platforms. Larger competitors (Palo Alto, Fortinet, CrowdStrike) are aggressively bundling. SonicWall's narrower portfolio is a disadvantage. Time horizon: Ongoing\n• Headwind — Cloud-native displacement: As workloads move to cloud, traditional on-prem firewall appliance TAM is under structural pressure. SonicWall must accelerate its cloud-native transition\n• Market growth (5yr estimate): Network security/firewall market has grown at ~9-11% CAGR over the last 5 years (estimated based on Gartner and IDC industry reports). Managed security services segment has grown faster at ~14-16%`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• Fortinet: Most direct competitor — also targets SMB/mid-market with integrated firewall + security platform at aggressive price points. FortiGate is the dominant SMB firewall. Fortinet is significantly larger (~$5.3B revenue) with a broader platform. SonicWall competes on channel relationships and MSP flexibility but loses on platform breadth and scale\n• Palo Alto Networks: Enterprise-focused but pushing downmarket. Most advanced platform (XSIAM, Prisma, Cortex). SonicWall rarely competes head-to-head at the enterprise level but faces displacement risk as Palo Alto offers simplified mid-market bundles\n• Cisco (Meraki/Firepower): Strong in mid-market through Meraki's cloud-managed networking. SonicWall competes on price and simplicity; Cisco wins on brand and existing networking relationships\n• CrowdStrike + Zscaler: Not traditional firewall competitors but represent the cloud-native security model that could bypass on-prem firewalls entirely. Longer-term structural threat\n• Barracuda Networks (owned by KKR): Direct SMB competitor in email security and firewalls. Similar customer profile. SonicWall has stronger brand in firewalls; Barracuda stronger in email/data protection\n• WatchGuard (Vector Capital): Another PE-backed SMB firewall vendor. Closest peer in terms of size and positioning. Competition primarily on channel economics and MSP tooling\n• Competitive advantage: Deep channel loyalty built over 30+ years; 10,000+ partners; MSP-first managed services model (month-to-month, no minimums); Capture ATP/RTDMI threat detection is well-regarded; and the installed base of 1M+ devices creates switching costs\n• Best at: Price-to-performance in SMB firewalls, channel partner economics, MSP/MSSP enablement, threat intelligence (widely cited annual reports)\n• Worst at: Platform breadth (no native SIEM, limited cloud security until recently), enterprise market credibility, brand perception vs. Fortinet/Palo Alto, and R&D investment relative to larger competitors\n• Biggest threat (3yr): Fortinet's aggressive SMB push with FortiGate + FortiSASE bundling at price points that are hard to beat; also platform consolidation trend favoring vendors with broader stacks\n• Largest opportunity (3yr): MSP/MSSP channel expansion — if SonicWall can become the de facto security platform for managed service providers, the recurring revenue flywheel becomes very powerful. The installed base refresh cycle (Gen 6 → Gen 7/TZ80) is also a near-term revenue opportunity`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• Nov 2024: Partnered with Cysurance to offer cybersecurity warranties ($100K–$200K) bundled with firewall purchases — first-to-market for channel partners\n• Jan 2024: Acquired Banyan Security — cloud-native ZTNA and SSE platform. Critical strategic acquisition to expand beyond on-prem firewalls into cloud-delivered security. Terms not disclosed\n• Nov–Dec 2023: Acquired Solutions Granted — master MSSP providing SOC-as-a-service and MDR to hundreds of MSPs. First acquisition in 14 years, signaling the start of the platform transformation. Also acquired Trapmine around same period (AI-based endpoint detection)\n• Jun 2021: Francisco Partners and Elliott hired Morgan Stanley to explore sale at ~$2.5B valuation. Process launched but no deal announced\n• Jun 2016: Dell sold SonicWall (as part of Dell Software division) to Francisco Partners and Elliott Management. Purchase price not disclosed but estimated in the $500M–$800M range given Dell Software division context\n• 2012: Dell acquired SonicWall (then public after Thoma Bravo take-private in 2010)\n• 2010: Thoma Bravo (with Ontario Teachers' Pension Plan) took SonicWall private, delisting from NASDAQ\n• 1999: IPO on NASDAQ as SonicWALL (SNWL)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: `• Revenue: Estimated $350M–$480M annually (ZoomInfo reports $355M; Zippia estimates $480M for 2024 — wide range reflects private company opacity)\n• Revenue growth: Market-rate growth per CFO Jeff Dolce; cloud-native business grew 700% YoY in 2024 (off a small base); managed services in double-digit growth; overall company likely growing mid-to-high single digits organically\n• Revenue mix: Historically hardware-heavy; actively shifting toward subscription/recurring. Security services, licensing, and managed services are increasing as share of total\n• Profitability: Not publicly reported; PE ownership for 9+ years suggests the business generates positive EBITDA. Francisco Partners typically targets operational efficiency and margin expansion\n• Valuation: ~$2.5B was explored in 2021; current valuation uncertain but likely higher given the acquisition-driven platform expansion. At $400M revenue and 5-6x EV/Revenue for PE-owned security companies, implied valuation could be in the $2.0–$2.5B+ range\n• Debt: $676M raised per PitchBook; specific debt structure not publicly detailed\n• Employee count: Estimated 1,500–3,000 depending on source\n• Key financial risk: Revenue concentration in hardware appliances which face structural headwinds from cloud migration; slow transition to recurring revenue could depress valuation multiples relative to SaaS-native security peers`,
+        date: "2026-03-18T00:00:00Z"
+      }
+    },
+    notes: [
+      { id: "sn1", text: "The 3-acquisitions-in-4-months burst (Solutions Granted, Banyan, Trapmine) after 14 years of no M&A is the clearest signal of the strategic pivot. VanKirk is trying to build an MSP-first security platform, not just sell firewalls. Execution risk is real — integrating three deals simultaneously while transforming the GTM model is hard.", date: "2026-03-18T00:00:00Z" },
+      { id: "sn2", text: "700% cloud-native growth sounds impressive but likely off a tiny base. The real question is what percentage of total revenue is now recurring/subscription vs. one-time hardware. If still below 40-50% recurring, the SaaS multiple story doesn't hold up for an exit.", date: "2026-03-15T00:00:00Z" },
+      { id: "sn3", text: "Francisco Partners and Elliott have held this for nearly 10 years (bought 2016). PE exit pressure is real. The failed 2021 sale process at $2.5B means they need to show meaningful transformation progress to get a better outcome. The next 12-18 months are likely the window where they make a move.", date: "2026-03-10T00:00:00Z" },
+    ],
+  },
+  barracuda_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private cybersecurity company focused on email security, network security, data protection, and managed XDR for SMEs\n• Founded in 2003 in Campbell, CA by Dean Drako, Michael Perone, and Zach Levow; started with the Barracuda Spam & Virus Firewall\n• IPO'd on NYSE in Nov 2013 (ticker CUDA); taken private by Thoma Bravo in Feb 2018 for $1.6B\n• Thoma Bravo grew revenue from ~$353M (2017) to $500M+ through operational improvements and multiple acquisitions\n• KKR acquired Barracuda from Thoma Bravo in Aug 2022 for ~$3.8B–$4.0B — a 2.5x return for Thoma Bravo in ~4 years\n• ~200,000+ customers worldwide across education, government, financial services, healthcare, retail, and manufacturing\n• ~2,200 employees as of Jan 2026; headquartered in Campbell, CA\n• New CEO Rohit Ghai appointed in 2025 (named one of CRN's top CEO moves of 2025), succeeding Hatem Naguib\n• KKR implemented broad-based employee ownership program — all employees became owners alongside KKR\n• Channel-first company: heavy MSP/MSSP focus with a long track record (14 consecutive years of CRN 5-Star partner ratings)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly subscription-based SaaS and recurring security services; hardware appliances are secondary. Thoma Bravo's ownership drove the shift from hardware to cloud/subscription — this was a key value creation lever. Revenue was $500M+ at KKR acquisition\n• BarracudaONE Platform (launched Jun 2025): AI-powered unified cybersecurity platform consolidating all products into a single dashboard. Includes email protection, cloud-to-cloud backup, managed XDR, and centralized license management. Available at no additional cost to existing customers — designed to reduce tool sprawl and increase stickiness\n• Email Protection: The flagship product and the company's historical strength. Includes anti-phishing, anti-spam, account takeover protection, and email continuity. Deeply integrated with Microsoft 365 and Google Workspace. This is what Barracuda is best known for\n• Cloud-to-Cloud Backup: Backup and recovery for Microsoft 365 data (Exchange, OneDrive, SharePoint, Teams). High-retention, compliance-ready\n• Network Security: CloudGen Firewall (next-gen firewall), CloudGen Access (ZTNA), and SD-WAN. Less prominent than email but part of the broader platform play\n• Application Security: Web Application Firewall (WAF) and API security for protecting web apps and APIs from OWASP threats, bots, and DDoS\n• Managed XDR: 24/7 SOC-delivered threat detection and response service. Covers endpoints, firewalls, servers, and cloud assets. Barracuda reported monitoring 2T+ IT events and 300K+ protected assets in 2025\n• Data Inspector: Scans Microsoft 365 environments for sensitive data (PII, PCI, credentials) to identify compliance risks\n• Barracuda Financial Services (Oct 2025): Partnership with Capchase to offer flexible payment options — reducing upfront cost barriers for SME customers and MSPs\n• Revenue is heavily recurring through subscriptions; MSP billing now automated through PSA integrations (ConnectWise, Autotask, HaloPSA, etc.)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: SMEs — small and medium-sized enterprises that need enterprise-grade cybersecurity without enterprise IT teams or budgets. Sweet spot is 50–2,500 employees\n• 200,000+ customers globally; broad industry diversification across education, government, financial services, healthcare, retail, consumer goods, and manufacturing\n• Channel-first GTM model: Barracuda sells through MSPs, MSSPs, VARs, and distributors. No significant direct sales motion. 14 consecutive years of CRN 5-Star partner program ratings\n• Increasing strategic focus on MSPs/MSSPs as the primary channel — BarracudaONE platform is purpose-built for multi-tenant MSP management. Michelle Hodges hired as SVP Global Channels (May 2025) to accelerate this\n• Geography: Predominantly North America (~55-60% estimated); meaningful EMEA presence (~25-30%); APAC and rest of world (~10-15%). Expanding in Middle East and emerging markets\n• Buying drivers: Email is the #1 attack vector for SMEs — phishing, ransomware, and BEC are existential threats to businesses without dedicated security teams. Compliance requirements (HIPAA, PCI-DSS, GDPR) force investment. Cyber insurance requirements increasingly mandate email security and backup solutions\n• Sticky customer base: Email security is deeply embedded into daily operations (Microsoft 365 integration) and switching is disruptive — creates strong retention dynamics`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Email security market estimated at $4–5B in 2025, growing at ~12-14% CAGR. Barracuda is a top-5 player in SME email security by customer count\n• Broader SME cybersecurity market is ~$40-50B+ and growing at 12-15% CAGR as SMEs increasingly invest in security they historically underinvested in\n• Tailwind — Email remains the #1 attack vector: Phishing, BEC, and ransomware delivered via email continue to rise. Barracuda's threat report showed 90% of 2025 ransomware incidents exploited firewalls through unpatched software or compromised accounts. Time horizon: Permanent\n• Tailwind — Microsoft 365 ecosystem expansion: As SMEs migrate to M365, the need for third-party email security and backup layered on top grows. Microsoft's native security is improving but not sufficient for compliance-conscious orgs. Time horizon: 3-5+ years\n• Tailwind — MSP consolidation of security vendors: MSPs want fewer vendors with broader platforms. BarracudaONE directly addresses this. Time horizon: 3-5 years\n• Headwind — Microsoft Defender improving: Microsoft is investing heavily in native security capabilities bundled with E5 licenses. "Good enough" native security erodes the TAM for third-party email security vendors. Time horizon: Ongoing and accelerating\n• Headwind — Platform consolidation: Larger vendors (Palo Alto, CrowdStrike, Fortinet) are building broader platforms that include email security, reducing the standalone opportunity\n• Market growth (5yr estimate): Email security market has grown at ~11-13% CAGR over the last 5 years (estimated based on Gartner and IDC reports). Managed security services for SMEs has grown faster at ~15-18%`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• Proofpoint (Thoma Bravo, ~$1B+ revenue): The dominant enterprise email security vendor. Barracuda rarely competes head-to-head — Proofpoint wins large enterprise; Barracuda wins SME. Different buyer, different price point, different complexity tolerance\n• Mimecast (~$600M revenue): Closest direct competitor in email security for mid-market. Stronger in EMEA than Barracuda. Competes on email continuity and archiving. Barracuda wins on price and breadth of adjacent products (backup, firewall, WAF)\n• Abnormal Security: AI-native email security startup growing fast. Focused on BEC and account takeover detection. Competitive threat in the mid-market and increasingly in SME through MSP partnerships\n• Microsoft Defender for Office 365: The structural competitive threat. Bundled with E5 licenses at no incremental cost. Good enough for some SMEs but lacks the depth, configurability, and MSP tooling that Barracuda provides\n• SonicWall: Competitor in SME network security/firewalls but weaker in email. Barracuda has the stronger email franchise; SonicWall has the stronger firewall franchise\n• Competitive advantage: Email security brand trust built over 20+ years; deep M365 integration; broadest SME security platform (email + backup + firewall + WAF + XDR in one); MSP-first tooling and billing automation; and ease of deployment that SMEs and MSPs value highly\n• Best at: Email security for SMEs, ease of use and deployment, MSP channel enablement, price-to-value ratio, and customer retention (email security is deeply embedded)\n• Worst at: Enterprise credibility (Proofpoint and Mimecast own that tier), network security (SonicWall and Fortinet are stronger in firewalls), and brand perception among CISOs at large organizations\n• Biggest threat (3yr): Microsoft Defender continuing to improve and being bundled free with E5 — could erode the low end of Barracuda's email security TAM. Also, platform consolidation could see MSPs choosing one vendor (Fortinet, Palo Alto) over Barracuda's more focused stack\n• Largest opportunity (3yr): BarracudaONE platform becomes the default MSP security stack — if MSPs adopt the unified platform broadly, the attach rate across email + backup + XDR + firewall drives significant revenue expansion per customer. M365 cloud backup is also underpenetrated and growing fast`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2025: Appointed new CEO Rohit Ghai (named one of CRN's biggest CEO moves of 2025) — leadership change under PE ownership often signals a new phase of value creation ahead of exit\n• Oct 2025: Partnered with Capchase for Barracuda Financial Services — flexible payment options for MSPs and customers to lower cost barriers\n• May 2025: Hired Michelle Hodges as SVP Global Channels and Alliances — elevated channel leadership signals MSP strategy acceleration\n• Jun 2025: Launched BarracudaONE platform — the most significant product move since KKR acquisition; consolidates the portfolio into a unified AI-powered platform\n• 2024: Acquired Fyde (zero-trust access) — expanding ZTNA capabilities\n• Aug 2022: KKR acquired Barracuda from Thoma Bravo for ~$3.8B. KKR cited SME cybersecurity as a "highly attractive sector" with long-term growth. Implemented broad-based employee ownership\n• Feb 2018: Thoma Bravo took Barracuda private for $1.6B. Over 4 years grew revenue from ~$353M to $500M+ through operational improvements and serial acquisitions\n• Nov 2013: IPO on NYSE (CUDA) — one of the earlier cybersecurity IPOs of its era\n• 2003: Founded in Campbell, CA`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "bn1", text: "BarracudaONE platform launch (Jun 2025) is the strategic bet. If MSPs adopt it as their default security stack, the attach rate story is powerful — email + backup + firewall + XDR per customer. The key metric to watch is products-per-customer expansion.", date: "2026-03-18T00:00:00Z" },
+      { id: "bn2", text: "New CEO Rohit Ghai in 2025 is a classic PE move — bring in a new operator to execute the next phase before exit. KKR's hold period clock started Aug 2022, so 2027-2028 is the likely exit planning window. The BarracudaONE platform + MSP channel buildout is the exit story.", date: "2026-03-15T00:00:00Z" },
+      { id: "bn3", text: "Microsoft Defender for Office 365 is the long-term existential question. Barracuda's counter is that M365 native security isn't enough for regulated industries and MSPs need third-party tools for multi-tenant management. True today, but Microsoft keeps closing the gap. Watch M365 E5 adoption rates as a leading indicator.", date: "2026-03-10T00:00:00Z" },
+    ],
+  },
+  kofax_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Now operating as Tungsten Automation (rebranded Jan 2024); still widely known in the market as Kofax\n• Intelligent automation software company focused on document processing, workflow orchestration, AP automation, and RPA\n• Founded in 1985 as Kofax Image Products in Irvine, CA — originally made PC circuit boards for image processing\n• Long PE ownership chain: IPO'd on NASDAQ (KFX) in 2013 → Acquired by Lexmark for ~$1B in 2015 → Lexmark acquired by Apex/PAG Asia for $3.6B in 2016 → Thoma Bravo carved out Kofax + ReadSoft + Perceptive Software from Lexmark in Jul 2017 → Clearlake Capital and TA Associates acquired from Thoma Bravo in Jul 2022\n• ~25,000 customers globally; ~2,200 employees across 32 countries\n• New CEO Peter Hantman appointed Jul 2025, replacing long-tenured Reynolds Bish — classic PE leadership transition\n• Named a Leader by Gartner (IDP Magic Quadrant, Sep 2025), Everest Group (IA and IDP), and Forrester (Process Orchestration)\n• Pursuing FedRAMP "In-Process" designation as of Nov 2025 — signals government market expansion`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Mix of perpetual licenses (legacy on-prem), subscription/SaaS (cloud-hosted platform and point solutions), and professional services. Actively transitioning to subscription/recurring — cloud acquisitions (Psigen, Printix, Ephesoft) accelerate this shift\n• TotalAgility: Flagship intelligent automation platform — low-code workflow orchestration, document intelligence (IDP), process orchestration, and system integration. The core platform from which most revenue flows\n• InvoiceAgility / AP Automation: Accounts payable invoice processing — automated capture, validation, approval routing, and ERP posting. Historically Kofax's strongest vertical use case\n• Tungsten Network (e-Invoice Network): B2B e-invoicing network acquired Jun 2022 from Tungsten Corp (London). Facilitates compliant invoice-to-pay processes across global supply chains. Adds network effects to the AP automation stack\n• Kofax RPA: Robotic process automation for automating repetitive tasks across systems. Originally acquired via Kapow Software in 2013. Competes with UiPath, Automation Anywhere, but at smaller scale\n• Power PDF: Desktop PDF creation and editing — acquired from Nuance Communications in 2018. Mass-market desktop productivity tool\n• Printix: Cloud-based SaaS print management software — acquired under Clearlake/TA ownership. Serves enterprise print fleet management\n• ControlSuite: Enterprise print and document output management, security, and cost control\n• Customers buy because: Paper-to-digital transformation of back-office workflows (especially AP), compliance automation, and reducing manual data entry labor costs. The value prop is operational efficiency and error reduction in document-heavy processes\n• Revenue split: Roughly balanced between recurring (subscriptions, maintenance) and non-recurring (licenses, services) — exact mix not disclosed but cloud transition is the priority`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and upper-mid-market — organizations with high-volume document processing needs, complex AP workflows, and legacy ERP environments (SAP, Oracle)\n• ~25,000 customers globally including major banks, insurers, government agencies, and healthcare systems\n• Key verticals: Banking and financial services (KYC, loan processing, claims), insurance (claims automation), government/public sector (citizen services, compliance), healthcare (patient records, billing), and supply chain/manufacturing (procurement, AP)\n• Relatively diversified across verticals but concentrated in regulated industries where document compliance is mandatory\n• Geography: Global footprint across 32 countries. Estimated ~45-50% Americas, ~35-40% EMEA (strong presence in UK, Germany, Nordics via ReadSoft heritage), ~10-15% APAC (Australia, India offices)\n• EMEA is relatively stronger for Kofax compared to US-centric competitors — the ReadSoft acquisition brought deep Nordic and European penetration\n• Buying drivers: Regulatory compliance (e-invoicing mandates expanding globally, especially EU), AP processing cost reduction, mainframe/paper-to-cloud modernization, and reducing manual data entry errors in high-stakes processes\n• Canon India partnership (Jan 2026) adding TotalAgility to Canon's enterprise portfolio — channel expansion into APAC`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Intelligent Document Processing (IDP) market estimated at $2.5–3.5B in 2025, growing at ~25-30% CAGR — one of the fastest-growing segments within enterprise automation\n• Business Process Management (BPM) market valued at ~$15.4B in 2022, projected to reach $65.8B by 2032 at 15.8% CAGR\n• RPA market is ~$3-4B but growth has decelerated from peak hype (2019-2021); market is consolidating and being absorbed into broader automation platforms\n• Kofax's estimated $500-625M revenue puts it as one of the larger scaled players in IDP/workflow automation, but below the hyperscale platform vendors\n• Tailwind — Global e-invoicing mandates: EU and many countries are mandating electronic invoicing for B2B transactions. Tungsten Network's e-invoicing capabilities directly benefit. Time horizon: 3-7 years as mandates roll out country by country\n• Tailwind — AI/ML document processing: AI dramatically improves IDP accuracy and reduces manual classification work. Kofax's Gartner Leader position in IDP validates their AI capabilities. Time horizon: 5+ years\n• Tailwind — Back-office automation post-COVID: Pandemic permanently shifted enterprise appetite for digitizing paper-based and manual workflows. Time horizon: Permanent secular trend\n• Headwind — RPA commoditization: Standalone RPA is being absorbed into broader platforms (Microsoft Power Automate, ServiceNow). Kofax's RPA module is a shrinking differentiator\n• Headwind — Hyperscaler competition: Microsoft (Power Platform), Google (Document AI), and AWS (Textract) offer IDP/automation capabilities bundled with cloud platforms at low incremental cost\n• Market growth (5yr estimate): IDP segment has grown at ~20-25% CAGR; broader BPM/workflow automation at ~12-15% CAGR (estimated based on Gartner, IDC, and Everest Group reports)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• ABBYY: Closest direct competitor in IDP/document capture. Strong AI capabilities and more developer-friendly. Kofax wins on platform breadth (IDP + RPA + AP + workflow in one); ABBYY wins on pure IDP technology perception\n• UiPath (public, ~$1.3B revenue): Dominant in RPA and expanding into IDP and process orchestration. Much larger R&D budget and developer community. Kofax's RPA module cannot compete head-to-head but the combined platform (IDP + AP + RPA) sells differently\n• Automation Anywhere: Another RPA-first competitor moving into IDP. Similar competitive dynamics to UiPath\n• Microsoft Power Platform (Power Automate + AI Builder): The structural threat. Low-code automation with document processing, bundled into M365. Good enough for simpler use cases. Kofax's advantage is in complex, regulated, high-volume document workflows where Power Automate falls short\n• OpenText: Competes in enterprise content management and document capture. Larger but less focused on automation; more legacy ECM\n• Hyland: Content services platform competing in IDP and workflow for mid-market. Strong in healthcare\n• Competitive advantage: Kofax is the most complete single-platform for IDP + AP automation + workflow orchestration + RPA + e-invoicing network. The Tungsten Network adds a unique network effect no competitor has. 40-year track record in document processing builds trust in regulated industries\n• Best at: AP automation for complex enterprise environments (SAP integration), high-volume IDP in regulated industries, and e-invoicing compliance\n• Worst at: Developer mindshare vs. UiPath/ABBYY, cloud-native perception (still viewed as on-prem-first by some buyers), and brand awareness under the new Tungsten Automation name (market is confused by the rebrand)\n• Biggest threat (3yr): Microsoft Power Platform bundling + AI Builder improving IDP accuracy erodes the lower end of the market. UiPath expanding into IDP with acquisition-driven strategy\n• Largest opportunity (3yr): Global e-invoicing mandates creating a wave of enterprise AP modernization — Tungsten Network is uniquely positioned. FedRAMP authorization could unlock significant US government revenue. AI-powered IDP accuracy improvements justify premium pricing vs. cheaper alternatives`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• Nov 2025: Obtained FedRAMP "In-Process" designation for TotalAgility — opens federal procurement pipeline\n• Sep 2025: Named a Leader in Gartner Magic Quadrant for Intelligent Document Processing — important validation for enterprise sales cycles\n• Jul 2025: Peter Hantman appointed CEO, replacing Reynolds Bish — new operator for the next phase\n• Jan 2026: Canon India partnership to distribute TotalAgility — APAC channel expansion\n• Jul 2025: Sovos Compliance partnership — integrates tax compliance into AP automation workflows\n• Mar 2024: Divested "Business Efficiency Tools" business (per CBInsights) — portfolio streamlining\n• Jan 2024: Rebranded from Kofax to Tungsten Automation — signaling shift toward automation platform identity\n• Aug 2022: Acquired Ephesoft (IDP provider) — extended cloud IDP capabilities and go-to-market channels. Ephesoft was growing 30%+ YoY with ~$100M ARR trajectory\n• Jun 2022: Acquired Tungsten Corporation (London) — B2B e-invoicing network. Transformative for the AP automation story\n• Jul 2022: Clearlake Capital and TA Associates acquired Kofax from Thoma Bravo. Terms not disclosed. Revenue was ~$550M at the time\n• 2021-2022: Under Thoma Bravo, also acquired Psigen (cloud content management) and Printix (SaaS print management)\n• Nov 2018: Acquired Nuance Communications' Document Imaging Division — added Power PDF, PaperPort, OmniPage\n• Jul 2017: Thoma Bravo acquired Kofax + ReadSoft + Perceptive Software from Lexmark as a single carve-out\n• 2015: Lexmark acquired Kofax for ~$1B ($11/share)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "kn1", text: "The rebrand from Kofax to Tungsten Automation is a double-edged sword. On one hand it signals the shift from document capture legacy to automation platform. On the other hand, Kofax had 40 years of brand equity and the market is still confused by the name change. The Tungsten name came from the Tungsten Network acquisition — it works for e-invoicing but feels forced for the broader platform story.", date: "2026-03-18T00:00:00Z" },
+      { id: "kn2", text: "The global e-invoicing mandate wave is the underappreciated angle here. EU mandates are rolling out country by country (Italy already live, France coming, Germany following). Tungsten Network is one of the few scaled B2B e-invoicing networks. If AP automation becomes compliance-driven rather than optional, Kofax's pipeline expands significantly. Watch EU mandate timelines.", date: "2026-03-12T00:00:00Z" },
+      { id: "kn3", text: "CEO change from Bish to Hantman (Jul 2025) after Bish committed to 3-5 years at the 2022 acquisition. Right on schedule. Clearlake/TA are setting up for an exit. FedRAMP in-process, Gartner Leader position, new CEO, and divested non-core assets — textbook pre-exit playbook. Expect exit process activity in 2026-2027.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  perforce_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private DevOps and application lifecycle management (ALM) software company specializing in version control, testing, data management, and infrastructure automation at enterprise scale\n• Founded in 1995 in Alameda, CA by Christopher Seiwald; first product was the Perforce version control system (now P4 / Helix Core) for large-scale software development\n• Sold to Summit Partners in 2016; Janet Dryer became CEO and relocated HQ to Minneapolis, MN\n• Clearlake Capital acquired from Summit Partners in Jan 2018; Francisco Partners acquired 50% in Apr 2019 — now equally co-owned by Clearlake and Francisco Partners\n• Extremely acquisitive: 13 acquisitions completed, including Rogue Wave Software (2019), Perfecto (2018), Puppet (2022), Delphix (2024), and Snowtrack (Mar 2025). Average acquisition size ~$200M per Tracxn\n• CEO Jim Cassens appointed late 2023, replacing Mark Ties\n• ~1,700 employees\n• 20,000+ customers in 80+ countries including 75%+ of the Fortune 100\n• Deep vertical penetration in gaming (19 of top 20 AAA studios), semiconductors (~90% of top firms), automotive (~90% of top OEMs), and financial services\n• Raised $4.57B total per PitchBook — reflects cumulative acquisition financing, not equity raised`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Mix of perpetual licenses (legacy on-prem), subscription/SaaS (growing cloud offerings), and maintenance/support (high-margin recurring). Professional services are supplemental. Actively transitioning to subscription — Helix Core Cloud (launched early 2025) is the key cloud-native offering\n• P4 / Helix Core: The crown jewel — enterprise version control system handling massive binary files and codebases. Industry standard in gaming (Unreal Engine integrates natively), semiconductor IP management, and automotive embedded software. Handles files at a scale Git cannot (terabytes of binary assets). This is the product that creates the deepest switching costs\n• P4 One: New unified platform (launched with Snowtrack acquisition, Mar 2025) combining version control with content creation collaboration — targeting creative and technical teams working on the same assets\n• Puppet: Infrastructure-as-code automation and compliance platform (acquired 2022). Enables enterprises to automate provisioning, configuration, and compliance of hybrid infrastructure. Commercial open-source model\n• Delphix: Test data management and data virtualization platform (acquired Mar 2024). Enables DevOps teams to spin up masked, compliant test data environments on demand. 30%+ of Fortune 100 use Delphix. Recently launched AI Data Compliance product with Microsoft Fabric integration\n• Perfecto: Cloud-based mobile and web testing automation platform (acquired 2018). Continuous testing for enterprises with complex multi-device requirements\n• Perforce ALM (formerly Helix ALM / Seapine TestTrack): Application lifecycle management — requirements, defect tracking, and test management for regulated industries needing full traceability\n• Static Code Analysis (QAC): C/C++ static analysis for safety-critical software — critical in automotive (ISO 26262) and aerospace (DO-178C) compliance. CI/CD integration added in latest release\n• Rogue Wave / OpenLogic / Zend: Open-source support, scanning, and compliance tools. Enterprise open-source governance\n• BlazeMeter: Performance and API testing platform (acquired from CA Technologies, 2021)\n• Customers buy because: Mission-critical development workflows at scale where Git falls short, regulatory compliance requirements (automotive safety, semiconductor IP protection, financial services audit trails), and the need to unify DevOps toolchains across testing, data, and infrastructure`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and upper-mid-market — development teams building complex, regulated, safety-critical, or asset-heavy products\n• 20,000+ customers including adidas, Samsung, NVIDIA, Intuit, Pixar, Salesforce, EA, Ubisoft, VMware, and many more\n• Key verticals — highly concentrated in specific high-value niches:\n  — Gaming: 19 of top 20 AAA studios use Perforce. Helix Core is the de facto standard for game asset version control (binary files at scale). Deep Unreal Engine integration\n  — Semiconductors: ~90% of top semiconductor firms. IP management, design versioning, and compliance tracking for chip design workflows\n  — Automotive: ~90% of top OEMs. Safety-critical embedded software requiring full traceability and ISO 26262 compliance\n  — Financial services: Banks and insurers using Puppet for infrastructure compliance and Delphix for test data management\n  — Government & aerospace: Regulated environments requiring audit trails, code analysis, and infrastructure compliance\n• Geography: Primarily North America (~55-60% estimated); meaningful EMEA presence (~25-30%) with offices in UK and Sweden (Hansoft heritage); APAC (~10-15%) with Australia office and growing presence\n• Buying drivers: Scale limitations of Git for large binary assets, regulatory compliance requirements (automotive safety, financial audit, semiconductor IP), need to consolidate DevOps toolchains, and infrastructure automation for hybrid cloud environments\n• Extremely sticky customer base: Switching costs for Helix Core are very high — migrating terabytes of versioned binary assets and retraining teams is prohibitively expensive. This is the moat`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• DevOps tools market estimated at ~$10-12B in 2025, growing at ~18-20% CAGR. Perforce at ~$750M revenue is a significant player but below the hyperscale platform vendors\n• Version control specifically is a ~$1.5-2B niche within DevOps; Perforce dominates the enterprise/binary-asset segment while Git (GitHub/GitLab) dominates general-purpose source control\n• Test data management (Delphix segment) is a ~$1-1.5B market growing at ~15% CAGR as enterprises invest in compliant test environments\n• Infrastructure automation (Puppet segment) is a ~$3-4B market but growth has slowed as cloud-native tooling (Terraform, Ansible) competes\n• Tailwind — Gaming industry growth: Global gaming market expanding at ~8-10% CAGR. Bigger games = more assets = more need for Helix Core at scale. Unreal Engine 5 adoption is accelerating. Time horizon: 5+ years\n• Tailwind — Automotive software explosion: Modern vehicles have 100M+ lines of code. SDV (software-defined vehicle) trend drives massive need for versioning, testing, and compliance tooling. Time horizon: 5-10 years\n• Tailwind — AI development workflows: AI model training requires managing massive datasets and version-controlled experiments. Delphix and Helix Core both benefit. Time horizon: 3-5+ years\n• Tailwind — DevOps consolidation: Enterprises want fewer vendors. Perforce's breadth (version control + testing + data + infrastructure) enables platform consolidation deals. Time horizon: 3-5 years\n• Headwind — GitHub/GitLab dominance in general source control: Git-based tools are the default for most developers. Perforce's version control value prop only holds in specific niches (binary assets, extreme scale). Time horizon: Permanent structural limit\n• Headwind — Cloud-native infrastructure tools: Terraform (HashiCorp), Ansible (Red Hat), and Kubernetes-native approaches compete with Puppet's infrastructure automation. Puppet's growth has likely slowed\n• Market growth (5yr estimate): Overall DevOps tools market grew at ~17-20% CAGR over the last 5 years. Version control (enterprise segment) grew slower at ~8-10%. Test data management grew at ~12-15% (all estimated based on Gartner, IDC, and Forrester reports)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• GitHub (Microsoft): Dominant general-purpose source control (100M+ developers). Not a direct competitor for Perforce's core use cases (binary assets at scale) but defines the default developer experience. Perforce wins only where Git technically cannot handle the workload\n• GitLab: Integrated DevOps platform competing on CI/CD, security, and source control. Similar dynamics to GitHub — Perforce doesn't compete for general-purpose code, only for enterprise binary/large-asset workflows\n• Atlassian (Bitbucket + Jira): Competes in ALM and developer collaboration. Perforce ALM competes with Jira in regulated environments requiring full traceability. Atlassian wins on ease of use and ecosystem; Perforce wins on compliance rigor\n• HashiCorp (Terraform): Competes with Puppet in infrastructure-as-code. Terraform has become the de facto standard for cloud infrastructure provisioning. Puppet's strength is in configuration management and compliance for hybrid/on-prem — a shrinking but still meaningful segment\n• Informatica / Delphix competitors: In test data management, Broadcom (CA), IBM, and smaller players compete. Delphix is recognized as a leader; 30% of Fortune 100 use it\n• ABBYY / Tricentis / SmartBear: Compete in testing automation; Perfecto competes specifically in mobile/web testing\n• Competitive advantage: Perforce is the only company that can handle enterprise-scale binary version control at terabyte+ scale — this is a genuine technical moat that Git architecturally cannot replicate. The combination of version control + testing + data management + infrastructure automation is unique at Perforce's scale. 13 acquisitions have built the broadest DevOps portfolio outside the hyperscale platforms\n• Best at: Binary asset version control for gaming/semicon/automotive (unmatched), regulated ALM requiring full traceability, and test data management (Delphix). Switching costs in core Helix Core are exceptionally high\n• Worst at: Developer mindshare and community (Git/GitHub is the default), pricing perception (expensive vs. open-source alternatives), and Puppet's declining relevance vs. Terraform/Ansible in cloud-native environments\n• Biggest threat (3yr): GitHub/GitLab continue to improve large file support (Git LFS), potentially narrowing Perforce's technical moat in binary version control. Also, cloud-native CI/CD platforms (GitHub Actions, GitLab CI) increasingly bundle testing and data features\n• Largest opportunity (3yr): Software-defined vehicles and automotive ADAS/autonomy create massive demand for compliant, scalable development tooling — Perforce is exceptionally well-positioned here. AI/ML data management via Delphix is also early but growing. The Siemens partnership (May 2025) to integrate DevOps and AI workflows could open significant manufacturing/engineering pipeline`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• May 2025: Strategic partnership with Siemens AG to integrate DevOps and AI workflows across product development — could open significant manufacturing/engineering pipeline\n• Mar 2025: Acquired Snowtrack (Montreal) — cloud-based content creation collaboration. Launched P4 One unified platform combining Helix Core + Snowtrack capabilities for creative/technical team collaboration\n• Mar 2024: Completed acquisition of Delphix — enterprise data management, test data virtualization, and data masking. 30% of Fortune 100 as customers. Delphix had $100M+ ARR trajectory. Centerview Partners advised Delphix\n• 2022: Acquired Puppet — infrastructure-as-code automation and compliance. One of the most recognized brands in DevOps. Commercial open-source model. Expanded Perforce into infrastructure automation\n• 2021: Acquired BlazeMeter from CA Technologies — performance and API testing platform\n• 2020: Acquired TestCraft Technologies (Israel) — automated Selenium-based web application testing\n• Apr 2019: Francisco Partners acquired 50% of Perforce, becoming equal co-owner with Clearlake Capital. Provided additional capital for accelerated M&A strategy\n• Oct 2018: Acquired Perfecto — mobile and web testing automation for enterprises\n• May 2018: Acquired Programming Research / PRQA (UK) — C/C++ static code analysis\n• Jan 2019: Acquired Rogue Wave Software — HPC development tools, open-source support (OpenLogic, Zend). Major portfolio expansion\n• Jan 2018: Clearlake Capital acquired Perforce from Summit Partners. Revenue was meaningfully smaller then — the company has grown dramatically through M&A\n• 2017: Acquired Hansoft (Sweden) — agile planning software\n• 2016: Acquired Seapine Software — ALM tools (now Perforce ALM)\n• 2016: Summit Partners acquired Perforce; Janet Dryer became CEO`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "pf1", text: "Helix Core's technical moat is real and defensible. Git fundamentally cannot handle terabyte-scale binary assets without performance degradation. As long as gaming, semiconductor, and automotive development require massive binary versioning, Perforce owns this niche. The question is whether that niche grows fast enough to justify a premium exit multiple.", date: "2026-03-18T00:00:00Z" },
+      { id: "pf2", text: "13 acquisitions in ~7 years is aggressive PE-driven roll-up. The risk is integration execution and cultural coherence — Puppet, Delphix, Perfecto, BlazeMeter, and Helix Core are fundamentally different products serving different buyers. The platform consolidation pitch needs to translate to actual cross-sell revenue, not just a bigger product catalog.", date: "2026-03-14T00:00:00Z" },
+      { id: "pf3", text: "Automotive SDV opportunity is the most compelling growth vector. Modern vehicles are becoming software platforms with 100M+ lines of code. Perforce's combination of version control (Helix Core) + static analysis (QAC for ISO 26262) + testing (Perfecto) + infrastructure (Puppet) is a uniquely complete stack for automotive software compliance. The Siemens partnership validates this direction.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  ivanti_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Enterprise IT management and security software company — ITSM, endpoint management, patch management, VPN/ZTNA, and supply chain software\n• Formed Jan 2017 through merger of LANDESK (founded 1985 as LAN Systems, became Intel's LANDESK division in 1991) and HEAT Software under Clearlake Capital ownership\n• Roots trace to 1985; LANDESK pioneered the desktop management category in 1993\n• Ownership chain: Intel spun off LANDESK (2002) → Avocent acquired it ($416M, 2006) → Thoma Bravo acquired it (2012) → Clearlake bought from Thoma Bravo and merged with HEAT Software to form Ivanti (Jan 2017)\n• TA Associates made strategic growth investment (Aug 2020); Charlesbank Capital Partners joined as third PE investor (May 2021)\n• Three PE sponsors: Clearlake Capital, TA Associates, and Charlesbank Capital Partners\n• Raised $4.35B per PitchBook — reflects cumulative acquisition financing\n• ~34,000+ customers including 85 of the Fortune 100; clients span US military branches, State Department, FAA, NASA, 2,000+ banks\n• CEO transitions: Jim Schaper → Jeff Abbott (pledged security overhaul Apr 2024) → Dennis Kozak (current CEO, per 2024 refinancing)\n• Headquartered in South Jordan, UT with 1,000–5,000 employees across 23+ countries\n• CRITICAL CONTEXT: Ivanti has suffered a severe, ongoing security reputation crisis since late 2023 — Chinese state-sponsored hackers repeatedly exploited Ivanti VPN products, leading to CISA emergency directives ordering all federal agencies to disconnect Ivanti devices. Bloomberg published a major Feb 2026 investigation into the failures. This is the defining issue for any investment thesis`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Mix of perpetual licenses (legacy on-prem), subscription/SaaS (Ivanti Neurons cloud platform), and maintenance/support. Professional services are supplemental. Transitioning to cloud-native delivery via the Neurons platform\n• Ivanti Neurons: Cloud-native platform that serves as the unifying layer across the product portfolio — provides AI-powered automation, self-healing capabilities, and a common management interface for IT and security operations\n• IT Service Management (ITSM): Includes legacy LANDESK and Cherwell Service Management products. Help desk, ticketing, IT workflows, and service catalog. Cherwell was acquired Jan 2021 to strengthen this segment\n• Unified Endpoint Management (UEM): Manages and secures PCs, mobile devices, and IoT from a single console. MobileIron (acquired Sep 2020 for $872M) was the key addition — brought mobile device management and zero-trust mobile security\n• Patch Management: Automated patching for OS and third-party applications across enterprise environments. One of Ivanti's historically strongest and most differentiated products (Shavlik heritage)\n• Ivanti Connect Secure (formerly Pulse Secure VPN): Enterprise VPN/SSL gateway — this is the product at the center of the security crisis. Widely deployed across US government and Fortune 500. Pulse Secure was acquired in Sep 2020 alongside MobileIron\n• Ivanti Policy Secure: Network access control — also affected by the 2024 vulnerability exploits\n• Zero Trust Access (ZTA) Gateways: Cloud-based zero-trust network access — the intended replacement path for legacy VPN, but also hit by vulnerabilities in 2025\n• Supply Chain Management: Wavelink and Velocity platforms for warehouse and supply chain operations. Mobile device management for ruggedized devices in logistics environments\n• RiskSense (acquired Aug 2021): Risk-based vulnerability management and prioritization — helps customers triage which vulnerabilities to patch first. Ironic given the company's own vulnerability issues\n• Customers buy because: Need to manage, secure, and patch large fleets of endpoints and mobile devices; require VPN/ZTNA for remote access; ITSM for internal IT operations; and supply chain mobility management. The product breadth is the value prop — one vendor for IT operations and security`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and government — organizations with thousands of endpoints, complex IT environments, and stringent security/compliance requirements\n• 34,000+ customers including 85 of the Fortune 100\n• Massive government installed base: US Air Force, Army, Navy, Department of State, FAA, NASA, Federal Reserve, and many more federal agencies. This is both a strength (sticky revenue) and the reason the security crisis was so damaging (CISA emergency directive directly impacted this base)\n• 2,000+ banks including Wells Fargo and Deutsche Bank per Bloomberg reporting\n• Key verticals: Government/defense (largest concentration), financial services, healthcare, education, and manufacturing/supply chain\n• Concentrated in regulated, security-conscious verticals — which makes the VPN vulnerability crisis especially damaging to the brand\n• Geography: Primarily North America (~55-60% estimated) with significant EMEA presence (~25-30%); APAC (~10-15%). Strong in UK, Australia, and India (855 employees in India per filings)\n• Buying drivers: Compliance mandates requiring endpoint management and patching, remote access needs (VPN/ZTNA), IT service desk modernization, and mobile device fleet management\n• Key risk: The security crisis has created real customer attrition risk, particularly in the government vertical where CISA explicitly told agencies to disconnect Ivanti products. Rebuilding trust will take years`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Unified endpoint management (UEM) market estimated at ~$15-18B in 2025, growing at ~25-27% CAGR per industry reports\n• IT service management (ITSM) market estimated at ~$10-12B, growing at ~15-18% CAGR\n• Patch management is a ~$1-1.5B niche but growing rapidly due to the relentless vulnerability disclosure cadence\n• VPN/ZTNA market is ~$8-10B and in structural transition from legacy VPN to zero-trust architectures\n• Ivanti at ~$1B+ revenue operates across multiple segments but isn't the leader in any single one — it's a portfolio play\n• Tailwind — Endpoint proliferation: More devices, more OS types, more attack surfaces. UEM demand is structural. Time horizon: Permanent\n• Tailwind — Patch urgency: Ransomware and nation-state exploitation of unpatched vulnerabilities creates urgent demand for automated patching. Ivanti's patch management is well-regarded. Time horizon: Permanent\n• Tailwind — ITSM modernization: Legacy ITSM tools (BMC, ServiceNow on-prem) are being replaced or augmented. Time horizon: 3-5+ years\n• Headwind — Security brand damage: The VPN vulnerability crisis has materially damaged Ivanti's reputation. CISA emergency directives, Chinese state-sponsored exploitation, and Bloomberg investigations create headwinds for new customer acquisition and existing customer retention. Time horizon: 2-4 years to rebuild trust, if execution is strong\n• Headwind — Cloud-native competition: Microsoft Intune (bundled with M365), CrowdStrike, and Tanium are all competing for the UEM/endpoint security budget with cloud-native approaches. Ivanti's legacy on-prem architecture is a liability\n• Headwind — VPN to ZTNA transition: The VPN product that was exploited is being sunset in favor of ZTNA — but the ZTNA replacement (ZTA Gateways) was also hit by vulnerabilities in 2025, undermining the migration story\n• Market growth (5yr estimate): UEM grew at ~22-25% CAGR, ITSM at ~14-16%, VPN/ZTNA at ~12-15% (all estimated based on Gartner, IDC reports)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• Microsoft Intune: The biggest structural threat. Bundled with M365 E3/E5 licenses at no incremental cost. Rapidly improving UEM and endpoint management capabilities. For organizations already on M365, Intune is "good enough" and free. Ivanti's UEM and patch management must justify the incremental cost\n• ServiceNow: Dominant in ITSM for large enterprises. Ivanti's Cherwell and legacy ITSM products compete in the mid-market and for customers that can't afford ServiceNow's pricing. ServiceNow is pulling away\n• CrowdStrike: Competing for the endpoint security budget. Different product (EDR vs. UEM) but overlapping buyer. CrowdStrike's brand is ascending while Ivanti's is damaged\n• Tanium: Direct competitor in endpoint management and patch management for large enterprises and government. Tanium's real-time visibility and compliance capabilities compete directly with Ivanti's core value prop\n• VMware Workspace ONE (now Omnissa): Competes in UEM. Broadcom's acquisition of VMware and the Omnissa spinout have created customer uncertainty that Ivanti could exploit — if its own brand weren't also damaged\n• Jamf: Dominates Apple device management. Not a direct competitor for Ivanti's Windows-heavy installed base but represents the specialist approach vs. Ivanti's multi-platform breadth\n• Competitive advantage: Breadth of the portfolio (ITSM + UEM + patch + VPN/ZTNA + supply chain in one vendor) and deep government installed base with high switching costs. Patch management remains well-regarded. The Neurons cloud platform is the unifying differentiator if the transition executes\n• Best at: Patch management (Shavlik heritage is strong), government and defense installed base (deep but at risk), breadth of IT operations coverage, and supply chain mobile management (niche but sticky)\n• Worst at: Security credibility (the VPN crisis is a body blow), cloud-native perception, customer trust and NPS, and competing against well-funded cloud-native alternatives (Intune, CrowdStrike, ServiceNow)\n• Biggest threat (3yr): Customer attrition from the security crisis, especially in government where CISA directive created real momentum to evaluate alternatives. Microsoft Intune continuing to improve UEM bundled with M365\n• Largest opportunity (3yr): If Ivanti can execute the security overhaul and rebuild trust, the massive installed base becomes a cloud migration opportunity (on-prem → Neurons platform). The supply chain/warehouse mobility segment is a defensible niche. Patch management demand is only growing`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2024 (date not disclosed): Successfully closed debt refinancing — raised $350M in new capital, extended debt maturities to 2029. Signals financial stress requiring liquidity infusion and suggests PE sponsors are committed to a longer hold\n• Feb 2026: Bloomberg published major investigation into Ivanti VPN failures and Chinese state-sponsored exploitation — significant negative publicity at scale\n• Apr 2025: CVE-2025-22457 (CVSS 9.0 critical) exploited in the wild on Connect Secure — Chinese-linked threat actors deployed TRAILBLAZE and BRUSHFIRE malware. CISA added to KEV catalog with 7-day patch deadline\n• Jan 2025: CISA/FBI joint advisory on exploitation of Ivanti Cloud Service Appliances — four chained vulnerabilities\n• Dec 2025: Critical EPM vulnerability (CVE-2025-10573, CVSS 9.6) patched — hundreds of systems exposed online\n• Apr 2024: CEO Jeff Abbott published open letter pledging "secure by design" overhaul of all engineering and security practices following months of vulnerability disclosures. CISA Director Easterly publicly welcomed the pledge\n• Feb 2024: CISA issued Emergency Directive ED 24-01 — ordered all federal civilian agencies to disconnect Ivanti Connect Secure and Policy Secure devices from networks within 48 hours. Unprecedented severity for a commercial product\n• Jan 2024: Chinese state-sponsored hackers reported exploiting Ivanti software to breach government agencies (second major campaign). CISA itself was breached through Ivanti vulnerabilities\n• Sep 2020: Acquired MobileIron for $872M (UEM) and Pulse Secure (VPN/ZTNA) — the Pulse Secure acquisition is now the source of the security crisis\n• Jan 2021: Acquired Cherwell Software — ITSM platform\n• Aug 2021: Acquired RiskSense — vulnerability management and prioritization\n• May 2021: Charlesbank Capital Partners made strategic investment alongside Clearlake and TA\n• Aug 2020: TA Associates made strategic growth investment\n• Jan 2017: LANDESK and HEAT Software merged to form Ivanti under Clearlake ownership`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "iv1", text: "The security crisis is not a one-time event — it's a pattern. Ivanti products have been hit by Chinese state-sponsored exploitation in 2023, 2024, AND 2025. CISA ordered federal agencies to rip out Ivanti VPNs. Bloomberg did a deep investigation in Feb 2026. This is structural reputational damage, not a patch-and-move-on situation. Any investment thesis must price in 2-4 years of trust rebuilding with uncertain outcomes.", date: "2026-03-18T00:00:00Z" },
+      { id: "iv2", text: "The $350M refinancing with maturity extension to 2029 tells you the PE sponsors aren't exiting anytime soon. They need time to: (1) stabilize the security narrative, (2) migrate customers to the Neurons cloud platform, (3) rebuild government credibility. This is a turnaround play, not a growth story. The question is whether the installed base holds during the transition.", date: "2026-03-14T00:00:00Z" },
+      { id: "iv3", text: "The Pulse Secure acquisition (Sep 2020) was the original sin. Ivanti bought a VPN product with deep government penetration but apparently significant security debt in the codebase. The irony of a company that also acquired RiskSense (vulnerability management) being repeatedly exploited through its own products is not lost on customers. Brand damage is real and measurable — track government contract renewals as the leading indicator.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  newfold_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Web hosting, domain registration, and SMB web presence company serving ~7 million customers globally\n• Formed Feb 2021 by merging Endurance International Group (EIG, acquired by Clearlake Capital for ~$3B) with Web.com (owned by Siris Capital since 2018)\n• Roots trace to 1997 (EIG, originally BizLand); EIG grew through 80+ acquisitions of hosting brands over two decades\n• Jointly owned by Clearlake Capital and Siris Capital — Siris contributed Web.com equity into the combined entity\n• Headquartered in Jacksonville, FL; ~4,000 employees\n• CEO Sharon Rowlands (former Web.com CEO) has led since formation\n• Portfolio of brands: Bluehost (5M+ WordPress users), HostGator, Network Solutions, Crazy Domains, Yoast (WordPress SEO plugin), YITH (WooCommerce plugins), and Domain.com\n• Recently reorganized into two divisions (mid-2025): Bluehost Group (hosting brands, led by Sachin Puri) and Network Solutions Group (domain/registrar brands, led by Christina Clohecy)\n• Constant Contact was spun off as a separate entity at formation — not part of Newfold\n• Negative industry reputation inherited from EIG: known for aggressive brand consolidation, shared infrastructure across brands, and mixed customer service. The Newfold rebrand was partly to distance from this legacy`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly recurring subscription revenue — hosting plans, domain renewals, and add-on services bill monthly or annually. High renewal rates on domains (essential infrastructure customers rarely let lapse). Margin structure is utility-like: high gross margins on hosting/domains, lower on professional services\n• Web Hosting (core revenue driver): Shared, VPS, dedicated, and managed WordPress hosting under Bluehost, HostGator, and other brands. Bluehost is the flagship — officially recommended by WordPress.org and used by 5M+ sites. Recently integrated with Oracle Cloud Infrastructure (OCI) for performance improvements\n• Domain Registration: Network Solutions (one of the original ICANN-accredited registrars, brand recognition since 1993), Register.com, Domain.com, and Crazy Domains. Millions of domains under management. Domains are high-margin, recurring, and sticky\n• WordPress Ecosystem: Yoast (most popular WordPress SEO plugin, used on millions of sites), YITH (WooCommerce plugins on 2.3M+ sites). These are recurring SaaS/plugin subscription products with strong organic traffic\n• Website Builder & DIY Tools: Website creation, e-commerce, and marketing tools for SMBs who don't want to code\n• Professional Services: Website design, SEO, and digital marketing services for SMBs wanting done-for-you solutions\n• MarkMonitor (divested Dec 2025): Enterprise domain management and brand protection — sold to Com Laude (PX3 Partners) as part of portfolio simplification. Was acquired from Clarivate for ~$302.5M in Nov 2022\n• Customers buy because: They need an affordable, turnkey online presence — domain + hosting + website builder + email in one place. SMBs don't want to manage infrastructure; they want to get online quickly and cheaply`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: SMBs and micro-businesses (1-50 employees) — freelancers, small retailers, local services, bloggers, early-stage startups. This is the long tail of the internet\n• ~7 million customers globally per company statements\n• Overwhelmingly B2C/prosumer in terms of buyer profile — individuals and very small businesses making purchasing decisions, not enterprise IT departments\n• Key verticals: Horizontal — serves essentially all small business types. No meaningful vertical concentration. E-commerce (via WooCommerce/YITH), content creators (via WordPress/Yoast), and local services are the largest segments\n• Geography: Primarily North America (~60-65% estimated); Australia/APAC (~15-20% via Crazy Domains and hosting brands); EMEA (~10-15%); LATAM small but present through HostGator Brazil heritage\n• Buying drivers: Price sensitivity is the dominant factor — SMBs choose hosting based on introductory pricing, WordPress compatibility, and ease of setup. Brand trust matters less than cost for this buyer. Domain renewals are sticky by default (domains are essential business infrastructure)\n• Churn risk: SMB hosting is a high-churn business. Customers are price-sensitive and switch easily at renewal when introductory pricing expires. The industry competes aggressively on first-year discounts, then monetizes through renewal price increases and add-on upsells\n• EIG reputation overhang: Many technically savvy SMBs and WordPress professionals actively avoid EIG/Newfold brands due to historical quality and support concerns — this limits growth in the higher-value mid-market segment`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• Global web hosting market estimated at ~$100B+ in 2025 (including cloud infrastructure); traditional shared/managed hosting is a ~$60-70B segment\n• North America alone valued at ~$61B in 2025 per industry reports, with 41% of global market share\n• Newfold at ~$1.1B revenue represents ~1-2% of the global market — a significant player but far behind the leaders\n• Tailwind — SMB digitization: Every small business needs a website. SMB web presence spending continues to grow as online becomes essential for survival. Time horizon: Permanent secular trend\n• Tailwind — WordPress ecosystem: WordPress powers ~40%+ of all websites. Newfold's hosting brands and WordPress-specific products (Yoast, YITH, Bluehost) benefit from this dominant CMS ecosystem. Time horizon: 5+ years\n• Tailwind — AI-powered website creation: AI tools are lowering the barrier for SMBs to build and manage websites. Newfold is investing in AI features (CEO cited "AI solutions" in Dec 2025 press release). Time horizon: 3-5 years, but benefits may accrue more to low-code/no-code builders (Squarespace, Wix) than traditional hosts\n• Headwind — Commoditization: Shared hosting is heavily commoditized with aggressive price competition. Margins are under pressure as competitors race to the bottom on introductory pricing. Time horizon: Permanent\n• Headwind — Website builder platforms displacing traditional hosting: Squarespace ($7.2B Permira take-private), Wix, Shopify, and Webflow are growing by offering all-in-one platforms that bypass the traditional host + WordPress model. This structurally threatens Newfold's core hosting business. Time horizon: 3-7 years of continued share shift\n• Headwind — Cloud migration: Sophisticated SMBs and agencies increasingly choose cloud infrastructure (AWS, GCP, DigitalOcean) over shared hosting. Newfold's customer base trends toward the less technical end\n• Market growth (5yr estimate): Traditional shared hosting market grew at ~5-8% CAGR over the last 5 years (estimated). Cloud hosting segment grew much faster at ~15-18%. Website builder platforms (Squarespace, Wix) grew at ~10-15% (estimated based on Statista, Mordor Intelligence reports)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• GoDaddy (public, ~$4.6B revenue, 84M+ domains): The dominant player and Newfold's most direct competitor. GoDaddy is 4x Newfold's revenue with massive brand awareness, marketing spend ($87.5M in Q1 2024 alone), and broader product portfolio. Newfold cannot match GoDaddy's scale or marketing budget\n• Hostinger: Fastest-growing budget hosting competitor. Aggressive pricing and modern UX targeting the same price-sensitive SMB buyer. Taking share from legacy hosts including Newfold brands\n• IONOS (1&1): European leader (~$1.5B+ revenue). Strong in EMEA where Newfold is weaker. Competes on price and bundled services\n• Squarespace ($7.2B Permira take-private): Not a traditional host but a direct threat. All-in-one website builder + hosting + domains + e-commerce bypasses the WordPress + hosting model entirely. Attracting the same SMB buyer who would have gone to Bluehost 5 years ago\n• Wix (public): Similar all-in-one model. Strong self-service product for non-technical SMBs. Growing e-commerce capabilities\n• Shopify: Dominates e-commerce hosting. SMBs wanting online stores increasingly go directly to Shopify rather than WordPress + WooCommerce on Bluehost\n• Automattic (WordPress.com / WP Engine): Competes for the WordPress-specific hosting segment. WP Engine targets the higher-value managed WordPress market\n• Competitive advantage: Scale (7M customers, millions of domains under management), WordPress ecosystem assets (Yoast is the #1 SEO plugin, YITH is a top WooCommerce plugin provider), Network Solutions brand legacy in domains, and sheer breadth of hosting brands for customer acquisition\n• Best at: Affordable entry-level WordPress hosting (Bluehost), domain registration at scale (Network Solutions), and WordPress ecosystem monetization (Yoast, YITH)\n• Worst at: Customer satisfaction and support reputation (EIG legacy), competing with modern all-in-one builders (Squarespace, Wix), mid-market and enterprise credibility, and innovation speed relative to well-funded competitors\n• Biggest threat (3yr): Continued share shift to all-in-one website builders (Squarespace, Wix, Shopify) that bypass traditional hosting. Also, AI website generators could commoditize the basic "get online" value prop even further\n• Largest opportunity (3yr): WordPress ecosystem monetization — if Yoast and YITH can cross-sell and upsell across the combined 7M customer base, the revenue per customer expands meaningfully. The two-division reorganization (Bluehost Group + Network Solutions Group) could also unlock operational focus and better brand execution`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• Dec 2025: Completed sale of MarkMonitor to Com Laude (PX3 Partners) — portfolio simplification, proceeds used for balance sheet. MarkMonitor was acquired from Clarivate for ~$302.5M in Nov 2022\n• Dec 2025: Raised $100M in new financing from existing PE sponsors (Clearlake and Siris) — earmarked for operations, liquidity, and capital structure. Industry observers noted this is a sign of pressure, not growth\n• Sep 2025: Announced agreement to sell MarkMonitor to Com Laude — part of strategy to simplify portfolio and focus on Bluehost and Network Solutions\n• Jun 2025: Officially integrated Web.com brand into Network Solutions — consolidated registrar brands. Reorganized into two divisions: Bluehost Group and Network Solutions Group\n• 2025: Consolidated Register.com and Web.com into Network Solutions platform — brand simplification\n• Mar 2022: Acquired YITH (WooCommerce plugin company, 2.3M+ websites) — WordPress ecosystem expansion\n• Nov 2022: Acquired MarkMonitor from Clarivate for ~$302.5M — enterprise domain management. Subsequently divested Dec 2025\n• Feb 2021: Clearlake completed ~$3B acquisition of Endurance International Group (delisted from NASDAQ). Simultaneously merged EIG with Web.com (Siris Capital portfolio company) to form Newfold Digital. Constant Contact spun off as separate entity\n• 2018: Siris Capital acquired Web.com\n• 2011: Warburg Pincus and Goldman Sachs Alternatives bought EIG from Accel-KKR for ~$975M\n• 1997-2020: EIG acquired 80+ hosting and domain brands including Bluehost (2010), HostGator (2012), and many others`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "nf1", text: "The $100M recap from existing sponsors (Dec 2025) is the clearest signal that this is a capital-intensive turnaround, not a growth story. When your own PE sponsors are putting in more money to 'enhance liquidity and strengthen the capital structure,' that means the balance sheet is stressed. The MarkMonitor sale proceeds help, but the core business needs to demonstrate organic growth to justify the ~$3B+ invested.", date: "2026-03-18T00:00:00Z" },
+      { id: "nf2", text: "The structural threat from Squarespace, Wix, and Shopify is real and underappreciated. These platforms offer a complete 'get online' solution that bypasses the traditional WordPress + hosting model. The SMB buyer who would have signed up for Bluehost 5 years ago now goes directly to Squarespace. Newfold's counter is the WordPress ecosystem (Yoast, YITH), but that's a narrower addressable market than all SMBs wanting to get online.", date: "2026-03-14T00:00:00Z" },
+      { id: "nf3", text: "The two-division reorganization (Bluehost Group + Network Solutions Group) is the right move operationally. Bluehost is the WordPress/hosting growth play; Network Solutions is the domain/registrar cash cow. Separating them allows different strategies, metrics, and leadership. Watch whether this translates to improved NPS and reduced churn — those are the KPIs that matter for this business.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  cdk_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Mission-critical dealer management system (DMS) software provider for automotive retail — the backbone operating system for car dealerships across North America
+• Founded 1972 as ADP Dealer Services division; spun off from ADP as CDK Global in Oct 2014 (Nasdaq: CDK)
+• Taken private by Brookfield Business Partners in Jul 2022 for $8.3B total enterprise value ($54.87/share, 30% premium to unaffected price). Brookfield invested ~$3.5B in equity with institutional partners
+• Sold international operations (now Keyloop) to Francisco Partners for $1.45B in Mar 2021 — refocused exclusively on North America
+• Headquartered in Austin, TX; ~8,300 employees; ~$540B in auto commerce managed through its systems annually
+• CEO Brian MacDonald (returned Jul 2022, previously CEO 2016–2018; former CEO of Hertz and Sunoco)
+• Serves ~15,000 dealership locations across North America — dominant market position in franchise DMS
+• CRITICAL CONTEXT: CDK has faced a cascade of legal and cybersecurity issues — $630M vendor antitrust settlement (Jan 2025), $100M dealer antitrust settlement (Aug 2024), $25M ransomware payment (Jun 2024), and active Tekion antitrust lawsuit (filed Dec 2024, surviving motion to dismiss Jul 2025). Combined legal exposure exceeds $750M in settlements alone`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly subscription/SaaS — recurring contracted revenue from DMS licenses, data integration fees, and layered application subscriptions. Low capital requirements and high margins. Long-term contracts (typically 3–5+ years) with embedded switching costs
+• CDK Dealership Xperience Platform: Flagship integrated DMS — the enterprise resource planning (ERP) system for dealerships. Manages end-to-end operations: vehicle acquisition, sales, F&I, parts, service, accounting, payroll, and OEM reporting. SOC 2 compliant
+• CDK Drive / CDK Drive Flex: Core DMS products for franchise and independent dealers respectively. Drive is the legacy enterprise system; Drive Flex is the modernized cloud-based offering for smaller/mid-market dealerships
+• CDK Fundamentals Suite (launched Mar 2025): New entry-level DMS targeting smaller independent dealerships — expands TAM beyond traditional franchise-only focus
+• Elead CRM: Customer relationship management platform embedded in the dealership workflow — lead management, desking, follow-up automation
+• CDK Modern Retail Suite: Digital retailing tools enabling online-to-in-store sales workflows — consumer-facing deal building, credit applications, trade-in valuations
+• Vehicle Inventory Suite (launched Jan 2025): AI-powered appraisal, pricing, and merchandising platform leveraging CDK's dataset (represents 50%+ of North American car sales)
+• Customer Data Platform (CDP, launched Jan 2026): Unifies fragmented customer data across the dealership for real-time actionable insights
+• CDK SimplePay (launched Aug 2025): Integrated payment solution supporting Venmo, Apple Pay, credit cards — streamlines consumer payments and dealership accounting
+• Warranty Revenue Assistance Program (WRAP): Helps dealers optimize OEM warranty reimbursement rates — claims $100K+ revenue uplift potential per dealership
+• Data integration services: Fees charged to third-party vendors for accessing dealership data through CDK's DMS — historically a high-margin but legally contested revenue stream (see antitrust settlements)
+• Customers buy because: DMS is non-discretionary infrastructure — dealerships cannot sell cars, process financing, manage inventory, report to OEMs, or run payroll without it. Switching costs are extremely high (data migration, retraining, OEM recertification)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Franchise auto dealerships — from large publicly traded dealer groups (Lithia, Penske, Group 1, Sonic, AutoNation) to single-rooftop franchise dealers. Expanding into independent dealers via Fundamentals Suite
+• ~15,000 retail dealership locations across North America; also serves heavy truck, recreation, and heavy equipment verticals
+• ~30,000 total customer relationships including third-party vendors and OEMs per Apps Run The World
+• Key verticals: Franchise new-car dealerships (~90% of revenue base estimated), used-car operations, F&I services, fixed operations/service departments
+• Geography: Exclusively North America after selling international operations. Estimated 90%+ US, with meaningful Canadian presence
+• Consolidating dealer group landscape is a tailwind — large multi-rooftop groups prefer integrated enterprise DMS with centralized reporting. CDK is well-positioned for this as the enterprise-scale incumbent
+• Buying drivers: OEM compliance and reporting requirements, operational efficiency across sales/service/parts/accounting, regulatory compliance (state DMV, tax, lending), and increasingly digital retailing capabilities
+• Customer satisfaction is a mixed signal — CDK's own 2026 Friction Points Study shows NPS for in-dealership buyers dropped from +48 to +29, reflecting broader industry friction. Some dealers have expressed frustration with CDK's data access policies and pricing, as evidenced by the antitrust litigation
+• Stickiness is real but not absolute — Asbury Automotive Group's pilot with Tekion and the court-ordered data transfer to Tekion (Oct 2024) signal that large groups are willing to explore alternatives despite high switching costs`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      industry: {
+        text: `• North American DMS market estimated at ~$4.85B in 2025, projected to reach ~$7.86B by 2030 (~6.7% CAGR per industry estimates). CDK at ~$1.7B+ revenue is the single largest player
+• ~80% of the US franchise DMS market is controlled by three providers: CDK Global, Dealertrack (Cox Automotive), and Reynolds & Reynolds — a concentrated oligopoly
+• Tailwind — Dealership consolidation: Publicly traded dealer groups and PE-backed platforms are acquiring single-point dealers at accelerating pace. Larger groups want enterprise-grade DMS with centralized data and reporting — CDK's core strength. Time horizon: 5-10+ years
+• Tailwind — Digital retailing: Consumer expectations for online car buying are rising. Dealers need integrated digital-to-physical workflows. CDK's Modern Retail Suite and SimplePay address this. Time horizon: 3-5 years
+• Tailwind — AI and data monetization: CDK's dataset representing 50%+ of North American auto transactions is a significant asset. AI-powered tools for pricing, inventory, and customer insights are a growing revenue stream. Time horizon: 3-5+ years
+• Tailwind — EV transition complexity: New EV models, lease returns (300,000+ EVs returning from lease in 2026), and OEM-specific compliance requirements create demand for updated DMS functionality. Time horizon: 5+ years
+• Headwind — Cloud-native disruption: Tekion's cloud-native DMS is attracting OEM backing and dealer interest. If Tekion solves the OEM certification and data migration barriers at scale, CDK's architectural advantages erode. Time horizon: 3-5 years
+• Headwind — Antitrust and data access pressure: Legal settlements and lawsuits are forcing CDK toward more open data access, which could reduce data integration revenue and lower switching costs for dealers — structurally weakening CDK's competitive moat. Time horizon: 1-3 years
+• Headwind — Auto affordability: Rising vehicle prices and high interest rates are pressuring dealership profitability, which could tighten IT budgets and slow adoption of premium CDK products. Time horizon: 1-3 years
+• Market growth (5yr estimate): North American DMS market grew at estimated ~5-7% CAGR over last 5 years; digital retailing add-on market grew faster at ~15-20% CAGR (estimates based on industry reports)`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      competitive: {
+        text: `• Reynolds & Reynolds (private, ~$2B+ revenue estimated): Co-leader in franchise DMS. More conservative, closed-ecosystem approach. Historically stronger in parts/service. Also named in data access antitrust allegations but not a defendant in the $630M settlement. Slower to modernize technology
+• Dealertrack DMS (Cox Automotive / Cox Enterprises): Third major franchise DMS provider. Advantage is integration with Cox ecosystem (Manheim auctions, Kelley Blue Book, vAuto, Autotrader). Open architecture philosophy and lower data integration fees differentiate from CDK. Won 2024 Dealers' Choice Platinum Award
+• Tekion (private, valued at $3.5B+, backed by multiple OEMs): The existential competitive threat. First cloud-native, AI-powered DMS built from the ground up. Founded by former Tesla CIO Jay Vijayan. Growing OEM certifications, attracting large dealer groups (Asbury pilot). Filed federal antitrust lawsuit against CDK in Dec 2024 alleging data monopolization. Still small market share but growing fast and represents the technology disruption risk
+• Auto/Mate (DealerSocket): Mid-market DMS targeting independent and smaller franchise dealers. CDK's attempt to acquire Auto/Mate was blocked by the FTC in 2018 on antitrust grounds
+• Competitive advantage: CDK wins on installed base scale (15,000 locations), depth of OEM integrations and certifications, enterprise reporting capabilities, and the massive data asset (~50% of NA auto transactions). Switching costs remain the primary moat — migrating decades of dealership data and retraining staff is expensive and risky
+• Best at: Enterprise-scale multi-rooftop dealer group management, OEM integration depth, data analytics and intelligence products, and breadth of integrated solutions (DMS + CRM + digital retail + F&I + fixed ops in one platform)
+• Worst at: Data access openness (antitrust settlements prove this), cloud-native architecture (legacy system vs. Tekion), cybersecurity reputation (ransomware attack), and dealer satisfaction/perception (litigation has damaged trust)
+• Biggest threat (3yr): Tekion achieves sufficient OEM certifications and dealer wins to reach critical mass — if data portability becomes easier due to legal pressure, CDK's switching cost moat weakens significantly. The Tekion antitrust suit surviving dismissal (Jul 2025) keeps this risk active
+• Largest opportunity (3yr): AI-powered data monetization at scale — no competitor has CDK's transaction dataset. Vehicle Inventory Suite, CDP, and WRAP are early examples of turning data into premium revenue. If CDK successfully layers AI products on its installed base, revenue per dealer site grows meaningfully without needing new customer acquisition`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      transactions: {
+        text: `• Jan 2025: Acquired Predian (per PitchBook) — details not publicly disclosed; appears related to dealership technology/operations
+• Jan 2025: $630M antitrust settlement with 243 software vendors (AutoLoop class action) — resolves claims CDK conspired with Reynolds & Reynolds to inflate data integration fees. Paid over 3 years from cash on hand. Settlement pending final court approval as of mid-2025
+• Dec 2024: Tekion filed federal antitrust lawsuit in San Francisco alleging CDK monopolizes DMS market through data hostage tactics. CDK filed counter-suit alleging Tekion engaged in unauthorized system access. Court denied CDK's motion to dismiss in Jul 2025 — case proceeding
+• Oct 2024: Georgia court ordered CDK to transfer Asbury Automotive Group dealership data to Tekion. CDK had sued Asbury for attempting to access its own data — signaling the data portability battle is intensifying
+• Aug 2024: $100M antitrust settlement with US auto dealership class action — resolved claims dealers were overcharged for DMS services. Court approved payout Feb 2025
+• Jun 2024: BlackSuit ransomware attack took CDK systems offline for ~2 weeks, disrupting ~15,000 dealerships. CDK paid $25M bitcoin ransom. Dealers estimated $605M in losses in first two weeks. Multiple negligence lawsuits filed and consolidated in Illinois. Brookfield parent shares dropped 5.7%
+• Jul 2022: Brookfield completed $8.3B take-private ($54.87/share). Brian MacDonald reinstalled as CEO. Funded with ~$3.5B equity and syndicated debt led by Credit Suisse, Goldman Sachs, BMO, Barclays, Deutsche Bank, RBC, TD, Wells Fargo, BofA
+• Mar 2021: Sold international operations to Francisco Partners for $1.45B — rebranded as Keyloop, serving ~16,000 dealer sites in 90+ countries
+• 2018: FTC blocked CDK's attempted acquisition of Auto/Mate — antitrust concerns in concentrated DMS market
+• Oct 2014: Spun off from ADP as independent public company on Nasdaq`,
+        date: "2026-03-18T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "cdk1", text: "The legal exposure is staggering for a business this size. $630M vendor settlement + $100M dealer settlement + $25M ransom + ongoing Tekion suit + dealer negligence claims = $750M+ in realized costs with more potential liability ahead. Brookfield inherited much of this litigation but the financial drag on their investment thesis is real. The $630M being paid over 3 years from cash suggests the business can absorb it, but it limits flexibility for M&A or debt paydown.", date: "2026-03-18T00:00:00Z" },
+      { id: "cdk2", text: "The data moat is simultaneously CDK's greatest asset and its biggest legal liability. The antitrust settlements and Tekion lawsuit are all fundamentally about the same thing: CDK controls dealer data and charges heavily for access. Courts are consistently ruling against CDK on data access. If the industry moves toward open data portability (which legal pressure is forcing), the switching cost moat that justifies CDK's premium pricing erodes structurally. This is the single most important dynamic to monitor.", date: "2026-03-14T00:00:00Z" },
+      { id: "cdk3", text: "The ransomware attack (Jun 2024) was a body blow to credibility. A company that holds mission-critical data for 15,000 dealerships paying $25M in ransom and going offline for 2 weeks is a severe operational failure. Combined with the antitrust reputation, CDK has a trust deficit with its customer base. The AI/data products (Vehicle Inventory Suite, CDP, WRAP) are the right strategic response — they shift the narrative from 'CDK controls your data' to 'CDK's data makes you money.' Watch adoption rates of these new products as the leading indicator of whether the turnaround narrative works.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  qlik_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private data integration, data quality, analytics, and AI platform — provides end-to-end capabilities from data ingestion through governed analytics and AI-driven insights
+• Founded 1993 in Lund, Sweden as QlikTech; IPO'd on NASDAQ in 2010; taken private by Thoma Bravo in Aug 2016 for ~$3B ($30.50/share)
+• Completed acquisition of Talend (data integration and data quality vendor) in May 2023 — Thoma Bravo also owned Talend (acquired for $2.4B in 2021), making this effectively a portfolio merger
+• 14 strategic acquisitions under Thoma Bravo ownership, including Attunity (2019, real-time data replication), Talend (2023), and Upsolver (Jan 2025, streaming data engineering)
+• Nov 2024: ADIA (Abu Dhabi Investment Authority) acquired significant minority stake at ~$10B valuation; Thoma Bravo remains majority owner and made additional equity investment. Deal closed May 2025
+• ~40,000+ active customers in 100+ countries; ~4,500 employees across 6 continents
+• Headquartered in King of Prussia, PA (US); R&D center in Lund, Sweden
+• CEO Mike Capone (since 2019); filed confidential IPO paperwork with SEC in Jan 2022 but market conditions delayed execution — IPO path remains likely
+• Achieved "Rule of 50" in 2024 (ARR growth% + cash EBITDA% > 50%) — strong indicator of SaaS business health
+• Gartner Magic Quadrant Leader for Analytics and BI Platforms for 13+ consecutive years; Talend was a 7-year Leader in Data Integration Tools`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Transitioning from perpetual licenses to subscription/SaaS — subscription exceeded 75% of total revenue by Q1 2024. Cloud ARR has surpassed $200M and growing. Maintenance renewals on legacy on-prem still contribute but declining as a share
+• Qlik Cloud: Unified SaaS platform — the strategic center of gravity. Hosts analytics (Qlik Sense), data integration, data quality, and AI capabilities in a single cloud-native environment. Multi-cloud deployment (AWS, Azure, GCP)
+• Qlik Sense: Flagship analytics and BI product — unique associative data engine (QIX) enables non-linear exploration across datasets without predefined queries. Self-service analytics with AI-assisted insight discovery (Insight Advisor). This is the product Qlik is best known for
+• Qlik Data Integration (QDI): Real-time data replication and streaming via Change Data Capture (CDC) — built on Attunity acquisition (2019). Automates data pipelines from source to target across cloud and on-prem environments. Core differentiator vs. analytics-only competitors
+• Qlik Talend Cloud: Data integration, transformation, quality, and governance platform inherited from Talend. Adds ETL/ELT capabilities, data cataloging, metadata management, data lineage, and data fabric architecture. Fills the gap Qlik had in data engineering and governance
+• Qlik Talend Data Quality: AI-powered data profiling, cleansing, matching, and standardization. Talend was a 5-year Gartner Leader in Data Quality Solutions — this is a crown jewel of the Talend acquisition
+• Qlik Answers: GenAI-powered natural language Q&A over unstructured data — exceeded sales targets in 2024. Expanding to structured data and API access
+• Qlik AutoML: No-code predictive modeling and ML — enables business analysts to build predictive models without data science expertise
+• QlikView: Legacy guided analytics product — still has a large installed base but being sunset in favor of Qlik Sense. Migration pathway is a key retention lever
+• Customers buy because: Need to turn fragmented, multi-source data into trusted, governed, analytics-ready datasets — and then analyze them. Qlik's value prop is that it handles the full lifecycle (integrate → govern → analyze → act) in one platform rather than requiring multiple vendors`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and upper-mid-market — organizations with complex, multi-source data environments needing governed analytics and data integration
+• 40,000+ active customers globally including major enterprises across financial services, healthcare, manufacturing, retail, government, and technology
+• Key verticals: Financial services (risk analytics, regulatory reporting), healthcare (clinical analytics, population health), manufacturing (supply chain visibility, IoT analytics), retail (demand forecasting, customer analytics), and public sector
+• Diversified across verticals — no single industry concentration risk
+• Geography: Estimated ~40-45% North America, ~35-40% EMEA (strong European heritage from Swedish founding and Talend's French roots), ~15-20% APAC and rest of world
+• EMEA is relatively stronger for Qlik than for most US-based BI competitors — the Scandinavian heritage and Talend's European customer base create a genuine geographic advantage
+• Buying drivers: Organizations consolidating from multiple point solutions (separate BI, ETL, data quality, governance tools) into a unified platform. AI readiness is a major driver — enterprises realize they can't deploy AI on ungoverned, low-quality data. Qlik's end-to-end platform addresses the full data-to-decision pipeline
+• Switching costs are moderate to high — data pipelines, dashboards, scripts, and governance policies built on Qlik/Talend create operational dependency. QlikView-to-Qlik Sense migration keeps legacy customers in the ecosystem`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      industry: {
+        text: `• BI and analytics platforms market estimated at ~$25-30B in 2025; data integration and quality market estimated at ~$15-20B. Qlik competes across both — combined TAM of ~$40-50B
+• Qlik's combined revenue (Qlik + Talend) estimated at ~$1.3-1.5B based on pre-merger Qlik (~$660M) + Talend (~$350M) plus post-merger growth. This puts Qlik among the top 5-7 largest independent data/analytics vendors
+• Tailwind — AI data readiness: The #1 barrier to enterprise AI deployment is data quality and governance. Qlik's platform directly addresses this — "garbage in, garbage out" is driving spend on data integration and quality tools. Time horizon: 5+ years of sustained demand
+• Tailwind — Platform consolidation: Enterprises want fewer vendors across the data stack. Qlik's end-to-end platform (integration + quality + governance + analytics + AI) is aligned with this trend. Time horizon: 3-5 years
+• Tailwind — Cloud migration of analytics: On-prem BI is migrating to cloud. QlikView installed base migrating to Qlik Cloud is a built-in growth driver. Time horizon: 3-5 years
+• Tailwind — Real-time data demand: CDC/streaming data integration is growing rapidly as businesses need real-time operational analytics. Qlik's Attunity-based CDC is a leader here. Time horizon: 5+ years
+• Headwind — Microsoft Power BI dominance: Power BI at ~$14/user/month is the volume leader in BI and aggressively bundled with Microsoft 365. Qlik loses on price in volume BI deployments. Time horizon: Permanent structural pressure
+• Headwind — Hyperscaler-native analytics: Snowflake, Databricks, Google BigQuery, and AWS all expanding analytics capabilities natively — reducing the need for standalone BI tools for some use cases. Time horizon: 3-5 years
+• Headwind — Tableau/Salesforce integration: Tableau embedded in Salesforce ecosystem creates competitive lock-in for Salesforce shops. Time horizon: Permanent for that segment
+• Market growth (5yr estimate): BI/analytics market grew at ~10-12% CAGR; data integration/quality market grew at ~12-15% CAGR over last 5 years (estimates based on Gartner, IDC reports)`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      competitive: {
+        text: `• Microsoft Power BI: The volume leader in BI. Wins on price ($14/user/month), Microsoft ecosystem integration, and massive distribution through M365. Qlik loses head-to-head on price and ecosystem lock-in but wins on data integration depth, associative engine, and complex multi-source analytics. Power BI is the biggest competitive threat in pure BI
+• Tableau (Salesforce): Premium BI for visual analytics and data storytelling. Strongest brand among data analysts. Qlik wins on data integration (Tableau has no comparable data pipeline story), associative engine, and governance. Tableau wins on visualization quality and Salesforce ecosystem
+• Informatica: Closest competitor in data integration and quality — the other scaled independent platform. Informatica is larger in data integration but weaker in analytics/BI. Qlik wins on having both analytics and integration in one platform; Informatica wins on pure data management depth and catalog
+• Precisely: Competitor in data quality and governance, especially for mainframe-to-cloud. Niche overlap on data quality but Precisely lacks the analytics front-end
+• Snowflake / Databricks: Not direct BI competitors but their expanding native analytics, data engineering, and AI capabilities reduce the need for middleware like Qlik in some architectures. Qlik positions as complementary (data pipelines INTO these platforms) rather than competitive
+• dbt Labs: Growing fast as the standard for data transformation in modern data stacks. Competes with Talend's ETL/ELT capabilities for cloud-native data engineering. Time horizon threat: 3-5 years
+• Competitive advantage: Qlik is the only scaled vendor offering data integration + data quality + governance + analytics + AI in a single platform with a unique associative engine. The QIX associative engine is a genuine technical differentiator — no other BI tool enables non-linear data exploration at this level. Post-Talend, the data quality and governance capabilities rival Informatica
+• Best at: Complex multi-source analytics (associative engine), real-time data replication/CDC (Attunity heritage), data quality and governance (Talend heritage), and enterprise-scale deployments with strong governance
+• Worst at: Price competitiveness vs. Power BI in volume BI deployments, brand perception vs. Tableau among data analysts, developer community/mindshare vs. open-source tools (dbt, Apache Spark), and cloud-native perception vs. born-in-cloud competitors
+• Biggest threat (3yr): Power BI + Microsoft Fabric continuing to improve data integration and AI capabilities bundled at aggressive pricing — could erode Qlik's mid-market. Also, dbt + Snowflake/Databricks "modern data stack" narrative reduces perceived need for legacy integration tools
+• Largest opportunity (3yr): AI data readiness — if the market accepts that AI success depends on trusted, governed data pipelines, Qlik is uniquely positioned as the only end-to-end platform. The ADIA investment and Rule of 50 achievement position the company for a premium IPO or strategic exit`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      transactions: {
+        text: `• May 2025: Closed ADIA minority investment at ~$10B valuation. Thoma Bravo remains majority owner and made additional equity investment alongside ADIA and a consortium of institutional investors (including CPP Investments). Originally signed Nov 2024
+• May 2025: Acquired Stretch Qonnect (Qloud Cover Migration Technology) — cloud migration tooling (per PitchBook)
+• Jan 2025: Acquired Upsolver Data — streaming data engineering platform for real-time data lake/warehouse ingestion. Strengthens real-time data pipeline capabilities
+• Nov 2024: Thoma Bravo signed agreement to sell significant minority stake in Qlik to ADIA at ~$10B valuation — represents substantial value creation from $3B take-private in 2016. Signals confidence in growth trajectory and positions for eventual IPO
+• May 2023: Completed acquisition of Talend — added data integration, data quality, data governance, and data fabric capabilities. Effectively a Thoma Bravo portfolio merger (Thoma Bravo acquired Talend for $2.4B in 2021). Combined entity led by Qlik CEO Mike Capone
+• Jan 2022: Filed confidential IPO paperwork with SEC — market conditions (tech downturn) delayed execution. IPO path remains the likely exit strategy
+• 2019: Acquired Attunity for ~$560M — real-time data replication and CDC. This acquisition formed the foundation of Qlik Data Integration and is arguably the most strategically important deal after Talend
+• 2020: Acquired Blendr.io — data integration automation
+• 2018: Acquired Podium Data — data catalog and governance (later absorbed into Qlik platform)
+• 2021: Thoma Bravo acquired Talend separately for $2.4B (taken private from NASDAQ: TLND). Later merged into Qlik in 2023
+• Aug 2016: Thoma Bravo acquired Qlik from public markets for ~$3B ($30.50/share). Since then, 14 acquisitions completed and valuation has grown to ~$10B — ~3.3x value creation over ~8 years`,
+        date: "2026-03-19T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "ql1", text: "The $10B ADIA valuation is the key data point. Thoma Bravo bought Qlik for $3B in 2016, added Talend ($2.4B in 2021), and now the combined entity is valued at $10B. That's meaningful value creation but you have to net out the ~$5.4B in acquisition costs. The real question is whether the IPO can sustain or expand that multiple — if Qlik can demonstrate durable 15%+ ARR growth with expanding margins, a 10-12x ARR multiple is defensible in the current market for Rule of 50 SaaS companies.", date: "2026-03-19T00:00:00Z" },
+      { id: "ql2", text: "The Talend integration is the make-or-break execution story. Cross-selling is reportedly working (Talend customers buying Qlik analytics, Qlik customers buying Talend data quality) and the company hit Rule of 50 in 2024. But integrating a $350M revenue company with different product architecture, customer base, and open-source heritage is hard. Watch for customer churn in Talend's legacy base — the open-source community edition users who paid nothing are likely being monetized or abandoned, which creates noise.", date: "2026-03-14T00:00:00Z" },
+      { id: "ql3", text: "The competitive positioning is genuinely differentiated post-Talend. No other vendor offers data integration + data quality + governance + analytics + AI/ML in one platform at Qlik's scale. Informatica has the data side but no analytics. Tableau/Power BI have analytics but no data integration. The risk is that the 'modern data stack' movement (dbt + Snowflake + lightweight BI) makes the all-in-one platform story less compelling for cloud-native buyers. Qlik's answer is that real enterprises have hybrid, messy data environments — not clean cloud-native stacks — and that's where Qlik wins.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  cvent_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Enterprise event management and hospitality technology platform — powers event registration, venue sourcing, event marketing, attendee engagement, and virtual/hybrid events for corporate and association customers
+• Founded 1999 in Tysons, VA by CEO Reggie Aggarwal (still CEO) — one of the original SaaS event management companies
+• Ownership history: IPO'd on Nasdaq in 2013 → Taken private by Vista Equity Partners for $1.65B in 2016 → Vista merged Cvent with Lanyon (venue sourcing) → Went public again via SPAC merger with Dragoneer in Dec 2021 at $5.3B EV → Taken private again by Blackstone for $4.6B ($8.50/share) in Jun 2023
+• ADIA (Abu Dhabi Investment Authority) was a significant minority investor alongside Blackstone at close. Vista retained a minority stake until Jul 2025, when Blackstone bought out Vista's remaining position for $1.3B — Blackstone now has sole ownership. Vista received ~4.1x invested capital
+• ~5,000+ employees; ~24,000+ customers globally as of end 2024
+• Headquartered in Tysons, VA with global operations
+• Executing an aggressive acquisition-driven roll-up strategy under Blackstone — spent ~$700M in Dec 2025 alone on Goldcast (~$300M) and ON24 ($400M), following Splash and Jifflenow acquisitions in 2024. Positioning for eventual re-IPO at higher valuations
+• Blackstone's David Schwartz has called events and travel recovery "one of Blackstone's highest-conviction investment themes"`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly SaaS subscription — recurring annual contracts for platform access. Supplemented by transactional revenue from event registrations, payment processing, and professional services. Hospitality Cloud (venue sourcing) generates advertising/listing revenue from hotels and venues
+• Cvent Event Cloud: Core platform — end-to-end event management including online registration, event websites, email marketing, agenda management, attendee engagement, mobile event apps, onsite check-in, surveys, and analytics. Supports in-person, virtual, and hybrid events
+• Cvent Supplier Network (CSN): Online marketplace with 300,000+ hotels and venues globally — event planners search, compare, and submit RFPs for event space. Hotels/venues pay for premium listings and enhanced visibility. This is a network-effect business — more planners attract more venues and vice versa
+• Cvent Hospitality Cloud: SaaS tools for hotels and venues to manage group business — lead management, sales automation, business intelligence, and digital advertising to event planners. Revenue from hoteliers is advertising-like recurring spend
+• ON24 (acquired Dec 2025, $400M): Enterprise webinar and digital engagement platform — demand generation, lead scoring, and pipeline acceleration for B2B marketers. 1,521 enterprise clients including top 5 global software companies and top 5 global asset managers. ~$130M revenue run rate but declining
+• Goldcast (acquired Dec 2025, ~$300M): AI-powered video content platform — automates repurposing of event recordings into marketing content. Addresses the "convergence of marketing and events" thesis
+• Splash (acquired 2024): Field marketing event platform — smaller-format events for marketing teams. Different buyer persona than traditional Cvent (marketers, not event planners)
+• Jifflenow (acquired Jan 2024): B2B meeting scheduling for conferences and events
+• Cvent Essentials: Simplified event management for repeatable, small-format events — expands TAM downmarket
+• Customers buy because: Events are a top-3 marketing spend category for most B2B enterprises. Cvent is the platform that manages the entire lifecycle — planning, promotion, execution, engagement, and measurement. No other vendor has the breadth across in-person + virtual + hybrid + venue sourcing + hospitality in one integrated platform`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and upper-mid-market — corporate event planners, marketing teams, and meeting professionals at organizations running 50+ events per year
+• ~24,000+ customers globally as of end 2024; serves enterprises across virtually every industry
+• Key verticals: Technology (largest vertical — tech companies run massive conference and field marketing programs), financial services, healthcare/pharma (medical conferences, HCP engagement), professional services, associations/nonprofits, and higher education
+• Hospitality Cloud serves the other side of the marketplace — hotels, convention centers, and venues that need to win group business. Major hotel chains (Marriott, Hilton, IHG, Hyatt) are customers
+• Geography: Estimated ~65-70% North America, ~20-25% EMEA, ~5-10% APAC and rest of world. The Cvent Supplier Network has 300,000+ venues globally, giving it genuine international reach on the supply side
+• Buying drivers: Events are critical for customer acquisition, retention, and brand engagement — but managing them at enterprise scale is operationally complex. Cvent reduces the friction of event operations while providing data and analytics that connect events to business outcomes (pipeline, revenue attribution, attendee engagement). The ROI measurement angle is increasingly important as CFOs scrutinize event spend
+• The ON24 acquisition adds a new buyer: the B2B marketer who runs webinar-driven demand gen programs (not just event planners). This broadens the customer TAM significantly`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Global event technology market estimated at ~$12-15B in 2025, projected to grow at ~12-15% CAGR through 2030. Cvent is the largest pure-play event tech vendor by a wide margin
+• The broader global events industry is a ~$1.1T+ market — Cvent's software addresses the technology layer enabling that spend
+• Gartner published its inaugural Magic Quadrant for Event Technology Platforms in Mar 2024 — validating event tech as a distinct enterprise software category. This is a positive signal for the sector
+• Tailwind — Post-COVID events recovery: In-person events have rebounded strongly and are now exceeding pre-pandemic levels in many segments. Corporate event budgets are growing. Time horizon: 3-5+ years of normalized growth
+• Tailwind — Event-Led Growth (ELG): Events are increasingly positioned as a strategic go-to-market channel, not just a cost center. CMOs are investing in events as a pipeline generation lever. Time horizon: 3-5 years
+• Tailwind — Hybrid events normalization: The pandemic permanently expanded the scope of events to include virtual and hybrid formats. This increases the number of events organizations run and the technology required. Time horizon: Permanent
+• Tailwind — Consolidation: The Dec 2025 wave (Cvent, Bending Spoons/Eventbrite, Truelink/GES) signals PE is aggressively investing in the sector, validating the category and driving platform consolidation. Time horizon: 1-3 years
+• Headwind — Economic sensitivity: Events are discretionary spend — in a recession, event budgets get cut quickly. Travel and meeting costs are among the first line items reduced. Time horizon: Cyclical risk, always present
+• Headwind — Virtual fatigue: Post-pandemic, some virtual event formats have seen declining engagement and attendance. ON24's declining revenue (from ~$160M peak to ~$130M) reflects this. Time horizon: 1-2 years of normalization
+• Headwind — Competition from general-purpose tools: Zoom, Teams, and basic webinar tools commoditize the low end of virtual events. Time horizon: Permanent for the low-value segment
+• Market growth (5yr estimate): Event technology market grew at estimated ~8-12% CAGR over last 5 years, with a COVID dip in 2020-2021 and strong recovery in 2022-2025 (estimate based on Grand View Research and Gartner reports)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Bizzabo (private, raised $400M+, valued at $200M in 2022 down round from $800M peak): Closest direct competitor for enterprise event management. Positions as an "Event Experience Operating System." Stronger in mid-market, better UX perception. Bizzabo reported 34% YoY growth in small in-person events and 27% increase in overall in-person events in H1 2025. But the 2022 down round (3x liquidation preference) signals financial stress — Cvent's scale and Blackstone backing create a structural advantage
+• RainFocus: Enterprise event platform gaining traction with large tech companies (Oracle, VMware, Cisco). Cloud-native, API-first architecture. Named a Leader in Forrester Wave for B2B Event Management. Competes for the largest enterprise deals where Cvent's legacy architecture may show its age
+• Eventbrite (acquired by Bending Spoons for $500M, Dec 2025): Consumer/SMB-focused ticketing and event platform. Different market segment than Cvent (self-serve vs. enterprise) but the Bending Spoons acquisition could reposition it
+• ON24 (now owned by Cvent): Was the leading enterprise webinar/digital engagement platform before acquisition. Declining revenue removed it as a standalone competitor — now it's part of Cvent's stack
+• Zoom Events / Microsoft Teams Live Events: Commoditize the basic virtual event format but lack the enterprise event management, registration, analytics, and venue sourcing capabilities Cvent provides. Threat at the low end, not at the enterprise end
+• Hopin (collapsed): Was the pandemic darling ($7.75B peak valuation). Imploded through a series of failed pivots and fire sales. StreamYard sold to Bending Spoons. Not a competitive threat anymore
+• Competitive advantage: Cvent wins on platform breadth (no other vendor covers in-person + virtual + hybrid + venue sourcing + hospitality in one platform), the Cvent Supplier Network (300,000+ venues is a network-effect moat), installed base scale (24,000+ customers), and now the ON24/Goldcast additions for digital marketing. Blackstone's capital enables the acquisition strategy no competitor can match
+• Best at: Large-scale enterprise event management, venue sourcing (CSN is unmatched), hospitality cloud (unique two-sided marketplace), and breadth of event formats supported
+• Worst at: User experience and modern UI (legacy platform perception vs. Bizzabo/RainFocus), pricing (perceived as expensive for smaller organizations), and virtual event engagement (hence the ON24 acquisition to close this gap)
+• Biggest threat (3yr): RainFocus winning the largest enterprise accounts away from Cvent with a more modern, cloud-native architecture. Also, general-purpose video/webinar tools continuing to commoditize the virtual event space
+• Largest opportunity (3yr): The "convergence of marketing and events" thesis — if Cvent successfully integrates ON24, Goldcast, and Splash to position itself as the platform where B2B marketing and events converge, the TAM expands from event planners to the entire B2B marketing tech stack. The re-IPO at a materially higher valuation is the Blackstone endgame`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Dec 2025: Acquired ON24 for $400M all-cash ($8.10/share, 62% premium) — enterprise webinar and digital engagement platform. ~1,521 clients, 294 contributing $100K+ annually. Revenue declining (~$130M run rate) but Cvent expects $50M annual synergies. Deal expected to close H1 2026. Goldman Sachs advised ON24; William Blair advised Cvent
+• Dec 2025: Acquired Goldcast for ~$300M — AI-powered video content repurposing platform. Addresses event-to-content automation for B2B marketers
+• Combined Dec 2025 spend: ~$700M in acquisitions within a single month — signals aggressive roll-up positioning for re-IPO
+• Jul 2025: Blackstone acquired Vista Equity Partners' remaining minority stake for $1.3B — Blackstone now sole owner. Vista received ~4.1x invested capital on its full Cvent investment lifecycle
+• Apr 2025: Acquired Prismm — spatial design technology for event floor plans and venue layouts
+• Jan 2024: Acquired Jifflenow — B2B meeting scheduling for conferences and trade shows
+• 2024: Acquired Splash — field marketing event platform targeting marketing teams (different buyer than traditional Cvent event planner)
+• Jun 2023: Blackstone completed $4.6B take-private of Cvent ($8.50/share, 52% premium). ADIA as significant minority co-investor. Vista retained minority stake via non-convertible preferred equity
+• Dec 2021: Cvent went public via SPAC merger with Dragoneer Growth Opportunities Corp at $5.3B EV
+• 2016: Vista Equity Partners acquired Cvent for $1.65B. Later merged with Lanyon (venue sourcing platform, also Vista-owned) to create the combined events + hospitality platform
+• 1999: Founded by Reggie Aggarwal in Tysons, VA`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "cv1", text: "The $700M Dec 2025 acquisition spree (ON24 + Goldcast) is classic Blackstone pre-IPO playbook. Buy declining/distressed assets at pennies on the dollar of peak valuation (ON24 was $64/share in 2021, bought at $8.10), extract synergies, bolt onto the platform, and demonstrate revenue growth for the re-IPO story. The question is whether these acquired companies' declining revenues can be stabilized and cross-sold into Cvent's 24,000 customer base. If yes, the combined entity's revenue could approach $800M-$1B, supporting a premium re-IPO. If the acquired revenues keep declining, it's just expensive complexity.", date: "2026-03-20T00:00:00Z" },
+      { id: "cv2", text: "The Cvent Supplier Network (CSN) is the underappreciated moat. 300,000+ hotels and venues listed, millions of RFPs processed — this is a genuine two-sided marketplace with network effects. Event planners use CSN because it has the most venues; venues pay for CSN because it has the most planners. This is defensible and monetizable in ways the event management SaaS is not. Any investment thesis should weight CSN heavily.", date: "2026-03-14T00:00:00Z" },
+      { id: "cv3", text: "Blackstone's broader event/hospitality thesis creates both synergy and conflict-of-interest risk. Blackstone owns Encore (AV services at 2,200 hotels), has invested in Groups360 (a Cvent venue sourcing competitor), and has deep hotel real estate experience. The synergy is real — Blackstone can connect Cvent across its hospitality portfolio. The risk is that Blackstone's other portfolio investments (Groups360) create awkward competitive dynamics within the Cvent ecosystem.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  smartbear_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private software quality and developer tools company — provides API testing, UI testing, test management, performance monitoring, code review, and API design/documentation tools for software development teams
+• Founded 2003 (originally as AutomatedQA in 1998 per PitchBook); headquartered in Somerville, MA
+• Acquired by Francisco Partners in 2017; Vista Equity Partners made a significant co-investment in Oct 2020, valuing the company at ~$1.8-2.0B. Francisco Partners and Vista are now equal co-owners
+• ~960 employees; 16M+ software professionals use SmartBear tools; 22,000+ companies in 194 countries
+• CEO Frank Roe; appointed SVP of Corporate Development in Apr 2025 to accelerate M&A and AI growth — signals continued acquisition appetite
+• Highly acquisitive: 12-17 acquisitions (depending on source) including Swagger/SwaggerHub (API design standard), Cucumber (BDD testing), Zephyr (test management for Jira), BugSnag (error monitoring), BitBar (mobile device testing), and most recently QMetry (Dec 2024) and Reflect (Jan 2024)
+• Swagger/OpenAPI is the industry-defining API specification standard — SmartBear owns and maintains it. This is the strategic crown jewel and the reason SmartBear punches above its weight in mindshare
+• At time of Vista investment: ~$150M revenue, ~$75M EBITDA per PE Hub reporting. Revenue has likely grown meaningfully since through organic growth and acquisitions`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly subscription/SaaS with some perpetual license legacy. Organized into three product hubs: API Hub, Test Hub, and Insight Hub. Mix of commercial products and open-source-to-commercial conversion (Swagger free → SwaggerHub paid)
+• SmartBear API Hub (Swagger ecosystem):
+  — Swagger: The open-source OpenAPI specification toolset — industry standard for API design, documentation, and testing. Swagger UI, Swagger Editor, and Swagger Codegen are used by millions of developers. Free and open-source — the on-ramp to commercial products
+  — SwaggerHub: Commercial SaaS platform for collaborative API design, documentation, standardization, and governance. The monetization layer on top of Swagger. Enterprise teams pay for collaboration, versioning, and governance features
+  — ReadyAPI: Enterprise API testing platform — functional testing, security testing, performance testing, and virtualization for APIs. SmartBear's highest-ACV commercial product. Integrates with CI/CD pipelines
+  — Swagger Contract Testing: AI-enabled contract testing to catch breaking API changes early in development
+• SmartBear Test Hub:
+  — TestComplete: Desktop and enterprise application test automation — supports web, mobile, and desktop UI testing. Legacy but still a meaningful revenue contributor
+  — Zephyr: Test management for Jira — the dominant test management app on the Atlassian Marketplace. Zephyr Scale and Zephyr Squad serve different team sizes. Unified Zephyr platform launched at Atlassian Team '25 (Apr 2025)
+  — QMetry (acquired Dec 2024): AI-enabled test management with compliance features (ISO, SOC 2) for regulated industries. Consolidates SmartBear's majority position in Atlassian Marketplace test management
+  — Reflect (acquired Jan 2024): AI-powered no-code testing platform for cloud-native web and mobile apps
+  — Cucumber / CucumberStudio: BDD (behavior-driven development) testing framework — widely used open-source tool for writing tests in natural language
+• SmartBear Insight Hub:
+  — BugSnag: Application stability and error monitoring — tracks crashes and errors in production apps
+  — AlertSite: Website and API monitoring — uptime, performance, and availability tracking
+• HaloAI: SmartBear's GenAI layer launched mid-2024 — integrates AI capabilities across products including auto test case generation (QMetry), AI-assisted API design (Swagger), and flaky test detection
+• Customers buy because: Software teams need to test APIs, manage test cases, monitor production applications, and design APIs to standards — SmartBear covers all of these in one vendor. The Swagger/OpenAPI standard creates a unique top-of-funnel: developers discover SmartBear through free Swagger tools, then convert to paid SwaggerHub and ReadyAPI`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Broad range — from individual developers using free Swagger tools to large enterprise QA/testing teams using ReadyAPI, Zephyr, and TestComplete. Sweet spot is mid-market to large enterprise development and QA organizations
+• 16M+ individual software professionals use SmartBear tools; 22,000+ paying companies
+• The Swagger/OpenAPI ecosystem gives SmartBear an unusually wide top-of-funnel for a company its size — millions of developers encounter SmartBear through open-source before any commercial engagement
+• Key verticals: Technology/software (largest), financial services, healthcare, retail/e-commerce, manufacturing, and government. Essentially horizontal — any company building software is a potential customer
+• Geography: Estimated ~50-55% North America, ~30-35% EMEA, ~10-15% APAC. The Atlassian Marketplace presence (Zephyr) gives global distribution, and the Sep 2025 Adactin partnership specifically targets APAC expansion
+• Buying drivers: API-first development is accelerating — every modern application is built on APIs, and teams need tools to design, test, and monitor them. The shift-left testing movement (test earlier in the development cycle) drives demand for SmartBear's testing tools. Regulated industries (healthcare, finance) need compliance-ready test management — QMetry addresses this
+• Switching costs are moderate — Zephyr has strong Jira lock-in (hard to switch test management tools embedded in your Jira workflow), and ReadyAPI has deep CI/CD integration. But the testing tools market is fragmented and competitive`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Software testing and quality tools market estimated at ~$40-50B in 2025, growing at ~12-15% CAGR. This includes test automation, test management, API testing, and performance testing
+• API management and testing specifically is a ~$5-7B segment growing at ~20-25% CAGR — this is SmartBear's fastest-growing area
+• SmartBear at ~$150M+ revenue (2020 baseline, likely $250-350M+ today with acquisitions and growth) is a significant mid-market player but below the largest testing vendors (Tricentis, Micro Focus/OpenText)
+• Tailwind — API economy growth: APIs are the connective tissue of modern software. Every microservices architecture, cloud migration, and AI deployment increases the number of APIs to design, test, and monitor. Time horizon: 5-10+ years of structural growth
+• Tailwind — Shift-left testing: Development teams are moving testing earlier in the software lifecycle. Tools that enable developers (not just QA teams) to test are in high demand. SmartBear's developer-friendly tools align with this trend. Time horizon: 5+ years
+• Tailwind — AI-augmented testing: GenAI is automating test case generation, detecting flaky tests, and reducing manual QA effort. SmartBear's HaloAI and QMetry's AI features ride this wave. Time horizon: 3-5 years
+• Tailwind — Atlassian ecosystem: Jira is the dominant project management tool for development teams. SmartBear's Zephyr dominance on the Atlassian Marketplace provides a distribution moat. Time horizon: Permanent while Jira remains dominant
+• Headwind — Platform bundling: GitHub (Copilot + Actions), GitLab (built-in CI/CD + testing), and cloud platforms are bundling basic testing capabilities. Commoditizes the low end of SmartBear's market. Time horizon: 3-5 years
+• Headwind — Open-source alternatives: Postman (API testing, 30M+ users), Playwright (Microsoft, UI testing), and Cypress are free or low-cost and have strong developer communities. SmartBear competes on enterprise features and breadth, not price. Time horizon: Permanent
+• Market growth (5yr estimate): Software testing market grew at ~10-13% CAGR; API testing grew faster at ~18-22% CAGR over last 5 years (estimates based on Gartner, Markets and Markets reports)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Tricentis (Insight Partners, raised $1.33B in Nov 2024): Largest pure-play testing vendor. Enterprise test automation and continuous testing platform. Competes directly with TestComplete and ReadyAPI. Tricentis wins on enterprise scale and sales execution; SmartBear wins on API testing depth and developer community (Swagger)
+• Postman (private, 30M+ users, valued at $5.6B in 2022): The biggest competitive threat in API testing. Free tier with massive developer adoption. Postman is primarily a developer tool; SmartBear's ReadyAPI targets QA/testing teams. Different buyer personas but converging — Postman is moving into enterprise testing, SmartBear is moving into developer-friendly tools
+• Micro Focus / OpenText: Legacy enterprise testing (UFT, LoadRunner). Massive installed base but aging technology. SmartBear wins on modern UX and API-first approach; OpenText wins on legacy enterprise relationships
+• BrowserStack (private, valued at $4B+): Cloud-based cross-browser and mobile testing. Competes with BitBar. BrowserStack wins on cloud infrastructure scale; SmartBear wins on breadth of testing capabilities beyond just browsers
+• Sauce Labs (PE-backed): Cloud testing platform — functional, visual, and error monitoring. Direct competitor to SmartBear's Test Hub products. Sauce Labs has struggled (layoffs, down rounds) — SmartBear is in a stronger position
+• Atlassian (Jira): Not a direct competitor but the platform on which Zephyr runs. Atlassian could build or acquire native test management, which would threaten Zephyr's dominant marketplace position. This is the existential risk for Zephyr
+• Competitive advantage: Swagger/OpenAPI ownership is the moat — SmartBear owns the API specification standard that the entire industry uses. This creates unmatched developer mindshare and a free-to-commercial conversion pipeline. The Zephyr dominance on Atlassian Marketplace creates distribution lock-in. The breadth across API design + testing + test management + monitoring in one vendor is unique at SmartBear's scale
+• Best at: API lifecycle tools (design → test → monitor), Atlassian Marketplace test management (Zephyr + QMetry = majority market share), developer community via open-source (Swagger, Cucumber), and regulated industry test management (QMetry compliance features)
+• Worst at: Enterprise sales execution vs. Tricentis, developer adoption in API testing vs. Postman's free tier, and cloud-native UI testing vs. Playwright/Cypress/BrowserStack
+• Biggest threat (3yr): Postman expanding into enterprise API testing at scale — if Postman successfully converts its 30M free users into paying enterprise customers for testing, it directly attacks SmartBear's core. Also, Atlassian building native test management would undermine Zephyr
+• Largest opportunity (3yr): AI-augmented testing is SmartBear's biggest growth lever — if HaloAI and QMetry's AI features demonstrate real value (auto test generation, flaky test detection, self-healing tests), SmartBear can command premium pricing. The unified hub strategy (API Hub + Test Hub + Insight Hub) enables cross-sell that drives revenue per customer expansion`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Apr 2025: Appointed SVP of Corporate Development — signals accelerated M&A and AI-focused acquisition strategy ahead
+• Dec 2024: Acquired QMetry — AI-enabled test management platform with 2,500+ customers including Fortune 500. Compliance-focused (ISO, SOC 2). Consolidates majority position in Atlassian Marketplace test management alongside Zephyr
+• Jan 2024: Acquired Reflect — AI-powered no-code testing platform for cloud-native web and mobile apps
+• 2023: Acquired Stoplight — API design and governance platform. Strengthened SwaggerHub competitive positioning
+• Oct 2020: Vista Equity Partners made significant co-investment alongside Francisco Partners, valuing SmartBear at ~$1.8-2.0B. Vista and Francisco Partners became equal co-owners. Revenue ~$150M, EBITDA ~$75M at time of deal
+• 2019: Acquired Zephyr — test management for Jira. Became the dominant test management app on Atlassian Marketplace
+• 2019: Acquired BitBar — mobile device testing cloud platform (Finland-based)
+• 2019: Acquired Cucumber Ltd — BDD testing framework (UK-based). Added behavior-driven development to the portfolio
+• 2018: Acquired BugSnag — application stability monitoring
+• 2018: Acquired Swagger/SwaggerHub assets — acquired the OpenAPI/Swagger specification tools and commercial platform. The most strategically important acquisition in SmartBear's history — gave SmartBear ownership of the de facto API specification standard
+• 2017: Francisco Partners acquired SmartBear — initial PE take-private
+• Key M&A pattern: Francisco Partners + Vista have executed a classic PE roll-up — acquire a testing tools platform, bolt on 12-17 acquisitions across API, testing, and monitoring, unify under product hubs, and drive cross-sell. The Apr 2025 SVP Corp Dev hire signals the roll-up is not done`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "sb1", text: "Swagger/OpenAPI ownership is the single most important strategic asset. SmartBear owns and maintains the API specification standard that virtually every developer and API team in the world uses. This creates a flywheel: developers discover SmartBear through free Swagger → some convert to paid SwaggerHub for collaboration → enterprise teams buy ReadyAPI for API testing. No competitor can replicate this because the standard itself is the moat. The question is how effectively SmartBear monetizes this massive top-of-funnel — the conversion rate from 16M users to 22K paying companies suggests significant room for improvement.", date: "2026-03-20T00:00:00Z" },
+      { id: "sb2", text: "The Zephyr + QMetry combination gives SmartBear majority market share in Atlassian Marketplace test management. This is a defensible distribution position — Jira is the default project management tool for software teams, and SmartBear's test management tools are deeply embedded in Jira workflows. The risk is Atlassian building native test management (they've shown appetite for expanding into adjacent categories). If Atlassian moves, Zephyr's moat evaporates. This is the single biggest platform risk to monitor.", date: "2026-03-14T00:00:00Z" },
+      { id: "sb3", text: "The dual PE ownership (Francisco Partners + Vista, equal co-owners since 2020) creates exit questions. Combined hold for Francisco is now ~8 years, Vista ~5 years — both approaching typical exit windows. The Apr 2025 SVP Corp Dev hire suggests more acquisitions before exit, which implies they're still in value-creation mode, not exit mode. Most likely exit path is a strategic sale to a larger DevOps/testing platform (Atlassian? Perforce? or a larger PE buyer) or IPO. At ~$250-350M revenue (estimated) with strong EBITDA margins, the company could support a $3-5B+ exit valuation.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  cloudera_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private hybrid data and AI platform company — provides enterprise data management, analytics, data engineering, streaming, and machine learning across on-premises, public cloud, and hybrid environments
+• Founded 2008 in Palo Alto, CA; originally built to commercialize Apache Hadoop for big data processing
+• Merged with Hortonworks (its primary Hadoop competitor) in Jan 2019 for $5.2B combined entity — eliminated the "Hadoop war" but integration was rocky
+• Taken private by CD&R (Clayton, Dubilier & Rice) and KKR in Oct 2021 for $5.3B ($16/share, 24% premium). Carl Icahn held ~18% stake and supported the deal after agitating for a sale since 2019
+• CEO Charles Sansbury appointed Aug 2023 — PE-operator profile (former CEO of ASG Technologies, sold to Rocket Software in 2021; former COO of Attachmate Group, sold to Micro Focus in 2014)
+• ~3,400 employees across 6 continents; headquartered in Santa Clara, CA
+• FY26 (ended ~Jan 2026) described as "record performance" — Q4 saw 50%+ YoY growth in new and expansion business, robust ARR growth, and 100%+ new logo growth across all regions
+• Revenue was ~$869M in FY Jan 2021 (last public filing); current revenue estimated at $900M-$1B+ based on growth trajectory
+• Core thesis: Enterprises are pushing back against all-cloud migration — 40%+ of workloads expected to stay on-premise. Cloudera is the only scaled platform purpose-built for hybrid data and AI across any environment`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly subscription-based — annual or multi-year contracts for Cloudera Data Platform (CDP) access. Subscription includes software, updates, support, and maintenance. Professional services (consulting, training, implementation) are supplemental. Shifting from term license to cloud consumption pricing for CDP Public Cloud
+• Cloudera Data Platform (CDP): The unified platform — provides a single data framework for data engineering, streaming, analytics, machine learning, and AI across private cloud, public cloud (AWS, Azure, GCP), and on-premises environments. This is the core product
+• CDP Private Cloud: On-premises deployment of the full platform — the bread-and-butter for regulated enterprises that need data sovereignty, security, and low-latency processing on their own infrastructure. This is Cloudera's stronghold
+• CDP Public Cloud: Cloud-native deployment on AWS, Azure, and GCP — auto-scaling, consumption-based pricing. Growing fast but still a smaller share of revenue than private cloud
+• Cloudera Data Engineering (CDE): Apache Spark-based data engineering — ETL/ELT processing, pipeline orchestration, data transformation at scale
+• Cloudera Data Warehousing (CDW): SQL analytics powered by Apache Impala and Hive — enterprise data warehouse capabilities across hybrid environments
+• Cloudera Machine Learning (CML): Enterprise ML platform — model development, training, deployment, and monitoring. Supports AI/ML workloads including generative AI
+• Cloudera DataFlow: Real-time streaming data platform — ingestion, processing, and analytics on streaming data (built on Apache NiFi, Kafka, Flink). "Data-in-motion" capability
+• Apache Iceberg integration: Open table format adopted across CDP — enables interoperability with Snowflake, Databricks, and other platforms. Strategic move to position Cloudera as open and non-lock-in
+• Customers buy because: Large enterprises have massive amounts of data on-premises that can't easily or cost-effectively move to public cloud — for regulatory, latency, cost, or sovereignty reasons. Cloudera is the only platform that gives them a unified data and AI layer that works identically across on-prem and cloud. The hybrid promise is the value prop`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and government — organizations with massive on-premises data estates, complex hybrid environments, and strict data governance requirements. Typically 5,000+ employees with dedicated data engineering teams
+• Customer base estimated at 1,000-2,000+ enterprise accounts — smaller number of customers than cloud-native competitors but much higher ACV per customer
+• Key verticals: Financial services (risk modeling, fraud detection, regulatory reporting — Taipei Fubon Bank, Axis Bank, Bank Negara Indonesia), telecommunications (network analytics, customer analytics), healthcare/pharma (clinical analytics, genomics), government/public sector (national security, citizen services), energy/utilities, and automotive/manufacturing
+• Heavily concentrated in regulated industries where data sovereignty, compliance, and on-premises requirements are non-negotiable — this is Cloudera's natural habitat
+• Geography: Global — estimated ~40-45% North America, ~30-35% EMEA, ~20-25% APAC (strong in Middle East, Singapore, Japan, India, Australia). The Middle East expansion (AWS Saudi Arabia region, EVOLVE Dubai 2025) signals a geographic growth priority
+• Buying drivers: Enterprises need to run AI and analytics on data that cannot leave their premises or specific jurisdictions. Rising cloud costs are driving repatriation of some workloads back on-prem. Cloudera addresses the reality that most large enterprises will operate in hybrid for the foreseeable future — not the cloud-only narrative that Snowflake and Databricks sell
+• 91% of organizations say their data is unfit for AI purposes per Cloudera research — the data readiness gap is the fundamental problem Cloudera is positioned to solve`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Big data and analytics platform market estimated at ~$60-80B in 2025; the hybrid data platform sub-segment specifically is ~$15-25B and growing at ~12-18% CAGR
+• Cloudera at ~$900M-$1B+ revenue is a top-5 player in the enterprise data platform category, behind Snowflake (~$3.4B) and Databricks (~$2.4B estimated) but ahead of most other independents
+• Tailwind — Hybrid/on-prem AI: The narrative is shifting. After years of "everything to the cloud," enterprises are realizing that 40%+ of workloads will stay on-prem. Rising cloud costs, data sovereignty laws (GDPR, Middle East regulations), and AI latency requirements favor hybrid platforms. This is Cloudera's core thesis and it's gaining credibility. Time horizon: 5-10+ years
+• Tailwind — Enterprise AI readiness: Enterprises need governed, high-quality data to deploy AI. Most enterprise data is on-prem and messy. Cloudera provides the data management foundation for AI workloads across hybrid environments. Time horizon: 5+ years
+• Tailwind — Open table formats (Iceberg): Apache Iceberg adoption is accelerating — Cloudera's early Iceberg integration reduces vendor lock-in fears and positions the platform as interoperable. Time horizon: 3-5 years
+• Headwind — Cloud-native dominance: Snowflake and Databricks are the default choices for cloud data analytics. Most new greenfield data projects start in the cloud, not on-prem. Cloudera wins expansions of existing on-prem estates, not new cloud-native deployments. Time horizon: Permanent structural challenge
+• Headwind — Hadoop legacy perception: Despite significant platform modernization, Cloudera is still associated with "Hadoop" in many buyers' minds. This brand perception is a drag on new logo acquisition, especially among cloud-native buyers. Time horizon: 2-4 years to overcome
+• Headwind — Hyperscaler competition: AWS (EMR, Redshift, SageMaker), Azure (Synapse, Fabric), and GCP (BigQuery) all offer native data/AI platforms at aggressive pricing with tight ecosystem integration. Cloudera competes on hybrid flexibility but can't match hyperscaler scale or pricing on cloud-only deployments. Time horizon: Permanent
+• Market growth (5yr estimate): Overall data platform market grew at ~15-20% CAGR; hybrid-specific segment grew slower at ~10-14% CAGR; cloud-native segment grew at ~25-35% CAGR (estimates based on IDC, Gartner reports)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Snowflake (public, ~$3.4B revenue): The dominant cloud data platform. Wins on cloud-native simplicity, performance, and the AI Data Cloud narrative. Cloudera does not compete effectively against Snowflake for cloud-only greenfield deployments. But Snowflake has no on-premises offering — any customer that needs hybrid or on-prem is Cloudera's territory
+• Databricks (private, ~$2.4B estimated revenue, valued at $62B): The leading data lakehouse and AI/ML platform. Strongest with data engineering and data science teams. Databricks has some hybrid capability (via partner integrations) but is fundamentally cloud-first. Cloudera competes on hybrid flexibility and regulated industry credentials
+• AWS / Azure / GCP native services: The hyperscalers offer comprehensive data and AI services bundled with their cloud infrastructure. They win on ecosystem integration and pricing for cloud workloads. Cloudera counters by being cloud-agnostic — customers avoid cloud lock-in by using CDP across multiple clouds and on-prem
+• Informatica: Competes on data integration and governance. Informatica is stronger in pure data management; Cloudera is stronger in analytics, data engineering, and ML. Some overlap but different core value props
+• Teradata (public, ~$1.7B revenue): Legacy data warehouse vendor also pivoting to hybrid/cloud. Competes directly for the same regulated enterprise buyer. Teradata has a stronger data warehousing heritage; Cloudera has a stronger big data/Hadoop/streaming heritage
+• Competitive advantage: Cloudera is the only scaled platform purpose-built for hybrid data and AI — identical functionality across on-prem, private cloud, and public cloud. The Apache open-source foundation (Spark, Iceberg, NiFi, Kafka, Flink) reduces vendor lock-in fears. Deep penetration in regulated industries with strict data sovereignty requirements. NVIDIA and Intel partnerships for on-prem AI inference
+• Best at: Hybrid and on-premises data management for regulated enterprises, real-time streaming (DataFlow), large-scale data engineering on Spark, and environments where data cannot leave customer infrastructure
+• Worst at: Cloud-only greenfield deployments (loses to Snowflake/Databricks), developer experience and ease-of-use (cloud-native platforms are simpler), brand perception (still fighting the "Hadoop company" label), and self-service analytics (not a BI tool — needs downstream visualization tools)
+• Biggest threat (3yr): Databricks successfully building hybrid capabilities that match Cloudera's on-prem strength — if Databricks cracks the regulated hybrid market, Cloudera's differentiation narrows significantly. Also, hyperscalers offering "sovereign cloud" regions that satisfy data sovereignty requirements without on-prem
+• Largest opportunity (3yr): Enterprise AI on hybrid infrastructure — if the "AI everywhere, not just cloud" thesis plays out (and Cloudera's FY26 results suggest it is), the company is uniquely positioned. The partnership with NVIDIA for on-prem AI and the Intel collaboration for scalable enterprise AI are early signals. A successful IPO at a premium to the $5.3B take-private would validate the thesis`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Feb 2026: Reported "record" FY26 performance — Q4 50%+ YoY new/expansion growth, 100%+ new logo growth across all regions, robust ARR growth. Strongest results since going private
+• Nov 2025: Expanded to AWS Saudi Arabia region — supporting Saudi Vision 2030 data sovereignty requirements. Deepening Middle East presence
+• Nov 2025: Partnered with Intel for scalable enterprise AI adoption across industries
+• Nov 2025: EVOLVE25 Dubai event — CEO Sansbury emphasized hybrid AI as the standard for financial services (91% of financial services leaders see hybrid as "high value strategy")
+• Oct 2025: Focused messaging on "Private AI" as enterprises reconsider cloud strategies — positioning against the all-cloud narrative
+• Aug 2023: Charles Sansbury appointed CEO — PE-operator profile, replacing Rob Bearden. Sansbury previously led ASG Technologies to sale (Rocket Software) and Attachmate Group to sale (Micro Focus). Classic CD&R/KKR move to install an operator focused on value creation and exit positioning
+• Oct 2021: CD&R and KKR completed $5.3B take-private ($16/share). Carl Icahn's ~18% stake supported the deal. Funded with equity and syndicated debt
+• Jan 2019: Cloudera and Hortonworks completed merger — combined the two largest commercial Hadoop companies into a single entity. Integration was challenging and the stock underperformed post-merger, leading to Icahn's activist intervention and eventual take-private
+• 2008: Founded by Jeff Hammerbacher, Amr Awadallah, and Christophe Bisciglia to commercialize Apache Hadoop
+• Key M&A context: CD&R and KKR have held since Oct 2021 (~4.5 years). Typical hold is 5-7 years, implying exit activity in 2026-2028. The CEO hire (PE-operator), record FY26 performance, and accelerating growth suggest the company is being positioned for an IPO or strategic exit`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "cl1", text: "The hybrid AI thesis is gaining real traction. Two years ago, the all-cloud narrative dominated and Cloudera looked like a legacy company. Now, enterprises are openly saying 40%+ of workloads will stay on-prem, cloud costs are rising, and data sovereignty requirements are tightening. Cloudera's FY26 results (50%+ new/expansion growth, 100% new logo growth in Q4) are the first hard evidence that the market is moving Cloudera's way. The question is whether this is a durable shift or a temporary correction — if durable, Cloudera's valuation should re-rate significantly from the $5.3B take-private.", date: "2026-03-20T00:00:00Z" },
+      { id: "cl2", text: "The Hadoop legacy is both an asset and a liability. Asset: Cloudera has the largest installed base of on-prem big data customers in the world — these enterprises have petabytes of data running on Cloudera and switching costs are enormous. Liability: 'Hadoop company' is a brand perception anchor that makes it harder to win cloud-native and AI-first buyers who associate Cloudera with 2012-era technology. The Apache Iceberg adoption and NVIDIA/Intel AI partnerships are smart moves to modernize the narrative — but it will take another 2-3 years of consistent execution for the market to fully update its perception.", date: "2026-03-14T00:00:00Z" },
+      { id: "cl3", text: "CD&R and KKR are at ~4.5 years of ownership. The CEO swap to Sansbury (a PE-operator with two successful exits) and the record FY26 results are textbook pre-exit positioning. If ARR growth sustains at current levels and the company can demonstrate cloud revenue acceleration alongside on-prem strength, an IPO in 2027 at $8-12B valuation is plausible — representing 1.5-2.3x the $5.3B take-private. The risk is that public market investors still see Cloudera as 'not Snowflake' and apply a legacy discount.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  knowbe4_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private cybersecurity company — the world's largest security awareness training (SAT) and simulated phishing platform, expanding into broader human risk management (HRM) including AI-powered email security
+• Founded 2010 in Clearwater, FL by Stu Sjouwerman (former CEO) and Kevin Mitnick (legendary hacker, designed original training content; passed away Jul 2023)
+• IPO'd on Nasdaq (KNBE) in Apr 2021; taken private by Vista Equity Partners in Feb 2023 for $4.6B ($24.90/share, 44% premium). KKR and Elephant Partners rolled equity into the deal
+• CEO transition: Stu Sjouwerman (founder) stepped aside; Bryan Palma appointed CEO (former CEO of Trellix, the McAfee Enterprise/FireEye merger). Palma has publicly stated ambition to grow KnowBe4 to a multi-billion-dollar company in the CrowdStrike/Palo Alto class
+• ~52,000+ customer organizations globally across 194 countries as of the take-private
+• Completed acquisition of Egress (UK-based adaptive AI email security) in Jul 2024 — the most significant strategic move since going private, shifting KnowBe4 from training-only to a real-time human risk management platform
+• 12 total acquisitions including SecurityAdvisor ($80M, Oct 2021), Egress, and multiple smaller technology tuck-ins
+• Launched AIDA (Artificial Intelligence Defense Agents) — suite of 7 AI agents for automated phishing analysis, remediation, risk scoring, and orchestration. Feb 2026: launched first fully autonomous agent for human risk management`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: SaaS subscription — annual or multi-year contracts based on number of users/seats. Highly recurring with strong retention dynamics (compliance-driven renewals). Pricing scales with employee count, making large enterprises the highest-ACV customers
+• KnowBe4 HRM+ (Human Risk Management Platform): The unified platform combining all capabilities — security awareness training, simulated phishing, email security, and AI-driven risk scoring into a single dashboard. This is the strategic repositioning from "training vendor" to "human risk platform"
+• Security Awareness Training: The original core product — largest library of security training content globally (1,800+ modules). Covers phishing, social engineering, ransomware, compliance (HIPAA, PCI, GDPR). Interactive, gamified training with localized content in 35+ languages
+• Simulated Phishing: Automated phishing simulation campaigns — tests employees with realistic phishing emails and measures click rates, reporting behavior, and susceptibility trends over time. The feedback loop between training and simulation is the core product value
+• Egress Email Security (acquired Jul 2024): Adaptive AI-powered email protection — inbound phishing detection, outbound data loss prevention (DLP), misdirected email prevention. Named a Leader in 2024 Gartner Magic Quadrant for Email Security Platforms. This acquisition moves KnowBe4 from "test and train" to "detect and prevent" at the point of action
+• PhishER / PhishER Plus: AI-powered phishing triage and remediation — automatically analyzes user-reported phishing emails and remediates threats across the enterprise. PhishML provides transparency into AI analysis decisions
+• SecurityCoach: Real-time security coaching — delivers personalized coaching moments to employees based on their actual risky behaviors detected across security tools (SIEM, endpoint, email gateway integrations)
+• AIDA (AI Defense Agents): Suite of 7 AI-native agents — automated phishing analysis, risk proficiency assessment, orchestration of simulations, and autonomous human risk management. First fully autonomous agent launched Feb 2026
+• Customers buy because: Phishing is the #1 attack vector for ransomware and data breaches — 83% of organizations reported insider attacks in 2024. Employees are the weakest link, and no amount of technical security eliminates the human risk. KnowBe4 reduces that risk through a combination of training (change behavior) and technology (catch threats humans miss). Compliance mandates (HIPAA, PCI-DSS, SOX, GDPR) often require security awareness training, making it a non-discretionary budget item`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Broad market — from SMB (10+ employees) to large enterprise (Fortune 500). The platform scales from simple compliance-driven training for SMBs to full HRM+ deployments for large enterprises. Mid-market and upper-mid are the sweet spot for ACV
+• 52,000+ customer organizations across 194 countries — one of the broadest customer bases in cybersecurity
+• Key verticals: Financial services (regulatory-driven SAT requirements), healthcare (HIPAA compliance), government/public sector, education, technology, manufacturing, and legal/professional services. Essentially horizontal — every organization with employees and email is a potential customer
+• Geography: Estimated ~60-65% North America, ~25-30% EMEA (strengthened by Egress UK base), ~5-10% APAC and rest of world. Feb 2026: opened Arlington, VA office for public sector expansion
+• Channel model: Significant MSP/MSSP distribution — MSPs package KnowBe4 training as part of managed security offerings for SMB customers. This channel is a major driver of SMB customer acquisition
+• Buying drivers: Compliance requirements (HIPAA, PCI, SOX, GDPR mandate security training), cyber insurance requirements (many policies now require documented SAT programs), and actual breach prevention (organizations that phish-test regularly see 50-75% reduction in click rates over 12 months per KnowBe4 data)
+• The Egress acquisition expands the buyer from just CISO/compliance (training budget) to the broader security operations team (email security budget) — this is the TAM expansion play`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Security awareness training market estimated at ~$5-7B in 2025, growing at ~15-18% CAGR. KnowBe4 is the clear market leader by customer count and revenue
+• Broader human risk management / human-layer security market is ~$10-15B when including email security, insider threat, and DLP — this is the expanded TAM KnowBe4 is targeting post-Egress
+• Global cybersecurity spend projected to reach $500B+ by 2030, up from ~$270B in 2025
+• Tailwind — Phishing and social engineering growth: Phishing remains the #1 attack vector. AI-generated phishing is making attacks more sophisticated and harder to detect. More attacks = more demand for training and detection. Time horizon: Permanent and intensifying
+• Tailwind — Compliance mandates expanding: More regulatory frameworks require security awareness training. Cyber insurance requirements increasingly mandate SAT programs. This makes KnowBe4's product non-discretionary for many buyers. Time horizon: 5+ years
+• Tailwind — AI-powered human risk management: The category is evolving from static annual training to real-time, AI-driven behavioral risk management. KnowBe4's AIDA agents and Egress integration position it at the front of this shift. Time horizon: 3-5 years
+• Headwind — Commoditization of basic SAT: Simple awareness training is becoming table stakes — bundled by Microsoft (Attack Simulation Training in M365 E5), Proofpoint, Mimecast, and others. Low-end SAT pricing is compressing. Time horizon: Permanent for the basic tier
+• Headwind — Platform consolidation: Large security platforms (CrowdStrike, Palo Alto, Microsoft) are absorbing adjacent categories including SAT and email security. If SAT becomes just a feature of a broader platform, standalone SAT vendors face margin pressure. Time horizon: 3-5 years
+• Headwind — Training fatigue: Employees increasingly view mandatory security training as a compliance checkbox rather than genuine education. Effectiveness of traditional training methods is debated. Time horizon: Ongoing — KnowBe4's AI coaching approach is the counter
+• Market growth (5yr estimate): SAT market grew at estimated ~14-18% CAGR; email security market grew at ~12-15% CAGR over last 5 years (estimates based on Gartner, MarketsandMarkets reports)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Proofpoint (Thoma Bravo, ~$1B+ revenue): The most dangerous competitor. Already has security awareness training (acquired Wombat 2018) integrated with its leading email security platform. Proofpoint offers a broader threat protection suite and is repositioning around human risk management — directly overlapping with KnowBe4's strategy. Proofpoint wins on email security depth and enterprise brand; KnowBe4 wins on training content breadth and price
+• Mimecast (~$600M revenue): Email security with integrated awareness training (acquired Ataata 2018, acquired Elevate Security 2024 for behavioral risk). Similar convergence strategy to KnowBe4 but from the email security side. Competes in mid-market
+• Microsoft (Attack Simulation Training in M365 E5): The structural threat. Bundled with E5 licenses at no incremental cost. "Good enough" for basic compliance-driven SAT. Doesn't replace KnowBe4 for organizations wanting comprehensive programs, but commoditizes the low end. Time horizon: Permanent pressure
+• CrowdStrike / Palo Alto: Not direct SAT competitors today but both expanding platform scope. If either acquires or builds SAT capabilities, it creates a one-vendor-fits-all narrative that pressures standalone SAT vendors
+• Hoxhunt: Fastest-growing SAT startup — human risk management platform with gamified, adaptive phishing simulations. AI-native from the ground up. Winning mid-market deals and raising enterprise interest. The most innovative competitor
+• Cofense (acquired Cyberfish 2021): Phishing detection and response platform — competes on the PhishER/triage side. Stronger in phishing reporting automation; weaker in training content
+• IRONSCALES: AI-powered email security and phishing simulation — competes at the intersection of email security and SAT
+• Competitive advantage: KnowBe4 wins on scale (52,000+ customers, largest training library), brand recognition as the SAT category leader, content depth (1,800+ modules in 35+ languages), and the expanding HRM+ platform that now includes Egress email security + AIDA AI agents. The combination of training + email security + real-time coaching + AI risk scoring is unique at KnowBe4's scale
+• Best at: Security awareness training content and delivery (unmatched library), simulated phishing programs, MSP/channel distribution for SMB, and compliance-driven SAT deployments
+• Worst at: Enterprise email security credibility vs. Proofpoint/Mimecast (Egress helps but is still being integrated), platform depth vs. broader cybersecurity suites, and competing on price against Microsoft's bundled E5 offering
+• Biggest threat (3yr): Proofpoint delivering a fully integrated human risk management platform that combines its superior email security with good-enough training — if CISOs can get both from Proofpoint, the standalone SAT budget for KnowBe4 is at risk. Microsoft E5 bundling continues to compress the low end
+• Largest opportunity (3yr): Becoming the de facto human risk management platform — if KnowBe4 successfully integrates Egress, ships AIDA autonomous agents, and demonstrates measurable risk reduction (not just training completion), the value prop shifts from "compliance checkbox" to "human-layer security platform." This justifies premium pricing and expands TAM from $5-7B SAT to $10-15B+ HRM`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Feb 2026: Launched AIDA Orchestration — first fully autonomous AI agent for human risk management. Automates phishing simulation creation, delivery, and reporting
+• Feb 2026: Opened Arlington, VA office for public sector expansion — signals government vertical investment
+• Jan 2026: Named #1 Leader in G2 Winter 2026 for Security Awareness Training and Incident Response
+• 2025: Bryan Palma appointed CEO (former CEO of Trellix). Publicly stated ambition to grow KnowBe4 to multi-billion-dollar revenue in the CrowdStrike/Palo Alto class. Signals M&A appetite and growth acceleration under Vista
+• Jul 2024: Completed acquisition of Egress — adaptive AI email security platform (UK-based). Egress had ~$50M revenue in 2023 and was named a Leader in 2024 Gartner MQ for Email Security Platforms. KnowBe4's largest and most strategically important acquisition — shifts the company from training-only to real-time human risk management
+• Apr 2024: Announced agreement to acquire Egress. First acquisition since Vista take-private
+• Feb 2023: Vista Equity Partners completed $4.6B take-private ($24.90/share, 44% premium). KKR and Elephant Partners rolled equity. Stu Sjouwerman (founder) and KKR collectively held ~83% voting power and supported the deal
+• Oct 2021: Acquired SecurityAdvisor for ~$80M — human behavior analytics, correlated security alerts across tools. Last acquisition before going private
+• Apr 2021: IPO on Nasdaq (KNBE) — one of the cybersecurity IPOs of the pandemic era
+• 2017-2021: Completed 8 acquisitions in rapid succession building out the platform (MediaPro, Popcorn Training, GFI/Egnyte, CLTRe, SecurityAdvisor, and others)
+• 2010: Founded by Stu Sjouwerman and Kevin Mitnick in Clearwater, FL`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "kb1", text: "The CEO swap from founder Sjouwerman to Bryan Palma (former Trellix CEO) is the clearest signal of Vista's playbook. Palma is a scale-operator who explicitly said he wants to build KnowBe4 into a multi-billion-dollar company in the CrowdStrike/Palo Alto class. That's aggressive — KnowBe4's last public ARR was ~$330M (Q3 2022). Getting to $2B+ requires either massive organic growth or a roll-up strategy. Palma confirmed M&A appetite and noted 'many companies for sale' with prices coming down. Expect more acquisitions.", date: "2026-03-20T00:00:00Z" },
+      { id: "kb2", text: "The Egress acquisition is the strategic inflection point. Before Egress, KnowBe4 was a training company that needed to prove its training actually prevents breaches — a hard ROI argument. After Egress, KnowBe4 has real-time email security that detects and blocks threats at the point of action. This transforms the value prop from 'we train your employees to spot phishing' to 'we stop phishing and coach your employees in real-time.' The Gartner MQ Leader recognition for Egress in Email Security validates the capability. The integration execution is what matters now — can they deliver HRM+ as a unified platform, not a bundle of separate tools?", date: "2026-03-14T00:00:00Z" },
+      { id: "kb3", text: "The Microsoft E5 bundling threat is real but overstated. Microsoft's Attack Simulation Training is basic — limited content library, no real-time coaching, no email security integration, no AI agents. It satisfies the minimum compliance checkbox but doesn't move the needle on actual risk reduction. KnowBe4's opportunity is to prove that comprehensive HRM delivers measurable security outcomes beyond what a bundled feature can — and charge premium pricing for it. The danger is if CISOs decide 'good enough' from Microsoft is actually good enough for their risk tolerance.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  infoblox_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private enterprise DDI (DNS, DHCP, IP address management) and DNS security company — provides the foundational network services infrastructure that every enterprise network runs on, plus DNS-layer threat protection
+• Founded 1999 in Santa Clara, CA; IPO'd on NYSE in 2012; taken private by Vista Equity Partners in Nov 2016 for ~$1.6B
+• Sep 2020: Warburg Pincus made a significant co-investment, valuing Infoblox at $3B+ (including debt). Vista and Warburg Pincus became equal partners. ~2x value creation from Vista's $1.6B entry
+• Ardian also invested alongside Vista and Warburg Pincus per PitchBook ($5.28B total raised)
+• CEO: Scott Harrell (appointed 2022, former Cisco SVP/GM of Enterprise Networking and Cloud). Previous CEO Jesper Andersen led from 2014 through the Vista take-private and Warburg investment
+• ~12,000+ customers globally including 70% of the Fortune 500; ~2,700 employees
+• ARR over $400M per PitchBook (2023 report); current ARR likely higher given growth trajectory
+• DDI market leader with ~50% market share — no other vendor comes close. This is a near-monopoly position in a mission-critical infrastructure category
+• Under Vista ownership, transformed from hardware appliance vendor to cloud-managed SaaS model (BloxOne platform), and expanded from pure DDI into DNS-layer security (Threat Defense)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Transitioning from perpetual license + maintenance to subscription/SaaS. The BloxOne cloud platform is subscription-based (annual/multi-year). Legacy NIOS appliance revenue is perpetual + maintenance. Cloud mix growing as on-prem customers migrate to BloxOne. Professional services are supplemental
+• Infoblox Universal DDI Suite: The flagship — unified DNS, DHCP, and IP address management platform that works across on-prem, private cloud, public cloud (AWS, Azure, GCP), and hybrid environments. Single control plane for all network naming and addressing. This is what Infoblox is known for and where it has ~50% market share
+• BloxOne DDI: Cloud-native SaaS delivery of DDI services — the strategic platform for cloud-first and hybrid enterprise deployments. Replaces legacy NIOS appliances for customers moving to cloud-managed networking. This is the growth engine
+• NIOS DDI: Legacy on-premises DDI appliance platform — still the largest installed base and revenue contributor. Massive renewal base with high retention. Migration pathway to BloxOne is the key revenue expansion lever
+• Infoblox Threat Defense (BloxOne Threat Defense): DNS-layer security — blocks connections to malicious domains, phishing sites, and C2 infrastructure at the DNS resolution level before the threat reaches the endpoint. This is the TAM expansion play beyond DDI. Positioned as foundational security that works with existing security stack (complements firewalls, EDR, SIEM)
+• Universal Asset Insights: Network asset discovery and visibility — identifies and classifies all devices on the network using DNS/DHCP data. Addresses the "you can't protect what you can't see" problem
+• SOC Insights: Security operations analytics — correlates DNS intelligence with security events to accelerate threat investigation and response
+• Google Cloud DNS Armor (partnership, Oct 2025): Infoblox Threat Defense integrated into Google Cloud as a native service — signals hyperscaler validation and distribution channel expansion
+• Customers buy because: Every device on a network needs DNS and IP addressing to function — DDI is non-discretionary infrastructure. Infoblox automates what would otherwise be manual, error-prone network management at enterprise scale. The Threat Defense product adds security value on top of the DDI infrastructure — using DNS as a security control point is unique because 92%+ of malware uses DNS at some stage`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Core customer profile: Large enterprise and government — organizations with complex, multi-site, hybrid networks managing thousands to millions of IP addresses. Typically 1,000+ employees with dedicated network operations teams
+• 12,000+ customers including 70% of the Fortune 500 — extremely high penetration among the largest enterprises
+• Key verticals: Financial services (network reliability for trading, compliance), telecommunications (massive IP address estates), government/defense (classified network management, FedRAMP), healthcare (medical device network management), manufacturing (OT/IT convergence), and technology
+• Concentrated in large enterprise — the SMB market is underserved by Infoblox (too expensive, too complex for small networks). Mid-market is a growth opportunity
+• Geography: Estimated ~55-60% North America, ~25-30% EMEA, ~10-15% APAC. Jun 2025: Google Cloud partnership expands distribution. Nov 2025: launched on AWS with predictive DNS-based threat protection — signals cloud marketplace distribution strategy
+• Buying drivers: Network complexity is exploding — hybrid cloud, IoT proliferation (29B+ devices by 2025), remote work, and multi-cloud architectures create exponentially more IP addresses and DNS queries to manage. Manual management doesn't scale. Infoblox automates this. The security angle is increasingly important — DNS is a universal choke point where threats can be blocked before they execute
+• Switching costs are very high — DDI is deeply embedded in network infrastructure. Ripping out Infoblox means re-architecting core network services, which most enterprises won't do. This creates exceptional retention and pricing power`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Global DDI market estimated at $650-755M in 2024-2025, projected to reach $2.5B+ by 2033 at ~9-22% CAGR depending on source (estimates vary widely — Grand View Research says 22.6% CAGR, other sources more conservative at 8-10%). Infoblox at $400M+ ARR owns roughly 50%+ of this market
+• Broader DNS security market is an additional ~$2-3B and growing at 15-20% CAGR — this is where Infoblox's Threat Defense product competes
+• Tailwind — Network complexity explosion: Hybrid cloud, multi-cloud, IoT, edge computing, and 5G are creating exponentially more devices and IP addresses. Every connected device needs DNS and DHCP. This is structural and permanent. Time horizon: 10+ years
+• Tailwind — DNS-layer security: 92%+ of malware uses DNS. Enterprises are recognizing DNS as a fundamental security control point. DNS security is additive to existing firewall/EDR/SIEM investments, not a replacement. Growing budget allocation. Time horizon: 5+ years
+• Tailwind — Cloud migration of DDI: Legacy on-prem DDI (NIOS) customers migrating to cloud-managed BloxOne creates a built-in upsell and cloud ARR growth driver. Time horizon: 3-5 years
+• Tailwind — Zero trust architecture: DNS is a foundational component of zero-trust networking — identity and policy enforcement at the network layer. Time horizon: 5+ years
+• Headwind — Hyperscaler native DNS: AWS Route 53, Azure DNS, Google Cloud DNS provide basic DNS services natively. "Good enough" for simple cloud-only architectures. Infoblox wins on hybrid complexity, automation, and security that cloud-native DNS doesn't provide. Time horizon: Permanent for simple use cases
+• Headwind — Microsoft/Cisco bundling: Microsoft (DNS in Active Directory) and Cisco (OpenDNS/Umbrella) offer overlapping capabilities bundled with broader platforms. Neither matches Infoblox's DDI depth but create competitive noise. Time horizon: Permanent
+• Market growth (5yr estimate): DDI market grew at estimated ~10-15% CAGR; DNS security market grew at ~15-20% CAGR over last 5 years (estimates based on Grand View Research, Mordor Intelligence reports)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• BlueCat Networks (Audax Group): The only meaningful direct DDI competitor. Acquired LiveAction (Oct 2024) to build "Intelligent NetOps." BlueCat has ~15% DDI market share vs. Infoblox's ~50%. BlueCat wins on price and flexibility for mid-market; Infoblox wins on enterprise scale, feature depth, and security integration. BlueCat is the only vendor that could credibly challenge Infoblox's DDI dominance
+• Cisco (OpenDNS/Umbrella): Competes in DNS security (not DDI). Umbrella is a cloud-delivered DNS security service. Strong Cisco ecosystem distribution. Infoblox wins on DDI depth and hybrid management; Cisco wins on bundled security platform and existing customer relationships
+• Microsoft (Active Directory DNS): Default DNS for Windows environments. Free with Windows Server. Adequate for basic on-prem AD-integrated environments but lacks automation, IPAM, multi-cloud management, and security capabilities that Infoblox provides. The structural low-end competitor
+• EfficientIP: European DDI vendor — acquired by Infoblox in 2023 per some reports (though acquisition details are unclear). If confirmed, this further consolidates Infoblox's DDI dominance
+• TCPWave: Smaller DDI vendor targeting enterprises seeking alternatives. Niche player
+• Competitive advantage: Infoblox owns ~50% of the DDI market — this is a near-monopoly in a mission-critical infrastructure category. The switching costs are enormous (DDI is the foundation of network operations). The expansion into DNS security (Threat Defense) leverages the installed DDI base to upsell security — customers already have Infoblox managing their DNS, adding security on top is a natural extension. The Google Cloud partnership (DNS Armor) validates the technology and opens hyperscaler distribution
+• Best at: Enterprise-scale DDI management across hybrid/multi-cloud, DNS-layer security (Threat Defense), network automation at scale, and government/regulated industry deployments (FedRAMP)
+• Worst at: Mid-market and SMB (too expensive and complex), competing against free/bundled DNS (Microsoft AD, cloud-native DNS), and modern developer/DevOps workflows where infrastructure-as-code tools may bypass traditional DDI
+• Biggest threat (3yr): Cloud-native DNS services improving to the point where enterprises don't need a separate DDI vendor for cloud workloads. Also, Cisco Umbrella expanding from DNS security into DDI-like functionality. BlueCat gaining enterprise traction with a more modern, cloud-native approach
+• Largest opportunity (3yr): DNS security expansion — if every Infoblox DDI customer also buys Threat Defense, the revenue per customer roughly doubles. The Google Cloud DNS Armor partnership signals that hyperscalers are validating DNS-layer security as a category, which benefits Infoblox as the market leader. An IPO at $6-10B+ valuation would represent strong returns for Vista/Warburg (from $1.6B → $3B → potential $6-10B)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Oct 2025: Google Cloud launched DNS Armor integrating Infoblox Threat Defense as a native Google Cloud service — significant hyperscaler validation and distribution channel
+• Nov 2025: Launched predictive DNS-based threat protection on AWS — cloud marketplace distribution expansion
+• Jun 2025: Partnership with Google Cloud integrating Universal DDI with Google Cloud WAN
+• Sep 2025: Appointed Justin Kappers as CIO to lead global IT, AI adoption, and business growth
+• 2023: Acquired EfficientIP (French DDI vendor) — further consolidated DDI market dominance (details unclear, some sources report this)
+• Dec 2020: Closed Warburg Pincus co-investment. Vista and Warburg Pincus became equal partners at $3B+ valuation. ~2x value from Vista's 2016 entry
+• Sep 2020: Announced Warburg Pincus investment. Morgan Stanley and Qatalyst advised Vista/Infoblox; Credit Suisse advised Warburg Pincus
+• Nov 2016: Vista Equity Partners completed take-private of Infoblox for ~$1.6B ($26.50/share, 15% premium). Under Vista, company transformed from hardware appliance to cloud SaaS model and expanded into DNS security
+• 2012: IPO on NYSE
+• 1999: Founded in Santa Clara, CA
+• Key ownership context: Vista has held since 2016 (~10 years). Warburg Pincus since 2020 (~6 years). Both are at or past typical PE hold periods. The Google Cloud partnerships and accelerating cloud growth suggest the company is being positioned for an exit — IPO is the most likely path given the scale ($400M+ ARR) and market leadership position`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [
+      { id: "ib1", text: "The ~50% DDI market share is the single most important fact about Infoblox. In enterprise software, near-monopoly positions in mission-critical infrastructure categories are rare and extremely valuable. DDI is invisible plumbing — when it works, nobody notices; when it breaks, the entire network goes down. This creates extreme risk aversion among buyers and exceptional retention for the incumbent. The question isn't whether Infoblox can defend DDI (it can — switching costs are prohibitive), it's whether the DDI market is big enough to justify a premium exit valuation or whether Infoblox needs DNS security to be the growth story.", date: "2026-03-20T00:00:00Z" },
+      { id: "ib2", text: "The DNS security expansion (Threat Defense) is the make-or-break growth thesis. DDI alone is a ~$700M market — Infoblox already owns half of it. To justify a $6-10B exit, they need DNS security to become a major revenue stream. The thesis is sound: 92% of malware uses DNS, so blocking threats at the DNS layer is a natural security control. The Google Cloud DNS Armor partnership validates the approach. But the competition from Cisco Umbrella and the need to sell to CISOs (different buyer than the network ops team that buys DDI) creates execution risk. Watch Threat Defense attach rate and revenue growth as the leading indicator.", date: "2026-03-14T00:00:00Z" },
+      { id: "ib3", text: "Vista at 10 years and Warburg Pincus at 6 years — both well past typical hold periods. The Google Cloud partnerships, AWS marketplace launch, and CIO hire (Sep 2025) are textbook exit positioning. An IPO in 2026-2027 is the most likely path. At $400M+ ARR with ~50% market share in a growing category, Infoblox could command 10-15x ARR in public markets ($4-6B+ valuation), representing solid returns for Vista (from $1.6B entry) and Warburg (from $3B entry). The risk is that public market investors see DDI as a niche, unsexy infrastructure category and apply a discount to the multiple.", date: "2026-03-08T00:00:00Z" },
+    ],
+  },
+  apld_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Designer, builder, and operator of high-performance data centers purpose-built for AI and HPC workloads — commonly referred to as "AI Factories"\n• Nasdaq-listed (APLD); headquartered in Dallas, TX; founded in 2021 as Applied Blockchain, rebranded to Applied Digital in Nov 2022\n• Originally a crypto mining host operator; pivoted to AI/HPC infrastructure starting 2023-2024 as GPU demand exploded\n• Co-founded by Wes Cummins (Chairman & CEO) and Jason Zhang (President, appointed Jan 2026); Zhang's background includes Sequoia Capital and MSD Capital\n• NVIDIA is a strategic investor — took a direct equity stake in the company, validating the platform\n• Two operating segments: (1) Data Center Hosting (legacy crypto mining — 286 MW across two North Dakota sites, fully utilized), and (2) HPC Hosting (AI data centers — the growth engine)\n• Cloud Services Business (Applied Digital Cloud) reclassified as discontinued operations; being spun out and merged with EKSO Bionics to form ChronoScale Corporation (expected to close Q2 2026, APLD retains ~97% ownership)\n• Named Best Data Center in the Americas 2025 by Datacloud`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Long-term data center leasing (15-year base terms with three 5-year extension options) to hyperscalers and AI compute companies; supplemented by tenant fit-out services (one-time, low-margin installation work) and legacy crypto hosting\n• HPC Hosting (AI Factories): The core growth business — designs, builds, and operates purpose-built data centers for AI training and inference workloads. Facilities support 100+ kW rack densities with direct-to-chip liquid cooling, far beyond what traditional data centers can handle\n• Polaris Forge 1 (Ellendale, ND): 400 MW campus, fully leased to CoreWeave across three 15-year lease agreements (~$11B total anticipated lease revenue). First 100 MW reached Ready-for-Service in Q2 FY2026; second 150 MW expected mid-2026; third 150 MW expected mid-2027. Campus designed to scale to 1 GW\n• Polaris Forge 2 (Harwood, ND): 200 MW leased to an undisclosed U.S. investment-grade hyperscaler (~$5B anticipated revenue, ~15-year lease). Initial 300 MW expected online 2026, full buildout by 2027. Campus also designed to scale to 1 GW+\n• Delta Forge 1: 430 MW AI Factory campus in undisclosed southern U.S. state — broke ground early 2026\n• Total leased capacity: 600 MW across both Polaris campuses; ~$16B in aggregate prospective lease revenue before renewal options\n• Power pipeline exceeds 2 GW with 4 GW in active development\n• Data Center Hosting (legacy): 106 MW Jamestown, ND + 180 MW Ellendale, ND — both at full capacity, hosting crypto miners. Stable cash flow but not the growth story\n• Tenant fit-out services: One-time installation revenue (equipment, cooling, networking buildout for tenants). Contributed $26.3M in FQ1 2026 for CoreWeave — low-margin (mid-single digits) but signals full-stack capability\n• Proprietary waterless cooling technology — competitive advantage in sites without abundant water access\n• Construction timeline advantage: Reduced build time from 24 months to 12-14 months, critical when hyperscalers need capacity urgently\n• Customers buy because: Need massive, purpose-built AI compute capacity at low power cost, fast delivery, and in locations with abundant energy. APLD's ground-up liquid-cooled design vs. expensive retrofit of legacy facilities is the key differentiator`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Extreme customer concentration — two anchor tenants account for essentially all HPC revenue:\n  - CoreWeave: 400 MW at Polaris Forge 1 (~$11B contracted); CoreWeave is itself backed by NVIDIA and is a leading AI neocloud\n  - Undisclosed U.S. investment-grade hyperscaler: 200 MW at Polaris Forge 2 (~$5B contracted); holds right of first refusal on up to 800 MW across the 1 GW campus expansion\n• Customer profile: Hyperscalers, AI compute platforms, and large-scale GPU cloud providers — not enterprises directly\n• Legacy data center hosting segment serves crypto mining operators (Jamestown & Ellendale facilities)\n• Geography: 100% North America — all current and planned campuses are in the U.S. (North Dakota currently; southern U.S. expansion underway with Delta Forge 1)\n• Site selection driven by low-cost power, cool climate (reduces cooling costs), and access to renewable energy — North Dakota's attributes are core to the cost advantage\n• Buying decision: Hyperscalers need AI-optimized capacity faster than they can build it themselves. APLD offers purpose-built, liquid-cooled, high-density facilities at competitive power costs with 12-14 month delivery\n• Key risk: Revenue is almost entirely dependent on two tenants. If CoreWeave (itself pre-profit, heavily leveraged) falters, APLD's revenue visibility degrades significantly`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• AI data center market estimated at ~$147-236B in 2025, projected to reach $800B-$1T by 2030 depending on source (CAGR 24-32%). Wide range reflects different scope definitions\n• Hyperscalers (Alphabet, Amazon, Microsoft, Meta) collectively spent ~$413B on data center and AI infrastructure in 2025, more than double 2023. Expected $600-700B in 2026\n• Global data center capacity expected to nearly double from ~100 GW to ~200 GW between 2025 and 2030\n• ~$7T in total data center investment expected through 2030 per McKinsey, with $5T+ attributable to AI-specific demand\n• Tailwinds (strong, multi-year duration):\n  - Insatiable demand for AI training and inference compute — GPU supply no longer the bottleneck, data center capacity is\n  - Hyperscaler capex commitments locked in for 2-3+ years; $350B+ annually\n  - AI workloads expected to grow from ~25% to ~50% of all data center workloads by 2030\n  - Power density requirements (100+ kW/rack) create massive barrier for legacy facilities — favors new-build specialists\n• Headwinds:\n  - Power grid constraints — the single biggest bottleneck for new builds. Data centers consumed 4.4% of U.S. electricity in 2023, could triple by 2028\n  - Regulatory and permitting delays for new power interconnections\n  - Rising construction costs — average cost per sq ft near $1,000, up ~50% YoY\n  - Potential demand deceleration if AI adoption disappoints or training workloads plateau\n  - Customer concentration risk across the sector — few tenants, massive commitments\n• Market over last 5 years: Data center infrastructure spending has roughly tripled since 2023. U.S. data center construction spending hit $45.1B/month by Dec 2025, up 85% in two years. This is the largest coordinated capital investment cycle in technology history`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Most direct competitors are other crypto-to-AI pivots: IREN (fka Iris Energy) and Cipher Mining — all three leveraged secured power allocations from mining operations to pivot into AI infrastructure\n• IREN: Secured $9.7B contract with Microsoft (Nov 2025) for 200 MW; also pursuing GPU cloud services with NVIDIA Preferred Partner status. More diversified between mining, AI hosting, and GPU cloud\n• Cipher Mining: Similar pivot, smaller scale, focused on monetizing power assets for AI\n• Traditional data center operators: Equinix (focused on distributed AI and edge for inference), Digital Realty, QTS, CyrusOne — these tend to target enterprise colocation and are retrofitting rather than building ground-up for AI density\n• Hyperscalers themselves: Microsoft, Google, Amazon build their own facilities but cannot build fast enough — this is why APLD exists. Hyperscaler overflow creates the total addressable market\n• Where APLD competes best:\n  - Speed: 12-14 month build time vs. 24+ for competitors\n  - Purpose-built from scratch for 100+ kW rack density with liquid cooling (no retrofit penalty)\n  - Low power cost via strategic site selection in North Dakota\n  - Proprietary waterless cooling — reduces water dependency and site constraints\n• Where APLD competes worst:\n  - Scale: Much smaller than Equinix or Digital Realty; limited geographic footprint (concentrated in ND)\n  - Customer concentration: Two tenants vs. diversified portfolios at larger operators\n  - Balance sheet: Still unprofitable; heavy debt load vs. investment-grade incumbents\n  - No brand equity in enterprise — APLD is a B2B-to-hyperscaler play, not a direct enterprise seller\n• Biggest threats (next 3 years): CoreWeave credit risk (APLD's largest tenant is itself highly leveraged), power grid bottlenecks delaying buildouts, interest rate pressure on heavily debt-funded construction, and hyperscalers eventually building enough internal capacity to reduce outsourcing\n• Biggest opportunities: Delta Forge expansion, additional hyperscaler leases beyond current two tenants, the ChronoScale spinout creating a separate GPU cloud value stream, and the structural shortage of AI-ready capacity lasting through 2027-2028`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Mar 2026: Priced $2.15B offering of 6.750% senior secured notes due 2031 (98 cents on the dollar) to fund 200 MW buildout at Polaris Forge 2\n• Feb 2026: Signed binding Contribution and Exchange Agreement with EKSO Bionics to formally combine Applied Digital Cloud into ChronoScale Corporation; APLD to retain ~97% ownership. Target close Q2 2026\n• Jan 2026: Jason Zhang appointed President, formalizing co-founder's leadership role alongside CEO Wes Cummins\n• Jan 2026: FQ2 2026 earnings — revenue $126.6M (up 250% YoY); net loss $31.2M (improved 76% YoY); Adjusted EBITDA $20.2M\n• Dec 2025: Announced proposed spin-out of cloud business and merger with EKSO Bionics to form ChronoScale (non-binding term sheet)\n• Dec 2025: Entered development loan facility with Macquarie Equipment Capital — initial $100M to fund pre-lease site development for new campuses\n• Nov 2025: Led a $25M funding round in Corintis, a direct-to-chip liquid cooling developer ($15M from APLD)\n• Oct 2025: Completed $2.35B private offering of 9.25% senior secured notes due 2030 (97 cents on the dollar) to fund Polaris Forge 1 construction and repay SMBC loan\n• Oct 2025: Announced ~$5B, 15-year lease with undisclosed U.S. investment-grade hyperscaler for 200 MW at Polaris Forge 2\n• Oct 2025: FQ1 2026 earnings — revenue $64.2M (up 84% YoY); net loss $27.8M\n• Sep 2025: $5B preferred equity financing facility with Macquarie Asset Management (MAM takes 15% stake in APLD HPC Holdings LLC; up to $900M for Polaris Forge 1, right of first refusal for additional $4.1B over 30 months)\n• Aug 2025: Third CoreWeave lease — additional 150 MW at Polaris Forge 1, bringing total to 400 MW and ~$11B in anticipated lease revenue\n• Jun 2025: First two CoreWeave lease agreements for 250 MW at Polaris Forge 1 (~$7B in lease revenue)\n• Earlier: NVIDIA took direct equity stake (amount undisclosed); $450M convertible notes at 2.75%; sold 200 MW Garden City, TX facility (non-core asset)\n• Babcock & Wilcox received full notice to proceed on $2.4B design-build for Base Electron (backed by APLD) to deliver 1.2 GW of natural-gas power generation, with option for additional 1.2 GW`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      },
+    },
+    notes: [
+      { id: "apld1", text: "The thesis on APLD is straightforward: this is a capacity-constrained market where hyperscalers will pay premium long-term lease rates for purpose-built AI data centers, and APLD is one of the few pure-play builders that can deliver at speed. The $16B contracted backlog provides extraordinary revenue visibility for a company doing ~$280M in FY2026 revenue. The question isn't demand — it's execution risk and balance sheet risk. APLD is funding a capital-intensive buildout with high-coupon debt (9.25% and 6.75%) and preferred equity, all while still unprofitable. If construction timelines slip or CoreWeave struggles, the debt service burden becomes the story.", date: "2026-03-20T00:00:00Z" },
+      { id: "apld2", text: "CoreWeave concentration is the single biggest risk. APLD's largest tenant is itself a highly leveraged, pre-profit AI compute company. CoreWeave's IPO and its ability to service its own obligations directly affect APLD's revenue quality. The undisclosed investment-grade hyperscaler at Polaris Forge 2 is a better credit, but at 200 MW vs. 400 MW it's the smaller lease. Diversifying the tenant base with Delta Forge and future campuses is critical to de-risking the story.", date: "2026-03-20T00:00:00Z" },
+    ],
+  },
+  coreweave_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• GPU cloud infrastructure company — designs, operates, and leases AI-optimized cloud compute to AI labs, hyperscalers, and enterprises. Self-styled "The AI Hyperscaler" and "The Essential Cloud for AI"\n• Nasdaq-listed (CRWV); headquartered in Livingston, NJ; IPO'd on Mar 28, 2025 at $40/share, raising ~$1.5B in net proceeds\n• Founded in 2017 as Atlantic Crypto, a crypto mining operation. Pivoted to GPU cloud compute for AI/ML workloads starting ~2022. Renamed CoreWeave in Dec 2019\n• Co-founded by Michael Intrator (Chairman & CEO), Brian Venturo (CTO), and Brannin McBee (Chief Development Officer) — all three former hedge fund professionals. Founders cashed out ~$488M in pre-IPO secondary sales\n• NVIDIA is a strategic investor and key partner — holds ~6% stake; injected additional $2B at $87.20/share in Jan 2026\n• OpenAI is both a major customer (~$22.4B in total contract value) and an investor ($350M equity stake at IPO)\n• Operates 43+ data centers across North America and Europe as of year-end 2025, housing 250,000+ NVIDIA GPUs\n• FY2025 revenue: $5.1B (up 168% YoY). Revenue backlog: $66.8B as of Dec 31, 2025\n• Still deeply unprofitable on a GAAP basis — FY2025 net loss of ~$1.2B. Total debt exceeds $14B\n• Securities class action filed (Masaitis v. CoreWeave) alleging misrepresentation of operational capacity and concealed data center construction delays; class period Mar 28 - Dec 15, 2025`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: GPU-as-a-Service — customers lease access to NVIDIA GPU clusters via cloud platform under multi-year take-or-pay contracts with committed minimum spend. Revenue is recurring and contract-driven, with average weighted contract length ~5 years\n• CoreWeave Cloud Platform: Proprietary software + cloud services layer that orchestrates GPU compute, storage, networking, and Kubernetes-based infrastructure management at scale. Purpose-built for AI training, inference, and agentic AI workloads\n• GPU Compute: The core offering — on-demand and reserved access to NVIDIA GPU clusters (H100, A100, GB200 NVL72, GB300 NVL72, HGX B300). CoreWeave was among the first to commercially deploy GB200 NVL72 (Feb 2025) and GB300 NVL72 (Jul 2025)\n• Flexible Capacity Plans (launched Mar 2026): Flex Reservations (guaranteed ceiling with lower holding fees) and Spot (lower-cost, preemptible capacity) — designed to match modern AI workload patterns\n• Weights & Biases (acquired Jun 2025 for ~$1.4B): AI developer platform for experiment tracking, model monitoring, and agent evaluation. Now integrated into CoreWeave Cloud. Key tool for MLOps workflows\n• OpenPipe (acquired 2025): Fine-tuning and inference optimization tools — extends the platform up the stack\n• Infrastructure services: Bare metal servers, CPU compute, networking, managed services, storage (Local Object Transport Accelerator), and Kubernetes orchestration\n• Tenant fit-out / colocation: Some revenue from data center build-out services for anchor tenants\n• Customers buy because: Need massive, purpose-built GPU compute capacity faster than hyperscalers can provision it internally. CoreWeave's NVIDIA-first architecture, liquid cooling, and speed of deployment are the key differentiators. For AI labs, performance per dollar on training and inference workloads is the decision driver`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Extreme customer concentration — historically the single biggest risk:\n  - Microsoft: Was 62% of 2024 revenue and reportedly 71% of Q2 2025 revenue ("Customer A"). Relationship predates the AI pivot\n  - OpenAI: ~$22.4B in total contract value across three agreements (Mar 2025: $11.9B, May 2025: $4B, Sep 2025: $6.5B). OpenAI also holds $350M equity stake. Largest single customer commitment in the backlog\n  - Meta: Reported $14.2B infrastructure commitment through 2031\n  - Other named customers: Goldman Sachs, Morgan Stanley, Perplexity (multi-year partnership announced 2026)\n• Customer profile: AI frontier labs (OpenAI, Meta), hyperscalers (Microsoft), financial institutions, and AI-native startups. Increasingly broadening to enterprise — number of customers committed to $1M+ annual spend grew ~150% in 2025\n• Concentration is improving but still heavy — top two customers likely represent >50% of near-term revenue\n• Geography: Primarily U.S.; expanding into Europe with data centers in UK, Norway, Sweden, Spain. Announced £1.5B commitment to UK AI infrastructure (Sep 2025). European investment commitments total ~$3.5B+\n• Buying decision: AI labs need GPU compute they can't build fast enough internally. CoreWeave wins on performance, speed of provisioning, NVIDIA partnership (early access to latest chips), and purpose-built AI cloud stack. Price is competitive vs. hyperscaler equivalents for AI-specific workloads`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Same AI data center / GPU cloud market as Applied Digital, but CoreWeave operates higher in the stack (cloud platform + software) vs. APLD (pure real estate/leasing)\n• GPU cloud computing is a subset of the broader AI infrastructure market (~$236B in 2025, growing 25-32% CAGR to $800B-$1T by 2030)\n• Neocloud segment (specialized AI cloud providers like CoreWeave, Lambda, Together AI) is the fastest-growing subsegment — estimated to be $15-25B in 2025, growing to $50-100B+ by 2028 (estimate — exact data not available)\n• Tailwinds (strong, multi-year duration):\n  - AI model training and inference compute demand growing exponentially — models getting larger, inference becoming the dominant workload by 2027\n  - GPU supply remains constrained even in 2026 — NVIDIA H100 pricing held within 10% of year-start levels through 2025, A100 prices actually increased\n  - Hyperscalers outsourcing overflow capacity to neoclouds because they cannot build fast enough\n  - AI workloads broadening beyond frontier labs to enterprise, financial services, healthcare, government\n• Headwinds:\n  - Hyperscalers building internal capacity at massive scale ($600-700B capex in 2026) — risk of eventually reducing outsourcing to neoclouds\n  - GPU depreciation risk — loans secured by GPUs that lose value as new chip generations launch; principal stays fixed while collateral value falls\n  - Interest rate environment pressures highly leveraged model; CoreWeave has $14B+ in debt at high coupons (9%+ on unsecured senior notes)\n  - Potential for AI demand deceleration if model scaling laws plateau or enterprise adoption slows\n  - Construction delays proven to be a real operational risk (Denton, TX delays with Core Scientific)\n• Market growth over last 5 years: The neocloud segment essentially did not exist at scale 5 years ago. CoreWeave went from ~$229M revenue in 2023 to $1.9B in 2024 to $5.1B in 2025 — the market has grown at least 10x in 3 years (estimate)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Hyperscalers (AWS, Azure, GCP): The biggest long-term competitive threat. They have the balance sheets, the customer relationships, and are building capacity at unprecedented scale. CoreWeave wins today on specialization and speed, but the question is whether that advantage is durable or temporary\n• Lambda: GPU cloud competitor backed by $800M+ in funding. Smaller scale but similar positioning. Focused on AI researchers and developers\n• Together AI: Inference-focused cloud platform. Increasingly competitive on price/performance for inference workloads\n• Nebius (NBIS): NVIDIA just invested $2B (Mar 2026). Another neocloud competitor being positioned as an alternative\n• Applied Digital / IREN / Cipher Mining: Compete at the infrastructure layer — building and leasing data centers. APLD is a key partner (400 MW leased), but also a potential competitor if it moves up-stack\n• Core Scientific (CORZ): Was a key data center partner until the failed merger (Oct 2025 — shareholder vote failed). The Denton, TX construction delays with Core Scientific triggered the class action and the stock's 34% selloff\n• Where CoreWeave competes best:\n  - NVIDIA partnership depth — early access to latest chips (GB200, GB300, Rubin). This is the single most important competitive advantage\n  - Purpose-built AI cloud stack — not a general-purpose cloud bolting on GPUs\n  - Speed of deployment — can provision GPU clusters faster than hyperscalers\n  - Weights & Biases acquisition gives them a software/developer tools moat that pure infrastructure plays lack\n• Where CoreWeave competes worst:\n  - Balance sheet — $14B+ in debt vs. hyperscalers' investment-grade balance sheets with hundreds of billions in cash\n  - Customer concentration — still too dependent on top 2-3 customers\n  - Profitability — still GAAP net loss; adjusted EBITDA is strong (57-62% margins) but interest expense consumes most operating income\n  - GPU collateral depreciation — a structural risk unique to GPU-secured lending\n• Biggest threats (next 3 years): Hyperscaler in-sourcing, GPU price deflation as supply catches up, refinancing wall ($4.2B due in 2026), class action litigation overhang, and any pullback from OpenAI or Microsoft\n• Biggest opportunities: Enterprise AI adoption broadening the customer base, European expansion, software platform (W&B, OpenPipe) creating higher-margin recurring revenue, and becoming the dominant "neutral" AI cloud for companies that don't want to run on a hyperscaler competitor's infrastructure`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Mar 2026: Announced FQ3 earnings call and general availability of NVIDIA HGX B300 on CoreWeave Cloud. Launched Flexible Capacity Plans (Flex Reservations + Spot)\n• Feb 2026: FY2025 / Q4 2025 earnings — full year revenue $5.1B (up 168% YoY); Q4 revenue $1.6B (up 110% YoY); net loss ~$452M in Q4; adjusted EBITDA $898M (57% margin). Revenue backlog reached $66.8B. Guided $12-13B in FY2026 revenue (vs. $12.09B consensus). Guided $30-35B in 2026 capex\n• Feb 2026: Class action lawsuit filed (Pomerantz LLP / Hagens Berman) — alleges misrepresentation of operational capacity and concealed construction delays at Denton, TX data center. Class period Mar 28 - Dec 15, 2025. Lead plaintiff deadline Mar 13, 2026\n• Jan 2026: NVIDIA invested additional $2B at $87.20/share — interpreted by market as a strategic backstop\n• Dec 2025: Q1 2026 guidance of $1.9-2.0B came in below $2.29B consensus, triggering selloff. Stock fell from mid-$90s to mid-$70s\n• Oct 2025: Core Scientific merger terminated after failing to receive sufficient shareholder votes. CoreWeave had announced the all-stock acquisition in Jul 2025. Denton, TX data center construction delays were flagged\n• Sep 2025: Third OpenAI agreement — additional $6.5B, bringing total contract value to ~$22.4B. Announced £1.5B UK infrastructure commitment and launched CoreWeave Ventures\n• Aug 2025: Q2 2025 earnings — revenue $1.2B; GAAP net loss $291M; adjusted EBITDA $753M (62% margin). Revenue backlog $30.1B. Stock dropped post-earnings despite beat\n• Jun 2025: Acquired Weights & Biases for ~$1.4B. Stock peaked at $183.58 on Jun 20\n• May 2025: Second OpenAI agreement worth up to $4B. Completed $2B debt offering (unsecured senior notes)\n• Mar 2025: IPO at $40/share on Nasdaq (CRWV), raising ~$1.5B net. Initial OpenAI deal announced ($11.9B + $350M equity stake). Opened first trading day at $39, reflecting soft demand\n• 2024: Raised $7B+ in one of the largest private debt financings in history (led by Blackstone, Magnetar). Revenue grew 737% to $1.9B. Ended year with 32 data centers, 250,000+ GPUs\n• Earlier: NVIDIA invested at various stages (holds ~6% stake). Total capital raised: $17.2B+ in debt and equity combined`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      },
+    },
+    notes: [
+      { id: "crwv1", text: "CoreWeave is the most important and most controversial name in AI infrastructure right now. The bull case is straightforward: $66.8B backlog, 168% revenue growth, NVIDIA's chosen cloud partner, and the structural shortage of AI compute isn't going away. The bear case is equally clear: $14B+ in debt at high coupons, GAAP losses widening, GPU collateral depreciating, $4.2B refinancing wall in 2026, and a business model that requires continuous external capital to fund growth. This is not a software company — it's a capital-intensive infrastructure play leveraged to the hilt on the assumption that AI demand never decelerates. If it does, the debt burden becomes existential.", date: "2026-03-20T00:00:00Z" },
+      { id: "crwv2", text: "The Core Scientific debacle is a case study in concentration risk. CoreWeave relied on a single third-party developer for key data center buildouts (including the Denton, TX cluster for OpenAI), the merger failed on a shareholder vote, construction delays surfaced, and the stock dropped 34% in a month. The class action is the legal aftermath. For underwriting purposes, the question is whether this was a one-off execution stumble or a structural vulnerability in a model that requires building massive physical infrastructure on aggressive timelines with limited partner diversification. Management says they've diversified their developer base since then — the market will be watching closely in 2026.", date: "2026-03-20T00:00:00Z" },
+      { id: "crwv3", text: "The APLD connection: CoreWeave is APLD's anchor tenant at Polaris Forge 1 (400 MW, ~$11B in leases). CoreWeave's credit quality directly affects APLD's revenue quality. If you're underwriting APLD, you're implicitly underwriting CoreWeave's ability to service its lease obligations. CoreWeave's $14B+ debt, negative GAAP profitability, and dependence on OpenAI/Microsoft revenue make this a layered credit risk — APLD is levered to a tenant that is itself heavily levered. Watch CoreWeave's refinancing activity and cash flow trajectory as leading indicators for APLD's lease revenue durability.", date: "2026-03-20T00:00:00Z" },
+    ],
+  },
+  terawulf_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Owner, developer, and operator of energy-advantaged digital infrastructure purpose-built for HPC/AI hosting and legacy bitcoin mining\n• Nasdaq-listed (WULF); headquartered in Easton, MD; founded 2021\n• Originally a bitcoin mining company — pivoting aggressively into AI/HPC data center leasing as primary growth engine since late 2024\n• Led by Paul Prager (CEO), a veteran energy infrastructure entrepreneur. Prager also controls Riesling Power / Beowulf Energy (related entities that have transacted with TeraWulf — disclosed related-party dealings)\n• Key differentiator: Zero-carbon energy positioning — flagship Lake Mariner campus powered predominantly by nuclear and hydro power. Sustainability angle is a selling point for tenants with ESG mandates\n• Two anchor HPC tenants: Core42 (G42 subsidiary, Abu Dhabi) and Fluidstack (AI cloud platform backed by Google)\n• Google is a significant financial partner — $3.2B+ in credit backstops of Fluidstack lease obligations; ~14% pro forma equity ownership via warrants\n• FY2025 revenue: $168.5M (up 20% YoY); net loss widened to $661.4M (from $72.4M in 2024)\n• 522 MW of contracted HPC capacity; $12.8B+ in long-term contracted lease revenue; 2.8 GW gross multi-regional platform across 5 sites`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Transitioning from bitcoin mining revenue (transactional, volatile, bitcoin-price-dependent) to long-term HPC data center leasing (10-25 year contracts, recurring, credit-enhanced). HPC leasing is the future of the business; mining is running opportunistically\n• HPC Data Center Leasing: Purpose-built, liquid-cooled colocation facilities for AI/GPU workloads. Long-term lease agreements (10-year base with 5-year extension options) with credit enhancement from investment-grade counterparties. Target NOI margins of 70-85%. This is the growth engine\n• Key campuses:\n  - Lake Mariner (Barker, NY — NYISO): Flagship campus. 500 MW current capacity, expandable to 750 MW. Dual 345 kV transmission lines. Core42 has 72.5 MW (~$1.1B over 10 years). Fluidstack has ~360 MW across CB-3, CB-4, CB-5 (~$6.7B+ contracted, Google-backstopped)\n  - Abernathy (Texas — SPP): 168 MW critical IT load via joint venture with Fluidstack (WULF holds 51%). 25-year lease. $1.3B Google credit enhancement. Project-financed\n  - Cayuga (Lansing, NY — NYISO): 80-year ground lease. Up to 320 MW upon permitting/development. HPC deployment targeted beginning 2027\n  - Hawesville, KY: Newly acquired brownfield site. $500M bridge credit facility from Morgan Stanley (Mar 2026). ~1 GW+ potential\n  - Maryland: Recently acquired site, details emerging\n• Bitcoin Mining (legacy): 245 MW energized capacity at Lake Mariner; 12.8 EH/s hashrate. Still contributes majority of current revenue but declining as mining rigs are displaced by HPC buildouts\n• Customers buy because: Need large-scale, low-cost, zero-carbon compute infrastructure. Lake Mariner's nuclear/hydro power, water cooling, and dual high-voltage transmission make it one of the most cost-effective and sustainable HPC sites in North America`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Two HPC anchor tenants:\n  - Core42: Subsidiary of G42 (Abu Dhabi tech conglomerate backed by UAE sovereign wealth). 72.5 MW at Lake Mariner, ~$1.1B over 10 years. Lease commenced revenue recognition in Q3 2025. First major HPC customer\n  - Fluidstack: AI cloud platform building and operating GPU clusters for frontier AI labs. ~528 MW total across Lake Mariner and Abernathy. Google backstops lease obligations with $3.2B+ in credit enhancement — effectively making these Google-credit-quality leases\n• Customer profile: Hyperscale AI platforms and sovereign-backed compute enterprises — not direct enterprise end users\n• Concentration: Essentially two tenants for all HPC revenue. Fluidstack dominance is mitigated by Google credit backstop, but operational dependency on Fluidstack's ability to fill GPU clusters with end customers remains\n• Geography: 100% U.S. — New York (Lake Mariner, Cayuga), Texas (Abernathy), Kentucky (Hawesville), Maryland (new site)\n• Buying decision: Large-scale AI compute operators need low-cost power, sustainable energy credentials, and fast time-to-capacity. Lake Mariner's ~$0.02/kWh power cost (among the lowest in the U.S. for data centers), zero-carbon energy mix, and existing grid infrastructure are the primary draw`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Same AI data center infrastructure market as APLD and CoreWeave — WULF competes at the real estate/power layer, similar to APLD\n• AI data center market: ~$147-236B in 2025, growing 24-32% CAGR to $800B-$1T by 2030\n• TeraWulf's niche: Energy-advantaged, zero-carbon sites. Competes specifically for tenants who need low power cost + sustainability credentials\n• Tailwinds (strong, multi-year):\n  - Same structural AI compute demand tailwinds as broader market\n  - Zero-carbon energy positioning is increasingly a differentiator as hyperscalers face ESG pressure and Scope 2 emissions scrutiny\n  - Power scarcity is the binding constraint — WULF's secured grid interconnections and multi-regional site portfolio are strategic assets\n  - Google partnership provides credit enhancement that makes WULF's leases functionally investment-grade, enabling cheaper project financing\n• Headwinds:\n  - Bitcoin mining revenue declining as halvings compress margins and mining capacity is displaced by HPC\n  - Construction execution risk — must deliver 500+ MW of HPC capacity on time to meet lease obligations\n  - Related-party transactions with CEO's other entities (Riesling/Beowulf) create governance optics risk\n  - Stock dilution from warrants issued to Google (~14% pro forma ownership) and convertible note issuances\n• Market growth: Essentially same dynamics as APLD — AI data center infrastructure spending has tripled since 2023, with $7T expected through 2030`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Direct peers: Applied Digital (APLD), IREN, Cipher Mining, Core Scientific — all crypto-to-AI pivots competing to lease purpose-built data centers to hyperscalers and AI compute platforms\n• Applied Digital: Most direct comp. APLD has CoreWeave as anchor tenant; WULF has Fluidstack/Google. APLD focused on North Dakota (low-cost power); WULF focused on New York (zero-carbon nuclear/hydro) and Texas. Both targeting 1+ GW platforms\n• Core Scientific (CORZ): Larger existing data center footprint but struggled with CoreWeave merger and has bitcoin mining legacy overhang\n• Traditional data center operators (Equinix, Digital Realty): Compete for hyperscaler business but less competitive on ultra-high-density AI-specific builds\n• Where WULF competes best:\n  - Zero-carbon energy: Nuclear/hydro power at Lake Mariner is a genuine differentiator. Few competitors can match this at scale\n  - Power cost: ~$0.02/kWh at Lake Mariner is among the lowest in the industry\n  - Google credit enhancement: Makes WULF's project financing more attractive and lease credit quality functionally investment-grade\n  - Multi-site diversification: 5 sites across 4 states, unlike APLD's ND concentration\n• Where WULF competes worst:\n  - Scale: Still small relative to APLD and Core Scientific in total MW under development\n  - Revenue: Only $168.5M in 2025 vs. APLD's ~$280M and CoreWeave's $5.1B — HPC lease revenue just beginning to ramp\n  - Related-party governance: CEO's controlling interests in affiliated energy companies create complexity and potential conflicts\n  - Bitcoin mining overhang: Legacy mining operations add noise to the investment story and create volatile quarterly results\n• Biggest threats (3 years): Construction delays on Lake Mariner CB-3/4/5, Fluidstack failing to fill capacity with end customers (Google backstop mitigates but doesn't eliminate this risk), bitcoin price collapse further compressing mining revenue before HPC fully ramps, and continued dilution from warrants and converts\n• Biggest opportunities: Successful delivery of 500+ MW at Lake Mariner by end of 2026 proves the model and triggers significant lease revenue recognition; Cayuga development adds another 320 MW campus; Hawesville/Maryland brownfield sites offer 1.5+ GW of expansion; targeting 250-500 MW of new contracted capacity annually`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Mar 2026: Secured $500M delayed-draw bridge credit facility from Morgan Stanley to fund Hawesville, KY data center construction (SOFR + 275 bps)\n• Feb 2026: FY2025 / Q4 results — full year revenue $168.5M (up 20% YoY); net loss $661.4M (vs. $72.4M in 2024); non-GAAP adjusted EBITDA loss of $23.1M. Q4 HPC lease revenue $9.7M (up from $7.2M in Q3). Ended year with $3.72B cash and restricted cash. 522 MW contracted HPC capacity, $12.8B+ in contracted revenue\n• Feb 2026: Acquired two brownfield infrastructure sites — Kentucky (Hawesville, ~1 GW potential, former industrial site) and Maryland — adding ~1.5 GW of capacity to platform, doubling total platform to 2.8 GW gross across 5 sites\n• Dec 2025: TeraWulf and Fluidstack priced project financing for 168 MW Abernathy JV — $1.275B senior secured notes offering via Flash Compute subsidiary, backed by Google credit enhancement\n• Nov 2025: Q3 2025 results — revenue $50.6M including $7.2M initial HPC lease revenue. Completed >$5B in long-term financings\n• Oct 2025: Formed Abernathy, TX JV with Fluidstack — 168 MW critical IT load, 25-year lease, $1.3B Google backstop. WULF holds up to 51%. Also secured exclusive right for next ~168 MW Fluidstack project\n• Aug 2025: Completed $1.0B offering of 1.00% convertible notes due 2031\n• Aug 2025: Fluidstack exercised CB-5 option — added 160 MW at Lake Mariner. Google provided incremental $1.4B backstop and received warrants for 32.5M shares. Total Google pro forma equity ~14%\n• Aug 2025: Signed two 10-year Fluidstack leases at Lake Mariner for 200+ MW (~$3.7B contracted, $8.7B with extensions). Google backstopped $1.8B of lease obligations, received ~8% equity via 41M warrants\n• Aug 2025: Signed 80-year ground lease at Cayuga site in Lansing, NY (up to 400 MW capacity). Related-party transaction — lease from Cayuga Operating Company LLC (Riesling Power, run by CEO Prager). WULF paid $95M in stock + $3M cash\n• Dec 2024: Signed long-term lease agreements with Core42 for 72.5 MW at Lake Mariner (~$1.1B over 10 years)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      },
+    },
+    notes: [
+      { id: "wulf1", text: "TeraWulf's investment case rests on the same thesis as APLD — purpose-built AI data centers filling a structural capacity gap — but with two key differentiators: (1) zero-carbon energy at Lake Mariner (nuclear/hydro) at ~$0.02/kWh, and (2) Google credit enhancement on the Fluidstack leases that functionally makes these investment-grade obligations. The Google backstop ($3.2B+) is the single most important feature of WULF's credit story — it transforms what would otherwise be startup-tenant risk into near-sovereign credit quality for project financing purposes. If you believe the AI infrastructure buildout thesis, WULF offers a cleaner credit structure than APLD (which depends on CoreWeave, itself heavily leveraged) because Google effectively guarantees the lease revenue.", date: "2026-03-20T00:00:00Z" },
+      { id: "wulf2", text: "The governance risk is real but often overlooked. CEO Prager controls Riesling Power, which sold the Cayuga site to TeraWulf for $95M in stock + $3M cash. TeraWulf also fully acquired Beowulf Energy (Prager's energy holding company) in 2025. These related-party transactions are disclosed but create a pattern of the CEO's affiliated entities being material counterparties to the company. Institutional investors may discount the stock on governance grounds alone. The $661M net loss in 2025 (9x the 2024 loss) also needs context — much of it is non-cash (stock comp, depreciation, and impairments on mining equipment being displaced by HPC), but it makes the GAAP financials look alarming on the surface.", date: "2026-03-20T00:00:00Z" },
+    ],
+  },
+  idera_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Private PE-backed B2B infrastructure software conglomerate — parent company of 25+ brands spanning database tools, developer tools, and testing/DevOps tools\n• Headquartered in Houston, TX (some sources say Austin, TX); founded 2000\n• Owned by Partners Group (majority, since Jan 2021 recapitalization), with HGGC and TA Associates retaining minority positions. Management team also holds significant equity\n• Led by CEO Randy Jacops — has led the company through four equity transactions since 2014 and 20+ acquisitions\n• Classic PE roll-up strategy: Acquire niche, mission-critical software tools for technical users (DBAs, developers, QA engineers), maintain the brands independently, run them with a decentralized operating model, and drive margin expansion\n• Since 2014 partnership with TA Associates, has grown revenue, bookings, and earnings by more than 10x (per company disclosures at time of 2021 recap)\n• 50,000+ customers worldwide across healthcare, financial services, retail, technology, and government. 700,000+ users globally\n• Valued at $1.125B in 2017 HGGC recap; current valuation undisclosed but likely materially higher given subsequent growth and 2021 Partners Group majority acquisition`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Mix of perpetual licenses (legacy), subscription/SaaS (growing), and maintenance/support. Transitioning toward subscription — Sembi launch (Jan 2025) signals the SaaS push. Revenue is predominantly recurring through maintenance and subscription renewals\n• Three operating divisions:\n  1. Database Tools (IDERA brand): SQL Diagnostic Manager, SQL Safe Backup, SQL Inventory Manager, ER/Studio (data modeling), Precise (APM for databases), Qubole (data lake platform), WhereScape (data warehouse automation), BitTitan (cloud migration). Microsoft SQL Server tools are the historical core\n  2. Developer Tools (Embarcadero brand): RAD Studio (Delphi/C++ IDE), Sencha (Ext JS web framework), LANSA (low-code), Froala (WYSIWYG editor), UltraEdit (text editor), FusionCharts (JS charting), Filestack (file upload API), Yellowfin (embedded BI/analytics), APILayer (cloud APIs), Whole Tomato (Visual Studio plugins)\n  3. Test & Security / DevOps Tools: TestRail (test case management), Xray/Xporter (Jira test management), Ranorex (test automation), Kiuwan (application security testing), PreEmptive (app protection/obfuscation), Travis CI (CI/CD), Assembla (version control), Hexawise (test design)\n• Jan 2025: Launched Sembi — a unified SaaS entity combining TestRail, Xray, Testmo, Ranorex, Kiuwan, and PreEmptive into a single software quality and security platform. This is the clearest signal of the SaaS consolidation strategy\n• Customers buy because: These are specialized, mission-critical tools for technical users that integrate deeply into daily workflows. Switching costs are high — a DBA running SQL Diagnostic Manager or a QA team on TestRail won't switch unless forced. The tools are typically low-cost relative to the value they provide, making them sticky despite minimal pricing power`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Customer profile: Broad — from large enterprise (Fortune 500 companies are well-represented) to mid-market and SMB. The tools are priced accessibly enough for small dev teams but scale to enterprise deployments\n• 50,000+ customers, 700,000+ users — very broad, diversified customer base. No material single-customer concentration\n• Key verticals: Healthcare, financial services, retail, technology, government, pharmaceuticals, legal. Highly diversified — these are horizontal infrastructure tools, not vertical-specific\n• Geography: Primarily North America (U.S. is the core market). Offices in Australia, Austria, UK. International exposure through developer community (Sencha, Embarcadero, Ranorex have strong EMEA presence). Exact revenue mix by geography not disclosed but estimate North America >60%, EMEA ~25-30%, APAC/rest ~10-15% (estimate)\n• Buying decision: Technical users (DBAs, developers, QA engineers) select tools based on functionality, ease of use, and community reputation. These are often "bottom-up" purchases — engineers choose and then procurement approves. Price points are low enough that purchasing decisions are often at the team or department level, not C-suite. This creates a high-velocity, low-friction sales motion but limits deal sizes\n• Key problem being solved: Technical professionals need specialized tools that their platform vendors (Microsoft, Oracle, Atlassian) either don't provide or provide poorly. Idera fills gaps in the developer and database toolchain with focused, best-of-breed products`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Infrastructure software tools market — a broad, fragmented category spanning database management, developer productivity, testing/QA, and DevOps. Total addressable market is difficult to size precisely because Idera competes in many niches simultaneously\n• Database management tools: ~$15-20B globally, growing ~8-10% CAGR\n• Software testing and QA tools: ~$45-55B globally, growing ~10-14% CAGR\n• Developer tools/platforms: ~$20-30B globally, growing ~12-15% CAGR\n• Idera is small relative to the overall market but holds strong positions in specific niches (SQL Server tools, test case management via TestRail, Delphi/C++ via Embarcadero)\n• Tailwinds (moderate, long-duration):\n  - Secular growth in software development — more developers, more code, more testing needed\n  - Cloud migration driving demand for database monitoring, migration tools (BitTitan), and data platform modernization\n  - Shift-left testing and DevSecOps creating demand for QA and security tools earlier in SDLC\n  - AI/copilot integration opportunities across developer tools (Embarcadero, Sencha, UltraEdit) — potential to add AI features and drive upgrade cycles\n• Headwinds:\n  - Some legacy products (Delphi, perpetual SQL tools) are in secular decline as enterprises move to cloud-native stacks\n  - Open-source alternatives for many tool categories (e.g., Cypress, Selenium, VS Code) create pricing pressure\n  - AI coding assistants (GitHub Copilot, Cursor) could disrupt parts of the developer tools market\n  - Consolidation among platform vendors (Atlassian, Microsoft) absorbing functionality that was previously Idera's niche\n• Market growth over 5 years: The infrastructure software tools market has grown ~8-12% annually, driven by cloud adoption and DevOps transformation. However, individual product categories vary widely — some (test automation) growing 15%+, others (legacy database tools) are flat to low single digits (estimate)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Competition varies by division — Idera competes in many niches, not one market:\n• Database Tools: Red Gate (closest direct competitor for SQL Server tools), Datadog (monitoring/observability), SolarWinds (database performance monitoring — formerly Idera's direct peer), Oracle/Microsoft native tools\n• Developer Tools: JetBrains (the 800-lb gorilla in IDEs/developer tools), Microsoft (VS Code, .NET ecosystem), open-source frameworks. Embarcadero's Delphi/C++ niche has limited direct competition but a shrinking TAM. Sencha competes with React/Angular/Vue frameworks\n• Testing/DevOps: Tricentis (test automation, PE-backed), SmartBear (TestComplete, Swagger — closely comparable PE roll-up), Atlassian (Jira + marketplace), Micro Focus/OpenText, open-source (Selenium, Cypress)\n• Where Idera competes best:\n  - Niche dominance: TestRail is a market leader in test case management. Embarcadero owns the Delphi ecosystem. SQL Diagnostic Manager is deeply entrenched in SQL Server shops\n  - Sticky, low-churn products: Technical tools with high switching costs relative to low price points\n  - Efficient roll-up model: Decentralized brand management keeps overhead low. The company reportedly runs at very high EBITDA margins (PE-typical 40-50%+ estimate) through operational discipline\n  - Breadth: 25+ brands means diversified revenue — no single product failure is fatal\n• Where Idera competes worst:\n  - Scale: Much smaller than JetBrains, Atlassian, or Datadog in any individual category\n  - Brand awareness: Portfolio is fragmented — customers often don't know "Idera" as a parent company\n  - Innovation pace: PE ownership and margin focus can slow R&D investment vs. VC-backed competitors\n  - Legacy exposure: Delphi, perpetual SQL tools, and on-prem products face structural headwinds\n• Biggest threats (3 years): AI disruption to developer tools, open-source commoditization of testing tools, platform vendor (Atlassian, Microsoft) native feature expansion, and SaaS transition execution risk\n• Biggest opportunities: Sembi unification creating a SaaS platform story for the testing/security portfolio, AI feature integration across products driving upgrade cycles, continued M&A in the fragmented infrastructure software market, and potential exit/recap by Partners Group (approaching 5 years of ownership in 2026)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Jan 2025: Launched Sembi — unified SaaS entity combining TestRail, Xray, Testmo, Ranorex, Kiuwan, and PreEmptive under one brand for software quality and security\n• May 2022: Acquired Hexawise, a combinatorial test design tool (Durham, NC). Most recent M&A — acquisition pace has slowed notably since 2021-2022 wave\n• Jan 2022: Acquired Yellowfin, an embedded BI/analytics platform (Australia-based). Added to developer tools division\n• Jan 2022: Acquired Filestack, a file upload/management API platform. Added to developer tools\n• Oct 2021: Acquired BitTitan, a cloud migration platform (Seattle). Also inherited Perspectium (ITSM integration) which BitTitan had acquired earlier that year\n• Aug 2021: Acquired UltraEdit, a long-standing text editor brand\n• May 2021: Acquired Xray and Xporter (Atlassian Jira test management marketplace apps)\n• Mar 2021: Acquired PreEmptive (application security/obfuscation tools)\n• Jan 2021: Partners Group becomes majority owner via recapitalization. HGGC and TA Associates retain minority. Fourth equity transaction since 2014. Company reported 10x revenue/earnings growth since 2014\n• May 2017: HGGC leads $1.125B recapitalization — first public valuation benchmark for the company\n• Sep 2014: TA Associates acquires Idera — the initial PE platform investment that launched the roll-up strategy\n• 2015-2019: Rapid acquisition phase — Embarcadero (2015), Sencha (2017), Ranorex (2017), Froala (2018), Assembla (2018), LANSA (2018), Travis CI (2019), WhereScape (2019), Qubole (2020)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      },
+    },
+    notes: [
+      { id: "idera1", text: "Idera is a textbook PE infrastructure software roll-up — acquire niche, mission-critical tools with high switching costs, run them on a decentralized model with tight cost discipline, and compound earnings through organic growth + bolt-on M&A. The playbook is similar to what Constellation Software does publicly. Revenue is not disclosed but based on the 10x growth claim from 2014-2021, the 2017 $1.125B valuation (typically 3-5x revenue for PE software at that time), and continued acquisitions, estimated revenue is likely in the $400-700M range (rough estimate — no public data). EBITDA margins are likely 40-50%+, consistent with PE-owned infrastructure software.", date: "2026-03-20T00:00:00Z" },
+      { id: "idera2", text: "The key question for Idera is what Partners Group does next. They acquired majority control in Jan 2021 — by 2026, they're 5 years into the hold, which is approaching typical exit timelines. A secondary sale to another PE sponsor (Thoma Bravo, Vista, Francisco Partners), a take-public via IPO, or a strategic sale to a larger software aggregator (OpenText, Micro Focus) are all plausible paths. The Sembi launch signals an attempt to consolidate the testing/security brands into a unified SaaS platform — this is classic pre-exit value creation to present a more cohesive story to buyers. Watch for acceleration in M&A activity or management commentary about 'next chapter' — typical pre-exit signals.", date: "2026-03-20T00:00:00Z" },
+    ],
+  },
+  prompt_researchbrief_seed: {
+    fields: {
+      overview: {
+        text: `1. Research brief: [COMPANY NAME]\nFill out each section below as an investment research brief. Be direct, honest, and be concise. Bullet format, no periods. No marketing language and low value detail. Focus on what matters for underwriting, market sentiment, and fundamentals. Give me your best-informed view as if briefing a portfolio manager.\n###0. Recent update.\n* Pull the most critical and relevant news I need to know\n* Focus on items that impact market sentiment and fundamentals - skip marketing or product advertising updates\n \n###1. Company overview. Keep this section brief.\n* What does this company do in plain terms (products or services)?\n* Only the most critical background and history needed to understand the business - keep it tight. What is the minimal historical background needed to understand the business today\n###2. Key business / products. I want to know what the [COMPANY] offers and sells to its customers.\n* How does this company make money? Lead with this\n* Key segments, products, and services — are these recurring, re-occurring, transactional, and/or project-based?\n* Why do customers buy these products or services?\n \n###3. Customer focus. I want to understand customer profile.\n* Customer profile: large enterprise, upper-mid, mid-market, SMB?\n* Key end marks or verticals. Is it diversified or concentrated?\n* Geography – revenue mix by North America, EMEA, APAC, and LATAM? Focus on major geographies\n* What drives the buying decision for these customers in these industries? What problems is the [COMPANY] addressing?\n###4. Industry & market. I want to understand industry trends and market opportunities.\n* Key headwinds and tailwinds, and duration of tailwinds and headwinds\n* Market size and the [COMPANY]'s relative position within it\n* Estimated market growth over the last 5 years, using your best estimate if exact data is not available. If you estimate, explicitly say so or highlight it\n \n###5. Competitive landscape. I want to understand the key players in industries the [COMPANY] competes in.\n* Key competitors and competitive advantage — why and how do they win?\n* Which products and/or services from ###2 are most competitive?\n* Where the [COMPANY] competes best and worst, such as price, product quality, speed, relationships, expertise, or switching costs\n* Biggest threats and largest opportunities in the next 3 years\n \n###6. Recent transactions.\n* List the most important recent transactions in reverse chronological order\n* Include only transactions that materially matter to the investment case\n* Focus on what matters for diligence and fundamental underwriting\n* If unsure or torn on what to exclude, it is safer include\n \n###7. Financial & metrics. Leave this empty and don't add any information to the section.\n \nFinal instruction: Be direct and brief. I am a portfolio manager, and I need an honest assessment, not a balanced-on-both-sides hedge. I use this to keep up to speed with, refresh, or learn key attributes about companies I follow.`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Standard company research brief — use for any new company being added to the portal\n• Replace [COMPANY NAME] and [COMPANY] with the target company name\n• Pair with: "Run this prompt for [COMPANY] then fill out sections in the [TAB] tab"\n• Financials section intentionally left empty — populate manually\n• Works for both public and private companies\n• Best when run with web search enabled for latest data`,
+        date: "2026-03-20T00:00:00Z"
+      },
+    },
+    notes: [],
+  },
+  cipher_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Developer and operator of industrial-scale data centers for HPC/AI hosting, transitioning away from bitcoin mining\n• Nasdaq-listed (CIFR); rebranded from Cipher Mining to Cipher Digital in Feb 2026 to reflect strategic pivot\n• Headquartered in New York, NY; founded 2021 as a bitcoin mining company\n• Led by CEO Tyler Page; team includes experienced data center professionals recruited from Google, Vantage, and Meta\n• Two major HPC anchor leases: (1) 15-year, ~$5.5B lease with Amazon Web Services for 300 MW, and (2) 10-year, ~$3B+ lease with Fluidstack/Google for 300 MW (168 MW original + 56 MW upsized + 76 MW additional)\n• Google holds ~5.4% pro forma equity via warrants tied to Fluidstack credit backstop\n• Total contracted HPC capacity: 600 MW gross across two leases; ~$9.3B in long-term contracted lease revenue\n• Pipeline: ~2.4-2.8 GW across 7+ sites being prioritized for HPC\n• FY2025 revenue: ~$224M (predominantly bitcoin mining); Q4 revenue $60M with adjusted net loss of $55M. GAAP full year net loss heavily impacted by warrant fair value swings and miner impairments\n• Divested 49% stake in Alborz, Bear, and Chief Mountain mining sites in Q4 2025 — actively exiting mining`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Transitioning from bitcoin mining (transactional, volatile) to long-term HPC data center leasing (15-25 year contracts, recurring, credit-enhanced). HPC revenue begins in earnest H2 2026 — current revenue is still predominantly mining\n• HPC Data Center Leasing (growth engine): Purpose-built, turnkey data center space and power for AI workloads. Provides air and liquid cooling to the racks. Operating as a "power shell" lessor — Cipher provides the facility and power, tenants bring their own compute. This avoids GPU risk but limits upside to real-estate-like returns\n• Key campuses:\n  - Barber Lake (Colorado City, TX): Fluidstack/Google lease — 300 MW gross (originally 168 MW, upsized to 300 MW). 10-year term. ~$3B+ contracted revenue. Google backstops ~$1.4B+ of Fluidstack obligations. ~95% of long-lead equipment secured, all design milestones achieved. Delivery expected through 2026\n  - Black Pearl (TX): AWS lease — 300 MW, 15-year term, ~$5.5B contracted revenue. Two-phase delivery starting Jul 2026, rent commencing Aug 2026. Engineering, procurement, and construction underway\n  - Colchis (West Texas): 1 GW site, JV formed Nov 2025. Cipher expected to hold ~95% equity. Future development\n  - Additional pipeline: ~2.4 GW across multiple sites prioritized for HPC\n• Bitcoin Mining (legacy, winding down): Operating at reduced scale; divested 49% stake in three mining sites in Q4 2025. Mining revenue expected to decline as capacity is repurposed for HPC\n• Customers buy because: Hyperscalers (AWS) and AI compute platforms (Fluidstack/Google) need turnkey, powered data center shells at scale in deregulated Texas power markets with fast delivery timelines`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      customers: {
+        text: `• Two HPC anchor tenants:\n  - Amazon Web Services (AWS): 300 MW at Black Pearl, 15-year lease, ~$5.5B. Tier 1 hyperscaler with investment-grade credit. This is the highest-quality tenant in Cipher's portfolio\n  - Fluidstack (with Google credit enhancement): 300 MW at Barber Lake, 10-year lease, ~$3B+. Google backstops $1.4B+ of lease obligations and holds ~5.4% equity via warrants. Same Fluidstack/Google structure seen at TeraWulf\n• Customer profile: Hyperscalers and AI compute platforms — not direct enterprises\n• Concentration: Extreme — two tenants for 100% of HPC revenue. However, counterparty credit quality is strong (AWS is investment-grade; Fluidstack obligations are Google-backstopped)\n• Geography: 100% U.S. — all sites in Texas (deregulated power market, favorable for data center economics)\n• Buying decision: AWS and Fluidstack need massive, purpose-built data center capacity in power-rich Texas locations faster than they can build it themselves. Cipher's power origination expertise from mining operations and team's hyperscaler construction background are the key differentiators`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      industry: {
+        text: `• Same AI data center infrastructure market as APLD, CoreWeave, and TeraWulf — Cipher competes at the real estate/power layer\n• AI data center market: ~$147-236B in 2025, growing 24-32% CAGR to $800B-$1T by 2030\n• Cipher's niche: Texas deregulated power market, power shell model (facility + power only, no compute)\n• Tailwinds (strong, multi-year):\n  - Same structural AI compute demand as broader market — hyperscaler capex $600-700B in 2026\n  - Texas deregulated market allows faster power procurement and lower regulatory burden vs. regulated states\n  - Power shell model is lower-risk than compute models — no GPU depreciation exposure\n  - AWS deal validates Cipher as a credible Tier 1 hyperscaler partner\n• Headwinds:\n  - No HPC revenue until H2 2026 — near-term financials are all mining, which is declining\n  - Substantial debt from $3.73B in bond offerings to finance buildouts — high coupon costs\n  - Power shell model caps upside — market may value Cipher at real estate multiples rather than AI infrastructure premiums\n  - Construction execution risk — must deliver 600 MW on schedule to meet lease obligations\n  - Bitcoin mining revenue declining as capacity is repurposed\n• Market growth: Same dynamics as APLD/WULF peer group — AI data center infrastructure spending tripled since 2023 (estimate)`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      competitive: {
+        text: `• Direct peers: Applied Digital (APLD), TeraWulf (WULF), IREN, Core Scientific — all crypto-to-AI pivots. Cipher is most directly comparable to APLD and TeraWulf as a pure data center lessor\n• Applied Digital: CoreWeave anchor tenant (vs. Cipher's AWS + Fluidstack). APLD focused on North Dakota; Cipher focused on Texas. Both targeting 1+ GW platforms\n• TeraWulf: Also has Fluidstack/Google as a key tenant (same structure). WULF differentiates on zero-carbon energy (nuclear/hydro in NY); Cipher differentiates on Texas deregulated power\n• IREN: $9.7B Microsoft contract; more diversified between mining, AI hosting, and GPU cloud\n• Core Scientific: Larger existing footprint but carries CoreWeave relationship baggage (failed merger, construction delays)\n• Where Cipher competes best:\n  - Hyperscaler tenant quality: AWS is arguably the strongest anchor tenant in the peer group — investment-grade, no credit backstop needed\n  - Power origination: Team's mining background gives deep expertise in sourcing large-scale power in Texas\n  - Construction team: Recruited from Google, Vantage, Meta — hyperscaler-grade build capability\n  - Power shell model: Cleanest risk profile — no GPU or compute risk, pure infrastructure play\n• Where Cipher competes worst:\n  - Scale: Smaller current revenue than APLD or TeraWulf; all HPC revenue is still ahead\n  - No revenue diversification: Mining declining, HPC not yet generating — near-term earnings gap\n  - Valuation: Trading at ~7x 2027E revenue; power shell model may not warrant AI-premium multiples\n  - Texas concentration: All sites in one state, one power market\n• Biggest threats (3 years): Construction delays on Barber Lake or Black Pearl, continued GAAP losses from warrant fair value swings spooking investors, real estate-like valuation compression as market recognizes power shell economics, and bitcoin price collapse further hurting mining revenue during the transition\n• Biggest opportunities: Successful 2026 delivery of 600 MW triggers massive revenue ramp (consensus ~$1B in 2027), Colchis 1 GW development, additional hyperscaler leases from 2.4 GW pipeline, and potential for AWS to expand beyond initial 300 MW commitment`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      transactions: {
+        text: `• Feb 2026: Rebranded from Cipher Mining to Cipher Digital. FY2025 / Q4 results — Q4 revenue $60M, adjusted net loss $55M. Full year revenue ~$224M. GAAP net loss heavily impacted by $410M warrant liability fair value swing and $96M miner impairment losses. Divested 49% stake in Alborz, Bear, and Chief Mountain mining sites\n• Feb 2026: Completed three high-yield bond offerings for aggregate proceeds of $3.73B to finance Barber Lake and Black Pearl HPC buildouts. Full funding secured for existing data center developments\n• Nov 2025: Signed additional 56 MW, 10-year Fluidstack/Google agreement — upsized Barber Lake lease. Brought total Fluidstack critical IT load to ~207 MW at that time\n• Nov 2025: Q3 2025 results — revenue $72M (up 65% YoY), adjusted earnings $41M. Announced 15-year, ~$5.5B AWS lease for 300 MW at Black Pearl. Also announced Colchis JV for 1 GW West Texas site (~95% Cipher equity)\n• Sep 2025: Signed initial 168 MW, 10-year Fluidstack/Google HPC hosting agreement at Barber Lake — ~$3B contracted revenue. Google backstops $1.4B of lease obligations, receives ~5.4% equity via warrants. Morgan Stanley sole financial advisor\n• Earlier: Acquired Barber Lake and Black Pearl sites in Texas. Built out mining operations across multiple Texas sites (Odessa, Black Pearl, Alborz, Bear, Chief). Expanded self-mining hashrate to ~20 EH/s by end of 2025`,
+        date: "2026-03-20T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      },
+    },
+    notes: [
+      { id: "cifr1", text: "Cipher has the cleanest tenant credit quality in the crypto-to-AI peer group. AWS is investment-grade, no backstop needed — this is a direct hyperscaler relationship. The Fluidstack/Google structure mirrors TeraWulf's deals (same counterparties, same credit enhancement structure). Together, these two leases represent ~$9.3B in contracted revenue with effectively investment-grade counterparties. For a company doing ~$224M in 2025 revenue, this backlog is enormous. The question is execution — can they deliver 600 MW on time in 2026?", date: "2026-03-20T00:00:00Z" },
+      { id: "cifr2", text: "The power shell model is a deliberate strategic choice with important implications for valuation. By providing only facility + power (no GPUs, no compute), Cipher avoids GPU depreciation risk and doesn't need to manage complex technology refresh cycles. But this also caps upside — Cipher is essentially a data center REIT in AI clothing. The market may eventually value CIFR closer to data center REITs (Equinix trades at ~20x EBITDA) than AI infrastructure plays (CoreWeave has traded at much higher multiples). This is the central valuation debate for the stock. At ~$14/share and ~$5.7B market cap, the question is whether the market is pricing in real estate economics or AI economics.", date: "2026-03-20T00:00:00Z" },
+    ],
+  },
+  source_master_seed: {
+    fields: {
+      overview: {
+        text: `SEC EDGAR — sec.gov — Public company filings (10-K, 10-Q, 8-K, S-1, proxy). Gold standard for financial data. Used across all public company briefs\n\nBloomberg — bloomberg.com — Financial data, M&A deal flow, breaking news, credit analysis. Priority source per project preferences\n\nSemiAnalysis — semianalysis.com — Independent semiconductor and AI infrastructure research. Deep technical analysis on chip architectures, data center economics. Used for AI Digital Infrastructure tab\n\nTrendForce — trendforce.com — Semiconductor supply chain data, memory pricing, foundry utilization. Priority source per project preferences\n\nYahoo Finance / Google Finance / Robinhood — Price data, analyst consensus estimates, earnings calendars. Used for stock price references across all briefs\n\nPitchBook — pitchbook.com — Private company valuations, PE/VC deal flow, ownership history. Critical for Software tab (PE-owned companies)\n\nData Center Dynamics — datacenterdynamics.com — Data center construction, leasing deals, power/cooling. Key source for APLD, CoreWeave, TeraWulf briefs\n\nSeeking Alpha — seekingalpha.com — Investment theses, earnings analysis, call transcripts. Used for public company sentiment and earnings detail\n\nGartner / Forrester / IDC — Market sizing (TAM/SAM), Magic Quadrant rankings, technology adoption trends. Used for Industry & Market sections\n\nCompany IR Pages — [company].com/investors — Press releases, earnings reports, investor presentations. First stop for any company research\n\nCNBC — cnbc.com — Breaking financial news, earnings coverage. Used for CoreWeave, TeraWulf earnings reporting\n\nThe Block — theblock.co — Crypto and digital infrastructure news. Used for TeraWulf, mining-to-AI pivot coverage\n\nWikipedia — wikipedia.org — Company history, acquisition timelines, ownership changes. Used for background context (Idera, Barracuda, Kofax)\n\nGlobeNewswire / PR Newswire — Press release distribution. Used for primary source material on corporate announcements\n\nSimply Wall St — simplywall.st — Quick financial summaries and stock analysis. Used for APLD, CoreWeave, TeraWulf overviews\n\nMcKinsey / IoT Analytics / Grand View Research / MarketsandMarkets — Market research reports. Used for AI data center market sizing ($236B in 2025, $800B-$1T by 2030 estimates)\\n\\nS&P Global Market Intelligence — spglobal.com — Institutional-grade company research, consensus estimates, industry analysis. Used for Cipher Digital revenue mix projections and HPC analyst forecasts\\n\\n24/7 Wall St — 247wallst.com — Analyst price target tracking, sector analysis. Used for Cipher and TeraWulf analyst coverage\\n\\nStockAnalysis — stockanalysis.com — Financial data, analyst ratings, earnings transcripts. Used across APLD, CoreWeave, TeraWulf, Cipher briefs`,
+        date: "2026-03-20T00:00:00Z"
+      },
+    },
+    notes: [],
+  },
+};
+// ─── Theme ─────────────────────────────────────────────
+const T_ = {
+  bg: "#0a0e17", bgSidebar: "#0d1220", bgPanel: "#111827", bgInput: "#161d2e",
+  border: "#283347", borderLight: "#222d40",
+  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
+  green: "#34d673", greenBg: "#0d3520", greenBorder: "#1a7a3d",
+  amber: "#f5a623", amberBg: "#332508", amberBorder: "#8a5e16",
+  grayBadge: "#3d4d60", grayBadgeText: "#b0bcc9",
+  blue: "#70b0fa", red: "#f87171", redDim: "#7f1d1d",
+};
+
+// ─── News API ──────────────────────────────────────────
+async function fetchNews(name) {
+  try {
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514", max_tokens: 1000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [{ role: "user", content: `Find the 4-6 most recent and critical news about "${name}" from the last 60 days. Focus on: funding, M&A, product launches, executive changes, partnerships, earnings, regulatory actions, and major business developments.\n\nSort results by date with the most recent first.\n\nRespond ONLY with a JSON array, no markdown backticks, no preamble. Each item:\n- "headline": string (concise, max 15 words)\n- "source": string (publication name)\n- "date": string (e.g. "Mar 15, 2026")\n- "summary": string (2-3 sentences on why this matters)\n\nIf no recent news found, return [].` }],
+      }),
+    });
+    const d = await r.json();
+    const txt = d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
+    try { const p = JSON.parse(txt.replace(/```json|```/g, "").trim()); return Array.isArray(p) ? p : []; } catch { return []; }
+  } catch { return []; }
+}
+
+// ─── App ───────────────────────────────────────────────
+export default function App() {
+  const [ready, setReady] = useState(false);
+  const [companies, setCompanies] = useState([]);
+  const [sectorNotes, setSectorNotes] = useState({});
+  const [companyData, setCompanyData] = useState({});
+  const [newsCache, setNewsCache] = useState({});
+  const [newsLoading, setNewsLoading] = useState({});
+  const [view, setView] = useState({ type: "home" });
+  const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, true])));
+  const [adding, setAdding] = useState(null);
+  const [addName, setAddName] = useState("");
+  const [addSub, setAddSub] = useState("");
+  const [search, setSearch] = useState("");
+  const [editingField, setEditingField] = useState(null);
+  const addRef = useRef(null);
+
+  const SEED_VERSION = "v23";
+  useEffect(() => {
+    (async () => {
+      const storedVer = await load("w12-ver", null);
+      let [co, sn, cd, nc] = await Promise.all([
+        load("w12-cos", null), load("w12-sn", {}), load("w12-cd", null), load("w12-news", {})
+      ]);
+      if (co === null || storedVer !== SEED_VERSION) {
+        // First load or seed data updated — full re-seed
+        const existingCos = co || [];
+        const existingCd = cd || {};
+        // Keep any user-added companies not in seed (dedup by both id and name)
+        const seedNames = SEED_COMPANIES.map(sc => sc.name.toLowerCase());
+        const userCos = existingCos.filter(c => !SEED_COMPANIES.find(sc => sc.id === c.id) && !seedNames.includes(c.name.toLowerCase()));
+        co = [...SEED_COMPANIES, ...userCos];
+        // Overwrite seed company data, keep user company data
+        cd = { ...existingCd };
+        for (const [sid, sd] of Object.entries(SEED_DATA)) { cd[sid] = sd; }
+        await save("w12-cos", co);
+        await save("w12-cd", cd);
+        await save("w12-ver", SEED_VERSION);
+      } else {
+        // Normal load — merge any missing seed companies
+        let merged = false;
+        for (const sc of SEED_COMPANIES) {
+          if (!co.find(c => c.id === sc.id)) {
+            co = [...co, sc];
+            merged = true;
+          }
+        }
+        if (cd === null) cd = {};
+        for (const [sid, sd] of Object.entries(SEED_DATA)) {
+          if (!cd[sid] || !cd[sid].fields || Object.keys(cd[sid].fields).filter(k => cd[sid].fields[k]?.text?.trim()).length === 0) {
+            cd[sid] = sd;
+            merged = true;
+          }
+        }
+        if (merged) { await save("w12-cos", co); await save("w12-cd", cd); }
+      }
+      if (cd === null) cd = {};
+      setCompanies(co); setSectorNotes(sn); setCompanyData(cd); setNewsCache(nc); setReady(true);
+    })();
+  }, []);
+
+  const saveCos = useCallback(v => save("w12-cos", v), []);
+  const saveSN = useAutoSave(v => save("w12-sn", v));
+  const saveCD = useAutoSave(v => save("w12-cd", v));
+  const saveNews = useCallback(v => save("w12-news", v), []);
+
+  async function refreshNews(id) {
+    const co = companies.find(c => c.id === id); if (!co) return;
+    setNewsLoading(p => ({ ...p, [id]: true }));
+    const news = await fetchNews(co.name);
+    const u = { ...newsCache, [id]: { items: news, date: ts() } };
+    setNewsCache(u); saveNews(u);
+    setNewsLoading(p => ({ ...p, [id]: false }));
+  }
+  async function refreshAllNews() {
+    for (const co of companies) { await refreshNews(co.id); }
+  }
+
+  function addCompany() {
+    if (!addName.trim() || !adding || !addSub) return;
+    const id = uid();
+    const nc = [...companies, { id, name: addName.trim(), sector: adding, sub: addSub }];
+    setCompanies(nc); saveCos(nc);
+    setCompanyData(p => { const n = { ...p, [id]: { fields: {}, priority: "", notes: [] } }; save("w12-cd", n); return n; });
+    setAdding(null); setAddName(""); setAddSub("");
+    setView({ type: "company", id });
+    setTimeout(() => refreshNews(id), 200);
+  }
+  function delCompany(id) {
+    if (!confirm("Delete this company and all data?")) return;
+    const co = companies.find(c => c.id === id);
+    const nc = companies.filter(c => c.id !== id); setCompanies(nc); saveCos(nc);
+    setCompanyData(p => { const n = { ...p }; delete n[id]; save("w12-cd", n); return n; });
+    setView(co ? { type: "sector", sector: co.sector } : { type: "home" });
+  }
+  function updateField(id, key, text) {
+    setCompanyData(p => {
+      const n = { ...p, [id]: { ...p[id], fields: { ...(p[id]?.fields || {}), [key]: { text, date: ts() } } } };
+      saveCD(n); return n;
+    });
+  }
+  function setPriority(id, pr) {
+    setCompanyData(p => {
+      const n = { ...p, [id]: { ...p[id], priority: p[id]?.priority === pr ? "" : pr } };
+      save("w12-cd", n); return n;
+    });
+  }
+  function addNote(id, text) {
+    if (!text.trim()) return;
+    setCompanyData(p => {
+      const notes = [{ id: uid(), text, date: ts() }, ...(p[id]?.notes || [])];
+      const n = { ...p, [id]: { ...p[id], notes } }; save("w12-cd", n); return n;
+    });
+  }
+  function delNote(cid, nid) {
+    setCompanyData(p => {
+      const notes = (p[cid]?.notes || []).filter(n => n.id !== nid);
+      const n = { ...p, [cid]: { ...p[cid], notes } }; save("w12-cd", n); return n;
+    });
+  }
+  function updateSN(key, text) {
+    const n = { ...sectorNotes, [key]: { text, date: ts() } }; setSectorNotes(n); saveSN(n);
+  }
+
+  const getCos = (sector) => companies.filter(c => c.sector === sector);
+  const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
+  function recentNotes(limit = 8) {
+    const all = [];
+    Object.entries(companyData).forEach(([id, d]) => {
+      (d.notes || []).forEach(n => { const co = companies.find(c => c.id === id); if (co) all.push({ ...n, cid: id, coName: co.name }); });
+    });
+    return all.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
+  }
+
+  useEffect(() => { if (adding && addRef.current) addRef.current.focus(); }, [adding]);
+
+  if (!ready) return <div style={s.wrap}><div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, color: T_.textDim, fontSize: 13 }}>Loading...</div></div>;
+
+  const cur = view.type === "company" ? companies.find(c => c.id === view.id) : null;
+  const curData = cur ? (companyData[cur.id] || { fields: {}, priority: "", notes: [] }) : null;
+  const curNews = cur ? (newsCache[cur.id] || null) : null;
+
+  return (
+    <div style={s.wrap}>
+      {/* ─── SIDEBAR ─── */}
+      <div style={s.sidebar}>
+        <div style={s.sidebarTitle} onClick={() => { setView({ type: "home" }); setEditingField(null); }}>Research Portal</div>
+        <div style={{ padding: "0 16px 14px" }}>
+          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
+        </div>
+        <div style={s.navTree}>
+          {Object.entries(SECTORS).map(([sk, sec]) => {
+            const cos = filteredCos(getCos(sk));
+            const open = sidebarOpen[sk];
+            const total = getCos(sk).length;
+            return (
+              <div key={sk}>
+                <div style={s.sectorHdr} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    {sk !== "sources" && sk !== "prompts" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
+                    <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else if (sk === "prompts") { setView({ type: "company", id: "prompt_researchbrief_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
+                  </div>
+                  {total > 0 && sk !== "sources" && sk !== "prompts" && <span style={s.badge}>{total}</span>}
+                </div>
+                {open && sk !== "sources" && sk !== "prompts" && (
+                  <>
+                    {cos.map(c => {
+                      const active = view.type === "company" && view.id === c.id;
+                      const pr = companyData[c.id]?.priority || "";
+                      return (
+                        <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}) }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
+                          {pr && <span style={{ ...s.prDot, background: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.textGhost }} />}
+                        </div>
+                      );
+                    })}
+                    <div style={s.navAdd} onClick={() => { setAdding(sk); setAddSub(Object.keys(sec.subs)[0]); }}>+ Add company</div>
+                  </>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ─── MAIN ─── */}
+      <div style={s.main}>
+        {adding && (
+          <div style={s.modalOverlay}>
+            <div style={s.modalBox}>
+              <div style={{ fontSize: 14, fontWeight: 500, color: T_.accent, marginBottom: 16 }}>Add company to {SECTORS[adding]?.label}</div>
+              <input ref={addRef} style={s.modalInput} placeholder="Company name" value={addName}
+                onChange={e => setAddName(e.target.value)} onKeyDown={e => { if (e.key === "Enter") addCompany(); if (e.key === "Escape") { setAdding(null); setAddName(""); } }} />
+              <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
+                {Object.entries(SECTORS[adding]?.subs || {}).map(([k, v]) => (
+                  <span key={k} style={{ ...s.subPill, ...(addSub === k ? s.subPillActive : {}) }} onClick={() => setAddSub(k)}>{v}</span>
+                ))}
+              </div>
+              <div style={{ display: "flex", gap: 8, marginTop: 18 }}>
+                <button style={s.btnAccent} onClick={addCompany}>Add</button>
+                <button style={s.btnGhost} onClick={() => { setAdding(null); setAddName(""); }}>Cancel</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* HOME */}
+        {view.type === "home" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Research Portal</h1>
+            <p style={s.pageSub}>
+              {companies.length === 0
+                ? "Your private company research wiki. Click \"+ Add company\" under any sector in the sidebar to get started."
+                : `Tracking ${companies.length} companies across ${Object.keys(SECTORS).length} sectors.`}
+            </p>
+            {companies.length > 0 && (
+              <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+                <button style={s.btnAccent} onClick={refreshAllNews}>Refresh all news</button>
+              </div>
+            )}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 10, marginBottom: 32 }}>
+              {Object.entries(SECTORS).map(([sk, sec]) => {
+                const cos = getCos(sk);
+                return (
+                  <div key={sk} style={s.statCard} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setView({ type: "sector", sector: sk })}>
+                    <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sec.label}</div>
+                    <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{cos.length}</div>
+                    <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 3 }}>companies</div>
+                  </div>
+                );
+              })}
+            </div>
+            {recentNotes().length > 0 && (
+              <div style={s.section}>
+                <div style={s.sectionHdr}>Recent research notes</div>
+                {recentNotes().map(n => (
+                  <div key={n.id} style={{ ...s.noteEntry, cursor: "pointer" }} onClick={() => setView({ type: "company", id: n.cid })}>
+                    <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
+                      <span style={{ fontSize: 13, fontWeight: 500, color: T_.accent }}>{n.coName}</span>
+                      <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: "auto" }}>{fmtShort(n.date)}</span>
+                    </div>
+                    <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7 }}>{n.text}</div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* SECTOR */}
+        {view.type === "sector" && SECTORS[view.sector] && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>{SECTORS[view.sector].label}</h1>
+            <p style={s.pageSub}>{getCos(view.sector).length} companies</p>
+            <div style={s.section}>
+              <div style={s.sectionHdr}>
+                <span>Sector thesis</span>
+                {sectorNotes[view.sector + "_macro"]?.date && <span style={s.sectionDate}>{fmtShort(sectorNotes[view.sector + "_macro"].date)}</span>}
+              </div>
+              <textarea style={s.textarea} rows={5}
+                value={sectorNotes[view.sector + "_macro"]?.text || ""}
+                onChange={e => updateSN(view.sector + "_macro", e.target.value)}
+                placeholder="Your macro thesis for this sector. Key themes, secular trends, competitive dynamics, where the market is heading..." />
+            </div>
+            {Object.entries(SECTORS[view.sector].subs).map(([subk, subLabel]) => {
+              const cos = getCos(view.sector).filter(c => c.sub === subk);
+              if (cos.length === 0) return null;
+              return (
+                <div key={subk} style={s.section}>
+                  <div style={s.sectionHdr}><span>{subLabel}</span><span style={s.sectionDate}>{cos.length} companies</span></div>
+                  {cos.map(c => {
+                    const pr = companyData[c.id]?.priority || "";
+                    return (
+                      <div key={c.id} style={s.listRow} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                        <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{c.name}</span>
+                        {pr && <span style={{ ...s.prBadge, background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge, color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
+                        <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+            {getCos(view.sector).length === 0 && (
+              <div style={{ color: T_.textDim, fontSize: 14, padding: "24px 0", lineHeight: 1.7 }}>No companies added yet. Use "+ Add company" in the sidebar.</div>
+            )}
+          </div>
+        )}
+
+        {/* COMPANY */}
+        {view.type === "company" && cur && curData && (
+          <div style={s.page}>
+            <div style={s.breadcrumb}>
+              <span onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
+              {cur.sector !== "sources" && cur.sector !== "prompts" && <>
+              <span style={{ color: T_.textGhost }}>&rsaquo;</span>
+              <span onClick={() => { setView({ type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.subs[cur.sub]}</span>
+              </>}
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+              <h1 style={s.pageTitle}>{cur.name}</h1>
+              <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
+                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>&#8592; Back</button>
+                {cur.id !== "source_master_seed" && cur.id !== "prompt_researchbrief_seed" && <button style={{ ...s.btnGhost, color: T_.red, borderColor: T_.redDim }} onClick={() => delCompany(cur.id)}>Delete</button>}
+              </div>
+            </div>
+            {cur.sector !== "sources" && cur.sector !== "prompts" && <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>{SECTORS[cur.sector]?.subs[cur.sub]} &middot; {SECTORS[cur.sector]?.label}</div>}
+
+            {/* Priority — hide for prompts/sources */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+              {PRIORITIES.map(pr => (
+                <span key={pr} style={{
+                  ...s.prPill,
+                  ...(curData.priority === pr ? {
+                    background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge,
+                    color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText,
+                    borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost,
+                  } : {})
+                }} onClick={() => setPriority(cur.id, pr)}>{pr}</span>
+              ))}
+            </div>
+            )}
+
+            {/* RUN PROMPT BUTTON — prompts only */}
+            {cur.sector === "prompts" && curData.fields?.overview?.text?.trim() && (
+              <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
+                <button style={{ ...s.btnAccent, display: "flex", alignItems: "center", gap: 6 }} onClick={() => {
+                  const t = curData.fields.overview.text.trim();
+                  if (typeof window.sendPrompt === "function") { window.sendPrompt(t); }
+                  else { navigator.clipboard.writeText(t).then(() => { const el = document.getElementById("copyMsg"); if (el) { el.textContent = "Copied to clipboard — paste in Claude"; setTimeout(() => el.textContent = "", 2500); } }); }
+                }}>&#9654; Run prompt</button>
+                <button style={s.btnGhost} onClick={() => { navigator.clipboard.writeText(curData.fields.overview.text.trim()).then(() => { const el = document.getElementById("copyMsg"); if (el) { el.textContent = "Copied!"; setTimeout(() => el.textContent = "", 2500); } }); }}>Copy</button>
+                <span id="copyMsg" style={{ fontSize: 13, color: T_.green, alignSelf: "center" }}></span>
+              </div>
+            )}
+
+            {/* RECENT UPDATES — hide for prompts/sources */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            <div style={s.section}>
+              <div style={s.sectionHdr}>
+                <span>Recent updates</span>
+                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                  {curNews?.date && <span style={s.sectionDate}>Fetched {fmtShort(curNews.date)}</span>}
+                  <button style={s.btnSmall} onClick={() => refreshNews(cur.id)} disabled={newsLoading[cur.id]}>
+                    {newsLoading[cur.id] ? "Fetching..." : "Refresh news"}
+                  </button>
+                </div>
+              </div>
+              <div style={s.newsScroll}>
+                {newsLoading[cur.id] && !curNews && (
+                  <div style={{ color: T_.textDim, fontSize: 14, padding: "20px 0", fontStyle: "italic", lineHeight: 1.7 }}>Searching for recent news about {cur.name}...</div>
+                )}
+                {curNews && curNews.items.length === 0 && (
+                  <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No recent news found. Click "Refresh news" to search again.</div>
+                )}
+                {curNews && [...curNews.items].sort((a, b) => {
+                  try { return new Date(b.date) - new Date(a.date); } catch { return 0; }
+                }).map((item, i) => (
+                  <div key={i} style={s.newsItem}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
+                      <div style={{ fontSize: 14, color: T_.text, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{item.headline}</div>
+                      <span style={{ fontSize: 12, color: T_.textGhost, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 2 }}>{item.date}</span>
+                    </div>
+                    {item.summary && <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7, marginTop: 6 }}>{item.summary}</div>}
+                    {item.source && <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 4 }}>{item.source}</div>}
+                  </div>
+                ))}
+                {!curNews && !newsLoading[cur.id] && (
+                  <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>Click "Refresh news" to pull the latest updates about {cur.name}.</div>
+                )}
+              </div>
+            </div>
+            )}
+
+            {/* RESEARCH NOTES — hide for prompts/sources */}
+            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            <div style={s.section}>
+              <div style={s.sectionHdr}>
+                <span>Research notes</span>
+                <span style={s.sectionDate}>{(curData.notes || []).length} entries</span>
+              </div>
+              <NoteInput onAdd={t => addNote(cur.id, t)} />
+              {(curData.notes || []).length === 0 && (
+                <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No notes yet. Add your first research note above.</div>
+              )}
+              {(curData.notes || []).map(n => (
+                <div key={n.id} style={s.noteEntry}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14 }}>
+                    <div style={{ fontSize: 14, color: T_.text, lineHeight: 1.8, flex: 1, whiteSpace: "pre-wrap" }}>{n.text}</div>
+                    <span style={{ fontSize: 14, color: T_.textGhost, cursor: "pointer", padding: "0 6px", flexShrink: 0, lineHeight: 1 }} onClick={() => delNote(cur.id, n.id)}>&times;</span>
+                  </div>
+                  <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 8 }}>{fmt(n.date)}</div>
+                </div>
+              ))}
+            </div>
+            )}
+
+            {/* STRUCTURED FIELDS */}
+            {(cur.sector === "prompts" ? PROMPT_FIELDS : cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+              const fd = curData.fields[f.key];
+              const isEditing = editingField === f.key;
+              const hasContent = fd?.text?.trim();
+              return (
+                <div key={f.key} style={s.section}>
+                  <div style={s.sectionHdr}>
+                    <span>{f.label}</span>
+                    <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                      {fd?.date && fd.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
+                      {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                    </div>
+                  </div>
+                  {(isEditing || !hasContent) ? (
+                    <div>
+                      <textarea style={s.textarea} rows={6}
+                        value={fd?.text || ""}
+                        onChange={e => updateField(cur.id, f.key, e.target.value)}
+                        placeholder={f.ph}
+                        autoFocus={isEditing} />
+                      {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                    </div>
+                  ) : (
+                    <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function NoteInput({ onAdd }) {
+  const [t, setT] = useState("");
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      <input style={s.noteInput} placeholder="Add a research note..." value={t}
+        onChange={e => setT(e.target.value)}
+        onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onAdd(t); setT(""); } }} />
+      <button style={s.btnAccent} onClick={() => { onAdd(t); setT(""); }}>Add</button>
+    </div>
+  );
+}
+
+// ─── Styles ────────────────────────────────────────────
+const FONT = "var(--font-sans)";
+const s = {
+  wrap: { display: "flex", minHeight: 700, background: T_.bg, borderRadius: 12, overflow: "hidden", fontFamily: FONT, fontSize: 14, color: T_.text, border: `1px solid ${T_.border}` },
+  sidebar: { width: 230, background: T_.bgSidebar, borderRight: `1px solid ${T_.border}`, display: "flex", flexDirection: "column", flexShrink: 0 },
+  sidebarTitle: { padding: "22px 22px 18px", fontSize: 15, fontWeight: 500, color: T_.text, cursor: "pointer", fontFamily: FONT },
+  searchInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "8px 12px", fontSize: 13, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  navTree: { flex: 1, overflowY: "auto", padding: "6px 0" },
+  sectorHdr: { padding: "9px 18px", fontSize: 12, fontWeight: 500, color: T_.textDim, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, userSelect: "none", fontFamily: FONT },
+  badge: { fontSize: 11, color: T_.textGhost, background: T_.bgPanel, padding: "2px 8px", borderRadius: 4, fontFamily: FONT },
+  navCo: { padding: "7px 18px 7px 38px", fontSize: 13, color: T_.textMid, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, borderLeft: "2px solid transparent", transition: "all .1s", lineHeight: 1.5, fontFamily: FONT },
+  navCoActive: { background: "rgba(245,158,11,0.08)", color: T_.accent, borderLeftColor: T_.accent },
+  prDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0 },
+  navAdd: { padding: "6px 18px 6px 38px", fontSize: 12, color: T_.textGhost, cursor: "pointer", fontFamily: FONT },
+  main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative", background: T_.bg },
+  page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1020 },
+  pageTitle: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
+  pageSub: { fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.7, fontFamily: FONT },
+  breadcrumb: { fontSize: 13, color: T_.textGhost, marginBottom: 12, display: "flex", gap: 8, alignItems: "center", cursor: "pointer", fontFamily: FONT },
+  section: { marginBottom: 36 },
+  sectionHdr: { fontSize: 14, fontWeight: 500, color: T_.textDim, marginBottom: 14, paddingBottom: 10, borderBottom: `1px solid ${T_.borderLight}`, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT },
+  sectionDate: { fontSize: 12, fontWeight: 400, color: T_.textGhost, fontFamily: FONT },
+  proseBody: { fontSize: 14, lineHeight: 1.9, color: T_.text, cursor: "pointer", whiteSpace: "pre-wrap", padding: "6px 0", fontFamily: FONT },
+  textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
+  noteInput: { flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "11px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  noteEntry: { padding: "18px 0", borderBottom: `1px solid ${T_.borderLight}` },
+  newsScroll: { maxHeight: 260, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
+  newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
+  listRow: { display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" },
+  statCard: { background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: "16px 18px", cursor: "pointer" },
+  prPill: { padding: "7px 18px", fontSize: 13, borderRadius: 7, cursor: "pointer", border: `1px solid ${T_.border}`, color: T_.textGhost, transition: "all .12s", background: "transparent", fontFamily: FONT },
+  prBadge: { fontSize: 12, padding: "4px 12px", borderRadius: 6, border: "1px solid", fontFamily: FONT },
+  btnAccent: { padding: "9px 20px", fontSize: 13, fontWeight: 500, border: "none", background: T_.accent, color: T_.bg, borderRadius: 7, cursor: "pointer", fontFamily: FONT },
+  btnGhost: { padding: "7px 16px", fontSize: 13, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textMid, borderRadius: 7, cursor: "pointer", fontFamily: FONT },
+  btnSmall: { padding: "4px 12px", fontSize: 12, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textDim, borderRadius: 5, cursor: "pointer", fontFamily: FONT },
+  modalOverlay: { position: "absolute", inset: 0, background: "rgba(0,0,0,0.55)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 10 },
+  modalBox: { background: T_.bgSidebar, border: `1px solid ${T_.border}`, borderRadius: 12, padding: "26px 30px", width: 420, maxWidth: "90%", fontFamily: FONT },
+  modalInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "10px 14px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
+  subPill: { padding: "5px 14px", fontSize: 12, color: T_.textDim, border: `1px solid ${T_.border}`, borderRadius: 6, cursor: "pointer", fontFamily: FONT },
+  subPillActive: { color: T_.accent, borderColor: T_.accent, background: "rgba(245,158,11,0.1)" },
+};
