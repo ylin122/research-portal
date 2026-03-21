@@ -99,17 +99,24 @@ export default function App() {
   const [editingField, setEditingField] = useState(null);
   const addRef = useRef(null);
 
+  const [loadError, setLoadError] = useState(null);
+
   useEffect(() => {
     (async () => {
-      const [cos, fields, notes, news, sn] = await Promise.all([
-        loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes()
-      ]);
-      setCompanies(cos);
-      setFieldsMap(fields);
-      setNotesMap(notes);
-      setNewsCache(news);
-      setSectorNotes(sn);
-      setReady(true);
+      try {
+        const [cos, fields, notes, news, sn] = await Promise.all([
+          loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes()
+        ]);
+        setCompanies(cos);
+        setFieldsMap(fields);
+        setNotesMap(notes);
+        setNewsCache(news);
+        setSectorNotes(sn);
+        setReady(true);
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        setLoadError(err.message || 'Failed to connect to database');
+      }
     })();
   }, []);
 
@@ -212,7 +219,9 @@ export default function App() {
 
   if (!ready) return (
     <div style={s.wrap}>
-      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, color: T_.textDim, fontSize: 13 }}>Loading...</div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", flex: 1, color: loadError ? T_.red : T_.textDim, fontSize: 13, flexDirection: "column", gap: 8 }}>
+        {loadError ? <><div>Error connecting to database:</div><div>{loadError}</div></> : "Loading..."}
+      </div>
     </div>
   );
 
