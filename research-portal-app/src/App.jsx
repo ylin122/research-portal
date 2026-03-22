@@ -266,7 +266,7 @@ export default function App() {
                   </div>
                   {total > 0 && sk !== "sources" && sk !== "prompts" && <span style={s.badge}>{total}</span>}
                 </div>
-                {open && sk !== "sources" && sk !== "prompts" && (
+                {(open || search) && sk !== "sources" && sk !== "prompts" && cos.length > 0 && (
                   <>
                     {cos.map(c => {
                       const active = view.type === "company" && view.id === c.id;
