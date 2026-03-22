@@ -445,6 +445,89 @@ export default function Primer() {
             </div>
           </div>
 
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Software Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How software companies make money. The revenue model defines the business quality — recurring subscription commands premium multiples; perpetual license trades at a discount. Most companies are in transition between models.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "SaaS Subscription", color: "#10B981", icon: "🔄",
+                  how: "Customers pay a recurring fee (monthly or annually) for access to cloud-hosted software. Typically priced per-user, per-seat, or per-module. Revenue is recognized ratably over the contract term",
+                  economics: "Gross margins: 70-85%. Net dollar retention: 110-130% for best-in-class. Revenue is predictable and compounds. Customer acquisition cost (CAC) recovered over 12-18 months. LTV/CAC ratio of 3-5x is healthy",
+                  examples: "Salesforce (per-seat CRM), Workday (per-employee HCM), Datadog (per-host monitoring), ServiceNow (per-user ITSM)",
+                  valuation: "Highest multiples: 8-20x ARR for growth SaaS. Market rewards predictability, retention, and expansion revenue. The 'Rule of 40' (growth% + FCF%) is the key health metric",
+                  transition: "This is where every software company wants to be. Companies transitioning from perpetual to subscription (e.g., Adobe in 2012, Autodesk in 2016) see short-term revenue dips but long-term value creation",
+                },
+                { name: "Consumption / Usage-Based", color: "#3B82F6", icon: "📊",
+                  how: "Customers pay based on actual usage — per API call, per GB stored, per query, per transaction. No fixed commitment; bill scales with consumption. Sometimes combined with a base subscription + overage",
+                  economics: "Gross margins: 60-80% (lower than pure SaaS due to infrastructure costs). Revenue grows with customer workload — natural expansion without sales effort. But revenue can decline if usage drops (macro sensitivity)",
+                  examples: "Snowflake (per-credit compute), AWS/Azure (per-hour/GB), Twilio (per-message/call), Datadog (per-host, usage tiers), Stripe (per-transaction %)",
+                  valuation: "Trades at premium when usage is growing (implies product-market fit). Discount when usage decelerates. Investors scrutinize 'net revenue retention' and 'dollar-based net expansion rate' closely",
+                  transition: "Growing model — aligns vendor revenue with customer value. Risk: unpredictable revenue makes forecasting harder. Some companies (Elastic, HashiCorp) have shifted from subscription to consumption",
+                },
+                { name: "Perpetual License + Maintenance", color: "#F59E0B", icon: "📜",
+                  how: "Customer pays a one-time license fee upfront for the right to use the software forever. Then pays an annual maintenance fee (typically 18-22% of license) for updates, patches, and support. Maintenance is recurring; license is one-time",
+                  economics: "License gross margins: 90%+ (nearly pure profit). Maintenance gross margins: 85-90%. Maintenance renewal rates: 90-95%. The maintenance stream is the recurring cash flow that PE sponsors value. Total revenue is lumpy due to large license deals",
+                  examples: "Oracle Database (on-prem), BMC Mainframe (AMI), Quest Software (AD tools), legacy SAP, legacy Microsoft (before M365). Most PE-owned enterprise software still has significant perpetual revenue",
+                  valuation: "Lower multiples: 3-6x EBITDA for perpetual-heavy. Market penalizes lumpiness and perceived obsolescence. PE sponsors buy perpetual businesses cheaply and try to transition to subscription for multiple expansion",
+                  transition: "Declining model — most vendors are forcing customers to subscription/cloud. The perpetual→subscription transition is the #1 value creation lever in PE-owned software. Revenue temporarily dips during transition, then re-accelerates at higher recurring quality",
+                },
+                { name: "Transaction / Per-Unit Fees", color: "#8B5CF6", icon: "💳",
+                  how: "Revenue generated per transaction processed, per document filed, per claim adjudicated, per search performed. Volume-based — more activity = more revenue. Often embedded in customer workflows as 'tolls'",
+                  economics: "Margins vary: 50-80% depending on processing costs. Revenue scales with economic activity (e.g., M&A volume for Datasite, auto claims for CCC, tax filings for Avalara). Recurring in practice but not contractually guaranteed",
+                  examples: "Datasite (per-deal VDR), CCC Intelligent Solutions (per-claim), Avalara (per-transaction tax calc), Solera/Audatex (per-estimate), Dye & Durham (per-search)",
+                  valuation: "Valued on revenue predictability and volume trends. Companies with high-volume, embedded transaction flows trade at 5-10x revenue. Cyclical exposure (M&A volume, auto claims volume) is a risk",
+                  transition: "Stable model for companies embedded in transaction workflows. The key question is whether the volume base is growing or shrinking and whether pricing power exists to raise per-unit fees",
+                },
+                { name: "Freemium / Open Source + Commercial", color: "#EF4444", icon: "🆓",
+                  how: "Core product is free (open source or freemium). Revenue comes from paid tiers with enterprise features — security, compliance, management, support, and hosting. The free tier drives adoption; commercial tier drives revenue",
+                  economics: "Conversion rates: 2-5% of free users become paid. But the free tier creates massive top-of-funnel — millions of users at zero acquisition cost. Paid tier margins: 70-85%. The challenge: monetizing a user base that expects free",
+                  examples: "GitLab (open core), Elastic (open source + paid), Grafana Labs (open source + cloud), SonarSource (SonarQube free + enterprise), MongoDB (community + Atlas), HashiCorp (Terraform open + enterprise)",
+                  valuation: "Premium when conversion rates are improving and community is growing. Discount when open-source alternatives fork or when monetization stalls. Investors track 'free to paid conversion rate' and 'community growth'",
+                  transition: "Increasingly common model. Tension: open-source community wants everything free; company needs revenue. Some companies (Elastic, Redis, MongoDB) have changed licenses to prevent cloud providers from competing with their own product",
+                },
+                { name: "Platform / Marketplace Fees", color: "#0EA5E9", icon: "🏪",
+                  how: "Revenue from operating a platform or marketplace — take rates on transactions, listing fees, advertising, and premium placements. The platform connects buyers and sellers and takes a cut",
+                  economics: "Take rates: 5-30% depending on the marketplace. Network effects create winner-take-most dynamics. Gross margins: 60-90%. The moat is the two-sided network — more buyers attract more sellers and vice versa",
+                  examples: "Shopify (merchant subscriptions + payment processing), Cvent Supplier Network (venue marketplace), Internet Brands (advertising + lead gen), ConnectWise Marketplace (ISV integrations)",
+                  valuation: "Highest multiples when network effects are demonstrated. GMV (gross merchandise value) and take rate trends are key metrics. Platforms with strong network effects can trade at 10-20x revenue",
+                  transition: "The aspirational model — every software company wants 'platform economics.' In practice, few achieve genuine network effects. Most 'platforms' are really bundles of products marketed as platforms",
+                },
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>
             Sources: Gartner IT Spending Forecasts (2025), IDC Worldwide Software Tracker, Synergy Research Group, company 10-Ks, industry reports. TAM and growth rates are approximate 2025 estimates.
           </div>
