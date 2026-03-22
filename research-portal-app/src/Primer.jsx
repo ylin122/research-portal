@@ -261,7 +261,7 @@ export default function Primer() {
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1400, fontFamily: FONT }}>
       {/* Sub-tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
-        {[{ key: "software", label: "Software" }, { key: "digiinfra", label: "Digital Infrastructure" }, { key: "itservices", label: "IT Services" }, { key: "healthit", label: "Healthcare IT" }, { key: "internet", label: "Internet" }].map(t => (
+        {[{ key: "software", label: "Software" }, { key: "semis", label: "Semiconductors" }, { key: "digiinfra", label: "Digital Infrastructure" }, { key: "itservices", label: "IT Services" }, { key: "healthit", label: "Healthcare IT" }, { key: "internet", label: "Internet" }].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
             padding: "10px 24px", fontSize: 14, fontWeight: 500, cursor: "pointer",
             border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
@@ -533,6 +533,189 @@ export default function Primer() {
           </div>
         </div>
       )}
+
+
+      {/* ═══════ SEMICONDUCTORS ═══════ */}
+      {subTab === "semis" && (() => {
+        const SEMI_SUBS = {
+          eda: { name: "EDA Tools", fullName: "Electronic Design Automation", category: "EDA & IP", color: "#F59E0B", tam: "$16B+ (2025)", growth: "~12-14% CAGR", icon: "🖊️", desc: "Software tools used to design, simulate, verify, and test semiconductor chips before fabrication. Without EDA, no chip gets made. A duopoly with extremely high barriers to entry.", whatTheySell: "RTL synthesis, place & route, timing analysis, physical verification (DRC/LVS), analog/mixed-signal simulation, power analysis, formal verification, DFT", whoBuys: "Every chip designer — fabless (NVIDIA, Qualcomm), IDMs (Intel, TI), and foundries (TSMC). 100% of advanced chips designed with these tools", keyPlayers: ["Synopsys", "Cadence Design Systems", "Siemens EDA (Mentor)", "Ansys (simulation)", "Keysight"], trends: "AI-driven chip design (Synopsys DSO.ai). Exploding complexity at 3nm/2nm driving tool spend. Multi-die (chiplet) design tools. Synopsys + Cadence hold ~70% share" },
+          ip: { name: "Semiconductor IP", fullName: "Silicon IP & Design Blocks", category: "EDA & IP", color: "#F59E0B", tam: "$8B+ (2025)", growth: "~14-16% CAGR", icon: "🧩", desc: "Pre-designed, verified blocks of silicon logic that chip designers license rather than build from scratch. Arm CPU cores are the most important IP in the industry — in 99% of smartphones.", whatTheySell: "Processor cores (CPU, GPU, NPU), interface IP (PCIe, USB, DDR, Ethernet), analog IP (PHY, PLL, ADC), security IP, memory compilers", whoBuys: "Fabless designers who don't want to reinvent standard blocks. Apple licenses Arm ISA then designs custom cores. Every SoC uses licensed IP", keyPlayers: ["Arm Holdings", "Synopsys (IP group)", "Cadence (IP group)", "Alphawave Semi", "Rambus", "Ceva", "Imagination Technologies"], trends: "Arm's dominance extending from mobile → data center → auto. RISC-V as open-source alternative gaining traction. Chiplet interoperability (UCIe) creating new IP demand. Arm IPO valued IP model at ~$65B" },
+          gpu: { name: "GPUs & AI Accelerators", fullName: "Graphics & AI Compute Processors", category: "Logic & Compute", color: "#3B82F6", tam: "$120B+ (2025)", growth: "~30-40% CAGR", icon: "🎮", desc: "Massively parallel processors optimized for matrix math — originally for graphics, now the engine behind all AI training and most inference. NVIDIA's CUDA ecosystem is the deepest moat in semiconductors.", whatTheySell: "Data center GPUs (H100, B200, Vera Rubin), gaming GPUs (GeForce), AI training clusters (DGX), networking (InfiniBand/NVLink), inference accelerators", whoBuys: "Hyperscalers (Microsoft, Google, Meta, Amazon), AI labs (OpenAI, Anthropic), sovereign AI programs, enterprises, gamers", keyPlayers: ["NVIDIA (dominant — 80%+ DC GPU share)", "AMD (MI300X/MI400)", "Intel (Gaudi/Arc)", "Google (TPU — internal)", "AWS (Trainium — internal)"], trends: "Demand far exceeds supply through 2026. Blackwell architecture shipping. HBM memory bottleneck. CUDA lock-in is deep. Annual GPU revenue may exceed $200B by 2027" },
+          cpu: { name: "CPUs", fullName: "Central Processing Units", category: "Logic & Compute", color: "#3B82F6", tam: "$80B+ (2025)", growth: "~5-8% CAGR", icon: "💻", desc: "General-purpose processors for PCs, servers, and embedded systems. x86 (Intel/AMD) dominates PC/server. Arm dominates mobile and is rapidly gaining in data center.", whatTheySell: "Server CPUs (Xeon, EPYC, Graviton), client CPUs (Core, Ryzen), embedded processors, edge/IoT processors", whoBuys: "PC OEMs (Dell, Lenovo, HP), server OEMs, hyperscalers (AWS Graviton, Microsoft Cobalt), enterprises", keyPlayers: ["Intel", "AMD", "Arm (architecture)", "Qualcomm (Snapdragon X for PC)", "AWS Graviton", "Ampere Computing"], trends: "AMD taking server share (now ~25%+). Arm server CPUs growing fast. Intel restructuring (foundry separation). AI PCs with NPUs. x86 share slowly declining in data center" },
+          asic: { name: "Custom ASICs", fullName: "Application-Specific Integrated Circuits", category: "Logic & Compute", color: "#3B82F6", tam: "$30B+ (2025)", growth: "~18-22% CAGR", icon: "🔧", desc: "Custom-designed chips built for a specific workload — more efficient than GPUs for high-volume, well-defined tasks. Hyperscalers increasingly designing their own.", whatTheySell: "Custom AI accelerators (Google TPU, AWS Trainium, Meta MTIA), networking ASICs, video encoding ASICs, storage controllers", whoBuys: "Hyperscalers (Google, Amazon, Microsoft, Meta), large enterprises, telcos, automotive OEMs", keyPlayers: ["Broadcom (ASIC design services — largest)", "Marvell (custom compute)", "Google (TPU)", "AWS (Trainium)", "Microsoft (Maia)", "Meta (MTIA)"], trends: "Hyperscaler ASIC spending accelerating ($10B+ combined). Broadcom ASIC revenue ~$12B+ in 2025. 2-3 year design cycle. Trade-off: cheaper per FLOP at scale but less flexible than GPUs" },
+          fpga: { name: "FPGAs", fullName: "Field-Programmable Gate Arrays", category: "Logic & Compute", color: "#3B82F6", tam: "$8B+ (2025)", growth: "~6-8% CAGR", icon: "🧮", desc: "Reconfigurable chips that can be reprogrammed after manufacturing. Bridge between flexibility of software and efficiency of ASICs. Used in networking, defense, and accelerated computing.", whatTheySell: "FPGA devices, adaptive SoCs, SmartNICs, acceleration cards, development tools", whoBuys: "Telecom (5G), defense/aerospace, data centers, automotive, industrial", keyPlayers: ["AMD (Xilinx — dominant)", "Intel (Altera)", "Lattice Semiconductor", "Microchip (Microsemi)"], trends: "Xilinx (AMD) dominates high-end. Intel separated Altera as independent entity. Adaptive computing (FPGA + CPU + AI on same chip). Niche but high-margin" },
+          dram: { name: "DRAM", fullName: "Dynamic Random-Access Memory", category: "Memory", color: "#06B6D4", tam: "$100B+ (2025)", growth: "~15-20% CAGR (cyclical)", icon: "⚡", desc: "Volatile memory used for active data processing in every computing device. Highly cyclical — only 3 major producers left globally.", whatTheySell: "DDR5 modules (servers/PCs), LPDDR5 (mobile), HBM (AI accelerators), specialty DRAM (automotive)", whoBuys: "Server OEMs, PC OEMs, smartphone makers, GPU companies (HBM), hyperscalers", keyPlayers: ["Samsung (~40% share)", "SK Hynix (~30% share)", "Micron (~25% share)"], trends: "HBM demand 3-4x'd for AI GPUs. DDR5 server transition. Samsung losing HBM share to SK Hynix. Memory supercycle driven by AI" },
+          hbm: { name: "HBM", fullName: "High Bandwidth Memory", category: "Memory", color: "#06B6D4", tam: "$25B+ (2025)", growth: "~60-80% CAGR", icon: "🏎️", desc: "Stacked DRAM dies providing massive bandwidth for AI accelerators. The critical bottleneck for GPU supply — HBM capacity limits how many GPUs can ship.", whatTheySell: "HBM3 (H100/H200), HBM3E (B200/B300), upcoming HBM4. 8-12 layers stacked with >1 TB/s bandwidth", whoBuys: "NVIDIA (>50% of HBM production), AMD, Google (TPU), Intel, hyperscaler ASIC programs", keyPlayers: ["SK Hynix (HBM leader — ~50% share)", "Samsung (~35% share)", "Micron (~15% share)"], trends: "HBM revenue: $2B (2023) → $25B+ (2025) → $50B+ (2027E). SK Hynix dominant. TSMC CoWoS packaging is the bottleneck. HBM4 expected 2026 with 2x bandwidth" },
+          nand: { name: "NAND Flash", fullName: "NAND Flash Memory & SSDs", category: "Memory", color: "#06B6D4", tam: "$70B+ (2025)", growth: "~10-15% CAGR (cyclical)", icon: "💾", desc: "Non-volatile storage memory used in SSDs, smartphones, USB drives, and data centers. Produced in 200+ layer 3D structures.", whatTheySell: "Enterprise SSDs, client SSDs, embedded NAND, USB/SD cards, managed NAND solutions", whoBuys: "Data centers, PC OEMs, smartphone makers, enterprise storage, automotive", keyPlayers: ["Samsung (~32% share)", "Kioxia/WD (~30%)", "SK Hynix/Solidigm (~20%)", "Micron (~14%)"], trends: "200+ layer 3D NAND race. QLC for cost-optimized storage. PCIe Gen5 SSDs. Kioxia-WD merger completed" },
+          litho: { name: "Lithography", fullName: "Photolithography Equipment", category: "Equipment", color: "#EF4444", tam: "$28B+ (2025)", growth: "~12-15% CAGR", icon: "🔬", desc: "The most critical step in chipmaking — uses light to print circuit patterns onto silicon wafers. ASML has a complete monopoly on EUV lithography.", whatTheySell: "EUV scanners ($350M+ each), High-NA EUV ($400M+, sub-2nm), DUV immersion scanners (mature nodes)", whoBuys: "TSMC (~35% of ASML revenue), Samsung, Intel, SK Hynix, Micron. Only ~50 EUV tools shipped per year", keyPlayers: ["ASML (100% monopoly on EUV)", "Canon (DUV — legacy)", "Nikon (DUV — legacy)"], trends: "High-NA EUV for 2nm and beyond. ASML backlog $36B+. Export controls block EUV to China. Each EUV machine weighs 150 tons. ~$4B+ in annual R&D" },
+          etch: { name: "Etch, Deposition & CMP", fullName: "Etch, Thin Film Deposition & Planarization", category: "Equipment", color: "#EF4444", tam: "$40B+ (2025)", growth: "~10-12% CAGR", icon: "⚗️", desc: "After lithography, circuits must be etched (material removed), deposited (material added), and planarized (surface leveled). More total spend than lithography.", whatTheySell: "Plasma etch, CVD/PVD deposition, ALD (atomic layer deposition), CMP polishers, epitaxy, ion implantation", whoBuys: "All fabs — foundry, memory, IDMs. Each fab has 100s of these tools", keyPlayers: ["Applied Materials (broadest portfolio)", "Lam Research (etch leader)", "Tokyo Electron (TEL)", "ASM International (ALD)"], trends: "3D architectures (GAA, 200+ layer NAND) require more steps → driving tool intensity up ~15% per node. Backside power delivery at 2nm creates new etch demand" },
+          inspect: { name: "Process Control & Inspection", fullName: "Wafer Inspection & Metrology", category: "Equipment", color: "#EF4444", tam: "$12B+ (2025)", growth: "~10-12% CAGR", icon: "🔍", desc: "Equipment that inspects wafers and measures critical dimensions during manufacturing. KLA dominates with ~55% share.", whatTheySell: "Optical wafer inspection, e-beam inspection, overlay metrology, CD-SEM, defect review, film measurement", whoBuys: "All fabs. Process control is ~12-15% of total equipment spend — growing as yields at advanced nodes are harder", keyPlayers: ["KLA (dominant — ~55% share)", "Applied Materials (e-beam)", "Onto Innovation", "Hitachi High-Tech", "Lasertec (EUV mask)"], trends: "AI/ML for defect classification. E-beam growing for smallest features. EUV mask inspection bottleneck (Lasertec monopoly). Spend per wafer rising 15-20% per node" },
+          advpkg: { name: "Advanced Packaging", fullName: "Advanced Semiconductor Packaging (2.5D/3D)", category: "Packaging & Test", color: "#8B5CF6", tam: "$20B+ (2025)", growth: "~20-25% CAGR", icon: "🏗️", desc: "Connecting multiple chiplets and HBM stacks in a single package. The key bottleneck for AI GPU supply — TSMC CoWoS capacity limits how many GPUs ship.", whatTheySell: "2.5D interposer packaging (CoWoS, EMIB), 3D stacking (SoIC, Foveros), fan-out (InFO), hybrid bonding", whoBuys: "NVIDIA (CoWoS for every DC GPU), AMD, Apple, Google, Broadcom, AWS", keyPlayers: ["TSMC (CoWoS, SoIC — dominant)", "Intel (Foveros, EMIB)", "Samsung (I-Cube)", "ASE (OSAT leader)", "Amkor"], trends: "CoWoS is THE bottleneck — TSMC expanding to 80K+ wafers/mo by 2026. Every AI GPU requires CoWoS. Chiplet architecture (UCIe) replacing monolithic dies" },
+          analog: { name: "Analog & Mixed-Signal", fullName: "Analog, Power Management & Signal Chain ICs", category: "Analog & Mixed-Signal", color: "#84CC16", tam: "$85B+ (2025)", growth: "~6-8% CAGR", icon: "📐", desc: "Chips that interface between the real world and digital systems. In every electronic device — extremely long product lifecycles and sticky customer relationships.", whatTheySell: "Power management ICs, voltage regulators, op-amps, data converters (ADC/DAC), sensor interfaces, clock/timing", whoBuys: "Every electronics maker — industrial, automotive, consumer, telecom, medical, data center. Products sell for 10-20+ years", keyPlayers: ["Texas Instruments (TI — ~18% share)", "Analog Devices (ADI)", "Infineon", "NXP", "ON Semiconductor", "STMicro", "Microchip", "Renesas"], trends: "TI's 300mm fab strategy driving cost advantage. Auto & industrial ~60% of analog revenue. Long design cycles (2-5 years) create massive switching costs. Steady 'toll booth' model" },
+          power: { name: "Power Semiconductors", fullName: "Discrete Power Devices (SiC, GaN, IGBT)", category: "Power & Discrete", color: "#84CC16", tam: "$25B+ (2025)", growth: "~10-14% CAGR", icon: "⚡", desc: "Discrete devices for power conversion — EV inverters, solar inverters, grid infrastructure, motor drives.", whatTheySell: "Silicon carbide (SiC) MOSFETs, GaN FETs, silicon IGBTs, power MOSFETs, power modules", whoBuys: "EV/auto OEMs, renewable energy, industrial motor drives, data center power supplies", keyPlayers: ["Infineon (market leader)", "ON Semiconductor", "STMicroelectronics", "Wolfspeed (SiC)", "Rohm"], trends: "SiC displacing silicon IGBTs in EVs. GaN taking over chargers. EV traction inverter = $500-800 of SiC per vehicle. Wolfspeed struggling with profitability" },
+          opto: { name: "Optoelectronics", fullName: "Optical Components, Transceivers & Image Sensors", category: "Optoelectronics", color: "#F97316", tam: "$45B+ (2025)", growth: "~15-20% CAGR", icon: "💡", desc: "Components converting between light and electrical signals — optical transceivers for data center networking, image sensors for cameras, LEDs/lasers.", whatTheySell: "Optical transceivers (800G→1.6T), VCSELs/EELs, image sensors (CMOS), silicon photonics, coherent optics", whoBuys: "Hyperscalers (DC interconnects), telecom carriers, smartphone OEMs, auto (LiDAR)", keyPlayers: ["Broadcom (silicon photonics)", "Coherent", "Lumentum", "Fabrinet (contract mfg)", "Sony (image sensors)", "AAOI"], trends: "800G→1.6T transceiver migration driving growth. Co-packaged optics reducing power. LPO vs CPO debate" },
+        };
+        const SEMI_TAX = [
+          { key: "edaip", label: "EDA & Silicon IP", color: "#F59E0B", icon: "🖊️", children: ["eda", "ip"] },
+          { key: "logic", label: "Logic & Compute", color: "#3B82F6", icon: "💎", children: ["gpu", "cpu", "asic", "fpga"] },
+          { key: "memory", label: "Memory", color: "#06B6D4", icon: "⚡", children: ["dram", "hbm", "nand"] },
+          { key: "equip", label: "Equipment", color: "#EF4444", icon: "⚙️", children: ["litho", "etch", "inspect"] },
+          { key: "pkg", label: "Packaging & Test", color: "#8B5CF6", icon: "📦", children: ["advpkg"] },
+          { key: "analog", label: "Analog & Mixed-Signal", color: "#84CC16", icon: "📐", children: ["analog"] },
+          { key: "discrete", label: "Power & Discrete", color: "#84CC16", icon: "⚡", children: ["power"] },
+          { key: "opto", label: "Optoelectronics", color: "#F97316", icon: "💡", children: ["opto"] },
+        ];
+        return (
+        <div>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Semiconductor Industry Primer</div>
+            <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>From design to fabrication to packaging — the full chip value chain, subsectors, and key players</div>
+          </div>
+          {/* Value Chain */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Semiconductor Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From design tools through to end markets. Each stage depends on the one to its left. ~$600B industry (2025).</div>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              {[
+                { label: "EDA & IP", color: "#F59E0B", icon: "🖊️", desc: "Design tools & silicon IP", rows: [{ sub: "EDA Tools", ex: "Synopsys, Cadence, Siemens EDA" }, { sub: "IP Cores", ex: "Arm, Synopsys IP, Cadence IP" }, { sub: "Verification", ex: "Synopsys, Cadence, Ansys" }], buyers: "Chip designers (fabless, IDMs)" },
+                { label: "Chip Design", color: "#3B82F6", icon: "💎", desc: "Fabless & IDM designers", rows: [{ sub: "Logic / GPU", ex: "NVIDIA, AMD, Qualcomm, Apple" }, { sub: "Memory", ex: "Samsung, SK Hynix, Micron" }, { sub: "Analog", ex: "TI, ADI, NXP, Infineon" }, { sub: "Custom ASIC", ex: "Broadcom, Marvell, Google" }], buyers: "OEMs, hyperscalers, auto, mobile" },
+                { label: "Equipment", color: "#EF4444", icon: "⚙️", desc: "Machines that make chips", rows: [{ sub: "Lithography", ex: "ASML (monopoly: EUV)" }, { sub: "Etch & Dep", ex: "Lam Research, Applied Materials" }, { sub: "Inspection", ex: "KLA, Onto Innovation" }, { sub: "Test", ex: "Teradyne, Advantest" }], buyers: "Foundries, IDMs, memory fabs" },
+                { label: "Foundry / Fab", color: "#10B981", icon: "🏭", desc: "Manufacturing the silicon", rows: [{ sub: "Leading Edge", ex: "TSMC (60%+ share), Samsung" }, { sub: "Mature Nodes", ex: "GlobalFoundries, UMC, SMIC" }, { sub: "Memory Fab", ex: "Samsung, SK Hynix, Micron" }], buyers: "Fabless designers (NVDA, AMD)" },
+                { label: "Packaging & Test", color: "#8B5CF6", icon: "📦", desc: "Assembly & final test", rows: [{ sub: "Advanced", ex: "TSMC CoWoS, Intel Foveros" }, { sub: "OSAT", ex: "ASE, Amkor, JCET" }, { sub: "Substrates", ex: "Ibiden, Shinko, Unimicron" }], buyers: "Foundries, fabless (final assembly)" },
+                { label: "End Markets", color: "#6366F1", icon: "🌐", desc: "Who buys the chips", rows: [{ sub: "Data Center", ex: "~30% of semi revenue (AI)" }, { sub: "Mobile", ex: "~22% (smartphones)" }, { sub: "Auto", ex: "~14% (ADAS, EV)" }, { sub: "PC/Consumer", ex: "~18% (laptops, gaming)" }], buyers: "Hyperscalers, Apple, OEMs, auto" },
+              ].map((stage, i, arr) => (
+                <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}><span style={{ fontSize: 14 }}>{stage.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span></div>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>{stage.desc}</div>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                      {stage.rows.map(r => (<div key={r.sub} style={{ background: T_.bg, borderRadius: 5, padding: "5px 8px" }}><div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div><div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{r.ex}</div></div>))}
+                    </div>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}><span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}</div>
+                  </div>
+                  {i < arr.length - 1 && <div style={{ display: "flex", alignItems: "center", padding: "0 4px", color: T_.textGhost, fontSize: 16, flexShrink: 0 }}>→</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, background: "#06B6D412", border: "1px dashed #06B6D444", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 14 }}>🔬</span><span style={{ fontSize: 13, fontWeight: 700, color: "#06B6D4" }}>Materials & Chemicals — Feed Every Fab</span></div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>Wafers (Shin-Etsu, SUMCO) · Photoresist (JSR, TOK) · Gases (Air Liquide, Linde) · CMP (Entegris) · Chemicals (BASF, Merck KGaA)</div>
+            </div>
+            <div style={{ marginTop: 4, background: "#F59E0B12", border: "1px dashed #F59E0B44", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 14 }}>🌏</span><span style={{ fontSize: 13, fontWeight: 700, color: "#F59E0B" }}>Geopolitics & Trade — Shapes the Entire Industry</span></div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>US export controls (NVDA, ASML) · CHIPS Act subsidies · China self-sufficiency push (SMIC) · Taiwan concentration risk</div>
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>EDA & IP enable chip design → Equipment enables manufacturing → Foundries fabricate wafers → OSAT packages & tests → End markets consume. Timeline: ~2-4 years from design start to volume revenue.</div>
+          </div>
+          {/* End Market Breakdown */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>End Market Demand — $600B+ Industry (2025E)</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Where the chips go. Data center share has doubled since 2020, driven by AI infrastructure buildout.</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              {[
+                { name: "Data Center / AI", pct: 30, rev: "$180B+", color: "#3B82F6", growth: "~25-30% CAGR", drivers: "AI training & inference GPUs, HBM, networking ASICs, AI accelerators. Hyperscaler capex driving unprecedented demand", top: "NVIDIA, AMD, Broadcom, Marvell, Intel" },
+                { name: "Mobile", pct: 22, rev: "$130B+", color: "#8B5CF6", growth: "~5-7% CAGR", drivers: "Smartphone SoCs, modems, RF front-end, power management. AI on-device features driving upgrade cycles", top: "Qualcomm, MediaTek, Apple, Skyworks" },
+                { name: "PC & Consumer", pct: 18, rev: "$105B+", color: "#6366F1", growth: "~3-5% CAGR", drivers: "CPUs, GPUs, memory, SSDs, gaming, IoT. AI PC refresh cycle starting 2025-2026", top: "Intel, AMD, NVIDIA, Micron, Samsung" },
+                { name: "Automotive", pct: 14, rev: "$85B+", color: "#10B981", growth: "~12-15% CAGR", drivers: "ADAS/self-driving, EV power semis, infotainment. $ content per vehicle rising from $500 → $1,500+", top: "Infineon, NXP, ON Semi, TI, STMicro" },
+                { name: "Industrial", pct: 12, rev: "$70B+", color: "#F59E0B", growth: "~8-10% CAGR", drivers: "Factory automation, power grid, renewables, robotics, medical devices, defense", top: "TI, ADI, STMicro, Microchip, Renesas" },
+              ].map(m => (
+                <div key={m.name} style={{ flex: m.pct, background: m.color + "12", border: `1px solid ${m.color}33`, borderRadius: 8, padding: "12px 10px", minWidth: 0 }}>
+                  <div style={{ fontSize: 13, fontWeight: 700, color: m.color }}>{m.name}</div>
+                  <div style={{ fontSize: 22, fontWeight: 700, color: T_.text, margin: "2px 0" }}>{m.pct}%</div>
+                  <div style={{ fontSize: 12, color: T_.text, marginBottom: 4 }}>{m.rev}</div>
+                  <div style={{ fontSize: 11, color: T_.green, marginBottom: 8 }}>{m.growth}</div>
+                  <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.5, marginBottom: 8 }}>{m.drivers}</div>
+                  <div style={{ fontSize: 10, color: T_.textGhost, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}><span style={{ fontWeight: 600 }}>Key:</span> {m.top}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>Sources: SIA, WSTS, Gartner (2025E). Data center share was ~15% in 2020 — AI has doubled it. Auto content per vehicle expected to reach $1,500 by 2030 (McKinsey).</div>
+          </div>
+          {/* Taxonomy */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Semiconductor Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click any category to expand. Click a subsector for full details.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {SEMI_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("stax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 18px", background: isExp("stax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("stax_" + cat.key) ? cat.color + "44" : T_.border}`, transition: "all 0.15s" }}>
+                    <span style={{ fontSize: 18 }}>{cat.icon}</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsector{cat.children.length > 1 ? "s" : ""}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("stax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+                  </div>
+                  {isExp("stax_" + cat.key) && (
+                    <div style={{ marginLeft: 32, marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
+                      {cat.children.map(ck => { const sub = SEMI_SUBS[ck]; if (!sub) return null; return (
+                        <div key={ck} onClick={() => toggle("ssub_" + ck)} style={{ padding: "10px 16px", background: isExp("ssub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}`, transition: "all 0.15s" }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                            <span style={{ fontSize: 16 }}>{sub.icon}</span>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span>
+                            <span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span>
+                            <span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span>
+                            <span style={{ fontSize: 12, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("ssub_" + ck) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+                          </div>
+                          {isExp("ssub_" + ck) && (
+                            <div style={{ marginTop: 14, paddingTop: 14, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                              <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 12, lineHeight: 1.6 }}>{sub.desc}</div>
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 12 }}>
+                                <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{sub.whatTheySell}</div></div>
+                                <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{sub.whoBuys}</div></div>
+                              </div>
+                              <div style={{ marginBottom: 12 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{sub.trends}</div></div>
+                            </div>
+                          )}
+                        </div>
+                      ); })}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Subsector Cards */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click any card to expand details in the taxonomy above.</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
+              {Object.entries(SEMI_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }}
+                  onClick={() => { const cat = SEMI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["stax_" + cat.key]: true, ["ssub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}><span style={{ fontSize: 16 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 8 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
+                    <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div>
+                    <div style={{ textAlign: "right" }}><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div>
+                  </div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginTop: 8, lineHeight: 1.5 }}>{sub.keyPlayers.slice(0, 4).join(" · ")}{sub.keyPlayers.length > 4 ? " +" + (sub.keyPlayers.length - 4) + " more" : ""}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts & Mental Models</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Fabless vs IDM vs Foundry", desc: "Fabless (NVIDIA, AMD) design chips but outsource manufacturing to foundries (TSMC). IDMs (Intel, TI) design AND manufacture. Foundries (TSMC) manufacture for others. Fabless dominates AI/mobile; IDM persists in analog/memory." },
+                { title: "Moore's Law Status", desc: "Transistor density still doubles every ~2-3 years but cost-per-transistor scaling has slowed since 28nm. Leading edge costs $500M+ per tape-out. Only TSMC, Samsung, Intel can do <7nm. Economic scaling now comes from chiplets." },
+                { title: "Process Nodes (What 3nm Means)", desc: "Node names are marketing — they don't refer to actual dimensions. Real metric is transistor density (M/mm²). TSMC N3: ~291M/mm². Gate-All-Around (GAA/nanosheets) replaces FinFET at 2nm for better power efficiency." },
+                { title: "The Equipment Cycle", desc: "Equipment spending is a leading indicator for chip supply 2-3 years out. Orders → fab construction (1-2yr) → wafer production → chip revenue. WFE spending hit ~$100B in 2025. ASML order book is the best forward indicator." },
+                { title: "Memory Cycles", desc: "DRAM/NAND is deeply cyclical — prices swing 50%+ in a year. Shortage → high prices → capex → oversupply → crash → cuts → shortage. AI demand (HBM) may dampen traditional cyclicality." },
+                { title: "Design to Revenue Timeline", desc: "New chip: 2-4 years from architecture to volume revenue. Design (1-2yr) → tape-out (3-6mo) → packaging (1-3mo) → qualification (3-6mo) → ramp. This lag is why semi cycles overshoot." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>Sources: SIA, WSTS, Gartner, IDC, TrendForce, SemiAnalysis, company 10-Ks, ASML/TSMC/NVIDIA earnings. TAM and growth rates are approximate 2025 estimates.</div>
+        </div>);
+      })()}
+
 
       {/* ═══════ DIGITAL INFRASTRUCTURE ═══════ */}
       {subTab === "digiinfra" && (() => {
