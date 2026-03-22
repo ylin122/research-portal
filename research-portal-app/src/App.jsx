@@ -319,14 +319,13 @@ export default function App() {
                 <button style={s.btnAccent} onClick={refreshAllNews}>Refresh all news</button>
               </div>
             )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 10, marginBottom: 32 }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 8, marginBottom: 32 }}>
               {Object.entries(SECTORS).filter(([sk]) => sk !== "prompts" && sk !== "sources").map(([sk, sec]) => {
                 const cos = getCos(sk);
                 return (
-                  <div key={sk} style={s.statCard} onClick={() => setView({ type: "sector", sector: sk })}>
-                    <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sec.label}</div>
-                    <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{cos.length}</div>
-                    <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 3 }}>companies</div>
+                  <div key={sk} style={{ ...s.statCard, padding: "12px 14px" }} onClick={() => setView({ type: "sector", sector: sk })}>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 4 }}>{sec.label}</div>
+                    <div style={{ fontSize: 18, fontWeight: 500, color: T_.text }}>{cos.length}</div>
                   </div>
                 );
               })}
