@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from "react";
+import Primer from "./Primer";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector,
   loadAllFields, upsertField,
@@ -92,7 +93,7 @@ export default function App() {
   const [newsCache, setNewsCache] = useState({});
   const [newsLoading, setNewsLoading] = useState({});
   const [view, setView] = useState({ type: "home" });
-  const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, true])));
+  const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
   const [addSub, setAddSub] = useState("");
@@ -253,6 +254,9 @@ export default function App() {
           <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div style={s.navTree}>
+          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
+            <span>Primer</span>
+          </div>
           {Object.entries(SECTORS).map(([sk, sec]) => {
             const cos = filteredCos(getCos(sk));
             const open = sidebarOpen[sk];
@@ -388,6 +392,9 @@ export default function App() {
             )}
           </div>
         )}
+
+        {/* PRIMER */}
+        {view.type === "primer" && <Primer />}
 
         {/* COMPANY */}
         {view.type === "company" && cur && (
