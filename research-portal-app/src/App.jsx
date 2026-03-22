@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import {
-  loadCompanies, insertCompany, deleteCompany as dbDeleteCompany, updateCompanyPriority,
+  loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector,
   loadAllFields, upsertField,
   loadAllNotes, insertNote, deleteNote as dbDeleteNote,
   loadNewsCache, upsertNewsCache,
@@ -19,9 +19,10 @@ function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "
 
 // ─── Sectors ──────────────────────────────────────────
 const SECTORS = {
-  software: { label: "Software", subs: { cloud: "Cloud Software", infrastructure: "Infrastructure", application: "Application", security: "Security", other: "Other" } },
-  aidigital: { label: "AI Digital Infrastructure", subs: { compute: "Compute & Cloud", data: "Data Infrastructure", mlops: "MLOps & AI Platforms", other: "Other" } },
+  software: { label: "Software", subs: { application: "Application", infrastructure: "Infrastructure", security: "Security", other: "Other" } },
+  aidigital: { label: "Digital Infrastructure", subs: { compute: "Compute", shell: "Shell & Power", other: "Other" } },
   itservices: { label: "IT Services", subs: { consulting: "Consulting", outsourcing: "Outsourcing", managed: "Managed Services", other: "Other" } },
+  internet: { label: "Internet", subs: { ecommerce: "E-Commerce", adtech: "AdTech", social: "Social / Content", marketplace: "Marketplace", hosting: "Hosting / Domains", other: "Other" } },
   hardware: { label: "Hardware & Others", subs: { semiconductors: "Semiconductors", devices: "Devices", networking: "Networking", other: "Other" } },
   education: { label: "Education & Services", subs: { edtech: "EdTech", traditional: "Traditional", corporate: "Corporate Training", other: "Other" } },
   healthcare: { label: "Healthcare IT", subs: { ehr: "EHR / EMR", analytics: "Analytics", digital: "Digital Health", other: "Other" } },
@@ -97,6 +98,8 @@ export default function App() {
   const [addSub, setAddSub] = useState("");
   const [search, setSearch] = useState("");
   const [editingField, setEditingField] = useState(null);
+  const [editingSector, setEditingSector] = useState(false);
+  const [pendingSector, setPendingSector] = useState(null);
   const addRef = useRef(null);
 
   const [loadError, setLoadError] = useState(null);
@@ -153,14 +156,9 @@ export default function App() {
     setTimeout(() => refreshNews(id), 200);
   }
 
-  async function delCompany(id) {
-    if (!confirm("Delete this company and all data?")) return;
-    const co = companies.find(c => c.id === id);
-    await dbDeleteCompany(id);
-    setCompanies(p => p.filter(c => c.id !== id));
-    setFieldsMap(p => { const n = { ...p }; delete n[id]; return n; });
-    setNotesMap(p => { const n = { ...p }; delete n[id]; return n; });
-    setView(co ? { type: "sector", sector: co.sector } : { type: "home" });
+  async function changeSector(id, newSector, newSub) {
+    await updateCompanySector(id, newSector, newSub);
+    setCompanies(p => p.map(c => c.id === id ? { ...c, sector: newSector, sub: newSub } : c));
   }
 
   function updateField(id, key, text) {
@@ -310,10 +308,10 @@ export default function App() {
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0,1fr))", gap: 10, marginBottom: 32 }}>
-              {Object.entries(SECTORS).map(([sk, sec]) => {
+              {Object.entries(SECTORS).filter(([sk]) => sk !== "prompts" && sk !== "sources").map(([sk, sec]) => {
                 const cos = getCos(sk);
                 return (
-                  <div key={sk} style={s.statCard} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setView({ type: "sector", sector: sk })}>
+                  <div key={sk} style={s.statCard} onClick={() => setView({ type: "sector", sector: sk })}>
                     <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sec.label}</div>
                     <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{cos.length}</div>
                     <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 3 }}>companies</div>
@@ -391,11 +389,40 @@ export default function App() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
               <h1 style={s.pageTitle}>{cur.name}</h1>
               <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>&#8592; Back</button>
-                {cur.id !== "source_master_seed" && cur.id !== "prompt_researchbrief_seed" && <button style={{ ...s.btnGhost, color: T_.red, borderColor: T_.redDim }} onClick={() => delCompany(cur.id)}>Delete</button>}
+                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); setEditingSector(false); }}>&#8592; Back</button>
               </div>
             </div>
-            {cur.sector !== "sources" && cur.sector !== "prompts" && <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>{SECTORS[cur.sector]?.subs[cur.sub]} &middot; {SECTORS[cur.sector]?.label}</div>}
+            {cur.sector !== "sources" && cur.sector !== "prompts" && (
+              <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>
+                {!editingSector ? (
+                  <span style={{ cursor: "pointer" }} onClick={() => setEditingSector(true)}>
+                    {SECTORS[cur.sector]?.subs[cur.sub] || cur.sub} &middot; {SECTORS[cur.sector]?.label || cur.sector}
+                    <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: 8 }}>&#9998;</span>
+                  </span>
+                ) : (() => {
+                  const activeSector = pendingSector || cur.sector;
+                  return (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+                    <div style={{ fontSize: 12, color: T_.textGhost }}>Sector</div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {Object.entries(SECTORS).filter(([sk]) => sk !== "prompts" && sk !== "sources").map(([sk, sec]) => (
+                        <span key={sk} style={{ ...s.subPill, ...(activeSector === sk ? s.subPillActive : {}) }}
+                          onClick={() => setPendingSector(sk)}>{sec.label}</span>
+                      ))}
+                    </div>
+                    <div style={{ fontSize: 12, color: T_.textGhost }}>Sub-sector</div>
+                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                      {Object.entries(SECTORS[activeSector]?.subs || {}).map(([sk, sv]) => (
+                        <span key={sk} style={{ ...s.subPill, ...(activeSector === cur.sector && cur.sub === sk ? s.subPillActive : {}) }}
+                          onClick={() => { changeSector(cur.id, activeSector, sk); setEditingSector(false); setPendingSector(null); }}>{sv}</span>
+                      ))}
+                    </div>
+                    <button style={{ ...s.btnSmall, alignSelf: "flex-start" }} onClick={() => { setEditingSector(false); setPendingSector(null); }}>Cancel</button>
+                  </div>
+                  );
+                })()}
+              </div>
+            )}
 
             {/* Priority */}
             {cur.sector !== "prompts" && cur.sector !== "sources" && (

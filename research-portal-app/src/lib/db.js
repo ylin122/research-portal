@@ -25,6 +25,11 @@ export async function updateCompanyPriority(id, priority) {
   if (error) console.error('updateCompanyPriority:', error);
 }
 
+export async function updateCompanySector(id, sector, sub) {
+  const { error } = await supabase.from('companies').update({ sector, sub }).eq('id', id);
+  if (error) console.error('updateCompanySector:', error);
+}
+
 // ─── Company Fields ────────────────────────────────────
 export async function loadAllFields() {
   const { data, error } = await supabase.from('company_fields').select('*');
