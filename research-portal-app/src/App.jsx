@@ -202,12 +202,24 @@ export default function App() {
   const getCos = (sector) => companies.filter(c => c.sector === sector);
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
 
-  function recentNotes(limit = 8) {
+  const FIELD_LABELS = Object.fromEntries([...FIELDS, ...PROMPT_FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
+
+  function recentUpdates(limit = 15) {
     const all = [];
+    Object.entries(fieldsMap).forEach(([id, fields]) => {
+      const co = companies.find(c => c.id === id);
+      if (!co || co.sector === "prompts" || co.sector === "sources") return;
+      Object.entries(fields).forEach(([key, val]) => {
+        if (!val.date || !val.text?.trim() || key.startsWith("ai_")) return;
+        all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: key, fieldLabel: FIELD_LABELS[key] || key, date: val.date });
+      });
+    });
+    // Also include notes
     Object.entries(notesMap).forEach(([id, notes]) => {
+      const co = companies.find(c => c.id === id);
+      if (!co || co.sector === "prompts" || co.sector === "sources") return;
       (notes || []).forEach(n => {
-        const co = companies.find(c => c.id === id);
-        if (co) all.push({ ...n, cid: id, coName: co.name });
+        all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: "note", fieldLabel: "Research note", date: n.date });
       });
     });
     return all.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
@@ -319,16 +331,14 @@ export default function App() {
                 );
               })}
             </div>
-            {recentNotes().length > 0 && (
+            {recentUpdates().length > 0 && (
               <div style={s.section}>
-                <div style={s.sectionHdr}>Recent research notes</div>
-                {recentNotes().map(n => (
-                  <div key={n.id} style={{ ...s.noteEntry, cursor: "pointer" }} onClick={() => setView({ type: "company", id: n.cid })}>
-                    <div style={{ display: "flex", gap: 8, marginBottom: 6 }}>
-                      <span style={{ fontSize: 13, fontWeight: 500, color: T_.accent }}>{n.coName}</span>
-                      <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: "auto" }}>{fmtShort(n.date)}</span>
-                    </div>
-                    <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7 }}>{n.text}</div>
+                <div style={s.sectionHdr}>Recent updates</div>
+                {recentUpdates().map((u, i) => (
+                  <div key={`${u.cid}-${u.fieldKey}-${i}`} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" }} onClick={() => setView({ type: "company", id: u.cid })}>
+                    <span style={{ fontSize: 13, fontWeight: 500, color: T_.accent, minWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.coName}</span>
+                    <span style={{ fontSize: 12, color: T_.textDim, minWidth: 140 }}>{u.fieldLabel}</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: "auto", flexShrink: 0 }}>{fmtShort(u.date)}</span>
                   </div>
                 ))}
               </div>
@@ -350,6 +360,16 @@ export default function App() {
                 value={sectorNotes[view.sector + "_macro"]?.text || ""}
                 onChange={e => updateSN(view.sector + "_macro", e.target.value)}
                 placeholder="Your macro thesis for this sector. Key themes, secular trends, competitive dynamics, where the market is heading..." />
+            </div>
+            <div style={s.section}>
+              <div style={s.sectionHdr}>
+                <span>AI impact thesis</span>
+                {sectorNotes[view.sector + "_ai"]?.date && <span style={s.sectionDate}>{fmtShort(sectorNotes[view.sector + "_ai"].date)}</span>}
+              </div>
+              <textarea style={s.textarea} rows={4}
+                value={sectorNotes[view.sector + "_ai"]?.text || ""}
+                onChange={e => updateSN(view.sector + "_ai", e.target.value)}
+                placeholder="How does AI impact this sector? Is AI a tailwind (drives demand, creates opportunity) or headwind (displaces products, compresses margins)? Which companies benefit vs. face risk?" />
             </div>
             {Object.entries(SECTORS[view.sector].subs).map(([subk, subLabel]) => {
               const cos = getCos(view.sector).filter(c => c.sub === subk);
