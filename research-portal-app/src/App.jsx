@@ -350,26 +350,6 @@ export default function App() {
           <div style={s.page}>
             <h1 style={s.pageTitle}>{SECTORS[view.sector].label}</h1>
             <p style={s.pageSub}>{getCos(view.sector).length} companies</p>
-            <div style={s.section}>
-              <div style={s.sectionHdr}>
-                <span>Sector thesis</span>
-                {sectorNotes[view.sector + "_macro"]?.date && <span style={s.sectionDate}>{fmtShort(sectorNotes[view.sector + "_macro"].date)}</span>}
-              </div>
-              <textarea style={s.textarea} rows={5}
-                value={sectorNotes[view.sector + "_macro"]?.text || ""}
-                onChange={e => updateSN(view.sector + "_macro", e.target.value)}
-                placeholder="Your macro thesis for this sector. Key themes, secular trends, competitive dynamics, where the market is heading..." />
-            </div>
-            <div style={s.section}>
-              <div style={s.sectionHdr}>
-                <span>AI impact thesis</span>
-                {sectorNotes[view.sector + "_ai"]?.date && <span style={s.sectionDate}>{fmtShort(sectorNotes[view.sector + "_ai"].date)}</span>}
-              </div>
-              <textarea style={s.textarea} rows={4}
-                value={sectorNotes[view.sector + "_ai"]?.text || ""}
-                onChange={e => updateSN(view.sector + "_ai", e.target.value)}
-                placeholder="How does AI impact this sector? Is AI a tailwind (drives demand, creates opportunity) or headwind (displaces products, compresses margins)? Which companies benefit vs. face risk?" />
-            </div>
             {Object.entries(SECTORS[view.sector].subs).map(([subk, subLabel]) => {
               const cos = getCos(view.sector).filter(c => c.sub === subk);
               if (cos.length === 0) return null;
