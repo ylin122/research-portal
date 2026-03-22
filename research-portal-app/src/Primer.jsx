@@ -693,26 +693,6 @@ export default function Primer() {
               ))}
             </div>
           </div>
-          {/* Key Concepts */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts & Mental Models</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              {[
-                { title: "Fabless vs IDM vs Foundry", desc: "Fabless (NVIDIA, AMD) design chips but outsource manufacturing to foundries (TSMC). IDMs (Intel, TI) design AND manufacture. Foundries (TSMC) manufacture for others. Fabless dominates AI/mobile; IDM persists in analog/memory." },
-                { title: "Moore's Law Status", desc: "Transistor density still doubles every ~2-3 years but cost-per-transistor scaling has slowed since 28nm. Leading edge costs $500M+ per tape-out. Only TSMC, Samsung, Intel can do <7nm. Economic scaling now comes from chiplets." },
-                { title: "Process Nodes (What 3nm Means)", desc: "Node names are marketing — they don't refer to actual dimensions. Real metric is transistor density (M/mm²). TSMC N3: ~291M/mm². Gate-All-Around (GAA/nanosheets) replaces FinFET at 2nm for better power efficiency." },
-                { title: "The Equipment Cycle", desc: "Equipment spending is a leading indicator for chip supply 2-3 years out. Orders → fab construction (1-2yr) → wafer production → chip revenue. WFE spending hit ~$100B in 2025. ASML order book is the best forward indicator." },
-                { title: "Memory Cycles", desc: "DRAM/NAND is deeply cyclical — prices swing 50%+ in a year. Shortage → high prices → capex → oversupply → crash → cuts → shortage. AI demand (HBM) may dampen traditional cyclicality." },
-                { title: "Design to Revenue Timeline", desc: "New chip: 2-4 years from architecture to volume revenue. Design (1-2yr) → tape-out (3-6mo) → packaging (1-3mo) → qualification (3-6mo) → ramp. This lag is why semi cycles overshoot." },
-              ].map((c, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
-                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Semiconductor Revenue Models</div>
@@ -790,6 +770,26 @@ export default function Primer() {
             </div>
           </div>
 
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts & Mental Models</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Fabless vs IDM vs Foundry", desc: "Fabless (NVIDIA, AMD) design chips but outsource manufacturing to foundries (TSMC). IDMs (Intel, TI) design AND manufacture. Foundries (TSMC) manufacture for others. Fabless dominates AI/mobile; IDM persists in analog/memory." },
+                { title: "Moore's Law Status", desc: "Transistor density still doubles every ~2-3 years but cost-per-transistor scaling has slowed since 28nm. Leading edge costs $500M+ per tape-out. Only TSMC, Samsung, Intel can do <7nm. Economic scaling now comes from chiplets." },
+                { title: "Process Nodes (What 3nm Means)", desc: "Node names are marketing — they don't refer to actual dimensions. Real metric is transistor density (M/mm²). TSMC N3: ~291M/mm². Gate-All-Around (GAA/nanosheets) replaces FinFET at 2nm for better power efficiency." },
+                { title: "The Equipment Cycle", desc: "Equipment spending is a leading indicator for chip supply 2-3 years out. Orders → fab construction (1-2yr) → wafer production → chip revenue. WFE spending hit ~$100B in 2025. ASML order book is the best forward indicator." },
+                { title: "Memory Cycles", desc: "DRAM/NAND is deeply cyclical — prices swing 50%+ in a year. Shortage → high prices → capex → oversupply → crash → cuts → shortage. AI demand (HBM) may dampen traditional cyclicality." },
+                { title: "Design to Revenue Timeline", desc: "New chip: 2-4 years from architecture to volume revenue. Design (1-2yr) → tape-out (3-6mo) → packaging (1-3mo) → qualification (3-6mo) → ramp. This lag is why semi cycles overshoot." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
           <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>Sources: SIA, WSTS, Gartner, IDC, TrendForce, SemiAnalysis, company 10-Ks, ASML/TSMC/NVIDIA earnings. TAM and growth rates are approximate 2025 estimates.</div>
         </div>);
       })()}
@@ -1159,60 +1159,6 @@ export default function Primer() {
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>IT services is a ~$1T+ global market. The key trend is the shift from hardware resale (low margin, transactional) to managed services and consulting (recurring, higher margin). PE sponsors target this margin expansion story aggressively.</div>
           </div>
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            {/* Key Concepts */}
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              {[
-                { title: "Resale vs Services Mix", desc: "The % of revenue from recurring managed services vs. one-time hardware resale defines valuation. A VAR at 30% services trades at 4-5x EBITDA. At 50%+ services, it's 8-12x. PE sponsors buy VARs specifically to shift this mix." },
-                { title: "Channel Economics", desc: "Technology vendors pay channel partners 15-40% margins on product sales, plus rebates and incentives (MDF, deal registration). Partners that achieve top-tier vendor status (Cisco Gold, Dell Titanium) get better economics." },
-                { title: "MSP vs MSSP", desc: "MSPs manage IT infrastructure (servers, networks, endpoints). MSSPs specialize in security operations (SOC, SIEM, incident response). The line is blurring as MSPs add security and MSSPs add management. ConnectWise and Kaseya serve both." },
-                { title: "Offshore / Nearshore Arbitrage", desc: "IT consulting firms use offshore (India — $20-40/hr) and nearshore (LATAM — $40-70/hr) delivery to compete with onshore rates ($150-250/hr). The blend ratio determines margin. Firms like Perficient, Virtusa, and UST leverage this model." },
-              ].map((c, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
-                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {IT_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("itax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
-                  </div>
-                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "10px 16px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("isub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(IT_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IT_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["itax_" + cat.key]: true, ["isub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Revenue Models</div>
@@ -1283,6 +1229,60 @@ export default function Primer() {
               ))}
             </div>
           </div>
+            {/* Key Concepts */}
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Resale vs Services Mix", desc: "The % of revenue from recurring managed services vs. one-time hardware resale defines valuation. A VAR at 30% services trades at 4-5x EBITDA. At 50%+ services, it's 8-12x. PE sponsors buy VARs specifically to shift this mix." },
+                { title: "Channel Economics", desc: "Technology vendors pay channel partners 15-40% margins on product sales, plus rebates and incentives (MDF, deal registration). Partners that achieve top-tier vendor status (Cisco Gold, Dell Titanium) get better economics." },
+                { title: "MSP vs MSSP", desc: "MSPs manage IT infrastructure (servers, networks, endpoints). MSSPs specialize in security operations (SOC, SIEM, incident response). The line is blurring as MSPs add security and MSSPs add management. ConnectWise and Kaseya serve both." },
+                { title: "Offshore / Nearshore Arbitrage", desc: "IT consulting firms use offshore (India — $20-40/hr) and nearshore (LATAM — $40-70/hr) delivery to compete with onshore rates ($150-250/hr). The blend ratio determines margin. Firms like Perficient, Virtusa, and UST leverage this model." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {IT_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("itax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "10px 16px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("isub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(IT_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IT_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["itax_" + cat.key]: true, ["isub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        
         </div>);
       })()}
 
@@ -1380,61 +1380,6 @@ export default function Primer() {
             </div>
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>US healthcare is a $4.5T industry. ~25% of spend goes to administration. Epic dominates hospitals (~38% of beds); the rest of the ecosystem is highly fragmented.</div>
           </div>
-          {/* Key Concepts */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              {[
-                { title: "Epic's Dominance", desc: "Epic controls ~38% of US hospital beds and growing. Privately held, refuses to sell. Wins almost every new hospital EHR deal. Competing with Epic in hospital EHR is nearly impossible." },
-                { title: "Revenue Cycle = Hidden Goldmine", desc: "Hospitals lose 3-5% of revenue to claim denials, underpayments, and billing errors. RCM tech recovers this — every $1 spent returns $3-5+ in recovered revenue. 30%+ of claims are initially denied." },
-                { title: "Post-Acute is the Next Frontier", desc: "Hospital EHRs don't serve nursing homes, home health, or hospice well. Post-acute tech is earlier in digitization. PointClickCare has ~70% of skilled nursing — similar to Epic in hospitals." },
-                { title: "Labor is #1 Cost & Problem", desc: "Labor is 50-60% of hospital expenses. Nursing shortage (200,000+ needed by 2030) makes workforce tech critical. Reducing agency nurse dependency by 10% saves millions annually." },
-              ].map((c, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
-                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {HI_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("htax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
-                  </div>
-                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "10px 16px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("hsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(HI_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = HI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["htax_" + cat.key]: true, ["hsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Healthcare IT Revenue Models</div>
@@ -1505,6 +1450,61 @@ export default function Primer() {
               ))}
             </div>
           </div>
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Epic's Dominance", desc: "Epic controls ~38% of US hospital beds and growing. Privately held, refuses to sell. Wins almost every new hospital EHR deal. Competing with Epic in hospital EHR is nearly impossible." },
+                { title: "Revenue Cycle = Hidden Goldmine", desc: "Hospitals lose 3-5% of revenue to claim denials, underpayments, and billing errors. RCM tech recovers this — every $1 spent returns $3-5+ in recovered revenue. 30%+ of claims are initially denied." },
+                { title: "Post-Acute is the Next Frontier", desc: "Hospital EHRs don't serve nursing homes, home health, or hospice well. Post-acute tech is earlier in digitization. PointClickCare has ~70% of skilled nursing — similar to Epic in hospitals." },
+                { title: "Labor is #1 Cost & Problem", desc: "Labor is 50-60% of hospital expenses. Nursing shortage (200,000+ needed by 2030) makes workforce tech critical. Reducing agency nurse dependency by 10% saves millions annually." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {HI_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("htax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "10px 16px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("hsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(HI_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = HI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["htax_" + cat.key]: true, ["hsub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        
         </div>);
       })()}
 
@@ -1602,61 +1602,6 @@ export default function Primer() {
             </div>
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>The internet sector in this context covers PE-owned and mid-market companies that monetize web traffic, online presence, and digital marketing — not the hyperscale platforms (Google, Meta, Amazon). Revenue models are primarily advertising, subscriptions, and lead generation.</div>
           </div>
-          {/* Key Concepts */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-              {[
-                { title: "Traffic = Revenue", desc: "Internet businesses monetize through traffic → ads/leads/subscriptions. Any disruption to traffic (Google algorithm changes, AI search, Apple privacy) directly impacts revenue. WebMD, Martindale, and directories are especially vulnerable to AI search cannibalization." },
-                { title: "Domain = Infrastructure", desc: "Domains are the one truly non-discretionary internet product — businesses cannot exist online without them. Renewal rates are near-automatic (95%+). GoDaddy manages 84M+ domains. This is the cash cow that funds everything else." },
-                { title: "All-in-One Builders vs Traditional Hosting", desc: "Squarespace, Wix, and Shopify offer complete online presence solutions that bypass traditional domain + hosting. This structural shift threatens GoDaddy, Newfold, and legacy hosting. The SMB who would have bought hosting 5 years ago now goes directly to Squarespace." },
-                { title: "Consumer Security = Fear-Based Recurring", desc: "Norton/LifeLock and McAfee sell protection against threats consumers can't evaluate — identity theft, viruses, scams. The value prop is peace of mind. Auto-renewing subscriptions with 70-80% retention. Windows Defender commoditizing the low end." },
-              ].map((c, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
-                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {IN_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("ntax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
-                  </div>
-                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "10px 16px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("nsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(IN_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IN_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["ntax_" + cat.key]: true, ["nsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
-                </div>
-              ))}
-            </div>
-          </div>
-        
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Internet Revenue Models</div>
@@ -1727,6 +1672,61 @@ export default function Primer() {
               ))}
             </div>
           </div>
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Traffic = Revenue", desc: "Internet businesses monetize through traffic → ads/leads/subscriptions. Any disruption to traffic (Google algorithm changes, AI search, Apple privacy) directly impacts revenue. WebMD, Martindale, and directories are especially vulnerable to AI search cannibalization." },
+                { title: "Domain = Infrastructure", desc: "Domains are the one truly non-discretionary internet product — businesses cannot exist online without them. Renewal rates are near-automatic (95%+). GoDaddy manages 84M+ domains. This is the cash cow that funds everything else." },
+                { title: "All-in-One Builders vs Traditional Hosting", desc: "Squarespace, Wix, and Shopify offer complete online presence solutions that bypass traditional domain + hosting. This structural shift threatens GoDaddy, Newfold, and legacy hosting. The SMB who would have bought hosting 5 years ago now goes directly to Squarespace." },
+                { title: "Consumer Security = Fear-Based Recurring", desc: "Norton/LifeLock and McAfee sell protection against threats consumers can't evaluate — identity theft, viruses, scams. The value prop is peace of mind. Auto-renewing subscriptions with 70-80% retention. Windows Defender commoditizing the low end." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {IN_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("ntax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "10px 16px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("nsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(IN_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IN_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["ntax_" + cat.key]: true, ["nsub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        
         </div>);
       })()}
     </div>
