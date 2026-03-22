@@ -698,8 +698,75 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>IT Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Consulting, VARs, managed services, MSP ecosystem, and distribution</div></div>
+          {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>IT Services Taxonomy</div>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services — Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Technology vendors sell through the services ecosystem to reach enterprise buyers. Each layer adds value on top of the one to its left.</div>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              {[
+                { label: "Technology Vendors", color: "#64748B", icon: "🏭", desc: "Build the products",
+                  rows: [{ sub: "Software", ex: "Microsoft, SAP, Salesforce, ServiceNow" }, { sub: "Infrastructure", ex: "Cisco, Dell, HP, Palo Alto" }, { sub: "Cloud", ex: "AWS, Azure, GCP" }],
+                  buyers: "Sell through channel or direct" },
+                { label: "Distribution", color: "#0EA5E9", icon: "📦", desc: "Wholesale & logistics",
+                  rows: [{ sub: "Broadline", ex: "TD SYNNEX, Ingram Micro" }, { sub: "Specialty", ex: "Arrow, Westcon-Comstor" }, { sub: "Cloud Marketplace", ex: "Ingram Cloud, Pax8" }],
+                  buyers: "VARs, MSPs, resellers" },
+                { label: "VARs & Integrators", color: "#10B981", icon: "🔧", desc: "Design & deploy solutions",
+                  rows: [{ sub: "Enterprise", ex: "CDW, WWT, SHI, Insight" }, { sub: "Mid-Market", ex: "Presidio, Trace3, Ahead DB" }, { sub: "Security", ex: "Optiv, Guidepoint" }],
+                  buyers: "Enterprise IT departments" },
+                { label: "Consulting", color: "#3B82F6", icon: "💼", desc: "Strategy & implementation",
+                  rows: [{ sub: "Global SI", ex: "Accenture, Deloitte, IBM" }, { sub: "Digital", ex: "Perficient, EPAM, Thoughtworks" }, { sub: "Specialist", ex: "Synechron (FS), Virtusa" }],
+                  buyers: "CIO, CTO, business leaders" },
+                { label: "Managed Services", color: "#8B5CF6", icon: "🖥️", desc: "Ongoing operations",
+                  rows: [{ sub: "Enterprise", ex: "Kyndryl, DXC, Ensono" }, { sub: "MSP (SMB)", ex: "ConnectWise, Kaseya/Datto" }, { sub: "Security", ex: "Optiv MSSP, Sophos MDR" }],
+                  buyers: "Orgs outsourcing IT ops" },
+                { label: "End Customers", color: "#6366F1", icon: "👥", desc: "Consume IT services",
+                  rows: [{ sub: "Enterprise", ex: "Fortune 500, Global 2000" }, { sub: "Mid-Market", ex: "1K-10K employees" }, { sub: "SMB", ex: "< 1K employees (via MSPs)" }],
+                  buyers: "Every industry" },
+              ].map((stage, i, arr) => (
+                <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}>
+                      <span style={{ fontSize: 14 }}>{stage.icon}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span>
+                    </div>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>{stage.desc}</div>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                      {stage.rows.map(r => (
+                        <div key={r.sub} style={{ background: T_.bg, borderRadius: 5, padding: "5px 8px" }}>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div>
+                          <div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{r.ex}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}>
+                      <span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}
+                    </div>
+                  </div>
+                  {i < arr.length - 1 && <div style={{ display: "flex", alignItems: "center", padding: "0 4px", color: T_.textGhost, fontSize: 16, flexShrink: 0 }}>→</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>IT services is a ~$1T+ global market. The key trend is the shift from hardware resale (low margin, transactional) to managed services and consulting (recurring, higher margin). PE sponsors target this margin expansion story aggressively.</div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            {/* Key Concepts */}
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Resale vs Services Mix", desc: "The % of revenue from recurring managed services vs. one-time hardware resale defines valuation. A VAR at 30% services trades at 4-5x EBITDA. At 50%+ services, it's 8-12x. PE sponsors buy VARs specifically to shift this mix." },
+                { title: "Channel Economics", desc: "Technology vendors pay channel partners 15-40% margins on product sales, plus rebates and incentives (MDF, deal registration). Partners that achieve top-tier vendor status (Cisco Gold, Dell Titanium) get better economics." },
+                { title: "MSP vs MSSP", desc: "MSPs manage IT infrastructure (servers, networks, endpoints). MSSPs specialize in security operations (SOC, SIEM, incident response). The line is blurring as MSPs add security and MSSPs add management. ConnectWise and Kaseya serve both." },
+                { title: "Offshore / Nearshore Arbitrage", desc: "IT consulting firms use offshore (India — $20-40/hr) and nearshore (LATAM — $40-70/hr) delivery to compete with onshore rates ($150-250/hr). The blend ratio determines margin. Firms like Perficient, Virtusa, and UST leverage this model." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Taxonomy</div>
             <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {IT_TAX.map(cat => (
@@ -791,6 +858,64 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Healthcare IT Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>EHR, revenue cycle, payer technology, post-acute care, and workforce</div></div>
+          {/* Value Chain */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Healthcare IT — Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Patient care generates data → clinical systems capture it → financial systems monetize it → analytics optimize it → payers adjudicate it</div>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              {[
+                { label: "Clinical Systems", color: "#3B82F6", icon: "🏥", desc: "Capture clinical data",
+                  rows: [{ sub: "Hospital EHR", ex: "Epic, Oracle Health, MEDITECH" }, { sub: "Ambulatory EHR", ex: "Athenahealth, eClinicalWorks" }, { sub: "Post-Acute EHR", ex: "PointClickCare, WellSky" }, { sub: "Specialty", ex: "Veeva (pharma), ModMed" }],
+                  buyers: "Hospitals, practices, nursing homes" },
+                { label: "Revenue Cycle", color: "#10B981", icon: "💰", desc: "Turn care into revenue",
+                  rows: [{ sub: "Coding & Billing", ex: "R1 RCM, Ensemble, FinThrive" }, { sub: "Claims Mgmt", ex: "Waystar, Change Healthcare" }, { sub: "Patient Payments", ex: "Cedar, InstaMed" }, { sub: "Denial Mgmt", ex: "Waystar, Cotiviti" }],
+                  buyers: "Hospital CFO, billing companies" },
+                { label: "Payer Technology", color: "#8B5CF6", icon: "📋", desc: "Adjudicate & pay claims",
+                  rows: [{ sub: "Claims Processing", ex: "Gainwell, HealthEdge, TriZetto" }, { sub: "Payment Integrity", ex: "Cotiviti, Change Healthcare" }, { sub: "Risk Adjustment", ex: "Cotiviti, Inovalon" }, { sub: "Care Management", ex: "HealthEdge, Conduent" }],
+                  buyers: "Health plans, Medicaid agencies" },
+                { label: "Data & Analytics", color: "#F59E0B", icon: "📊", desc: "Insights & optimization",
+                  rows: [{ sub: "Clinical Analytics", ex: "Health Catalyst, Arcadia" }, { sub: "Pop Health", ex: "Innovaccer, Lightbeam" }, { sub: "Quality/HEDIS", ex: "Cotiviti, Inovalon" }, { sub: "AI/Automation", ex: "Ambient AI, coding AI" }],
+                  buyers: "CMO, quality teams, data teams" },
+                { label: "Workforce & Ops", color: "#EF4444", icon: "👩‍⚕️", desc: "Staff & operate",
+                  rows: [{ sub: "Scheduling", ex: "QGenda, Symplr" }, { sub: "Credentialing", ex: "Symplr, Modio" }, { sub: "Staffing", ex: "AMN Healthcare, Aya" }, { sub: "Optimization", ex: "Caliper/Sympler, LeanTaaS" }],
+                  buyers: "CNO, CHRO, staffing directors" },
+              ].map((stage, i, arr) => (
+                <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}><span style={{ fontSize: 14 }}>{stage.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span></div>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>{stage.desc}</div>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                      {stage.rows.map(r => (<div key={r.sub} style={{ background: T_.bg, borderRadius: 5, padding: "5px 8px" }}><div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div><div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{r.ex}</div></div>))}
+                    </div>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}><span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}</div>
+                  </div>
+                  {i < arr.length - 1 && <div style={{ display: "flex", alignItems: "center", padding: "0 4px", color: T_.textGhost, fontSize: 16, flexShrink: 0 }}>→</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, background: "#3B82F612", border: "1px dashed #3B82F644", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 14 }}>🔗</span><span style={{ fontSize: 13, fontWeight: 700, color: "#3B82F6" }}>Interoperability — Connects All Systems</span></div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>FHIR/HL7 standards · HIEs · TEFCA framework · Epic Care Everywhere · CommonWell</div>
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>US healthcare is a $4.5T industry. ~25% of spend goes to administration. Epic dominates hospitals (~38% of beds); the rest of the ecosystem is highly fragmented.</div>
+          </div>
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Epic's Dominance", desc: "Epic controls ~38% of US hospital beds and growing. Privately held, refuses to sell. Wins almost every new hospital EHR deal. Competing with Epic in hospital EHR is nearly impossible." },
+                { title: "Revenue Cycle = Hidden Goldmine", desc: "Hospitals lose 3-5% of revenue to claim denials, underpayments, and billing errors. RCM tech recovers this — every $1 spent returns $3-5+ in recovered revenue. 30%+ of claims are initially denied." },
+                { title: "Post-Acute is the Next Frontier", desc: "Hospital EHRs don't serve nursing homes, home health, or hospice well. Post-acute tech is earlier in digitization. PointClickCare has ~70% of skilled nursing — similar to Epic in hospitals." },
+                { title: "Labor is #1 Cost & Problem", desc: "Labor is 50-60% of hospital expenses. Nursing shortage (200,000+ needed by 2030) makes workforce tech critical. Reducing agency nurse dependency by 10% saves millions annually." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
             <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
@@ -884,6 +1009,64 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Internet Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Hosting, marketplaces, consumer security, email marketing, and adtech</div></div>
+          {/* Value Chain */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Internet — Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Infrastructure enables online presence → content/commerce attracts users → monetization extracts value through ads, subscriptions, and transactions</div>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              {[
+                { label: "Infrastructure", color: "#64748B", icon: "🌐", desc: "Enable online presence",
+                  rows: [{ sub: "Domains", ex: "GoDaddy, Newfold, Namecheap" }, { sub: "Hosting", ex: "GoDaddy, Hostinger, IONOS" }, { sub: "CDN/DNS", ex: "Cloudflare, Akamai, Infoblox" }],
+                  buyers: "SMBs, developers, enterprises" },
+                { label: "Build & Create", color: "#3B82F6", icon: "🛠️", desc: "Create web presence",
+                  rows: [{ sub: "Website Builders", ex: "Squarespace, Wix, WordPress" }, { sub: "E-Commerce", ex: "Shopify, WooCommerce, BigCommerce" }, { sub: "CMS", ex: "WordPress, Contentful, Sanity" }],
+                  buyers: "SMBs, entrepreneurs, agencies" },
+                { label: "Content & Commerce", color: "#10B981", icon: "🏪", desc: "Attract users & sell",
+                  rows: [{ sub: "Marketplaces", ex: "Internet Brands (WebMD), Zillow" }, { sub: "Consumer Apps", ex: "Gen Digital (Norton), McAfee" }, { sub: "Content Sites", ex: "WebMD, Martindale, directories" }],
+                  buyers: "Consumers, advertisers" },
+                { label: "Engage & Market", color: "#F59E0B", icon: "📧", desc: "Acquire & retain users",
+                  rows: [{ sub: "Email Marketing", ex: "Mailchimp, Constant Contact" }, { sub: "SMB Marketing", ex: "HubSpot, Brevo, ActiveCampaign" }, { sub: "Social/SEO", ex: "Hootsuite, Semrush, Moz" }],
+                  buyers: "SMB marketing teams" },
+                { label: "Monetize", color: "#8B5CF6", icon: "💰", desc: "Ads, subs & transactions",
+                  rows: [{ sub: "Ad Networks", ex: "Google Ads, Meta Ads, AppLovin" }, { sub: "Mobile AdTech", ex: "Liftoff/Vungle, Unity, ironSource" }, { sub: "Subscriptions", ex: "SaaS/consumer subscription models" }],
+                  buyers: "Advertisers, app developers" },
+              ].map((stage, i, arr) => (
+                <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}><span style={{ fontSize: 14 }}>{stage.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span></div>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>{stage.desc}</div>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                      {stage.rows.map(r => (<div key={r.sub} style={{ background: T_.bg, borderRadius: 5, padding: "5px 8px" }}><div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div><div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{r.ex}</div></div>))}
+                    </div>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}><span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}</div>
+                  </div>
+                  {i < arr.length - 1 && <div style={{ display: "flex", alignItems: "center", padding: "0 4px", color: T_.textGhost, fontSize: 16, flexShrink: 0 }}>→</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, background: "#EF444412", border: "1px dashed #EF444444", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}><span style={{ fontSize: 14 }}>🤖</span><span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>AI Disruption Risk — Across All Layers</span></div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>AI search replacing directories · AI website builders · AI-generated content · AI ad optimization · ChatGPT/Perplexity reducing web traffic</div>
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>The internet sector in this context covers PE-owned and mid-market companies that monetize web traffic, online presence, and digital marketing — not the hyperscale platforms (Google, Meta, Amazon). Revenue models are primarily advertising, subscriptions, and lead generation.</div>
+          </div>
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+              {[
+                { title: "Traffic = Revenue", desc: "Internet businesses monetize through traffic → ads/leads/subscriptions. Any disruption to traffic (Google algorithm changes, AI search, Apple privacy) directly impacts revenue. WebMD, Martindale, and directories are especially vulnerable to AI search cannibalization." },
+                { title: "Domain = Infrastructure", desc: "Domains are the one truly non-discretionary internet product — businesses cannot exist online without them. Renewal rates are near-automatic (95%+). GoDaddy manages 84M+ domains. This is the cash cow that funds everything else." },
+                { title: "All-in-One Builders vs Traditional Hosting", desc: "Squarespace, Wix, and Shopify offer complete online presence solutions that bypass traditional domain + hosting. This structural shift threatens GoDaddy, Newfold, and legacy hosting. The SMB who would have bought hosting 5 years ago now goes directly to Squarespace." },
+                { title: "Consumer Security = Fear-Based Recurring", desc: "Norton/LifeLock and McAfee sell protection against threats consumers can't evaluate — identity theft, viruses, scams. The value prop is peace of mind. Auto-renewing subscriptions with 70-80% retention. Windows Defender commoditizing the low end." },
+              ].map((c, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
             <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
