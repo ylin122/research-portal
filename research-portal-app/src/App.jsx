@@ -49,7 +49,7 @@ const SOURCE_FIELDS = [
   { key: "overview", label: "Sources", ph: "Running list of sources used across company research briefs..." },
 ];
 
-const PRIORITIES = ["High conviction", "Watching", "Low priority"];
+const PRIORITIES = ["High", "Medium", "Low"];
 
 // ─── Theme ────────────────────────────────────────────
 const T_ = {
@@ -100,6 +100,7 @@ export default function App() {
   const [editingField, setEditingField] = useState(null);
   const [editingSector, setEditingSector] = useState(false);
   const [pendingSector, setPendingSector] = useState(null);
+  const [priorityFilter, setPriorityFilter] = useState("");
   const addRef = useRef(null);
 
   const [loadError, setLoadError] = useState(null);
@@ -199,7 +200,7 @@ export default function App() {
     debouncedSectorNoteSave(key, text);
   }
 
-  const getCos = (sector) => companies.filter(c => c.sector === sector);
+  const getCos = (sector) => companies.filter(c => c.sector === sector).sort((a, b) => a.name.localeCompare(b.name));
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
 
   const FIELD_LABELS = Object.fromEntries([...FIELDS, ...PROMPT_FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
@@ -209,6 +210,7 @@ export default function App() {
     Object.entries(fieldsMap).forEach(([id, fields]) => {
       const co = companies.find(c => c.id === id);
       if (!co || co.sector === "prompts" || co.sector === "sources") return;
+      if (priorityFilter && (co.priority || "") !== priorityFilter) return;
       Object.entries(fields).forEach(([key, val]) => {
         if (!val.date || !val.text?.trim() || key.startsWith("ai_")) return;
         all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: key, fieldLabel: FIELD_LABELS[key] || key, date: val.date });
@@ -218,6 +220,7 @@ export default function App() {
     Object.entries(notesMap).forEach(([id, notes]) => {
       const co = companies.find(c => c.id === id);
       if (!co || co.sector === "prompts" || co.sector === "sources") return;
+      if (priorityFilter && (co.priority || "") !== priorityFilter) return;
       (notes || []).forEach(n => {
         all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: "note", fieldLabel: "Research note", date: n.date });
       });
@@ -271,7 +274,7 @@ export default function App() {
                       return (
                         <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}) }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
                           <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
-                          {pr && <span style={{ ...s.prDot, background: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.textGhost }} />}
+                          {pr && <span style={{ ...s.prDot, background: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.textGhost }} />}
                         </div>
                       );
                     })}
@@ -315,8 +318,18 @@ export default function App() {
                 : `Tracking ${companies.length} companies across ${Object.keys(SECTORS).length} sectors.`}
             </p>
             {companies.length > 0 && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
-                <button style={s.btnAccent} onClick={refreshAllNews}>Refresh all news</button>
+              <div style={{ display: "flex", gap: 8, marginBottom: 20, alignItems: "center", flexWrap: "wrap" }}>
+                <span style={{ fontSize: 12, color: T_.textGhost, marginRight: 4 }}>Priority:</span>
+                {["", "High", "Medium", "Low"].map(p => (
+                  <span key={p} style={{
+                    ...s.prPill, padding: "5px 14px", fontSize: 12,
+                    ...(priorityFilter === p ? {
+                      background: p === "High" ? T_.greenBg : p === "Medium" ? T_.amberBg : p === "Low" ? T_.grayBadge : "rgba(245,158,11,0.1)",
+                      color: p === "High" ? T_.green : p === "Medium" ? T_.amber : p === "Low" ? T_.grayBadgeText : T_.accent,
+                      borderColor: p === "High" ? T_.greenBorder : p === "Medium" ? T_.amberBorder : p === "Low" ? T_.textGhost : T_.accent,
+                    } : {})
+                  }} onClick={() => setPriorityFilter(p)}>{p || "All"}</span>
+                ))}
               </div>
             )}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 8, marginBottom: 32 }}>
@@ -361,7 +374,7 @@ export default function App() {
                     return (
                       <div key={c.id} style={s.listRow} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
                         <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{c.name}</span>
-                        {pr && <span style={{ ...s.prBadge, background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge, color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
+                        {pr && <span style={{ ...s.prBadge, background: pr === "High" ? T_.greenBg : pr === "Medium" ? T_.amberBg : T_.grayBadge, color: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High" ? T_.greenBorder : pr === "Medium" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
                         <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
                       </div>
                     );
@@ -430,9 +443,9 @@ export default function App() {
                   <span key={pr} style={{
                     ...s.prPill,
                     ...(curPriority === pr ? {
-                      background: pr === "High conviction" ? T_.greenBg : pr === "Watching" ? T_.amberBg : T_.grayBadge,
-                      color: pr === "High conviction" ? T_.green : pr === "Watching" ? T_.amber : T_.grayBadgeText,
-                      borderColor: pr === "High conviction" ? T_.greenBorder : pr === "Watching" ? T_.amberBorder : T_.textGhost,
+                      background: pr === "High" ? T_.greenBg : pr === "Medium" ? T_.amberBg : T_.grayBadge,
+                      color: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.grayBadgeText,
+                      borderColor: pr === "High" ? T_.greenBorder : pr === "Medium" ? T_.amberBorder : T_.textGhost,
                     } : {})
                   }} onClick={() => setPriority(cur.id, pr)}>{pr}</span>
                 ))}
