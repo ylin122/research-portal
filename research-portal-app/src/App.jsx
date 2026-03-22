@@ -27,7 +27,6 @@ const SECTORS = {
   hardware: { label: "Hardware & Others", subs: { semiconductors: "Semiconductors", devices: "Devices", networking: "Networking", other: "Other" } },
   education: { label: "Education & Services", subs: { edtech: "EdTech", traditional: "Traditional", corporate: "Corporate Training", other: "Other" } },
   healthcare: { label: "Healthcare IT", subs: { ehr: "EHR / EMR", analytics: "Analytics", digital: "Digital Health", other: "Other" } },
-  prompts: { label: "Prompt", subs: { all: "All Prompts" } },
   sources: { label: "Source", subs: { all: "All Sources" } },
 };
 
@@ -39,11 +38,6 @@ const FIELDS = [
   { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
   { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
   { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
-];
-
-const PROMPT_FIELDS = [
-  { key: "overview", label: "Prompt", ph: "Paste your full prompt here. This is what gets copied or sent to Claude when you hit 'Run prompt'..." },
-  { key: "products", label: "Usage notes", ph: "When to use this prompt, what it's designed for, any context on how to modify it..." },
 ];
 
 const SOURCE_FIELDS = [
@@ -204,7 +198,7 @@ export default function App() {
   const getCos = (sector) => companies.filter(c => c.sector === sector).sort((a, b) => a.name.localeCompare(b.name));
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
 
-  const FIELD_LABELS = Object.fromEntries([...FIELDS, ...PROMPT_FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
+  const FIELD_LABELS = Object.fromEntries([...FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
 
   function recentUpdates(limit = 15) {
     const all = [];
@@ -263,14 +257,14 @@ export default function App() {
             const total = getCos(sk).length;
             return (
               <div key={sk}>
-                <div style={s.sectorHdr} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : sk === "prompts" ? (() => { setView({ type: "company", id: "prompt_researchbrief_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                <div style={s.sectorHdr} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
                   <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {sk !== "sources" && sk !== "prompts" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
-                    <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else if (sk === "prompts") { setView({ type: "company", id: "prompt_researchbrief_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
+                    {sk !== "sources" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
+                    <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
                   </div>
-                  {total > 0 && sk !== "sources" && sk !== "prompts" && <span style={s.badge}>{total}</span>}
+                  {total > 0 && sk !== "sources" && <span style={s.badge}>{total}</span>}
                 </div>
-                {(open || search) && sk !== "sources" && sk !== "prompts" && cos.length > 0 && (
+                {(open || search) && sk !== "sources" && cos.length > 0 && (
                   <>
                     {cos.map(c => {
                       const active = view.type === "company" && view.id === c.id;
@@ -400,8 +394,8 @@ export default function App() {
         {view.type === "company" && cur && (
           <div style={s.page}>
             <div style={s.breadcrumb}>
-              <span onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
-              {cur.sector !== "sources" && cur.sector !== "prompts" && <>
+              <span onClick={() => { setView((cur.sector === "sources") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
+              {cur.sector !== "sources" && <>
                 <span style={{ color: T_.textGhost }}>&rsaquo;</span>
                 <span onClick={() => { setView({ type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.subs[cur.sub]}</span>
               </>}
@@ -409,10 +403,10 @@ export default function App() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
               <h1 style={s.pageTitle}>{cur.name}</h1>
               <div style={{ display: "flex", gap: 6, flexShrink: 0 }}>
-                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources" || cur.sector === "prompts") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); setEditingSector(false); }}>&#8592; Back</button>
+                <button style={s.btnGhost} onClick={() => { setView((cur.sector === "sources") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); setEditingSector(false); }}>&#8592; Back</button>
               </div>
             </div>
-            {cur.sector !== "sources" && cur.sector !== "prompts" && (
+            {cur.sector !== "sources" && (
               <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>
                 {!editingSector ? (
                   <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
@@ -456,7 +450,7 @@ export default function App() {
             )}
 
             {/* Priority */}
-            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            {cur.sector !== "sources" && (
               <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
                 {PRIORITIES.map(pr => (
                   <span key={pr} style={{
@@ -471,27 +465,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Run Prompt — prompts only */}
-            {cur.sector === "prompts" && curFields?.overview?.text?.trim() && (
-              <div style={{ display: "flex", gap: 10, marginBottom: 28 }}>
-                <button style={{ ...s.btnAccent, display: "flex", alignItems: "center", gap: 6 }} onClick={() => {
-                  navigator.clipboard.writeText(curFields.overview.text.trim()).then(() => {
-                    const el = document.getElementById("copyMsg");
-                    if (el) { el.textContent = "Copied to clipboard"; setTimeout(() => el.textContent = "", 2500); }
-                  });
-                }}>&#9654; Run prompt</button>
-                <button style={s.btnGhost} onClick={() => {
-                  navigator.clipboard.writeText(curFields.overview.text.trim()).then(() => {
-                    const el = document.getElementById("copyMsg");
-                    if (el) { el.textContent = "Copied!"; setTimeout(() => el.textContent = "", 2500); }
-                  });
-                }}>Copy</button>
-                <span id="copyMsg" style={{ fontSize: 13, color: T_.green, alignSelf: "center" }}></span>
-              </div>
-            )}
-
             {/* Recent Updates */}
-            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            {cur.sector !== "sources" && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Recent updates</span>
@@ -529,7 +504,7 @@ export default function App() {
             )}
 
             {/* Research Notes */}
-            {cur.sector !== "prompts" && cur.sector !== "sources" && (
+            {cur.sector !== "sources" && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Research notes</span>
@@ -552,7 +527,7 @@ export default function App() {
             )}
 
             {/* Structured Fields */}
-            {(cur.sector === "prompts" ? PROMPT_FIELDS : cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+            {(cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
               const fd = curFields?.[f.key];
               const isEditing = editingField === f.key;
               const hasContent = fd?.text?.trim();
