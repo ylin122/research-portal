@@ -1,0 +1,22 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node generate-seed.cjs)",
+      "Bash(npm run:*)",
+      "Bash(npx vite:*)",
+      "Bash(cd:*)",
+      "Bash(node insert-companies.cjs)",
+      "Bash(node insert-batch2.cjs)",
+      "Bash(node -e \":*)",
+      "Bash(node insert-batch3.cjs)",
+      "Bash(node update-imagine.cjs)",
+      "Bash(node insert-batch4-security.cjs)",
+      "Bash(node insert-batch5-infra.cjs)",
+      "Bash(node insert-batch6-app.cjs)",
+      "Bash(node insert-batch7-remaining.cjs)",
+      "Bash(node insert-batch8-final.cjs)",
+      "Bash(node set-public-private.cjs)",
+      "WebSearch"
+    ]
+  }
+}
