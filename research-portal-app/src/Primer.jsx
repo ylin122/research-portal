@@ -712,6 +712,84 @@ export default function Primer() {
               ))}
             </div>
           </div>
+          
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Semiconductor Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How semiconductor companies make money. Revenue models vary dramatically across the value chain — from IP licensing (near-zero marginal cost) to foundry manufacturing (massive capex). The model determines cyclicality, margins, and valuation.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "Chip Sales (Fabless)", color: "#3B82F6", icon: "💎",
+                  how: "Design chips, outsource manufacturing to foundries (TSMC), sell finished chips to OEMs and hyperscalers. Revenue recognized on chip shipment. Priced per unit — ASPs range from $1 (IoT) to $30,000+ (AI GPUs)",
+                  economics: "Gross margins: 55-75% (NVIDIA ~75%, AMD ~52%, Qualcomm ~56%). R&D is the major cost (20-30% of revenue). No fab capex — capital-light model. Revenue is cyclical, tied to end-market demand and inventory cycles",
+                  examples: "NVIDIA (GPUs — $120B+ revenue), AMD (CPUs/GPUs), Qualcomm (mobile SoCs), Broadcom (networking/custom ASICs), Marvell (infrastructure), MediaTek",
+                  valuation: "Trades on revenue growth and margin expansion. AI GPU companies (NVIDIA) at 25-40x forward earnings. Diversified fabless (Broadcom, Qualcomm) at 15-25x. Cyclical discount for inventory-heavy names",
+                  transition: "Dominant model for high-performance logic. Fabless won because TSMC's manufacturing scale is unbeatable. Intel trying to shift from IDM to foundry model — the most important transition in semis" },
+                { name: "IP Licensing & Royalties", color: "#F59E0B", icon: "📜",
+                  how: "License semiconductor IP (processor cores, interface blocks) to chip designers who embed it in their chips. Revenue from upfront license fees + per-unit royalties on every chip shipped using the IP",
+                  economics: "Gross margins: 90-95% — near-zero marginal cost (IP is designed once, licensed infinitely). Royalty revenue scales with chip volumes. High R&D to create IP, but once created, extremely high-margin recurring revenue",
+                  examples: "Arm Holdings (CPU architecture — royalties on 30B+ chips/year), Synopsys/Cadence (IP groups), Rambus (memory interface IP), CEVA (DSP/AI IP), Imagination Technologies (GPU IP)",
+                  valuation: "Premium multiples: Arm trades at 40-60x forward earnings reflecting the royalty model's leverage. Every new chip design that uses Arm generates royalties for 5-10+ years. Investors pay for visibility and margin quality",
+                  transition: "Growing model as chiplet architectures increase IP reuse. RISC-V (open-source ISA) is the disruptive threat to Arm's royalty model — but Arm's ecosystem depth and verification costs create massive switching barriers" },
+                { name: "EDA Software (Subscription + License)", color: "#10B981", icon: "🖊️",
+                  how: "Sell chip design software tools on time-based subscription (3-year terms typical) or perpetual license + maintenance. Every chip designer in the world must use EDA tools — 100% attach rate for advanced chip design",
+                  economics: "Gross margins: 85-90%. Subscription revenue is ~90%+ recurring. Revenue grows with semiconductor R&D spending (which grows 8-12% annually). Near-monopoly pricing power — Synopsys + Cadence = ~70% market share",
+                  examples: "Synopsys (~$6B revenue, ~90% recurring), Cadence (~$4.5B revenue), Siemens EDA (Mentor Graphics). Also Ansys (simulation, acquired by Synopsys)",
+                  valuation: "Premium SaaS multiples: 12-18x forward revenue. Market rewards the recurring nature, duopoly pricing power, and secular growth tied to semiconductor complexity. EDA is 'software picks and shovels' for the chip boom",
+                  transition: "Stable model — EDA has been subscription-based for decades. AI is increasing tool complexity and spend per designer. Synopsys acquiring Ansys signals platform expansion beyond core EDA" },
+                { name: "Foundry Manufacturing (Per-Wafer)", color: "#EF4444", icon: "🏭",
+                  how: "Manufacture chips on behalf of fabless designers. Revenue is per-wafer, priced by process node (3nm costs ~$20,000+/wafer vs $2,000 for mature nodes). Long-term supply agreements with minimum volume commitments",
+                  economics: "Gross margins: 50-60% (TSMC ~55%). Massive capex: TSMC spends $30-35B+/year on fabs. Depreciation is the largest cost. Utilization rates drive profitability — below 70% utilization crushes margins. Leading-edge fabs cost $20B+ to build",
+                  examples: "TSMC (60%+ foundry market share, ~$90B revenue), Samsung Foundry (~15%), GlobalFoundries (~7%), UMC, SMIC (China)",
+                  valuation: "TSMC at 20-25x forward earnings — premium for monopoly-like position in advanced nodes. Mature foundries (GFS, UMC) at 10-15x. Capital intensity limits multiples vs fabless. Investors watch capex/revenue ratio and utilization",
+                  transition: "Concentration risk is extreme — TSMC manufactures 90%+ of advanced chips. Intel IFS (foundry services) is the strategic alternative but years behind. Geopolitical risk (Taiwan) is the industry's biggest vulnerability" },
+                { name: "Equipment Sales + Service", color: "#8B5CF6", icon: "⚙️",
+                  how: "Sell semiconductor manufacturing equipment to fabs (capital equipment — one-time) plus ongoing service, spare parts, and upgrades (recurring). Equipment orders are placed 6-18 months before delivery",
+                  economics: "Gross margins: 45-65% on equipment, 70%+ on service. Service/installed base revenue is 25-40% of total and highly recurring. Revenue is cyclical — tied to fab capex spending. ASML's EUV machines cost $350-400M each",
+                  examples: "ASML (lithography — monopoly, ~$30B revenue), Applied Materials (broadest portfolio, ~$27B), Lam Research (etch, ~$17B), KLA (inspection, ~$11B), Tokyo Electron",
+                  valuation: "15-25x forward earnings. ASML at premium (monopoly). Service mix increasing improves revenue quality. Investors track WFE (wafer fab equipment) spending forecasts and order backlog as leading indicators",
+                  transition: "AI driving a structural uplift in equipment spending (more advanced packaging, more process steps per wafer). China buying mature-node equipment aggressively before export controls tighten further" },
+                { name: "Memory (Commodity Cycles)", color: "#06B6D4", icon: "⚡",
+                  how: "Manufacture and sell memory chips (DRAM, NAND, HBM) as commodity products. Prices set by supply-demand balance — can swing 50%+ in a year. Revenue = bits shipped × price per bit. Only 3 DRAM and 5 NAND producers globally",
+                  economics: "Gross margins: 20-70% depending on cycle (trough: 20-30%, peak: 55-70%). Massive capex ($15-20B+/year per company). Oligopoly pricing — 3 DRAM producers control 95%+ of market. HBM is high-margin ($15-20+ per GB vs $3-5 for standard DRAM)",
+                  examples: "Samsung (largest memory company, ~$70B memory revenue), SK Hynix (~$45B, HBM leader), Micron (~$30B). HBM specifically: SK Hynix > Samsung > Micron",
+                  valuation: "Cyclical multiples: 1-3x book value. Investors buy at trough margins (when stocks look expensive on P/E) and sell at peak margins (when P/E looks cheap). HBM exposure commands premium — SK Hynix re-rated from 1x to 2x+ book on HBM demand",
+                  transition: "HBM is transforming memory economics — high-margin, capacity-constrained, and structurally growing with AI. Traditional DRAM/NAND remains cyclical but AI demand may dampen the amplitude of cycles" }
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>Sources: SIA, WSTS, Gartner, IDC, TrendForce, SemiAnalysis, company 10-Ks, ASML/TSMC/NVIDIA earnings. TAM and growth rates are approximate 2025 estimates.</div>
         </div>);
       })()}
@@ -907,6 +985,72 @@ export default function Primer() {
               ))}
             </div>
           </div>
+          
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Digital Infrastructure Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How data center and cloud infrastructure companies make money. Models range from hyperscaler cloud (consumption-based, massive scale) to data center leasing (real estate economics) to equipment manufacturing.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "Cloud Consumption (IaaS/PaaS)", color: "#3B82F6", icon: "☁️",
+                  how: "Customers pay for cloud compute, storage, and networking based on actual usage — per hour, per GB, per query. No upfront commitment for on-demand; reserved instances offer discounts for 1-3 year commitments",
+                  economics: "Gross margins: 60-70% (AWS ~62%, Azure ~72%, GCP improving). Massive capex ($50-100B+/year per hyperscaler). Revenue grows with customer workload expansion. Net revenue retention 120-130%+ as customers increase cloud usage",
+                  examples: "AWS (~$110B revenue), Microsoft Azure (~$80B), Google Cloud (~$45B), Oracle Cloud (OCI), IBM Cloud",
+                  valuation: "Hyperscalers valued as part of parent companies. Standalone: 8-15x revenue for cloud businesses. Growth rate and margin trajectory are key. AWS is the profit engine of Amazon",
+                  transition: "Dominant model — 40%+ of enterprise workloads now in cloud. AI workloads (GPU-as-a-service) are the fastest-growing segment. Multi-cloud is default, reducing lock-in but increasing total spend" },
+                { name: "Long-Term Data Center Leasing", color: "#10B981", icon: "🏗️",
+                  how: "Build purpose-built data centers and lease them to hyperscalers/neoclouds on 10-25 year contracts. Revenue = power capacity (MW) × lease rate ($/kW/month). Leases often have credit enhancement from investment-grade tenants",
+                  economics: "Target NOI margins: 70-85%. Massive upfront construction cost ($10-15M per MW). Revenue is highly predictable once leased (10-25 year terms). Key metric: contracted backlog and time-to-revenue. Construction execution risk is the primary operational risk",
+                  examples: "Applied Digital (~$16B contracted), TeraWulf (~$12.8B contracted), Cipher Digital (~$9.3B contracted), Equinix, Digital Realty, QTS (Blackstone)",
+                  valuation: "Traditional colocation: 20-25x EBITDA (REIT multiples). AI data center builders: valued on contracted backlog and MW under development — higher multiples when backlog visibility is strong. Crypto-to-AI pivots trade at a discount until HPC revenue materializes",
+                  transition: "AI demand has transformed this from a slow-growth REIT business to a high-growth infrastructure play. The constraint is power — companies with secured grid interconnections and fast build timelines command premium lease rates" },
+                { name: "GPU-as-a-Service (Neocloud)", color: "#8B5CF6", icon: "⚡",
+                  how: "Lease GPU compute capacity to AI labs and enterprises via cloud platform. Revenue from multi-year take-or-pay contracts with committed minimum spend. Higher up the stack than DC leasing — includes software orchestration layer",
+                  economics: "Gross margins: 50-65%. GPU depreciation is the major cost (GPUs lose value as new generations launch every 12-18 months). Revenue highly concentrated in top customers. Adjusted EBITDA margins 55-62% (CoreWeave). Massive debt ($14B+ at CoreWeave) funds GPU purchases",
+                  examples: "CoreWeave (~$5.1B revenue, $66.8B backlog), Lambda (~$800M funding), Together AI, Nebius (NVIDIA-backed), Voltage Park",
+                  valuation: "Valued on revenue growth and backlog. CoreWeave at ~8-10x forward revenue. Key risk: GPU collateral depreciation — loans secured by GPUs that lose value. Refinancing walls create liquidity risk",
+                  transition: "New model created by AI demand explosion. The question is durability — will hyperscalers eventually build enough internal capacity to reduce outsourcing to neoclouds? NVIDIA partnership depth determines competitive position" },
+                { name: "Managed Services (Recurring)", color: "#F59E0B", icon: "🖥️",
+                  how: "Ongoing management of customer IT infrastructure — monitoring, patching, help desk, cloud optimization. Monthly/annual contracts with SLAs. Revenue recognized ratably over the contract term",
+                  economics: "Gross margins: 30-50% (labor-intensive). Revenue is recurring with 90%+ retention. Lower margin than software but predictable. Pricing pressure from offshore competition. Scale economics improve with automation (AIOps)",
+                  examples: "Rackspace (~$2.7B), Ensono (~$600-800M), Kyndryl (~$15B), DXC Technology. Also embedded in VARs like Presidio and WWT",
+                  valuation: "6-10x EBITDA for managed services. Premium when recurring mix is high and automation drives margin expansion. Discount for declining legacy hosting (Rackspace) vs growing cloud management",
+                  transition: "Shifting from managing on-prem infrastructure (declining) to managing cloud environments (growing). AIOps and automation reducing headcount per customer — the margin expansion story PE sponsors target" }
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
           <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>Sources: McKinsey Global Institute, Synergy Research, IDC, Data Center Dynamics, company filings. TAM and growth rates are approximate 2025 estimates.</div>
         </div>);
       })()}
@@ -1068,6 +1212,77 @@ export default function Primer() {
               ))}
             </div>
           </div>
+        
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How IT services companies make money. The industry spans from high-volume product resale (low margin) to strategic consulting (high margin). The PE playbook: buy a reseller cheaply, grow the services mix, sell at a services multiple.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "Product Resale (VAR)", color: "#64748B", icon: "📦",
+                  how: "Purchase hardware and software from vendors (Cisco, Dell, HP, Microsoft) at distributor pricing, sell to enterprises at a markup. Revenue recognized on product shipment. Vendor rebates, MDF (market development funds), and deal registration improve effective margins",
+                  economics: "Gross margins: 12-20% on products (thin). Vendor rebates add 3-8% effective margin. Revenue is transactional and lumpy — tied to customer refresh cycles. Working capital intensive (inventory and receivables). Revenue per employee is high ($500K-1M+) but margin per employee is low",
+                  examples: "CDW (~$21B revenue, ~18% GM), SHI (~$14B), Insight (~$9B), World Wide Technology (~$17-20B). Also Presidio, Trace3, Ahead DB at smaller scale",
+                  valuation: "4-6x EBITDA for resale-heavy businesses. Market penalizes the transactional, low-margin nature. The entire PE playbook is to shift this mix toward services to justify higher exit multiples",
+                  transition: "Declining as a standalone model — vendors increasingly sell direct and through cloud marketplaces. VARs must add services value (design, deployment, managed services) or become irrelevant commodity middlemen" },
+                { name: "Professional Services (Project-Based)", color: "#3B82F6", icon: "💼",
+                  how: "Sell consulting and implementation expertise on a time-and-materials (hourly rate × hours) or fixed-price project basis. Revenue recognized as work is performed. Projects range from weeks (assessments) to years (large transformations)",
+                  economics: "Gross margins: 30-45%. Utilization rate is the key metric — billable hours as % of available hours (target: 70-80%). Onshore rates: $150-300/hr. Nearshore: $40-80/hr. Offshore: $20-40/hr. Blend ratio determines profitability. Revenue is volatile — discretionary projects cut in downturns",
+                  examples: "Accenture (~$65B), Deloitte consulting, EPAM (~$3.7B), Perficient (~$920M), Thoughtworks, Virtusa, Synechron",
+                  valuation: "8-14x EBITDA for high-quality consultancies. Premium for specialized expertise (healthcare IT, financial services), high utilization, and offshore leverage. Discount for generic SI work and high client concentration",
+                  transition: "AI is the disruptive force — code generation (Copilot/Cursor) could reduce billable hours for implementation work. Consulting firms pivoting to AI implementation services to offset. The question: does AI reduce demand for consultants or create new demand?" },
+                { name: "Managed IT Services (Recurring)", color: "#10B981", icon: "🔄",
+                  how: "Deliver ongoing IT operations on monthly/annual contracts — monitoring, patching, help desk, NOC/SOC, cloud management. Revenue recognized ratably. Priced per device, per user, or per environment. SLAs define service quality",
+                  economics: "Gross margins: 35-55%. Recurring revenue with 90-95% retention. Higher margin than project work because automation (RMM tools, scripting) reduces labor over time. Predictable cash flows make this the PE favorite",
+                  examples: "Ensono (~$600-800M), managed services divisions within Presidio, WWT, CDW. MSP-specific: ConnectWise ecosystem, Kaseya/Datto ecosystem serving thousands of MSPs",
+                  valuation: "10-14x EBITDA — significant premium over resale (4-6x) and project services (8-14x). The recurring, predictable nature commands SaaS-like multiples. This is why every VAR and SI is trying to grow managed services",
+                  transition: "The fastest-growing segment in IT services. Every PE-backed VAR (Presidio, Ahead, Trace3) is measured on managed services as % of total revenue. Moving from 20-30% to 50%+ managed services can double the exit multiple" },
+                { name: "MSP Software (SaaS for MSPs)", color: "#F59E0B", icon: "🛠️",
+                  how: "Sell SaaS software to managed service providers — RMM, PSA, backup, security tools. Per-endpoint, per-technician, or per-device monthly pricing. MSPs are the customer; their SMB clients are the end users",
+                  economics: "Gross margins: 70-80% (software economics). Revenue scales with endpoints under management — as MSPs grow, they add more devices and products. Net retention 110-120%+. Land-and-expand model",
+                  examples: "ConnectWise (~$1-1.3B), Kaseya/Datto (~$1.5-2B+), N-able (~$450-500M), NinjaRMM, Syncro, HaloPSA",
+                  valuation: "12-20x ARR for high-growth MSP software. Datto acquired for $6.2B (~8-9x revenue). ConnectWise likely valued at $4-6B+. The embedded, mission-critical nature (MSPs run their entire business on these tools) commands premium",
+                  transition: "Consolidating rapidly through PE-driven M&A. ConnectWise vs Kaseya is the defining rivalry. Cybersecurity is the growth driver — MSPs adding security services to their stack creates demand for MSSP tools" },
+                { name: "IT Distribution (Wholesale)", color: "#0EA5E9", icon: "🚛",
+                  how: "Wholesale distribution of hardware, software, and cloud services from vendors to resellers/MSPs/retailers. Revenue = product cost + small markup (2-5%). High volume, low margin. Also earn vendor incentives and rebates",
+                  economics: "Gross margins: 6-8%. Operating margins: 2-4%. Revenue in the tens of billions but profit is thin. Working capital intensive — distributors finance inventory and extend credit. Value is in logistics, credit, and vendor relationships at massive scale",
+                  examples: "TD SYNNEX (~$57B revenue), Ingram Micro (~$47-50B), Arrow Electronics (~$30B), Westcon-Comstor, ScanSource",
+                  valuation: "6-10x EBITDA. Low margins limit multiples. Cloud marketplace distribution (Pax8, Ingram Cloud) growing faster and commanding slight premium. Consolidation trend (TD + SYNNEX merged) drives scale economics",
+                  transition: "Cloud marketplace distribution is the growth segment — resellers provision cloud services through distributor marketplaces. Traditional hardware distribution is flat to declining. Vendor-direct and marketplace-direct threaten the intermediary role long-term" }
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>);
       })()}
 
@@ -1219,6 +1434,77 @@ export default function Primer() {
               ))}
             </div>
           </div>
+        
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Healthcare IT Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How healthcare technology companies make money. Revenue models range from per-patient SaaS to percentage-of-collections RCM. Healthcare's regulatory complexity and mission-critical nature create high switching costs and sticky recurring revenue across most models.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "EHR / Clinical SaaS (Per-Patient/Per-Provider)", color: "#3B82F6", icon: "🏥",
+                  how: "Hospitals and practices pay annual subscriptions for EHR and clinical software. Priced per-provider, per-bed, or per-patient. Multi-year contracts (3-7 years) with large upfront implementation projects. Revenue recognized ratably over the contract",
+                  economics: "Gross margins: 60-75% (lower than pure SaaS due to hosting complexity and support). Implementation services are 15-25% of initial deal value (lower margin). Retention: 95%+ — ripping out an EHR is a 3-5 year, $10-50M+ project. Epic charges $1,000-2,000+ per provider/year",
+                  examples: "Epic Systems (private, dominant in hospitals), Oracle Health/Cerner, athenahealth (~$1.8-2.2B), PointClickCare (LTPAC — ~70% of skilled nursing), MEDITECH, eClinicalWorks",
+                  valuation: "8-15x revenue for high-retention clinical SaaS. Athenahealth acquired at $17B (~8-9x revenue). PointClickCare valued at $4B+ reflecting near-monopoly in LTPAC. Epic's implied valuation would be astronomical if it were public",
+                  transition: "Cloud migration is the current wave — legacy on-prem EHR moving to cloud-hosted or cloud-native. AI ambient documentation (recording and transcribing clinical encounters) is the next product cycle creating upsell opportunity" },
+                { name: "RCM Outsourcing (Percentage of Collections)", color: "#10B981", icon: "💰",
+                  how: "Full revenue cycle management outsourcing — provider pays a percentage of net patient revenue collected (typically 4-7%) or per-encounter fee. RCM company embeds staff in hospitals to manage coding, billing, claims, and collections end-to-end",
+                  economics: "Gross margins: 25-40% (labor-intensive — thousands of coders, billers, and collectors). Revenue is highly recurring (multi-year contracts, 3-5 year terms). Revenue scales with healthcare volume — more patients = more claims = more revenue. R1 RCM manages ~$60B in patient revenue",
+                  examples: "R1 RCM (~$2.3B revenue, taken private for $8.9B), Ensemble Health Partners (~$1-1.5B), Conifer Health (Tenet). Smaller: AGS Health, GeBBS Healthcare",
+                  valuation: "12-16x EBITDA for scaled RCM outsourcers. Premium for technology-enabled models (Cloudmed analytics + services). The $8.9B R1 RCM take-private reflects the market's appetite for recurring healthcare services revenue",
+                  transition: "AI is the transformation catalyst — automated coding, AI-powered denial prediction, and robotic process automation reduce labor intensity and improve margins. Companies that successfully layer AI onto services models will see significant margin expansion" },
+                { name: "RCM Technology (SaaS + Transaction)", color: "#8B5CF6", icon: "💳",
+                  how: "Software platforms for claims management, denial prevention, patient payments, and analytics. Revenue from SaaS subscriptions plus per-claim or per-transaction fees. Technology-first model vs the labor-heavy outsourcing model",
+                  economics: "Gross margins: 65-80% (software economics). Revenue is recurring and grows with claims volume. Per-transaction pricing means revenue scales with healthcare activity without proportional cost increase. Net retention 110-115%",
+                  examples: "Waystar (~$800-900M, IPO'd 2024), FinThrive (~$500-700M), Change Healthcare (now Optum/UHG), Availity, Olive AI (struggling)",
+                  valuation: "8-12x revenue for RCM technology. Waystar IPO'd at ~$5-7B market cap (~7-8x revenue). Technology-only models command premium over outsourcing because margins are higher and scalability is better",
+                  transition: "The market is splitting between pure technology (Waystar, FinThrive) and technology + services (R1 RCM, Ensemble). Pure tech has better margins but lower revenue per customer. The question is whether AI enables tech-only to replace services-heavy" },
+                { name: "Payment Integrity (Savings-Based)", color: "#F59E0B", icon: "🔍",
+                  how: "Analyze healthcare claims to identify overpayments, fraud, and coding errors for health plans. Revenue based on a percentage of identified savings — if Cotiviti finds $10B in improper payments, it earns a cut of the recovery",
+                  economics: "Gross margins: 50-70%. Revenue directly tied to claims volume and savings rate. Highly recurring — health plans process millions of claims annually and need continuous monitoring. ROI is clear and quantifiable: $1 spent returns $5-10+ in savings identified",
+                  examples: "Cotiviti (~$1-1.3B, processes $1T+ in claims), Change Healthcare/Optum (payment integrity division), Inovalon, Gainwell Technologies (Medicaid)",
+                  valuation: "10-15x EBITDA. Premium for scale and proprietary data/algorithms. Cotiviti at estimated $4-6B+ valuation. The savings-based model aligns incentives perfectly — Cotiviti only earns when it delivers measurable value",
+                  transition: "AI improving detection rates — more sophisticated algorithms find more savings. Expanding from post-payment review (after claim is paid) to pre-payment prevention (stop improper payment before it happens). Pre-payment is more valuable and stickier" },
+                { name: "Government Health IT (Long-Term Contracts)", color: "#EF4444", icon: "🏛️",
+                  how: "Build and operate health IT systems for state Medicaid agencies and federal programs. Revenue from long-term government contracts (5-10+ years with extensions). Per-claim, per-member, or fixed-price contracts. Procurement cycles are 1-3 years",
+                  economics: "Gross margins: 30-45% (complex implementations, government pricing pressure). Revenue is extremely sticky — switching a state MMIS system takes 3-5 years and costs hundreds of millions. Backlog provides multi-year visibility. Payment timing can be lumpy",
+                  examples: "Gainwell Technologies (~$1.5-2B, processes $100B+ in Medicaid claims across 30+ states), Maximus, Deloitte (Medicaid SI), Accenture (government health)",
+                  valuation: "8-12x EBITDA for government health IT. Premium for contract backlog and incumbent advantage. Discount for government procurement complexity and margin pressure. Gainwell acquired for $5B reflecting the captive Medicaid franchise",
+                  transition: "Medicaid modernization is a decade-long opportunity — legacy MMIS systems being replaced with modern, modular architectures. CMS promoting modularity means more vendors can compete for pieces, but incumbent advantage remains massive" }
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>);
       })()}
 
@@ -1366,6 +1652,77 @@ export default function Primer() {
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
                   <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        
+          {/* ─── REVENUE MODELS ─── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Internet Revenue Models</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How internet companies in the PE/mid-market universe make money. Unlike hyperscale platforms (Google, Meta), these companies monetize through domains, hosting subscriptions, advertising on vertical properties, and consumer security subscriptions.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+              {[
+                { name: "Domain Registration & Hosting (Subscription)", color: "#3B82F6", icon: "🌐",
+                  how: "Annual domain registration fees ($10-20/year) plus monthly/annual hosting subscriptions ($5-50/month). Domains are auto-renewing infrastructure — businesses cannot operate without them. Hosting includes server space, email, and basic tools",
+                  economics: "Domain margins: 50-60% (ICANN fees are the primary cost). Hosting margins: 40-60% (infrastructure + support costs). Domain renewal rates: 85-90%+ (near-automatic). Hosting churn: 15-25% annually (SMBs are price-sensitive). Revenue is highly recurring but ARPU is low ($150-250/year)",
+                  examples: "GoDaddy (~$4.3-4.6B revenue, 84M+ domains), Newfold Digital (Bluehost, HostGator, Network Solutions), Hostinger, IONOS (1&1)",
+                  valuation: "3-5x revenue for hosting/domain companies. GoDaddy at ~$7-8B market cap (~1.6x revenue). Premium for domain portfolio (near-zero churn) vs hosting (high churn). The transition to commerce/payments increases ARPU and justifies higher multiples",
+                  transition: "Shifting from commodity hosting to commerce enablement (payments, online store, marketing). Website builders (Squarespace, Wix, Shopify) bypass traditional hosting entirely — the structural threat to legacy hosting companies" },
+                { name: "Advertising & Lead Generation", color: "#F59E0B", icon: "📣",
+                  how: "Monetize web traffic through display advertising, sponsored listings, and lead generation fees. Advertisers pay per impression (CPM), per click (CPC), or per lead/action (CPA). Traffic is the raw material — more visitors = more ad revenue",
+                  economics: "Gross margins: 70-85% (content costs are largely fixed). Revenue directly correlated with traffic volume and ad pricing (CPMs). Seasonal patterns (Q4 strongest for ad spend). Vulnerable to Google algorithm changes and AI search disruption",
+                  examples: "Internet Brands (WebMD — pharma ads, Martindale — legal lead gen), Yelp, Zillow (real estate lead gen). Also Liftoff/Vungle (mobile ad-tech)",
+                  valuation: "2-4x revenue for ad-dependent businesses. Discount relative to SaaS because revenue is less predictable and more vulnerable to platform changes. Premium for owned audience/traffic vs intermediated",
+                  transition: "AI search (ChatGPT, Perplexity) is the existential threat — if users get answers directly from AI instead of visiting WebMD or directory sites, traffic-dependent revenue models collapse. Companies pivoting to vertical SaaS to reduce ad dependency" },
+                { name: "Consumer Security (Auto-Renewing Subscription)", color: "#EF4444", icon: "🔐",
+                  how: "Sell antivirus, identity protection, VPN, and privacy tools to consumers on annual auto-renewing subscriptions. Priced at $30-150/year per household. Acquired through OEM preloads (new PC trial → paid conversion), direct marketing, and ISP partnerships",
+                  economics: "Gross margins: 80-85%. Auto-renewal retention: 70-80%. OEM preload conversion: 15-25%. High customer acquisition cost offset by multi-year retention. Identity protection (LifeLock, $150+/year) has higher ARPU than basic antivirus ($30-50/year)",
+                  examples: "Gen Digital (Norton/LifeLock/Avast — ~$3.8B revenue, 500M+ users, 65M+ paid), McAfee (~$1.8-2B, 25M+ paid subscribers)",
+                  valuation: "3-5x revenue. Gen Digital at ~$15-18B market cap. Valued on subscriber count, ARPU trends, and retention. Identity protection growing faster than antivirus — shifts the ARPU mix higher",
+                  transition: "Windows Defender commoditizing basic antivirus. Growth comes from identity protection and 'digital safety' bundles (VPN, dark web monitoring, privacy tools) that command higher ARPU. AI-generated scams increasing consumer threat awareness — potential demand driver" },
+                { name: "SMB Marketing SaaS (Per-Contact Subscription)", color: "#10B981", icon: "📧",
+                  how: "Monthly/annual subscriptions for email marketing, marketing automation, and digital marketing tools. Priced by contact list size — more contacts = higher tier. Revenue recognized ratably. SMBs use these to communicate with customers and drive repeat business",
+                  economics: "Gross margins: 65-75%. Churn: 3-5% monthly for SMB (high — small businesses fail or switch frequently). Revenue per customer: $300-1,500/year. Land-and-expand as contact lists grow. Freemium-to-paid conversion for low-end (Mailchimp free tier)",
+                  examples: "Mailchimp/Intuit (~$1.5B revenue, dominant via free tier), Constant Contact (~$400-500M), HubSpot (SMB tier), Klaviyo (~$900M, e-commerce focused), Brevo (Sendinblue), ActiveCampaign",
+                  valuation: "4-8x revenue for SMB marketing SaaS. Mailchimp acquired by Intuit for $12B (~8x revenue). Constant Contact likely valued at $2-3B. Premium for low churn and ARPU expansion; discount for high SMB churn rates",
+                  transition: "AI-generated email content and personalization becoming table stakes. Mailchimp (Intuit) dominant through free tier. The competitive moat is the contact database and sending reputation — hard for new entrants to replicate at scale" },
+                { name: "Mobile Ad-Tech (Performance-Based)", color: "#8B5CF6", icon: "📱",
+                  how: "Help mobile app developers acquire users (demand side) and monetize through in-app ads (supply side). Revenue from performance fees — per install (CPI), per action (CPA), or per impression (CPM). ML algorithms optimize ad targeting and bidding in real-time",
+                  economics: "Gross margins: 30-50% (significant ad inventory costs). Revenue scales with mobile ad spending. Apple ATT privacy changes (2021) permanently reduced targeting precision — required rebuilding attribution models. Seasonal (Q4 holiday gaming installs strongest)",
+                  examples: "AppLovin (~$4B revenue, dominant), Liftoff/Vungle (~$500-800M), Unity Ads, ironSource (now Unity), Digital Turbine, Moloco",
+                  valuation: "5-15x EBITDA. AppLovin re-rated dramatically (stock up 700%+ in 2024) on AI-powered ad optimization. Premium for proprietary ML and owned demand. Discount for intermediary-only models without owned inventory",
+                  transition: "AI/ML is the differentiator — companies with better ad optimization algorithms win disproportionate share. AppLovin's AXON engine proved that superior ML can drive outsized returns. First-party data becoming critical as third-party tracking disappears" }
+              ].map((model, i) => (
+                <div key={i} style={{ background: T_.bg, borderRadius: 10, border: `1px solid ${model.color}33`, borderLeft: `4px solid ${model.color}`, padding: "18px 20px" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                    <span style={{ fontSize: 20 }}>{model.icon}</span>
+                    <span style={{ fontSize: 16, fontWeight: 700, color: model.color }}>{model.name}</span>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>How It Works</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.how}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Unit Economics</div>
+                      <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{model.economics}</div>
+                    </div>
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 12 }}>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Examples</div>
+                      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{model.examples}</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Valuation Impact</div>
+                      <div style={{ fontSize: 13, color: T_.green, lineHeight: 1.6 }}>{model.valuation}</div>
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Transition Dynamics</div>
+                    <div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.6 }}>{model.transition}</div>
+                  </div>
                 </div>
               ))}
             </div>
