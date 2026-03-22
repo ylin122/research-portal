@@ -21,7 +21,7 @@ function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "
 const SECTORS = {
   software: { label: "Software", subs: { application: "Application", infrastructure: "Infrastructure", security: "Security", other: "Other" } },
   aidigital: { label: "Digital Infrastructure", subs: { compute: "Compute", shell: "Shell & Power", other: "Other" } },
-  itservices: { label: "IT Services", subs: { consulting: "Consulting", outsourcing: "Outsourcing", managed: "Managed Services", other: "Other" } },
+  itservices: { label: "IT Services", subs: { var: "VAR", consulting: "Consulting", outsourcing: "Outsourcing", managed: "Managed Services", other: "Other" } },
   internet: { label: "Internet", subs: { ecommerce: "E-Commerce", adtech: "AdTech", social: "Social / Content", marketplace: "Marketplace", hosting: "Hosting / Domains", other: "Other" } },
   hardware: { label: "Hardware & Others", subs: { semiconductors: "Semiconductors", devices: "Devices", networking: "Networking", other: "Other" } },
   education: { label: "Education & Services", subs: { edtech: "EdTech", traditional: "Traditional", corporate: "Corporate Training", other: "Other" } },
