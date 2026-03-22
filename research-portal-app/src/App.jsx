@@ -374,6 +374,7 @@ export default function App() {
                     return (
                       <div key={c.id} style={s.listRow} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
                         <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{c.name}</span>
+                        <span style={{ fontSize: 10, color: fieldsMap[c.id]?.public_private?.text === "Public" ? T_.blue : T_.textGhost, opacity: 0.7 }}>{fieldsMap[c.id]?.public_private?.text === "Public" ? "PUB" : "PVT"}</span>
                         {pr && <span style={{ ...s.prBadge, background: pr === "High" ? T_.greenBg : pr === "Medium" ? T_.amberBg : T_.grayBadge, color: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High" ? T_.greenBorder : pr === "Medium" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
                         <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
                       </div>
@@ -407,9 +408,20 @@ export default function App() {
             {cur.sector !== "sources" && cur.sector !== "prompts" && (
               <div style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>
                 {!editingSector ? (
-                  <span style={{ cursor: "pointer" }} onClick={() => setEditingSector(true)}>
-                    {SECTORS[cur.sector]?.subs[cur.sub] || cur.sub} &middot; {SECTORS[cur.sector]?.label || cur.sector}
-                    <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: 8 }}>&#9998;</span>
+                  <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                    <span style={{ cursor: "pointer" }} onClick={() => setEditingSector(true)}>
+                      {SECTORS[cur.sector]?.subs[cur.sub] || cur.sub} &middot; {SECTORS[cur.sector]?.label || cur.sector}
+                      <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: 8 }}>&#9998;</span>
+                    </span>
+                    <span style={{
+                      fontSize: 11, padding: "2px 10px", borderRadius: 4, cursor: "pointer",
+                      background: curFields?.public_private?.text === "Public" ? "rgba(112,176,250,0.12)" : "rgba(138,153,171,0.12)",
+                      color: curFields?.public_private?.text === "Public" ? T_.blue : T_.textGhost,
+                      border: `1px solid ${curFields?.public_private?.text === "Public" ? "rgba(112,176,250,0.3)" : T_.border}`,
+                    }} onClick={() => {
+                      const newVal = curFields?.public_private?.text === "Public" ? "Private" : "Public";
+                      updateField(cur.id, "public_private", newVal);
+                    }}>{curFields?.public_private?.text || "Private"}</span>
                   </span>
                 ) : (() => {
                   const activeSector = pendingSector || cur.sector;
