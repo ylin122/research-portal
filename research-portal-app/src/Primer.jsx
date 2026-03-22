@@ -281,7 +281,7 @@ export default function Primer() {
           {/* ─── VALUE CHAIN ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Software Ecosystem — Stack & Value Chain</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Value flows left to right. Each layer builds on the one below it. Security spans all layers.</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 24 }}>Value flows left to right. Each layer builds on the one below it. Security spans all layers.</div>
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {VALUE_CHAIN.map((stage, i, arr) => (
                 <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
@@ -329,7 +329,7 @@ export default function Primer() {
           {/* ─── TAXONOMY TREE ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Software Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click any category to expand subsectors. Click a subsector for details.</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 24 }}>Click any category to expand subsectors. Click a subsector for details.</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {TAXONOMY.map(cat => (
                 <div key={cat.key}>
@@ -401,7 +401,7 @@ export default function Primer() {
           {/* ─── SUBSECTOR CARDS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Addressable market estimates and growth rates across software subsectors. TAM figures are approximate 2025 estimates.</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 24 }}>Addressable market estimates and growth rates across software subsectors. TAM figures are approximate 2025 estimates.</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: 12 }}>
               {Object.entries(SW_SUBSECTORS).map(([key, sub]) => (
                 <div key={key} style={{
@@ -549,27 +549,27 @@ export default function Primer() {
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>AI data centers, cloud infrastructure, power, cooling, and silicon</div>
           </div>
           {/* Value Chain */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Digital Infrastructure — Value Chain</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Silicon powers the chips → power & cooling run the facilities → builders construct and lease → cloud platforms deliver compute → end users consume</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Digital Infrastructure — Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Silicon powers the chips → power & cooling run the facilities → builders construct and lease → cloud platforms deliver compute → end users consume</div>
             <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
               {DI_CHAIN.map((stage, i, arr) => (
                 <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
-                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "10px 10px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 4, marginBottom: 6 }}>
                       <span style={{ fontSize: 12 }}>{stage.icon}</span>
-                      <span style={{ fontSize: 11, fontWeight: 700, color: stage.color }}>{stage.label}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span>
                     </div>
-                    <div style={{ fontSize: 9, color: T_.textDim, marginBottom: 8 }}>{stage.desc}</div>
+                    <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 8 }}>{stage.desc}</div>
                     <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
                       {stage.rows.map(r => (
                         <div key={r.sub} style={{ background: T_.bg, borderRadius: 4, padding: "4px 6px" }}>
-                          <div style={{ fontSize: 9, fontWeight: 600, color: stage.color }}>{r.sub}</div>
-                          <div style={{ fontSize: 8, color: T_.textDim, lineHeight: 1.3 }}>{r.ex}</div>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div>
+                          <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.3 }}>{r.ex}</div>
                         </div>
                       ))}
                     </div>
-                    <div style={{ fontSize: 8, color: T_.textGhost, marginTop: 6, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 4 }}>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 6, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 4 }}>
                       <span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}
                     </div>
                   </div>
@@ -577,41 +577,41 @@ export default function Primer() {
                 </div>
               ))}
             </div>
-            <div style={{ fontSize: 9, color: T_.textGhost, marginTop: 10, fontStyle: "italic" }}>$7T in total data center investment expected through 2030 (McKinsey). Global data center capacity expected to double from ~100GW to ~200GW by 2030. Power is the binding constraint.</div>
+            <div style={{ fontSize: 13, color: T_.textGhost, marginTop: 10, fontStyle: "italic" }}>$7T in total data center investment expected through 2030 (McKinsey). Global data center capacity expected to double from ~100GW to ~200GW by 2030. Power is the binding constraint.</div>
           </div>
           {/* Taxonomy */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Digital Infrastructure Taxonomy</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Click to expand subsectors</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Digital Infrastructure Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand subsectors</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {DI_TAX.map(cat => (
                 <div key={cat.key}>
-                  <div onClick={() => toggle("dtax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: isExp("dtax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("dtax_" + cat.key) ? cat.color + "44" : T_.border}`, transition: "all 0.15s" }}>
+                  <div onClick={() => toggle("dtax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("dtax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("dtax_" + cat.key) ? cat.color + "44" : T_.border}`, transition: "all 0.15s" }}>
                     <span style={{ fontSize: 16 }}>{cat.icon}</span>
-                    <span style={{ fontSize: 14, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 11, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
                     <span style={{ fontSize: 12, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("dtax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
                   </div>
                   {isExp("dtax_" + cat.key) && (
-                    <div style={{ marginLeft: 28, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>
+                    <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>
                       {cat.children.map(ck => { const sub = DI_SUBS[ck]; if (!sub) return null; return (
-                        <div key={ck} onClick={() => toggle("dsub_" + ck)} style={{ padding: "8px 14px", background: isExp("dsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}`, transition: "all 0.15s" }}>
+                        <div key={ck} onClick={() => toggle("dsub_" + ck)} style={{ padding: "10px 16px", background: isExp("dsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}`, transition: "all 0.15s" }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                             <span style={{ fontSize: 14 }}>{sub.icon}</span>
-                            <span style={{ fontSize: 13, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span>
-                            <span style={{ fontSize: 10, color: T_.textDim }}>{sub.tam}</span>
-                            <span style={{ fontSize: 10, color: T_.green }}>{sub.growth}</span>
-                            <span style={{ fontSize: 11, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("dsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+                            <span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span>
+                            <span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span>
+                            <span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span>
+                            <span style={{ fontSize: 13, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("dsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
                           </div>
                           {isExp("dsub_" + ck) && (
                             <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                              <div style={{ fontSize: 12, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                              <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
                               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}>
-                                <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div>
-                                <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div>
+                                <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div>
+                                <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div>
                               </div>
-                              <div style={{ marginBottom: 8 }}><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 11, padding: "2px 8px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                              <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 11, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                              <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
                             </div>
                           )}
                         </div>
@@ -623,25 +623,25 @@ export default function Primer() {
             </div>
           </div>
           {/* Cards */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Market size estimates for digital infrastructure subsectors</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Market size estimates for digital infrastructure subsectors</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
               {Object.entries(DI_SUBS).map(([key, sub]) => (
                 <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }}
                   onClick={() => { const cat = DI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["dtax_" + cat.key]: true, ["dsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 10, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                    <div><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div>
-                    <div style={{ textAlign: "right" }}><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div>
+                    <div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div>
+                    <div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div>
                   </div>
-                  <div style={{ fontSize: 10, color: T_.textDim, marginTop: 6, lineHeight: 1.4 }}>{sub.keyPlayers.slice(0, 4).join(" · ")}</div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginTop: 6, lineHeight: 1.4 }}>{sub.keyPlayers.slice(0, 4).join(" · ")}</div>
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic" }}>Sources: McKinsey Global Institute, Synergy Research, IDC, Data Center Dynamics, company filings. TAM and growth rates are approximate 2025 estimates.</div>
+          <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>Sources: McKinsey Global Institute, Synergy Research, IDC, Data Center Dynamics, company filings. TAM and growth rates are approximate 2025 estimates.</div>
         </div>);
       })()}
 
@@ -698,39 +698,39 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>IT Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Consulting, VARs, managed services, MSP ecosystem, and distribution</div></div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>IT Services Taxonomy</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Click to expand</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>IT Services Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {IT_TAX.map(cat => (
                 <div key={cat.key}>
-                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 11, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
                     <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("itax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
                   </div>
-                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 28, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "8px 14px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 10, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 10, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 11, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "10px 16px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
                       {isExp("isub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 12, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 11, padding: "2px 8px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 11, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
                       </div>}
                     </div>); })}</div>}
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
               {Object.entries(IT_SUBS).map(([key, sub]) => (
                 <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IT_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["itax_" + cat.key]: true, ["isub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 10, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
                 </div>
               ))}
             </div>
@@ -791,39 +791,39 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Healthcare IT Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>EHR, revenue cycle, payer technology, post-acute care, and workforce</div></div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Click to expand</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {HI_TAX.map(cat => (
                 <div key={cat.key}>
-                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 11, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
                     <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("htax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
                   </div>
-                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 28, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "8px 14px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 10, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 10, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 11, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "10px 16px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
                       {isExp("hsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 12, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 11, padding: "2px 8px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 11, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
                       </div>}
                     </div>); })}</div>}
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
               {Object.entries(HI_SUBS).map(([key, sub]) => (
                 <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = HI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["htax_" + cat.key]: true, ["hsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 10, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
                 </div>
               ))}
             </div>
@@ -884,39 +884,39 @@ export default function Primer() {
         return (
         <div>
           <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Internet Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Hosting, marketplaces, consumer security, email marketing, and adtech</div></div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Click to expand</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {IN_TAX.map(cat => (
                 <div key={cat.key}>
-                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 11, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
                     <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("ntax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
                   </div>
-                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 28, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "8px 14px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 10, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 10, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 11, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "10px 16px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
                       {isExp("nsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 12, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 11, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 11, padding: "2px 8px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 11, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
                       </div>}
                     </div>); })}</div>}
                 </div>
               ))}
             </div>
           </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
               {Object.entries(IN_SUBS).map(([key, sub]) => (
                 <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IN_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["ntax_" + cat.key]: true, ["nsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 10, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
                 </div>
               ))}
             </div>
