@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Primer from "./Primer";
+import AIDisruption from "./AIDisruption";
 import {
-  loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector,
+  loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
   loadAllNotes, insertNote, deleteNote as dbDeleteNote,
   loadNewsCache, upsertNewsCache,
@@ -251,6 +252,9 @@ export default function App() {
           <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
             <span>Primer</span>
           </div>
+          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
+            <span>AI</span>
+          </div>
           {Object.entries(SECTORS).map(([sk, sec]) => {
             const cos = filteredCos(getCos(sk));
             const open = sidebarOpen[sk];
@@ -390,6 +394,9 @@ export default function App() {
         {/* PRIMER */}
         {view.type === "primer" && <Primer />}
 
+        {/* AI DISRUPTION */}
+        {view.type === "aidisruption" && <AIDisruption companies={companies} />}
+
         {/* COMPANY */}
         {view.type === "company" && cur && (
           <div style={s.page}>
@@ -525,6 +532,57 @@ export default function App() {
                 ))}
               </div>
             )}
+
+            {/* Structured Fields */}
+            {/* Moat vs AI Scoring */}
+            {cur.sector !== "sources" && (() => {
+              const MOAT_KEYS = ["data","ecosystem","switching","regulatory","security","contracts","brand","physical","infra"];
+              const MOAT_NAMES = ["Proprietary Data","Ecosystem & Integration","Switching Cost","Regulatory & Compliance","Security","Long-term Contracts","Brand & Trust","Physical Support","Infrastructure Support"];
+              const moats = cur.moats || {};
+              const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
+              const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
+              const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
+              const total = MOAT_KEYS.reduce((s, k) => s + (moats[k] || 0), 0);
+              const totalColor = total >= 20 ? "#34d673" : total >= 14 ? "#F59E0B" : total > 0 ? "#EF4444" : T_.textGhost;
+              const setMoat = (key, val) => {
+                const next = { ...moats, [key]: val };
+                const idx = companies.findIndex(c => c.id === cur.id);
+                if (idx >= 0) {
+                  const updated = [...companies];
+                  updated[idx] = { ...updated[idx], moats: next };
+                  setCompanies(updated);
+                }
+                updateCompanyMoats(cur.id, next);
+              };
+              return (
+                <div style={s.section}>
+                  <div style={s.sectionHdr}>
+                    <span>Moat vs AI</span>
+                    {total > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{total}/27</span>}
+                  </div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
+                    {MOAT_KEYS.map((k, i) => {
+                      const v = moats[k] || 0;
+                      return (
+                        <div key={k} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
+                          <div style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>{MOAT_NAMES[i]}</div>
+                          <div style={{ display: "flex", gap: 4 }}>
+                            {[1, 2, 3].map(sv => (
+                              <button key={sv} onClick={() => setMoat(k, v === sv ? 0 : sv)} style={{
+                                flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
+                                border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
+                                background: v === sv ? scoreBg(sv) : "transparent",
+                                color: v === sv ? scoreCol(sv) : T_.textGhost,
+                              }}>{scoreLabel[sv]}</button>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })()}
 
             {/* Structured Fields */}
             {(cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {

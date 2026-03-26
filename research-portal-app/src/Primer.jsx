@@ -261,7 +261,7 @@ export default function Primer() {
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1400, fontFamily: FONT }}>
       {/* Sub-tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
-        {[{ key: "software", label: "Software" }, { key: "semis", label: "Semiconductors" }, { key: "digiinfra", label: "Digital Infrastructure" }, { key: "itservices", label: "IT Services" }, { key: "healthit", label: "Healthcare IT" }, { key: "internet", label: "Internet" }].map(t => (
+        {[{ key: "software", label: "Software" }, { key: "semis", label: "Semiconductors" }, { key: "digiinfra", label: "Digital Infrastructure" }, { key: "itservices", label: "IT Services" }, { key: "healthit", label: "Healthcare IT" }, { key: "internet", label: "Internet" }, { key: "education", label: "Education" }].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
             padding: "10px 24px", fontSize: 14, fontWeight: 500, cursor: "pointer",
             border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
@@ -1159,6 +1159,42 @@ export default function Primer() {
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>IT services is a ~$1T+ global market. The key trend is the shift from hardware resale (low margin, transactional) to managed services and consulting (recurring, higher margin). PE sponsors target this margin expansion story aggressively.</div>
           </div>
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {IT_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("itax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "10px 16px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("isub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(IT_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IT_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["itax_" + cat.key]: true, ["isub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Revenue Models</div>
@@ -1229,7 +1265,8 @@ export default function Primer() {
               ))}
             </div>
           </div>
-            {/* Key Concepts */}
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
               {[
@@ -1241,43 +1278,6 @@ export default function Primer() {
                 <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
                   <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {IT_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("itax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("itax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("itax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("itax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
-                  </div>
-                  {isExp("itax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IT_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("isub_" + ck)} style={{ padding: "10px 16px", background: isExp("isub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("isub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("isub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(IT_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IT_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["itax_" + cat.key]: true, ["isub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
                 </div>
               ))}
             </div>
@@ -1380,6 +1380,43 @@ export default function Primer() {
             </div>
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>US healthcare is a $4.5T industry. ~25% of spend goes to administration. Epic dominates hospitals (~38% of beds); the rest of the ecosystem is highly fragmented.</div>
           </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {HI_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("htax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "10px 16px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("hsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(HI_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = HI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["htax_" + cat.key]: true, ["hsub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Healthcare IT Revenue Models</div>
@@ -1463,43 +1500,6 @@ export default function Primer() {
                 <div key={i} style={{ padding: "14px 16px", background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}` }}>
                   <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue, marginBottom: 8 }}>{c.title}</div>
                   <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{c.desc}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Healthcare IT Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {HI_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("htax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("htax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("htax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("htax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
-                  </div>
-                  {isExp("htax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = HI_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("hsub_" + ck)} style={{ padding: "10px 16px", background: isExp("hsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("hsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("hsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
-                </div>
-              ))}
-            </div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(HI_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = HI_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["htax_" + cat.key]: true, ["hsub_" + key]: true })); }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
-                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
-                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
                 </div>
               ))}
             </div>
@@ -1602,6 +1602,43 @@ export default function Primer() {
             </div>
             <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>The internet sector in this context covers PE-owned and mid-market companies that monetize web traffic, online presence, and digital marketing — not the hyperscale platforms (Google, Meta, Amazon). Revenue models are primarily advertising, subscriptions, and lead generation.</div>
           </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {IN_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
+                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("ntax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+                  </div>
+                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
+                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "10px 16px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
+                      {isExp("nsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
+                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
+                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
+                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
+                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                      </div>}
+                    </div>); })}</div>}
+                </div>
+              ))}
+            </div>
+          </div>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
+              {Object.entries(IN_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IN_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["ntax_" + cat.key]: true, ["nsub_" + key]: true })); }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
+                  <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
+                  <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
+                </div>
+              ))}
+            </div>
+          </div>
           {/* ─── REVENUE MODELS ─── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Internet Revenue Models</div>
@@ -1689,36 +1726,223 @@ export default function Primer() {
               ))}
             </div>
           </div>
+        
+        </div>);
+      })()}
+
+      {subTab === "education" && (() => {
+        const ED_SUBS = {
+          k12sis: { name: "K-12 SIS & Admin", fullName: "K-12 Student Information Systems & Administration", category: "K-12 Software", color: "#3B82F6",
+            tam: "$8-10B (2025)", growth: "~8-10% CAGR", icon: "🏫",
+            desc: "Software managing student records, enrollment, attendance, grading, scheduling, and district administration for K-12 schools and districts.",
+            whatTheySell: "Student information systems (SIS), enrollment management, grade books, attendance tracking, parent portals, district data analytics, state reporting",
+            whoBuys: "School districts, superintendents, IT directors, registrars. Procurement is highly influenced by state mandates and funding cycles (ESSER, Title I)",
+            keyPlayers: ["PowerSchool (Vista Equity)", "Infinite Campus", "Skyward (Roper Technologies)", "Illuminate Education", "Frontline Education (Roper)", "Tyler Technologies (school ERP)"],
+            trends: "PowerSchool dominates with ~40-50M student records. Consolidation under PE (Vista, Roper). Federal ESSER funding winding down creating budget pressure. AI for early warning systems and student outcomes.",
+          },
+          k12lms: { name: "K-12 LMS & Curriculum", fullName: "K-12 Learning Management & Digital Curriculum", category: "K-12 Software", color: "#3B82F6",
+            tam: "$6-8B (2025)", growth: "~10-12% CAGR", icon: "📚",
+            desc: "Platforms for delivering digital curriculum, managing assignments, assessments, and personalized learning in K-12 classrooms. Surged post-COVID.",
+            whatTheySell: "Learning management systems, digital textbooks, adaptive learning platforms, assessment tools, content authoring, classroom collaboration",
+            whoBuys: "Teachers, curriculum directors, district CTOs. Adoption driven by state standards alignment and 1:1 device initiatives",
+            keyPlayers: ["Canvas (Instructure/Thoma Bravo)", "Google Classroom", "Schoology (PowerSchool)", "Clever (connecting apps)", "Newsela", "IXL Learning", "Khan Academy (nonprofit)"],
+            trends: "Google Classroom and Canvas dominate. Clever has become the SSO/integration standard for K-12 edtech. AI-powered adaptive learning gaining traction. Post-COVID adoption permanent but growth normalizing.",
+          },
+          higher: { name: "Higher Ed Software", fullName: "Higher Education Technology", category: "Higher Education", color: "#8B5CF6",
+            tam: "$12-15B (2025)", growth: "~9-11% CAGR", icon: "🎓",
+            desc: "Software for colleges and universities covering student lifecycle, enrollment management, financials, research administration, and online program management.",
+            whatTheySell: "SIS, CRM for enrollment, ERP/financials, LMS, online program management (OPM), student success/retention platforms, research grant management",
+            whoBuys: "University CIOs, provosts, enrollment VPs, CFOs. Decision-making is slow, committee-driven, and budget-constrained",
+            keyPlayers: ["Ellucian (Vista Equity)", "Workday Student", "Oracle Student Cloud", "Anthology (Blackboard + Campus Management)", "Salesforce Education Cloud", "Instructure (Canvas)", "2U/edX"],
+            trends: "Ellucian dominates legacy SIS (Banner/Colleague) but cloud migration is slow. Workday and Oracle competing for cloud ERP modernization. OPM market under pressure (2U struggles). Enrollment cliff (demographics) hitting regional schools hard.",
+          },
+          corporate: { name: "Corporate L&D", fullName: "Corporate Learning & Development", category: "Corporate Training", color: "#10B981",
+            tam: "$15-20B (2025)", growth: "~12-15% CAGR", icon: "💼",
+            desc: "Platforms for employee training, upskilling, compliance, and professional development. Spans LMS, content marketplaces, and skills assessment.",
+            whatTheySell: "Learning management systems (LMS), learning experience platforms (LXP), compliance training content, skills assessment, virtual labs, coaching platforms",
+            whoBuys: "CHROs, L&D directors, compliance officers. Enterprise-wide procurement. Compliance training is non-discretionary.",
+            keyPlayers: ["Cornerstone OnDemand (Clearlake)", "SAP Litmos", "Docebo", "Degreed", "Coursera for Business", "LinkedIn Learning (Microsoft)", "Udemy Business", "Skillsoft (Thoma Bravo)"],
+            trends: "AI-powered personalized learning paths. Skills-based learning replacing role-based. LinkedIn Learning leveraging Microsoft distribution. Compliance training growing with regulatory burden. LXP vs LMS debate (LXP = Netflix-style discovery).",
+          },
+          opm: { name: "OPM & Online Learning", fullName: "Online Program Management & Direct-to-Consumer Learning", category: "Online Learning", color: "#F59E0B",
+            tam: "$10-12B (2025)", growth: "~8-12% CAGR", icon: "🌐",
+            desc: "Companies that partner with universities to build and manage online degree programs, plus consumer-facing platforms for certificates, bootcamps, and professional education.",
+            whatTheySell: "Online degree program management, student marketing/enrollment, course platform infrastructure, certificates and micro-credentials, bootcamps",
+            whoBuys: "University deans and continuing education divisions (OPM). Individual learners and employers (DTC). Government workforce development programs",
+            keyPlayers: ["2U/edX (PE-backed post-restructuring)", "Coursera (NYSE: COUR)", "Udemy", "Pluralsight (Vista Equity)", "Noodle Partners", "Keypath Education"],
+            trends: "OPM revenue-share model under pressure as universities insource and DOE scrutinizes bundled services. Coursera and Udemy shifting to enterprise/B2B. AI certificates and GenAI courses driving short-term demand. Bootcamp market consolidating after 2022 bust.",
+          },
+          assess: { name: "Assessment & Testing", fullName: "Educational Assessment & Standardized Testing", category: "Assessment", color: "#0EA5E9",
+            tam: "$5-7B (2025)", growth: "~6-8% CAGR", icon: "📝",
+            desc: "Companies providing standardized testing, formative assessment, certification exams, and psychometric services for K-12, higher ed, and professional licensure.",
+            whatTheySell: "Standardized test development and administration, formative assessment platforms, test delivery infrastructure, psychometrics, certification exam management",
+            whoBuys: "State education agencies, school districts, professional licensing boards, certification bodies, universities",
+            keyPlayers: ["Pearson (assessments division)", "ETS (nonprofit, SAT/GRE)", "Prometric (owned by ETS)", "ACT Inc (nonprofit)", "NWEA (MAP assessments)", "Cambium Assessment (CAI)", "PSI Services (Apax Partners)"],
+            trends: "Remote/online proctoring adoption post-COVID permanent for professional exams. AI-powered item generation and adaptive testing. Test-optional movement in college admissions pressuring SAT/ACT volume. Formative (ongoing) assessment growing vs summative (end-of-year).",
+          },
+          edtic: { name: "EdTech Infrastructure", fullName: "Education IT Infrastructure & Services", category: "Infrastructure", color: "#64748B",
+            tam: "$20-25B (2025)", growth: "~6-8% CAGR", icon: "🖥️",
+            desc: "Hardware, networking, device management, and IT services specifically for schools and universities. The physical and digital infrastructure enabling edtech.",
+            whatTheySell: "Chromebooks and devices, campus networking (Wi-Fi), device management (MDM), school cybersecurity, cloud hosting, IT managed services for education",
+            whoBuys: "School and university IT departments, CTOs. State and federal E-Rate funding programs subsidize connectivity and hardware",
+            keyPlayers: ["Google (Chromebook ecosystem)", "Apple (iPad + Apple School Manager)", "Cisco Meraki (campus networking)", "CDW-G (education reseller)", "Jamf (Apple MDM)", "Lightspeed Systems (filtering/safety)"],
+            trends: "Chromebooks dominate K-12 (60%+ share). E-Rate funding sustains school networking spend. Student safety and content filtering mandated in many states. 1:1 device programs now standard. Cybersecurity for schools becoming critical.",
+          },
+        };
+        const ED_TAX = [
+          { key: "k12", label: "K-12 Education", color: "#3B82F6", icon: "🏫", children: ["k12sis","k12lms"] },
+          { key: "highered", label: "Higher Education", color: "#8B5CF6", icon: "🎓", children: ["higher"] },
+          { key: "corplearn", label: "Corporate Learning & Development", color: "#10B981", icon: "💼", children: ["corporate"] },
+          { key: "online", label: "Online Learning & OPM", color: "#F59E0B", icon: "🌐", children: ["opm"] },
+          { key: "assessments", label: "Assessment & Testing", color: "#0EA5E9", icon: "📝", children: ["assess"] },
+          { key: "infra", label: "Education IT Infrastructure", color: "#64748B", icon: "🖥️", children: ["edtic"] },
+        ];
+        const ED_REVMODELS = [
+          { model: "SaaS Subscription (Per-Student/Per-Seat)", desc: "Dominant model in K-12 and higher ed SIS/LMS. Districts and universities pay per-student or per-user annually. High retention due to switching costs. PowerSchool, Ellucian, Canvas.", color: "#3B82F6" },
+          { model: "Freemium / Ad-Supported", desc: "Consumer and K-12 platforms offer free tiers (Google Classroom, Khan Academy, Duolingo) to build adoption, then monetize via premium features, enterprise sales, or advertising.", color: "#10B981" },
+          { model: "Revenue Share (OPM)", desc: "Online program managers take 40-60% of tuition revenue in exchange for marketing, enrollment, platform, and student support. Model under DOE scrutiny and university pushback. 2U, Keypath, Noodle.", color: "#F59E0B" },
+          { model: "Content Licensing & Marketplace", desc: "Publishers and content platforms sell or license digital curriculum, textbooks, and training content. Moving from one-time purchase to subscription. Pearson, McGraw-Hill, Cengage, Udemy, LinkedIn Learning.", color: "#8B5CF6" },
+          { model: "Per-Exam / Per-Certification", desc: "Assessment companies charge per test administered or per certification issued. Prometric, PSI, Pearson VUE. Stable recurring demand driven by professional licensing requirements.", color: "#0EA5E9" },
+          { model: "Government-Funded / Grant-Dependent", desc: "Significant portion of education spending is government-funded (E-Rate, ESSER, Title I, Pell Grants). Budget cycles and policy changes create demand volatility. ESSER cliff in 2024-2025 is a near-term headwind.", color: "#EF4444" },
+        ];
+        const ED_KEYCONCEPTS = [
+          { term: "ESSER Funding Cliff", def: "Elementary and Secondary School Emergency Relief funds (~$190B total) from COVID stimulus. Must be obligated by Sep 2024. As funds expire, districts face significant budget pressure, directly impacting edtech procurement." },
+          { term: "Enrollment Cliff (Higher Ed)", def: "Projected ~15% decline in traditional college-age students starting ~2025 due to post-2008 birth rate decline. Hits regional/less-selective schools hardest. Drives demand for enrollment management tech and online programs." },
+          { term: "E-Rate Program", def: "FCC program providing $2-4B annually in discounts for school/library broadband and networking. The primary funding mechanism for K-12 IT infrastructure. Stable but subject to political appropriations." },
+          { term: "OPM (Online Program Management)", def: "Third-party companies that partner with universities to recruit students, build/run online degree programs, and provide platform infrastructure in exchange for tuition revenue share (typically 40-60%). DOE investigating whether this constitutes improper incentive compensation." },
+          { term: "1:1 Device Programs", def: "Policy of providing every student with a personal computing device (typically Chromebook). Now standard in most US K-12 districts post-COVID. Creates captive ecosystem for software and management tools." },
+          { term: "LMS vs LXP", def: "LMS (Learning Management System) = structured, admin-driven, compliance-focused (Canvas, Blackboard, Cornerstone). LXP (Learning Experience Platform) = learner-driven, Netflix-style discovery, skills-focused (Degreed, EdCast). Market trending toward convergence." },
+          { term: "Adaptive Learning", def: "AI/algorithm-driven instruction that adjusts content difficulty and pacing based on individual student performance. IXL, DreamBox, ALEKS (McGraw-Hill). Evidence of efficacy is mixed but adoption growing." },
+          { term: "Micro-Credentials / Stackable Certificates", def: "Short-form credentials (Google Career Certificates, Coursera Professional Certificates, university micro-masters) that can be stacked toward a degree. Growing alternative to traditional 4-year programs. Employer recognition still nascent." },
+        ];
+        return (
+        <div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Education & Education Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>K-12, higher ed, corporate learning, online platforms, assessment, and infrastructure</div></div>
+          {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Internet Taxonomy</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Click to expand</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {IN_TAX.map(cat => (
-                <div key={cat.key}>
-                  <div onClick={() => toggle("ntax_" + cat.key)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "12px 18px", background: isExp("ntax_" + cat.key) ? cat.color + "22" : T_.bg, borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("ntax_" + cat.key) ? cat.color + "44" : T_.border}` }}>
-                    <span style={{ fontSize: 16 }}>{cat.icon}</span><span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
-                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transform: isExp("ntax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Education Ecosystem — Value Chain</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From infrastructure through content delivery to the learner. Each layer enables the next.</div>
+            <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
+              {[
+                { label: "Infrastructure & Devices", color: "#64748B", icon: "🖥️", desc: "Physical and digital foundation",
+                  rows: [{ sub: "Devices", ex: "Chromebooks, iPads, laptops" }, { sub: "Connectivity", ex: "Campus Wi-Fi, broadband (E-Rate)" }, { sub: "MDM & Security", ex: "Jamf, Lightspeed, GoGuardian" }],
+                  buyers: "School/university IT departments" },
+                { label: "Platform & Admin", color: "#3B82F6", icon: "🏫", desc: "Systems of record",
+                  rows: [{ sub: "SIS / ERP", ex: "PowerSchool, Ellucian, Infinite Campus" }, { sub: "LMS", ex: "Canvas, Google Classroom, Blackboard" }, { sub: "Integration", ex: "Clever (SSO/rostering), ClassLink" }],
+                  buyers: "IT directors, registrars, admins" },
+                { label: "Content & Curriculum", color: "#8B5CF6", icon: "📚", desc: "What students learn",
+                  rows: [{ sub: "Publishers", ex: "Pearson, McGraw-Hill, Cengage" }, { sub: "Digital Curriculum", ex: "Newsela, IXL, Khan Academy" }, { sub: "Corporate Content", ex: "LinkedIn Learning, Udemy, Skillsoft" }],
+                  buyers: "Curriculum directors, L&D teams" },
+                { label: "Assessment & Analytics", color: "#0EA5E9", icon: "📝", desc: "Measuring outcomes",
+                  rows: [{ sub: "Summative", ex: "ETS, ACT, NWEA, Pearson" }, { sub: "Formative", ex: "Edulastic, Illuminate, MasteryConnect" }, { sub: "Analytics", ex: "Tableau for Ed, BrightBytes, Civitas" }],
+                  buyers: "State agencies, testing directors" },
+                { label: "Online & OPM", color: "#F59E0B", icon: "🌐", desc: "Alternative delivery",
+                  rows: [{ sub: "OPM", ex: "2U/edX, Noodle, Keypath" }, { sub: "DTC Platforms", ex: "Coursera, Udemy, Pluralsight" }, { sub: "Bootcamps", ex: "General Assembly, Flatiron" }],
+                  buyers: "University deans, individual learners" },
+                { label: "Learners & Employers", color: "#10B981", icon: "👥", desc: "End consumers",
+                  rows: [{ sub: "K-12 Students", ex: "~50M in US public schools" }, { sub: "Higher Ed", ex: "~20M enrolled in US colleges" }, { sub: "Workforce", ex: "Employers funding upskilling" }],
+                  buyers: "Students, parents, HR/L&D" },
+              ].map((stage, i, arr) => (
+                <div key={stage.label} style={{ display: "flex", alignItems: "stretch" }}>
+                  <div style={{ flex: 1, background: stage.color + "0A", border: `1px solid ${stage.color}33`, borderRadius: 8, padding: "12px 12px", minWidth: 0, display: "flex", flexDirection: "column" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 5, marginBottom: 8 }}>
+                      <span style={{ fontSize: 14 }}>{stage.icon}</span>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: stage.color }}>{stage.label}</span>
+                    </div>
+                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>{stage.desc}</div>
+                    <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 3 }}>
+                      {stage.rows.map(r => (
+                        <div key={r.sub} style={{ background: T_.bg, borderRadius: 5, padding: "5px 8px" }}>
+                          <div style={{ fontSize: 11, fontWeight: 600, color: stage.color }}>{r.sub}</div>
+                          <div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{r.ex}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 5 }}>
+                      <span style={{ fontWeight: 600 }}>Buyers:</span> {stage.buyers}
+                    </div>
                   </div>
-                  {isExp("ntax_" + cat.key) && <div style={{ marginLeft: 32, marginTop: 4, display: "flex", flexDirection: "column", gap: 3 }}>{cat.children.map(ck => { const sub = IN_SUBS[ck]; if (!sub) return null; return (
-                    <div key={ck} onClick={() => toggle("nsub_" + ck)} style={{ padding: "10px 16px", background: isExp("nsub_" + ck) ? T_.bgInput : T_.bg, borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.border}` }}>
-                      <div style={{ display: "flex", alignItems: "center", gap: 8 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span><span style={{ fontSize: 12, color: T_.textDim }}>{sub.tam}</span><span style={{ fontSize: 12, color: T_.green }}>{sub.growth}</span><span style={{ fontSize: 13, color: T_.textGhost, transform: isExp("nsub_" + ck) ? "rotate(90deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>▶</span></div>
-                      {isExp("nsub_" + ck) && <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }} onClick={e => e.stopPropagation()}>
-                        <div style={{ fontSize: 13, color: T_.textMid, marginBottom: 8, lineHeight: 1.5 }}>{sub.desc}</div>
-                        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 8 }}><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div><div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.text, lineHeight: 1.5 }}>{sub.whoBuys}</div></div></div>
-                        <div style={{ marginBottom: 8 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, padding: "3px 10px", background: cat.color + "22", color: cat.color, borderRadius: 10, border: `1px solid ${cat.color}44` }}>{p}</span>)}</div></div>
-                        <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
-                      </div>}
-                    </div>); })}</div>}
+                  {i < arr.length - 1 && <div style={{ display: "flex", alignItems: "center", padding: "0 4px", color: T_.textGhost, fontSize: 16, flexShrink: 0 }}>→</div>}
+                </div>
+              ))}
+            </div>
+            <div style={{ marginTop: 10, background: "#EF444412", border: "1px dashed #EF444444", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 14 }}>⚠️</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#EF4444" }}>ESSER Cliff — Near-Term Budget Headwind</span>
+              </div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>$190B in COVID stimulus for K-12 expiring 2024-2025. Districts face 10-20% budget gaps. Directly impacts edtech procurement and staffing.</div>
+            </div>
+            <div style={{ marginTop: 4, background: "#F59E0B12", border: "1px dashed #F59E0B44", borderRadius: 6, padding: "8px 16px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <span style={{ fontSize: 14 }}>🧠</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: "#F59E0B" }}>AI — Disrupting Content, Assessment & Tutoring</span>
+              </div>
+              <div style={{ fontSize: 11, color: T_.textDim }}>GenAI tutoring (Khanmigo), AI-generated assessments, automated grading, adaptive learning. Academic integrity concerns (cheating) creating demand for detection tools.</div>
+            </div>
+          </div>
+
+          {/* Taxonomy Tree */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Education Taxonomy</div>
+            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 24 }}>Click any category to expand subsectors. Click a subsector for details.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {ED_TAX.map(cat => (
+                <div key={cat.key}>
+                  <div onClick={() => toggle("edtax_" + cat.key)} style={{
+                    display: "flex", alignItems: "center", gap: 12, padding: "12px 18px",
+                    background: isExp("edtax_" + cat.key) ? cat.color + "22" : T_.bg,
+                    borderRadius: 8, cursor: "pointer", border: `1px solid ${isExp("edtax_" + cat.key) ? cat.color + "44" : T_.border}`,
+                    transition: "all 0.15s",
+                  }}>
+                    <span style={{ fontSize: 18 }}>{cat.icon}</span>
+                    <span style={{ fontSize: 15, fontWeight: 600, color: cat.color, flex: 1 }}>{cat.label}</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost }}>{cat.children.length} subsectors</span>
+                    <span style={{ fontSize: 13, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("edtax_" + cat.key) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+                  </div>
+                  {isExp("edtax_" + cat.key) && (
+                    <div style={{ marginLeft: 32, marginTop: 6, display: "flex", flexDirection: "column", gap: 4 }}>
+                      {cat.children.map(childKey => {
+                        const sub = ED_SUBS[childKey];
+                        if (!sub) return null;
+                        return (
+                          <div key={childKey} onClick={() => toggle("edsub_" + childKey)} style={{
+                            background: isExp("edsub_" + childKey) ? sub.color + "15" : T_.bg,
+                            borderRadius: 8, padding: "12px 16px", cursor: "pointer",
+                            border: `1px solid ${isExp("edsub_" + childKey) ? sub.color + "44" : T_.borderLight}`,
+                            transition: "all 0.15s",
+                          }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                              <span style={{ fontSize: 16 }}>{sub.icon}</span>
+                              <span style={{ fontSize: 14, fontWeight: 600, color: T_.text, flex: 1 }}>{sub.name}</span>
+                              <span style={{ fontSize: 12, color: T_.textGhost }}>{sub.tam}</span>
+                              <span style={{ fontSize: 12, color: T_.green, fontWeight: 600 }}>{sub.growth}</span>
+                              <span style={{ fontSize: 12, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("edsub_" + childKey) ? "rotate(90deg)" : "rotate(0deg)" }}>▶</span>
+                            </div>
+                            {isExp("edsub_" + childKey) && <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 12 }}>
+                              <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.5 }}>{sub.desc}</div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>What They Sell</div><div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.5 }}>{sub.whatTheySell}</div></div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Who Buys</div><div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.5 }}>{sub.whoBuys}</div></div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Players</div><div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>{sub.keyPlayers.map(p => <span key={p} style={{ fontSize: 12, background: sub.color + "22", color: sub.color, padding: "3px 10px", borderRadius: 20, border: `1px solid ${sub.color}33`, fontWeight: 500 }}>{p}</span>)}</div></div>
+                              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>Key Trends</div><div style={{ fontSize: 13, color: T_.amber, lineHeight: 1.5 }}>{sub.trends}</div></div>
+                            </div>
+                            }
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
           </div>
+
+          {/* TAM Overview Grid */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Subsector Overview — TAM & Growth</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 10 }}>
-              {Object.entries(IN_SUBS).map(([key, sub]) => (
-                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = IN_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["ntax_" + cat.key]: true, ["nsub_" + key]: true })); }}>
+              {Object.entries(ED_SUBS).map(([key, sub]) => (
+                <div key={key} style={{ padding: "12px 14px", background: T_.bg, borderRadius: 8, border: `1px solid ${sub.color}33`, borderLeft: `3px solid ${sub.color}`, cursor: "pointer" }} onClick={() => { const cat = ED_TAX.find(t => t.children.includes(key)); if (cat) setExpanded(prev => ({ ...prev, ["edtax_" + cat.key]: true, ["edsub_" + key]: true })); }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 6 }}><span style={{ fontSize: 14 }}>{sub.icon}</span><span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.name}</span></div>
                   <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 6 }}>{sub.category}</div>
                   <div style={{ display: "flex", justifyContent: "space-between" }}><div><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>TAM</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{sub.tam}</div></div><div style={{ textAlign: "right" }}><div style={{ fontSize: 13, color: T_.textGhost, textTransform: "uppercase" }}>Growth</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.green }}>{sub.growth}</div></div></div>
@@ -1726,7 +1950,33 @@ export default function Primer() {
               ))}
             </div>
           </div>
-        
+
+          {/* Revenue Models */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Revenue Models in Education</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 10 }}>
+              {ED_REVMODELS.map(rm => (
+                <div key={rm.model} style={{ background: T_.bg, borderRadius: 8, padding: "14px 16px", border: `1px solid ${rm.color}33`, borderLeft: `3px solid ${rm.color}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: rm.color, marginBottom: 6 }}>{rm.model}</div>
+                  <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.5 }}>{rm.desc}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Key Concepts */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
+            <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 10 }}>
+              {ED_KEYCONCEPTS.map(kc => (
+                <div key={kc.term} style={{ background: T_.bg, borderRadius: 8, padding: "14px 16px", border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>{kc.term}</div>
+                  <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.5 }}>{kc.def}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
         </div>);
       })()}
     </div>

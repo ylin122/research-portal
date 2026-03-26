@@ -30,6 +30,11 @@ export async function updateCompanySector(id, sector, sub) {
   if (error) console.error('updateCompanySector:', error);
 }
 
+export async function updateCompanyMoats(id, moats) {
+  const { error } = await supabase.from('companies').update({ moats }).eq('id', id);
+  if (error) console.error('updateCompanyMoats:', error);
+}
+
 // ─── Company Fields ────────────────────────────────────
 export async function loadAllFields() {
   const { data, error } = await supabase.from('company_fields').select('*');
