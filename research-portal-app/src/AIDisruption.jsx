@@ -72,12 +72,12 @@ const SECTORS = [
         losers: "Legacy backup without AI; tape-only; tools that can't validate recovery integrity",
         names: "Benefiting: Veeam, Cohesity, Rubrik, Commvault (Metallic). At risk: legacy Veritas (pre-merger), basic backup tools",
         metrics: "Watch: ransomware recovery SLA metrics, backup AI feature adoption, cyber vault deployment, data protection spend as % of IT budget" },
-      { name: "DevOps & Developer Tools", risk: "Medium (Positive Disruption)", timeline: "1-3 years",
-        thesis: "AI code generation (Copilot, Cursor, Claude Code) is most visible AI disruption in software. But net effect on DevOps toolchain is positive — more code means more CI/CD, testing, deployments, monitoring, security scanning. Tools processing code benefit from volume",
-        winners: "Platforms in code processing pipeline — every AI-generated line still needs testing, deploying, monitoring, securing",
-        losers: "Basic code editors without AI; manual code review; low-value dev productivity tools AI replaces",
-        names: "Benefiting: GitHub (Copilot + Actions), GitLab, Datadog, SonarSource, SmartBear, Perforce. Code gen: Cursor, Replit, Devin. At risk: basic IDEs without AI",
-        metrics: "Watch: code volume (commits, PRs, deployments per dev), CI/CD runs, monitoring volumes, security scan frequency" },
+      { name: "DevOps & Developer Tools", risk: "Medium", timeline: "1-3 years",
+        thesis: "Bifurcated impact. Infrastructure-layer tools (version control, observability, security scanning) benefit from AI-driven code volume explosion. But developer productivity point solutions (code quality scanners, manual testing tools, IDE plugins) face commoditization as AI coding assistants absorb their functionality inline. The key question: is the tool below the developer workflow (infrastructure) or within it (point solution)?",
+        winners: "Infrastructure-layer platforms: version control (Perforce - large binary repos have no AI substitute), observability (Elastic, Datadog), AppSec scanning (Veracode - 45% of AI code fails security tests, demand surging). Tools that process MORE code as volume explodes",
+        losers: "Point solutions absorbed by AI coding assistants: static analysis (SonarSource - code quality becoming a feature not a product, acquiring AI companies out of urgency), IDE productivity plugins (Idera/Visual Assist - directly replaced by Copilot/Cursor), manual testing tools, basic API testing (SmartBear testing side). PE roll-ups of aging dev tools (Idera)",
+        names: "Benefiting: Veracode (81% ACV growth from AI code insecurity), Elastic (vector DB + AI search), Perforce (binary VCS insulated), GitHub. At risk: SonarSource (commoditizing), Idera (aging portfolio), SmartBear (testing side). Mixed: SolarWinds (competitive not AI threat)",
+        metrics: "Watch: code volume (commits, PRs per dev), AppSec scan frequency and failure rates on AI code, static analysis tool churn rates, AI coding assistant adoption displacing standalone tools" },
       { name: "Content & Document Management", risk: "Medium", timeline: "2-4 years",
         thesis: "AI transforms document management from storage/retrieval to intelligent content processing. Auto-classification, summarization, extraction, compliance checking become native. Positive for platforms embedding AI; threatens manual document processing workflows",
         winners: "ECM platforms embedding AI content intelligence; intelligent document processing vendors",
@@ -460,7 +460,7 @@ const TOP_BENEFITED = [
   { name: "Data Infrastructure & Databases", sector: "Software", risk: "Low (Positive)" },
   { name: "Cybersecurity Software", sector: "Software", risk: "Medium (Positive)" },
   { name: "BI & Analytics Software", sector: "Software", risk: "High (Positive Disruption)" },
-  { name: "DevOps & Developer Tools", sector: "Software", risk: "Medium (Positive Disruption)" },
+  { name: "Email & Endpoint Security", sector: "Software", risk: "Medium (Positive)" },
   { name: "Clinical Documentation & Coding", sector: "Healthcare IT", risk: "High (Positive Disruption)" },
 ];
 
@@ -474,7 +474,7 @@ const TOP_DISRUPTED_CO = [
   { name: "Perficient", reason: "Generic digital consultancy selling implementation hours with no sector specialization. AI accelerates delivery - fewer billable hours per project. No proprietary data, no regulatory moat, no switching costs (wt: 15/45)", sector: "IT Consulting" },
   { name: "Kofax", reason: "Rules-based intelligent automation being leapfrogged by GenAI. LLMs handle unstructured tasks that Kofax's architecture cannot. No switching costs, no data moat, no ecosystem lock-in (wt: 11/45)", sector: "Software" },
   { name: "Calabrio", reason: "Contact center workforce management facing AI transformation. AI scheduling, forecasting, and quality management replace core functionality. No switching costs, no proprietary data advantage (wt: 11/45)", sector: "Software" },
-  { name: "Rackspace Technology", reason: "Managed hosting relying on NOC headcount for monitoring and incident response. AIOps automates basic operations. Some contract protection (2) and infra role (2) buy time but core managed services model under pressure (wt: 17/45)", sector: "Managed Services" },
+  { name: "Idera", reason: "PE roll-up of aging dev tool point solutions being directly replaced by AI. Visual Assist (C++ productivity) made obsolete by Copilot/Cursor. Delphi ecosystem is declining regardless of AI. Sencha UI components AI generates on demand. No moat of any kind across the portfolio (wt: 15/45)", sector: "Software" },
 ];
 
 const TOP_BENEFITED_CO = [
@@ -483,9 +483,9 @@ const TOP_BENEFITED_CO = [
   { name: "Cotiviti", reason: "Proprietary payment integrity patterns (3) across $3T+ claims. AI finds more waste/fraud = more value per dollar reviewed. Strongest moat profile in healthcare IT - regulatory (3), security (3), switching (3), contracts (3). Jevons' beneficiary (wt: 33/45)", sector: "Healthcare IT" },
   { name: "Proofpoint", reason: "AI-generated phishing directly increases demand for AI-powered email security. Proprietary threat telemetry (3), deep ecosystem integration (3), security IS the product (3). Business model is the solution to the AI threat problem (wt: 26/45)", sector: "Cybersecurity" },
   { name: "Sophos", reason: "MDR and endpoint security benefit from AI-driven threat escalation. Broad SMB telemetry (3) is a data moat. Security (3) requirement increases as AI-powered attacks grow. More threats = more demand (wt: 23/45)", sector: "Cybersecurity" },
-  { name: "SonarSource", reason: "More AI-generated code = more code to scan for quality and security. Deep CI/CD ecosystem integration (3). Every line Copilot/Cursor writes still needs SonarQube. Volume of code structurally increasing via Jevons' effect (wt: 22/45)", sector: "DevOps" },
+  { name: "Elastic NV", reason: "AI's clearest infrastructure beneficiary in the portfolio. Vector database for RAG (2,700+ AI customers), more AI = more logs/telemetry to search. ELK stack deeply embedded as industry standard (ecosystem 3). 18% YoY growth with AI as primary driver. Infrastructure layer AI builds on, not replaces (wt: 31/45)", sector: "Data Infrastructure" },
   { name: "Synechron", reason: "Near-term AI beneficiary - financial services spending aggressively on AI implementation and need trusted partners with regulatory knowledge. FS domain expertise (regulatory 2, security 2) creates moats commodity IT firms lack. Margin compression is real long-term but demand tailwind is strong now (wt: 25/45)", sector: "IT Services" },
-  { name: "Veeam Software", reason: "AI-powered ransomware makes attacks more sophisticated, increasing urgency for modern backup/recovery. Security moat (3) strengthens with AI threat landscape. More threats = more protection demand (wt: 19/45)", sector: "Data Protection" },
+  { name: "Veracode", reason: "Strongest near-term AI beneficiary in AppSec. 81% ACV growth in Q4 2025 driven by AI code insecurity. 45% of AI-generated code fails security tests, Java AI code at 70%+ failure rate. 'Treat all AI-generated code as untrusted' is becoming CISO consensus. More code = more scanning (wt: 25/45)", sector: "Cybersecurity" },
   { name: "Precisely", reason: "AI is only as good as data quality - garbage in, garbage out. Every enterprise AI initiative starts with data integrity. Deep ecosystem integration (3) as data quality backbone. AI increases demand for clean data (wt: 22/45)", sector: "Data Infrastructure" },
   { name: "Darktrace", reason: "AI-native threat detection built on proprietary unsupervised ML data (3). Growing attack surface from AI-powered threats directly expands addressable market. Security (3) is core to product (wt: 23/45)", sector: "Cybersecurity" },
 ];
