@@ -490,9 +490,8 @@ const TOP_BENEFITED_CO = [
   { name: "Darktrace", reason: "AI-native threat detection built on proprietary unsupervised ML data (3). Growing attack surface from AI-powered threats directly expands addressable market. Security (3) is core to product (wt: 23/45)", sector: "Cybersecurity" },
 ];
 
-// Moat scores: 1=Weak (red), 2=Medium (yellow), 3=Strong (green)
-// Columns: [data, ecoInteg, switchCost, regulatory, security, contracts, brand, physical, infraSupport]
-const MOAT_GROUPS = [
+// Legacy hardcoded moat data - kept as reference only. Live data reads from Supabase.
+const _MOAT_GROUPS_LEGACY = [
   { key: "software", label: "Software", icon: "S", color: "#3B82F6", companies: [
     { name: "Adeia", scores: [2,1,1,2,1,2,1,1,1] },
     { name: "Applied Systems", scores: [2,3,3,2,2,2,2,1,1] },
