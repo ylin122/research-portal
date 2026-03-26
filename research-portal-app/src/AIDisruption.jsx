@@ -663,9 +663,19 @@ const MOAT_GROUPS = [
   ]},
 ];
 
-const MOAT_LABELS = ["Proprietary Data", "Ecosystem & Integration", "Switching Cost", "Regulatory & Compliance", "Security", "Long-term Contracts", "Brand & Trust", "Physical Support", "Infrastructure Support"];
-const MOAT_KEYS = ["data","ecointegration","switchcost","regulatory","security","contracts","brand","physical","infra"];
-const MOAT_COLORS = ["#3B82F6", "#8B5CF6", "#F59E0B", "#EF4444", "#10B981", "#EC4899", "#F97316", "#0EA5E9", "#34d673"];
+// Weighted moat tiers: T1=3x, T2=2x, T3=1x. Max weighted = 45
+const MOAT_DEFS = [
+  { key: "data", label: "Proprietary Data", tier: 1, weight: 3 },
+  { key: "switching", label: "Switching Cost", tier: 1, weight: 3 },
+  { key: "regulatory", label: "Regulatory & Compliance", tier: 2, weight: 2 },
+  { key: "ecosystem", label: "Ecosystem & Integration", tier: 2, weight: 2 },
+  { key: "security", label: "Security", tier: 2, weight: 2 },
+  { key: "contracts", label: "Long-term Contracts", tier: 3, weight: 1 },
+  { key: "brand", label: "Brand & Trust", tier: 3, weight: 1 },
+  { key: "infra", label: "Infrastructure Support", tier: 3, weight: 1 },
+];
+const MOAT_KEYS = MOAT_DEFS.map(d => d.key);
+const MOAT_MAX = 45; // 2*3*3 + 3*2*3 + 3*1*3
 
 // Map DB sector to moat group
 const SECTOR_TO_GROUP = {
@@ -679,24 +689,26 @@ const SECTOR_TO_GROUP = {
 };
 
 function buildMoatGroups(companies) {
-  if (!companies || !companies.length) return MOAT_GROUPS; // fallback to hardcoded
+  if (!companies || !companies.length) return [];
   const groups = {};
   for (const co of companies) {
     if (!co.moats || co.sector === "sources") continue;
     const g = SECTOR_TO_GROUP[co.sector];
-    if (!g) continue;
+    if (!g || g.key === "hardware") continue; // exclude hardware & infrastructure
     if (!groups[g.key]) groups[g.key] = { ...g, companies: [] };
     const m = co.moats;
     groups[g.key].companies.push({
       name: co.name,
-      scores: [m.data||1, m.ecosystem||1, m.switching||1, m.regulatory||1, m.security||1, m.contracts||1, m.brand||1, m.physical||1, m.infra||1],
+      scores: MOAT_KEYS.map(k => m[k] || 1),
     });
   }
-  // Sort companies within each group by name
   for (const g of Object.values(groups)) g.companies.sort((a, b) => a.name.localeCompare(b.name));
-  // Return in fixed order
-  const order = ["software", "healthcare", "itservices", "education", "internet", "hardware"];
+  const order = ["software", "healthcare", "itservices", "education", "internet"];
   return order.map(k => groups[k]).filter(Boolean);
+}
+
+function weightedTotal(scores) {
+  return MOAT_DEFS.reduce((s, def, i) => s + (scores[i] || 1) * def.weight, 0);
 }
 
 export default function AIDisruption({ companies }) {
@@ -737,29 +749,21 @@ export default function AIDisruption({ companies }) {
         const scoreLabel = ["", "Weak", "Med", "Strong"];
         const scoreBg = (v) => ["", "#EF444433", "#F59E0B33", "#34d67333"][v];
         const scoreColor = (v) => ["", "#EF4444", "#F59E0B", "#34d673"][v];
-        const totalMax = 27;
-        const totalColor = (t) => t >= 20 ? "#34d673" : t >= 14 ? "#F59E0B" : "#EF4444";
+        const totalColor = (t) => t >= 33 ? "#34d673" : t >= 21 ? "#F59E0B" : "#EF4444";
+        const tierColor = { 1: "#34d673", 2: "#F59E0B", 3: T_.textGhost };
         const colHeaders = [
           { key: "name", label: "Company" },
-          { key: "data", label: "Proprietary Data" },
-          { key: "ecointegration", label: "Ecosystem & Integration" },
-          { key: "switchcost", label: "Switching Cost" },
-          { key: "regulatory", label: "Regulatory & Compliance" },
-          { key: "security", label: "Security" },
-          { key: "contracts", label: "Contract" },
-          { key: "brand", label: "Brand & Trust" },
-          { key: "physical", label: "Physical Support" },
-          { key: "infra", label: "Infrastructure Support" },
+          ...MOAT_DEFS.map(d => ({ key: d.key, label: d.label, tier: d.tier, weight: d.weight })),
           { key: "total", label: "Score" },
         ];
-        const colDef = "minmax(130px,1.5fr) repeat(9, minmax(42px,1fr)) minmax(54px,0.7fr)";
+        const colDef = "minmax(130px,1.5fr) repeat(8, minmax(46px,1fr)) minmax(58px,0.8fr)";
         const sortCo = (companies, gKey) => {
           const sk = moatSort.group === gKey ? moatSort.key : "total";
           return [...companies].sort((a, b) => {
             if (sk === "name") return a.name.localeCompare(b.name);
-            if (sk === "total") return b.scores.reduce((s,v)=>s+v,0) - a.scores.reduce((s,v)=>s+v,0);
+            if (sk === "total") return weightedTotal(b.scores) - weightedTotal(a.scores);
             const i = MOAT_KEYS.indexOf(sk);
-            if (i >= 0) return b.scores[i] - a.scores[i] || b.scores.reduce((s,v)=>s+v,0) - a.scores.reduce((s,v)=>s+v,0);
+            if (i >= 0) return b.scores[i] - a.scores[i] || weightedTotal(b.scores) - weightedTotal(a.scores);
             return 0;
           });
         };
@@ -767,7 +771,7 @@ export default function AIDisruption({ companies }) {
         <div>
           <div style={{ marginBottom: 16 }}>
             <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Moat vs AI</div>
-            <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How protected is each portfolio company from AI disruption? Nine structural moats scored Weak / Medium / Strong</div>
+            <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How protected is each portfolio company from AI disruption? Eight moats weighted by structural importance (T1: 3x, T2: 2x, T3: 1x)</div>
           </div>
 
           {/* Legend */}
@@ -780,8 +784,16 @@ export default function AIDisruption({ companies }) {
               </div>
             ))}
             <div style={{ width: 1, height: 16, background: T_.border, margin: "0 4px" }} />
-            <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>RESILIENCE (/{totalMax}):</div>
-            {[{ l: "20-27 Strong", c: "#34d673" }, { l: "14-19 Medium", c: "#F59E0B" }, { l: "9-13 Weak", c: "#EF4444" }].map(r => (
+            <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>TIERS:</div>
+            {[{ l: "T1 (3x)", c: "#34d673" }, { l: "T2 (2x)", c: "#F59E0B" }, { l: "T3 (1x)", c: T_.textGhost }].map(r => (
+              <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                <div style={{ width: 8, height: 8, borderRadius: 2, background: r.c }} />
+                <span style={{ fontSize: 11, color: T_.textMid }}>{r.l}</span>
+              </div>
+            ))}
+            <div style={{ width: 1, height: 16, background: T_.border, margin: "0 4px" }} />
+            <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>RESILIENCE (/{MOAT_MAX}):</div>
+            {[{ l: "33+ Strong", c: "#34d673" }, { l: "21-32 Medium", c: "#F59E0B" }, { l: "<21 Weak", c: "#EF4444" }].map(r => (
               <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 2, background: r.c }} />
                 <span style={{ fontSize: 11, color: T_.textMid }}>{r.l}</span>
@@ -793,7 +805,7 @@ export default function AIDisruption({ companies }) {
           {dynamicMoatGroups.map(group => {
             const gExp = !isExp("moat_" + group.key);
             const sorted = sortCo(group.companies, group.key);
-            const avgScore = Math.round(group.companies.reduce((s,c) => s + c.scores.reduce((a,v)=>a+v,0), 0) / group.companies.length);
+            const avgScore = Math.round(group.companies.reduce((s,c) => s + weightedTotal(c.scores), 0) / group.companies.length);
             return (
             <div key={group.key} style={{ marginBottom: 12 }}>
               <div
@@ -809,7 +821,7 @@ export default function AIDisruption({ companies }) {
                 <div style={{ width: 28, height: 28, borderRadius: 6, background: group.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: group.color }}>{group.icon}</div>
                 <div style={{ flex: 1 }}>
                   <div style={{ fontSize: 15, fontWeight: 600, color: T_.text }}>{group.label}</div>
-                  <div style={{ fontSize: 11, color: T_.textDim }}>{group.companies.length} companies &middot; avg resilience: <span style={{ color: totalColor(avgScore), fontWeight: 600 }}>{avgScore}/{totalMax}</span></div>
+                  <div style={{ fontSize: 11, color: T_.textDim }}>{group.companies.length} companies &middot; avg resilience: <span style={{ color: totalColor(avgScore), fontWeight: 600 }}>{avgScore}/{MOAT_MAX}</span></div>
                 </div>
                 <span style={{ fontSize: 13, color: T_.textGhost, transition: "transform 0.2s", transform: gExp ? "rotate(90deg)" : "rotate(0deg)" }}>&#9654;</span>
               </div>
@@ -825,13 +837,14 @@ export default function AIDisruption({ companies }) {
                         textTransform: "uppercase", cursor: "pointer", letterSpacing: 0.3,
                         textAlign: ci >= 1 ? "center" : "left",
                       }}>
+                        {col.tier && <span style={{ color: tierColor[col.tier], marginRight: 2 }}>{col.weight}x</span>}
                         {col.label}{moatSort.group === group.key && moatSort.key === col.key ? " ▼" : ""}
                       </div>
                     ))}
                   </div>
                   {/* Rows */}
                   {sorted.map((co, ri) => {
-                    const total = co.scores.reduce((s,v) => s+v, 0);
+                    const wt = weightedTotal(co.scores);
                     return (
                       <div key={ri} style={{
                         display: "grid", gridTemplateColumns: colDef,
@@ -849,9 +862,9 @@ export default function AIDisruption({ companies }) {
                         ))}
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 3 }}>
                           <div style={{ width: 24, height: 5, borderRadius: 3, background: T_.bg, overflow: "hidden" }}>
-                            <div style={{ height: "100%", width: `${(total / totalMax) * 100}%`, borderRadius: 3, background: totalColor(total) }} />
+                            <div style={{ height: "100%", width: `${(wt / MOAT_MAX) * 100}%`, borderRadius: 3, background: totalColor(wt) }} />
                           </div>
-                          <span style={{ fontSize: 11, fontWeight: 700, color: totalColor(total) }}>{total}</span>
+                          <span style={{ fontSize: 11, fontWeight: 700, color: totalColor(wt) }}>{wt}</span>
                         </div>
                       </div>
                     );

@@ -536,16 +536,32 @@ export default function App() {
             {/* Structured Fields */}
             {/* Moat vs AI Scoring */}
             {cur.sector !== "sources" && (() => {
-              const MOAT_KEYS = ["data","ecosystem","switching","regulatory","security","contracts","brand","physical","infra"];
-              const MOAT_NAMES = ["Proprietary Data","Ecosystem & Integration","Switching Cost","Regulatory & Compliance","Security","Long-term Contracts","Brand & Trust","Physical Support","Infrastructure Support"];
+              const MOAT_TIERS = [
+                { label: "T1 — Structural (3x)", weight: 3, color: "#34d673", moats: [
+                  { key: "data", name: "Proprietary Data" },
+                  { key: "switching", name: "Switching Cost" },
+                ]},
+                { label: "T2 — Strong (2x)", weight: 2, color: "#F59E0B", moats: [
+                  { key: "regulatory", name: "Regulatory & Compliance" },
+                  { key: "ecosystem", name: "Ecosystem & Integration" },
+                  { key: "security", name: "Security" },
+                ]},
+                { label: "T3 — Temporal (1x)", weight: 1, color: T_.textGhost, moats: [
+                  { key: "contracts", name: "Long-term Contracts" },
+                  { key: "brand", name: "Brand & Trust" },
+                  { key: "infra", name: "Infrastructure Support" },
+                ]},
+              ];
               const moats = cur.moats || {};
               const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
               const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
               const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
-              const total = MOAT_KEYS.reduce((s, k) => s + (moats[k] || 0), 0);
-              const totalColor = total >= 20 ? "#34d673" : total >= 14 ? "#F59E0B" : total > 0 ? "#EF4444" : T_.textGhost;
+              const wTotal = MOAT_TIERS.reduce((s, t) => s + t.moats.reduce((s2, m) => s2 + (moats[m.key] || 0) * t.weight, 0), 0);
+              const maxScore = 45;
+              const totalColor = wTotal >= 33 ? "#34d673" : wTotal >= 21 ? "#F59E0B" : wTotal > 0 ? "#EF4444" : T_.textGhost;
               const setMoat = (key, val) => {
                 const next = { ...moats, [key]: val };
+                delete next.physical;
                 const idx = companies.findIndex(c => c.id === cur.id);
                 if (idx >= 0) {
                   const updated = [...companies];
@@ -558,28 +574,37 @@ export default function App() {
                 <div style={s.section}>
                   <div style={s.sectionHdr}>
                     <span>Moat vs AI</span>
-                    {total > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{total}/27</span>}
+                    {wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
                   </div>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8 }}>
-                    {MOAT_KEYS.map((k, i) => {
-                      const v = moats[k] || 0;
-                      return (
-                        <div key={k} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
-                          <div style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>{MOAT_NAMES[i]}</div>
-                          <div style={{ display: "flex", gap: 4 }}>
-                            {[1, 2, 3].map(sv => (
-                              <button key={sv} onClick={() => setMoat(k, v === sv ? 0 : sv)} style={{
-                                flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
-                                border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
-                                background: v === sv ? scoreBg(sv) : "transparent",
-                                color: v === sv ? scoreCol(sv) : T_.textGhost,
-                              }}>{scoreLabel[sv]}</button>
-                            ))}
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  {MOAT_TIERS.map(tier => (
+                    <div key={tier.label} style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, fontWeight: 700, color: tier.color, textTransform: "uppercase", marginBottom: 6, letterSpacing: 0.5 }}>{tier.label}</div>
+                      <div style={{ display: "grid", gridTemplateColumns: tier.moats.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: 6 }}>
+                        {tier.moats.map(m => {
+                          const v = moats[m.key] || 0;
+                          const wPts = v * tier.weight;
+                          return (
+                            <div key={m.key} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                                <span style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase" }}>{m.name}</span>
+                                {v > 0 && <span style={{ fontSize: 9, color: scoreCol(v), fontWeight: 700 }}>+{wPts}</span>}
+                              </div>
+                              <div style={{ display: "flex", gap: 4 }}>
+                                {[1, 2, 3].map(sv => (
+                                  <button key={sv} onClick={() => setMoat(m.key, v === sv ? 0 : sv)} style={{
+                                    flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
+                                    border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
+                                    background: v === sv ? scoreBg(sv) : "transparent",
+                                    color: v === sv ? scoreCol(sv) : T_.textGhost,
+                                  }}>{scoreLabel[sv]}</button>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               );
             })()}
