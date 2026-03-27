@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const T_ = {
   bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
@@ -710,9 +710,10 @@ function weightedTotal(scores) {
   return MOAT_DEFS.reduce((s, def, i) => s + (scores[i] || 1) * def.weight, 0);
 }
 
-export default function AIDisruption({ companies }) {
+export default function AIDisruption({ companies, initialTab }) {
   const [expanded, setExpanded] = useState({});
-  const [subTab, setSubTab] = useState("disruption");
+  const [subTab, setSubTab] = useState(initialTab || "disruption");
+  useEffect(() => { if (initialTab) setSubTab(initialTab); }, [initialTab]);
   const [moatSort, setMoatSort] = useState({ key: "total", group: null });
   const dynamicMoatGroups = buildMoatGroups(companies);
   const toggle = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));

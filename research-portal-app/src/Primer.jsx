@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const T_ = {
   bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
@@ -251,8 +251,9 @@ const KEY_CONCEPTS = [
   { title: "Rule of 40", desc: "Revenue growth % + free cash flow margin % should exceed 40% for a healthy SaaS company. A company growing 30% with 15% FCF margin scores 45 — excellent. Helps compare high-growth vs mature companies on the same scale." },
 ];
 
-export default function Primer() {
-  const [subTab, setSubTab] = useState("software");
+export default function Primer({ initialTab }) {
+  const [subTab, setSubTab] = useState(initialTab || "software");
+  useEffect(() => { if (initialTab) setSubTab(initialTab); }, [initialTab]);
   const [expanded, setExpanded] = useState({});
   const toggle = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
   const isExp = (key) => !!expanded[key];

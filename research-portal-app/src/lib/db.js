@@ -107,6 +107,31 @@ export async function upsertNewsCache(companyId, items) {
   return date;
 }
 
+// ─── Research Results ─────────────────────────────────
+export async function loadResearchResults() {
+  const { data, error } = await supabase.from('research_results').select('*');
+  if (error) { console.error('loadResearchResults:', error); return {}; }
+  const map = {};
+  for (const row of data || []) {
+    map[row.company_id] = {
+      news: row.news || [],
+      transactions: row.transactions || [],
+      competitive: row.competitive || [],
+      industry: row.industry || [],
+      lastUpdated: row.updated_at,
+    };
+  }
+  return map;
+}
+
+export async function upsertResearchResult(companyId, results) {
+  const { error } = await supabase.from('research_results').upsert(
+    { company_id: companyId, news: results.news || [], transactions: results.transactions || [], competitive: results.competitive || [], industry: results.industry || [], updated_at: new Date().toISOString() },
+    { onConflict: 'company_id' }
+  );
+  if (error) console.error('upsertResearchResult:', error);
+}
+
 // ─── Sector Notes ──────────────────────────────────────
 export async function loadSectorNotes() {
   const { data, error } = await supabase.from('sector_notes').select('*');

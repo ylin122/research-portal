@@ -1,12 +1,15 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Primer from "./Primer";
 import AIDisruption from "./AIDisruption";
+import ResearchAgentPage from "./ResearchAgentPage";
+import ThesisAgent from "./ThesisAgent";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
   loadAllNotes, insertNote, deleteNote as dbDeleteNote,
   loadNewsCache, upsertNewsCache,
   loadSectorNotes, upsertSectorNote,
+  loadResearchResults,
 } from "./lib/db";
 
 // ─── Helpers ──────────────────────────────────────────
@@ -87,8 +90,11 @@ export default function App() {
   const [notesMap, setNotesMap] = useState({});
   const [newsCache, setNewsCache] = useState({});
   const [newsLoading, setNewsLoading] = useState({});
+  const [researchResults, setResearchResults] = useState({});
   const [view, setView] = useState({ type: "home" });
   const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
+  const [companiesOpen, setCompaniesOpen] = useState(true);
+  const [agentsOpen, setAgentsOpen] = useState(false);
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
   const [addSub, setAddSub] = useState("");
@@ -104,14 +110,15 @@ export default function App() {
   useEffect(() => {
     (async () => {
       try {
-        const [cos, fields, notes, news, sn] = await Promise.all([
-          loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes()
+        const [cos, fields, notes, news, sn, rr] = await Promise.all([
+          loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes(), loadResearchResults()
         ]);
         setCompanies(cos);
         setFieldsMap(fields);
         setNotesMap(notes);
         setNewsCache(news);
         setSectorNotes(sn);
+        setResearchResults(rr);
         setReady(true);
       } catch (err) {
         console.error('Failed to load data:', err);
@@ -249,43 +256,75 @@ export default function App() {
           <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div style={s.navTree}>
+          {/* Primer */}
           <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
             <span>Primer</span>
           </div>
-          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
-            <span>AI</span>
+
+          {/* AI Research */}
+          <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
+            <span>AI Research</span>
           </div>
-          {Object.entries(SECTORS).map(([sk, sec]) => {
-            const cos = filteredCos(getCos(sk));
-            const open = sidebarOpen[sk];
-            const total = getCos(sk).length;
-            return (
-              <div key={sk}>
-                <div style={s.sectorHdr} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    {sk !== "sources" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
-                    <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
-                  </div>
-                  {total > 0 && sk !== "sources" && <span style={s.badge}>{total}</span>}
-                </div>
-                {(open || search) && sk !== "sources" && cos.length > 0 && (
-                  <>
-                    {cos.map(c => {
-                      const active = view.type === "company" && view.id === c.id;
-                      const pr = c.priority || "";
-                      return (
-                        <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}) }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
-                          <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
-                          {pr && <span style={{ ...s.prDot, background: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.textGhost }} />}
-                        </div>
-                      );
-                    })}
-                    <div style={s.navAdd} onClick={() => { setAdding(sk); setAddSub(Object.keys(sec.subs)[0]); }}>+ Add company</div>
-                  </>
-                )}
+
+          {/* Agents tab */}
+          <div>
+            <div style={s.sectorHdr} onClick={() => setAgentsOpen(p => !p)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: agentsOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                <span>Agents</span>
               </div>
-            );
-          })}
+            </div>
+            {agentsOpen && [
+              { key: "research", label: "Research Agent" },
+              { key: "thesis", label: "Thesis Agent" },
+            ].map(t => (
+              <div key={t.key} style={{ ...s.navCo, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
+                <span>{t.label}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Companies tab */}
+          <div>
+            <div style={s.sectorHdr} onClick={() => setCompaniesOpen(p => !p)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: companiesOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                <span>Companies</span>
+              </div>
+              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length}</span>
+            </div>
+            {companiesOpen && Object.entries(SECTORS).map(([sk, sec]) => {
+              const cos = filteredCos(getCos(sk));
+              const open = sidebarOpen[sk];
+              const total = getCos(sk).length;
+              return (
+                <div key={sk}>
+                  <div style={{ ...s.sectorHdr, paddingLeft: 34 }} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      {sk !== "sources" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
+                      <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
+                    </div>
+                    {total > 0 && sk !== "sources" && <span style={s.badge}>{total}</span>}
+                  </div>
+                  {(open || search) && sk !== "sources" && cos.length > 0 && (
+                    <>
+                      {cos.map(c => {
+                        const active = view.type === "company" && view.id === c.id;
+                        const pr = c.priority || "";
+                        return (
+                          <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 52 }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
+                            {pr && <span style={{ ...s.prDot, background: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.textGhost }} />}
+                          </div>
+                        );
+                      })}
+                      <div style={{ ...s.navAdd, paddingLeft: 52 }} onClick={() => { setAdding(sk); setAddSub(Object.keys(sec.subs)[0]); }}>+ Add company</div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
@@ -321,7 +360,7 @@ export default function App() {
             </p>
             {companies.length > 0 && (
               <div style={{ display: "flex", gap: 8, marginBottom: 20, alignItems: "center", flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, color: T_.textGhost, marginRight: 4 }}>Priority:</span>
+                <span style={{ fontSize: 12, color: T_.textGhost, marginRight: 4 }}>Research Agent Priority:</span>
                 {["", "High", "Medium", "Low"].map(p => (
                   <span key={p} style={{
                     ...s.prPill, padding: "5px 14px", fontSize: 12,
@@ -392,10 +431,16 @@ export default function App() {
         )}
 
         {/* PRIMER */}
-        {view.type === "primer" && <Primer />}
+        {view.type === "primer" && <Primer initialTab={view.sub} />}
 
         {/* AI DISRUPTION */}
-        {view.type === "aidisruption" && <AIDisruption companies={companies} />}
+        {view.type === "aidisruption" && <AIDisruption companies={companies} initialTab={view.sub} />}
+
+        {/* RESEARCH AGENT */}
+        {view.type === "researchAgent" && <ResearchAgentPage companies={companies} onSetPriority={setPriority} researchResults={researchResults} />}
+
+        {/* THESIS AGENT */}
+        {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
         {/* COMPANY */}
         {view.type === "company" && cur && (
@@ -456,9 +501,11 @@ export default function App() {
               </div>
             )}
 
-            {/* Priority */}
+            {/* Research Agent Priority */}
             {cur.sector !== "sources" && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 32 }}>
+              <div style={{ marginBottom: 32 }}>
+                <span style={{ fontSize: 12, color: T_.textGhost, display: "block", marginBottom: 8 }}>Research Agent Priority</span>
+                <div style={{ display: "flex", gap: 8 }}>
                 {PRIORITIES.map(pr => (
                   <span key={pr} style={{
                     ...s.prPill,
@@ -469,6 +516,7 @@ export default function App() {
                     } : {})
                   }} onClick={() => setPriority(cur.id, pr)}>{pr}</span>
                 ))}
+                </div>
               </div>
             )}
 
@@ -665,7 +713,7 @@ const s = {
   sidebarTitle: { padding: "22px 22px 18px", fontSize: 15, fontWeight: 500, color: T_.text, cursor: "pointer", fontFamily: FONT },
   searchInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "8px 12px", fontSize: 13, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
   navTree: { flex: 1, overflowY: "auto", padding: "6px 0" },
-  sectorHdr: { padding: "9px 18px", fontSize: 12, fontWeight: 500, color: T_.textDim, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, userSelect: "none", fontFamily: FONT },
+  sectorHdr: { padding: "9px 18px", fontSize: 13, fontWeight: 500, color: T_.textDim, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 6, userSelect: "none", fontFamily: FONT },
   badge: { fontSize: 11, color: T_.textGhost, background: T_.bgPanel, padding: "2px 8px", borderRadius: 4, fontFamily: FONT },
   navCo: { padding: "7px 18px 7px 38px", fontSize: 13, color: T_.textMid, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, borderLeft: "2px solid transparent", transition: "all .1s", lineHeight: 1.5, fontFamily: FONT },
   navCoActive: { background: "rgba(245,158,11,0.08)", color: T_.accent, borderLeftColor: T_.accent },
