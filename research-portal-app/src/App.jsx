@@ -8,6 +8,7 @@ import DataVerificationAgent from "./DataVerificationAgent";
 import BusinessModels from "./BusinessModels";
 import CreditInstruments from "./CreditInstruments";
 import AuditLog from "./AuditLog";
+import KnowledgeBase from "./KnowledgeBase";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -570,14 +571,10 @@ export default function App() {
           );
         })()}
 
-        {/* KNOWLEDGE / INTERESTS */}
+        {/* KNOWLEDGE BASE */}
         {view.type === "knowledge" && (
           <div style={s.page}>
-            <h1 style={s.pageTitle}>Knowledge / Interests</h1>
-            <p style={s.pageSub}>Information you're interested in documenting, learning about, and exploring.</p>
-            <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
-              Coming soon — capture topics, notes, and areas of interest.
-            </div>
+            <KnowledgeBase />
           </div>
         )}
 
