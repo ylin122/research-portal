@@ -9,6 +9,7 @@ import BusinessModels from "./BusinessModels";
 import CreditInstruments from "./CreditInstruments";
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
+import IdeaTracker from "./IdeaTracker";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -312,9 +313,9 @@ export default function App() {
             <span>AI Research</span>
           </div>
 
-          {/* Ideas */}
-          <div style={{ ...s.sectorHdr, color: view.type === "ideas" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "ideas" }); setEditingField(null); }}>
-            <span>Ideas</span>
+          {/* Idea Tracker */}
+          <div style={{ ...s.sectorHdr, color: view.type === "ideaTracker" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "ideaTracker" }); setEditingField(null); }}>
+            <span>Idea Tracker</span>
           </div>
 
           {/* Equity Research */}
@@ -603,14 +604,10 @@ export default function App() {
         {/* AUDIT LOG */}
         {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
 
-        {/* IDEAS */}
-        {view.type === "ideas" && (
+        {/* IDEA TRACKER */}
+        {view.type === "ideaTracker" && (
           <div style={s.page}>
-            <h1 style={s.pageTitle}>Ideas</h1>
-            <p style={s.pageSub}>Macro and micro ideas — long term or short term. Food for thought.</p>
-            <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
-              Coming soon — capture and develop investment ideas and theses.
-            </div>
+            <IdeaTracker />
           </div>
         )}
 
