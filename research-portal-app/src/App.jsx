@@ -382,6 +382,11 @@ export default function App() {
             })}
           </div>
 
+          {/* YL Research Wiki */}
+          <div style={{ ...s.sectorHdr, color: view.type === "researchWiki" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "researchWiki" }); setEditingField(null); }}>
+            <span>YL Research Wiki</span>
+          </div>
+
           {/* Knowledge / Interests */}
           <div style={{ ...s.sectorHdr, color: view.type === "knowledge" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "knowledge" }); setEditingField(null); }}>
             <span>Knowledge / Interests</span>
@@ -571,10 +576,21 @@ export default function App() {
           );
         })()}
 
-        {/* KNOWLEDGE BASE */}
-        {view.type === "knowledge" && (
+        {/* YL RESEARCH WIKI */}
+        {view.type === "researchWiki" && (
           <div style={s.page}>
             <KnowledgeBase />
+          </div>
+        )}
+
+        {/* KNOWLEDGE / INTERESTS */}
+        {view.type === "knowledge" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Knowledge / Interests</h1>
+            <p style={s.pageSub}>Curated topics and articles moved from your research wiki that you find most interesting.</p>
+            <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
+              Coming soon — move interesting findings here from YL Research Wiki.
+            </div>
           </div>
         )}
 
