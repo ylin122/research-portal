@@ -3,6 +3,11 @@ import Primer from "./Primer";
 import AIDisruption from "./AIDisruption";
 import ResearchAgentPage from "./ResearchAgentPage";
 import ThesisAgent from "./ThesisAgent";
+import NotesIdeasAgent from "./NotesIdeasAgent";
+import DataVerificationAgent from "./DataVerificationAgent";
+import BusinessModels from "./BusinessModels";
+import CreditInstruments from "./CreditInstruments";
+import AuditLog from "./AuditLog";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -93,8 +98,15 @@ export default function App() {
   const [researchResults, setResearchResults] = useState({});
   const [view, setView] = useState({ type: "home" });
   const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
-  const [companiesOpen, setCompaniesOpen] = useState(true);
+  const [companiesOpen, setCompaniesOpen] = useState(false);
   const [agentsOpen, setAgentsOpen] = useState(false);
+  const [equityOpen, setEquityOpen] = useState(false);
+  const [equities, setEquities] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
+  });
+  const [equityNotes, setEquityNotes] = useState(() => {
+    try { return JSON.parse(localStorage.getItem("research_portal_equity_notes") || "{}"); } catch { return {}; }
+  });
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
   const [addSub, setAddSub] = useState("");
@@ -126,6 +138,24 @@ export default function App() {
       }
     })();
   }, []);
+
+  // Seed equity companies on first load
+  useEffect(() => {
+    if (equities.length === 0) {
+      const seed = [
+        { id: "eq_micron", name: "Micron", sub: "" },
+        { id: "eq_alibaba", name: "Alibaba", sub: "" },
+        { id: "eq_tencent", name: "Tencent", sub: "" },
+        { id: "eq_lumentum", name: "Lumentum", sub: "" },
+        { id: "eq_coherent", name: "Coherent", sub: "" },
+      ];
+      setEquities(seed);
+      localStorage.setItem("research_portal_equities", JSON.stringify(seed));
+    }
+  }, []);
+
+  function saveEquities(updated) { setEquities(updated); localStorage.setItem("research_portal_equities", JSON.stringify(updated)); }
+  function saveEquityNotes(updated) { setEquityNotes(updated); localStorage.setItem("research_portal_equity_notes", JSON.stringify(updated)); }
 
   const debouncedFieldSave = useAutoSave((companyId, fieldKey, text) => {
     upsertField(companyId, fieldKey, text);
@@ -256,27 +286,19 @@ export default function App() {
           <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div style={s.navTree}>
-          {/* Primer */}
-          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
-            <span>Primer</span>
-          </div>
-
-          {/* AI Research */}
-          <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
-            <span>AI Research</span>
-          </div>
-
-          {/* Agents tab */}
+          {/* Agents */}
           <div>
-            <div style={s.sectorHdr} onClick={() => setAgentsOpen(p => !p)}>
+            <div style={{ ...s.sectorHdr, marginTop: 0 }} onClick={() => setAgentsOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: agentsOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                 <span>Agents</span>
               </div>
             </div>
             {agentsOpen && [
-              { key: "research", label: "Research Agent" },
-              { key: "thesis", label: "Thesis Agent" },
+              { key: "research", label: "Research" },
+              { key: "thesis", label: "Thesis Tracker" },
+              { key: "notesIdeas", label: "Notes / Ideas" },
+              { key: "dataVerification", label: "Data Verification" },
             ].map(t => (
               <div key={t.key} style={{ ...s.navCo, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
                 <span>{t.label}</span>
@@ -284,12 +306,45 @@ export default function App() {
             ))}
           </div>
 
-          {/* Companies tab */}
+          {/* AI Research */}
+          <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
+            <span>AI Research</span>
+          </div>
+
+          {/* Ideas */}
+          <div style={{ ...s.sectorHdr, color: view.type === "ideas" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "ideas" }); setEditingField(null); }}>
+            <span>Ideas</span>
+          </div>
+
+          {/* Equity Research */}
+          <div>
+            <div style={s.sectorHdr} onClick={() => setEquityOpen(p => !p)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: equityOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                <span onClick={e => { e.stopPropagation(); setView({ type: "equityResearch" }); setEditingField(null); }}>Equity Research</span>
+              </div>
+              {equities.length > 0 && <span style={s.badge}>{equities.length}</span>}
+            </div>
+            {equityOpen && (
+              <>
+                {equities.map(eq => {
+                  const active = view.type === "equityDetail" && view.id === eq.id;
+                  return (
+                    <div key={eq.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 38 }} onClick={() => { setView({ type: "equityDetail", id: eq.id }); setEditingField(null); }}>
+                      <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{eq.name}</span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
+          </div>
+
+          {/* Credit Research */}
           <div>
             <div style={s.sectorHdr} onClick={() => setCompaniesOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: companiesOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span>Companies</span>
+                <span>Credit Research</span>
               </div>
               <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length}</span>
             </div>
@@ -324,6 +379,31 @@ export default function App() {
                 </div>
               );
             })}
+          </div>
+
+          {/* Knowledge / Interests */}
+          <div style={{ ...s.sectorHdr, color: view.type === "knowledge" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "knowledge" }); setEditingField(null); }}>
+            <span>Knowledge / Interests</span>
+          </div>
+
+          {/* Business Models */}
+          <div style={{ ...s.sectorHdr, color: view.type === "businessModels" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "businessModels" }); setEditingField(null); }}>
+            <span>Business Models</span>
+          </div>
+
+          {/* Credit Instruments */}
+          <div style={{ ...s.sectorHdr, color: view.type === "creditInstruments" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "creditInstruments" }); setEditingField(null); }}>
+            <span>Credit Instruments</span>
+          </div>
+
+          {/* Primer */}
+          <div style={{ ...s.sectorHdr, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
+            <span>Primer</span>
+          </div>
+
+          {/* Audit & Change Log */}
+          <div style={{ ...s.sectorHdr, color: view.type === "auditLog" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "auditLog" }); setEditingField(null); }}>
+            <span>Audit Log</span>
           </div>
         </div>
       </div>
@@ -441,6 +521,85 @@ export default function App() {
 
         {/* THESIS AGENT */}
         {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
+        {/* NOTES / IDEAS AGENT */}
+        {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
+        {/* DATA VERIFICATION AGENT */}
+        {view.type === "dataVerificationAgent" && <DataVerificationAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
+        {/* EQUITY RESEARCH */}
+        {view.type === "equityResearch" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Equity Research</h1>
+            <p style={s.pageSub}>Tracking {equities.length} companies.</p>
+            {equities.map(eq => (
+              <div key={eq.id} style={s.listRow} onClick={() => { setView({ type: "equityDetail", id: eq.id }); setEditingField(null); }}>
+                <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{eq.name}</span>
+                {eq.sub && <span style={{ fontSize: 11, color: T_.textGhost }}>{eq.sub}</span>}
+                <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* EQUITY DETAIL */}
+        {view.type === "equityDetail" && (() => {
+          const eq = equities.find(e => e.id === view.id);
+          if (!eq) return null;
+          const notes = equityNotes[eq.id] || "";
+          return (
+            <div style={s.page}>
+              <div style={s.breadcrumb}>
+                <span onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>Equity Research</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
+                <h1 style={s.pageTitle}>{eq.name}</h1>
+                <button style={s.btnGhost} onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>&#8592; Back</button>
+              </div>
+              <div style={s.section}>
+                <div style={s.sectionHdr}>Notes</div>
+                <textarea
+                  style={{ width: "100%", minHeight: 200, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: 14, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.7 }}
+                  placeholder="Research notes, investment thesis, key metrics..."
+                  value={notes}
+                  onChange={e => { const updated = { ...equityNotes, [eq.id]: e.target.value }; saveEquityNotes(updated); }}
+                />
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* KNOWLEDGE / INTERESTS */}
+        {view.type === "knowledge" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Knowledge / Interests</h1>
+            <p style={s.pageSub}>Information you're interested in documenting, learning about, and exploring.</p>
+            <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
+              Coming soon — capture topics, notes, and areas of interest.
+            </div>
+          </div>
+        )}
+
+        {/* BUSINESS MODELS */}
+        {view.type === "businessModels" && <BusinessModels initialTab={view.sub} />}
+
+        {/* CREDIT INSTRUMENTS */}
+        {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
+
+        {/* AUDIT LOG */}
+        {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
+
+        {/* IDEAS */}
+        {view.type === "ideas" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Ideas</h1>
+            <p style={s.pageSub}>Macro and micro ideas — long term or short term. Food for thought.</p>
+            <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
+              Coming soon — capture and develop investment ideas and theses.
+            </div>
+          </div>
+        )}
 
         {/* COMPANY */}
         {view.type === "company" && cur && (

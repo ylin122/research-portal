@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import PrimerNewTabs1 from "./PrimerNewTabs";
+import PrimerNewTabs2 from "./PrimerNewTabs2";
 
 const T_ = {
   bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
@@ -260,14 +262,47 @@ export default function Primer({ initialTab }) {
 
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
-      {/* Sub-tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
-        {[{ key: "software", label: "Software" }, { key: "semis", label: "Semiconductors" }, { key: "digiinfra", label: "Digital Infrastructure" }, { key: "itservices", label: "IT Services" }, { key: "healthit", label: "Healthcare IT" }, { key: "internet", label: "Internet" }, { key: "education", label: "Education" }].map(t => (
+      {/* Sub-tabs — Row 1 */}
+      <div style={{ display: "flex", gap: 0, flexWrap: "wrap", borderBottom: `1px solid ${T_.borderLight}` }}>
+        {[
+          { key: "software", label: "Software" },
+          { key: "semis", label: "Semiconductors" },
+          { key: "digiinfra", label: "Digital Infra" },
+          { key: "itservices", label: "IT Services" },
+          { key: "itbpo", label: "IT & BPO" },
+          { key: "healthit", label: "Healthcare IT" },
+          { key: "healthpharma", label: "Healthcare & Pharma" },
+          { key: "healthservices", label: "Healthcare Svcs" },
+          { key: "internet", label: "Internet" },
+          { key: "education", label: "Education" },
+        ].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
-            padding: "10px 24px", fontSize: 14, fontWeight: 500, cursor: "pointer",
+            padding: "9px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
             border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
             background: "transparent", color: subTab === t.key ? T_.text : T_.textGhost,
-            fontFamily: FONT, transition: "all 0.15s",
+            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
+          }}>{t.label}</button>
+        ))}
+      </div>
+      {/* Sub-tabs — Row 2 */}
+      <div style={{ display: "flex", gap: 0, flexWrap: "wrap", marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
+        {[
+          { key: "comms", label: "Comms & Telecom" },
+          { key: "consumerdisc", label: "Consumer Disc." },
+          { key: "consumerstaples", label: "Consumer Staples" },
+          { key: "financials", label: "Financials" },
+          { key: "fintech", label: "Fintech" },
+          { key: "industrials", label: "Industrials" },
+          { key: "aerodefense", label: "Aerospace & Defense" },
+          { key: "energy", label: "Energy & Materials" },
+          { key: "realestate", label: "Real Estate" },
+          { key: "utilities", label: "Utilities" },
+        ].map(t => (
+          <button key={t.key} onClick={() => setSubTab(t.key)} style={{
+            padding: "9px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
+            border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
+            background: "transparent", color: subTab === t.key ? T_.text : T_.textGhost,
+            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{t.label}</button>
         ))}
       </div>
@@ -1980,6 +2015,12 @@ export default function Primer({ initialTab }) {
 
         </div>);
       })()}
+
+      {/* Batch 1 tabs: Comms, Consumer Disc, Consumer Staples, Financials, Fintech, Industrials, Aero & Defense */}
+      <PrimerNewTabs1 subTab={subTab} expanded={expanded} toggle={toggle} isExp={isExp} T_={T_} FONT={FONT} />
+
+      {/* Batch 2 tabs: Healthcare & Pharma, Healthcare Services, Energy, Real Estate, Utilities, IT BPO */}
+      <PrimerNewTabs2 subTab={subTab} expanded={expanded} toggle={toggle} isExp={isExp} T_={T_} FONT={FONT} />
     </div>
   );
 }
