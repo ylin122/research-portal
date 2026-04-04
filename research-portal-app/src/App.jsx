@@ -383,14 +383,14 @@ export default function App() {
             })}
           </div>
 
-          {/* YL Research Wiki */}
-          <div style={{ ...s.sectorHdr, color: view.type === "researchWiki" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "researchWiki" }); setEditingField(null); }}>
-            <span>YL Research Wiki</span>
-          </div>
-
           {/* Knowledge / Interests */}
           <div style={{ ...s.sectorHdr, color: view.type === "knowledge" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "knowledge" }); setEditingField(null); }}>
             <span>Knowledge / Interests</span>
+          </div>
+
+          {/* YL Research Wiki */}
+          <div style={{ ...s.sectorHdr, color: view.type === "researchWiki" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "researchWiki" }); setEditingField(null); }}>
+            <span>YL Research Wiki</span>
           </div>
 
           {/* Business Models */}
@@ -403,9 +403,9 @@ export default function App() {
             <span>Credit Instruments</span>
           </div>
 
-          {/* Primer */}
+          {/* Industry Primer */}
           <div style={{ ...s.sectorHdr, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
-            <span>Primer</span>
+            <span>Industry Primer</span>
           </div>
 
           {/* Audit & Change Log */}
