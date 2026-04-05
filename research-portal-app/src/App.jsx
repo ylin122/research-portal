@@ -11,6 +11,8 @@ import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
+import WatchlistAgent from "./WatchlistAgent";
+import QAAgent from "./QAAgent";
 import IdeaTracker from "./IdeaTracker";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
@@ -299,6 +301,8 @@ export default function App() {
               </div>
             </div>
             {agentsOpen && [
+              { key: "watchlist", label: "Watchlist / Alerts" },
+              { key: "qa", label: "Q&A" },
               { key: "research", label: "Research" },
               { key: "thesis", label: "Thesis Tracker" },
               { key: "notesIdeas", label: "Ideas" },
@@ -535,6 +539,12 @@ export default function App() {
 
         {/* THESIS AGENT */}
         {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
+        {/* WATCHLIST AGENT */}
+        {view.type === "watchlistAgent" && <WatchlistAgent />}
+
+        {/* Q&A AGENT */}
+        {view.type === "qaAgent" && <QAAgent />}
 
         {/* NOTES / IDEAS AGENT */}
         {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
