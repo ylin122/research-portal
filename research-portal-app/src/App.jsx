@@ -288,7 +288,7 @@ export default function App() {
   return (
     <div style={s.wrap}>
       {/* SIDEBAR */}
-      <div style={s.sidebar}>
+      <div className="desktop-sidebar" style={s.sidebar}>
         <div style={s.sidebarTitle} onClick={() => { setView({ type: "home" }); setEditingField(null); }}>Research Portal</div>
         <div style={{ padding: "0 16px 14px" }}>
           <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
@@ -434,7 +434,7 @@ export default function App() {
       </div>
 
       {/* MAIN */}
-      <div style={s.main}>
+      <div className="main-content" style={s.main}>
         {adding && (
           <div style={s.modalOverlay}>
             <div style={s.modalBox}>
@@ -577,6 +577,40 @@ export default function App() {
 
         {/* CREDIT INSTRUMENTS */}
         {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
+
+        {/* MOBILE MORE MENU */}
+        {view.type === "mobileMore" && (
+          <div style={{ ...s.page, maxWidth: "none" }}>
+            <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
+                { type: "researchWiki", label: "YL Research Wiki", icon: "\u{1F4DA}" },
+                { type: "ideaTracker", label: "Idea Tracker", icon: "\u{1F4A1}" },
+                { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
+                { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
+                { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
+                { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
+                { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
+                { type: "equityResearch", label: "Equity Research", icon: "\u{1F4C8}" },
+                { type: "watchlistAgent", label: "Alerts", icon: "\u{1F514}" },
+                { type: "qaAgent", label: "Q&A", icon: "\u{2753}" },
+                { type: "researchAgent", label: "Research Agent", icon: "\u{1F50D}" },
+                { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
+                { type: "sources", label: "Sources", icon: "\u{1F517}" },
+                { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },
+              ].map(item => (
+                <div key={item.type} onClick={() => { setView({ type: item.type }); setEditingField(null); }} style={{
+                  display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
+                  background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, cursor: "pointer",
+                }}>
+                  <span style={{ fontSize: 18 }}>{item.icon}</span>
+                  <span style={{ fontSize: 15, fontWeight: 500, color: T_.text }}>{item.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* QUICK NOTES */}
         {view.type === "quickNotes" && <QuickNotes />}
@@ -840,6 +874,42 @@ export default function App() {
             })}
           </div>
         )}
+      </div>
+
+      {/* MOBILE BOTTOM NAV */}
+      <div className="mobile-bottom-nav" style={{
+        position: "fixed", bottom: 0, left: 0, right: 0, height: 64,
+        background: T_.bgSidebar, borderTop: `1px solid ${T_.border}`,
+        display: "none", justifyContent: "space-around", alignItems: "center",
+        zIndex: 100, paddingBottom: "env(safe-area-inset-bottom, 0px)",
+      }}>
+        {[
+          { type: "home", label: "Home", icon: "\u2302" },
+          { type: "researchWiki", label: "Wiki", icon: "\u{1F4DA}" },
+          { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
+          { type: "ideaTracker", label: "Ideas", icon: "\u{1F4A1}" },
+          { type: "mobileMore", label: "More", icon: "\u2261" },
+        ].map(tab => {
+          const isActive = tab.type === "mobileMore"
+            ? !["home", "researchWiki", "quickNotes", "ideaTracker"].includes(view.type)
+            : view.type === tab.type;
+          return (
+            <div key={tab.type} onClick={() => {
+              if (tab.type === "mobileMore") {
+                setView(prev => prev.type === "mobileMore" ? prev : { type: "mobileMore" });
+              } else {
+                setView({ type: tab.type }); setEditingField(null);
+              }
+            }} style={{
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 2,
+              cursor: "pointer", padding: "6px 12px", borderRadius: 8,
+              color: isActive ? T_.accent : T_.textGhost,
+            }}>
+              <span style={{ fontSize: 20 }}>{tab.icon}</span>
+              <span style={{ fontSize: 9, fontWeight: isActive ? 600 : 400 }}>{tab.label}</span>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

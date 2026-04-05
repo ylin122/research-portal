@@ -1,0 +1,20 @@
+@media (max-width: 768px) {
+  .desktop-sidebar {
+    display: none !important;
+  }
+  .main-content {
+    padding-bottom: 70px !important;
+  }
+  .main-content .page-inner {
+    padding: 20px 16px !important;
+  }
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
