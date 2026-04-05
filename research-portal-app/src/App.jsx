@@ -10,6 +10,7 @@ import CreditInstruments from "./CreditInstruments";
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
 import KnowledgeInterests from "./KnowledgeInterests";
+import Sources from "./Sources";
 import IdeaTracker from "./IdeaTracker";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
@@ -409,6 +410,11 @@ export default function App() {
             <span>Industry Primer</span>
           </div>
 
+          {/* Sources */}
+          <div style={{ ...s.sectorHdr, color: view.type === "sources" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "sources" }); setEditingField(null); }}>
+            <span>Sources</span>
+          </div>
+
           {/* Audit & Change Log */}
           <div style={{ ...s.sectorHdr, color: view.type === "auditLog" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "auditLog" }); setEditingField(null); }}>
             <span>Audit Log</span>
@@ -597,6 +603,9 @@ export default function App() {
 
         {/* CREDIT INSTRUMENTS */}
         {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
+
+        {/* SOURCES */}
+        {view.type === "sources" && <Sources />}
 
         {/* AUDIT LOG */}
         {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
