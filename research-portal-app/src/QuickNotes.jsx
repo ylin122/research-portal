@@ -45,22 +45,23 @@ export default function QuickNotes() {
       </p>
 
       {/* Input */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 24 }}>
+      <div style={{ marginBottom: 24 }}>
         <textarea
           style={{
-            flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8,
-            color: T_.text, fontSize: 14, padding: "12px 16px", fontFamily: FONT, outline: "none",
-            resize: "vertical", minHeight: 60, lineHeight: 1.6, boxSizing: "border-box",
+            width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 10,
+            color: T_.text, fontSize: 15, padding: "16px 18px", fontFamily: FONT, outline: "none",
+            resize: "vertical", minHeight: 160, lineHeight: 1.7, boxSizing: "border-box",
           }}
-          placeholder="Type a note, paste a link, jot an idea..."
+          placeholder="Type a note, paste a link, jot an idea... Press Enter for new lines."
           value={draft}
           onChange={e => setDraft(e.target.value)}
-          onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleAdd(); } }}
         />
-        <button onClick={handleAdd} style={{
-          background: T_.accent, border: "none", color: T_.bg, padding: "12px 20px",
-          borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT, alignSelf: "flex-end",
-        }}>Save</button>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+          <button onClick={handleAdd} style={{
+            background: T_.accent, border: "none", color: T_.bg, padding: "10px 28px",
+            borderRadius: 8, cursor: "pointer", fontSize: 14, fontWeight: 600, fontFamily: FONT,
+          }}>Save Note</button>
+        </div>
       </div>
 
       {/* Notes list */}
