@@ -300,7 +300,7 @@ export default function App() {
             {agentsOpen && [
               { key: "research", label: "Research" },
               { key: "thesis", label: "Thesis Tracker" },
-              { key: "notesIdeas", label: "Notes / Ideas" },
+              { key: "notesIdeas", label: "Ideas" },
               { key: "dataVerification", label: "Data Verification" },
             ].map(t => (
               <div key={t.key} style={{ ...s.navCo, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
