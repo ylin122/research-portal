@@ -275,18 +275,21 @@ function DeepDivesTab() {
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
         : dives.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>No deep dives yet. Click "+ Request Deep Dive" to start.</div>
         : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {dives.map(d => (
             <div key={d.id} onClick={() => setSelected(d)} style={{
-              background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, cursor: "pointer", transition: "border-color 0.2s",
+              display: "flex", alignItems: "center", gap: 16, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 20px", cursor: "pointer", transition: "border-color 0.2s",
             }} onMouseEnter={e => e.currentTarget.style.borderColor = T_.accent} onMouseLeave={e => e.currentTarget.style.borderColor = T_.border}>
-              <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-                <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", color: T_.blue, background: `${T_.blue}15`, padding: "2px 8px", borderRadius: 4 }}>{(TOPIC_FILTERS.find(t => t.key === d.topic) || {}).label || d.topic}</span>
-                <span style={{ fontSize: 10, color: T_.textGhost }}>{(d.sections || []).length} sections</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}>
+                  <span style={{ fontSize: 15, fontWeight: 600, color: T_.text }}>{d.title}</span>
+                  <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", color: T_.blue, background: `${T_.blue}15`, padding: "2px 8px", borderRadius: 4 }}>{(TOPIC_FILTERS.find(t => t.key === d.topic) || {}).label || d.topic}</span>
+                  <span style={{ fontSize: 10, color: T_.textGhost }}>{(d.sections || []).length} sections</span>
+                </div>
+                {d.summary && <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.5 }}>{d.summary}</div>}
+                {!d.summary && (d.sections || []).length === 0 && <div style={{ fontSize: 12, color: T_.amber, fontStyle: "italic" }}>Pending — run "compile my wiki" to generate</div>}
               </div>
-              <div style={{ fontSize: 15, fontWeight: 600, color: T_.text, marginBottom: 6, lineHeight: 1.4 }}>{d.title}</div>
-              {d.summary && <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.5, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}>{d.summary}</div>}
-              {!d.summary && (d.sections || []).length === 0 && <div style={{ fontSize: 12, color: T_.amber, fontStyle: "italic" }}>Pending — run "compile my wiki" to generate</div>}
+              <span style={{ color: T_.textGhost, fontSize: 14, flexShrink: 0 }}>→</span>
             </div>
           ))}
         </div>

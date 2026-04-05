@@ -586,14 +586,14 @@ export default function App() {
 
         {/* YL RESEARCH WIKI */}
         {view.type === "researchWiki" && (
-          <div style={s.page}>
+          <div style={{ ...s.page, maxWidth: "none" }}>
             <KnowledgeBase />
           </div>
         )}
 
         {/* KNOWLEDGE / INTERESTS */}
         {view.type === "knowledge" && (
-          <div style={s.page}>
+          <div style={{ ...s.page, maxWidth: "none" }}>
             <KnowledgeInterests />
           </div>
         )}
