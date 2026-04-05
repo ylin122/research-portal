@@ -16,6 +16,11 @@ import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
 import QAAgent from "./QAAgent";
 import IdeaTracker from "./IdeaTracker";
+import CoreweaveReview from "./CoreweaveReview";
+import AppliedDigitalReview from "./AppliedDigitalReview";
+import CipherDigitalReview from "./CipherDigitalReview";
+import TerawulfReview from "./TerawulfReview";
+import TractCapitalReview from "./TractCapitalReview";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -648,7 +653,7 @@ export default function App() {
 
         {/* COMPANY */}
         {view.type === "company" && cur && (
-          <div style={s.page}>
+          <div style={{ ...s.page, maxWidth: "none" }}>
             <div style={s.breadcrumb}>
               <span onClick={() => { setView((cur.sector === "sources") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
               {cur.sector !== "sources" && <>
@@ -724,8 +729,23 @@ export default function App() {
               </div>
             )}
 
-            {/* Recent Updates */}
-            {cur.sector !== "sources" && (
+            {/* CoreWeave Review */}
+            {cur.id === "coreweave_seed" && <CoreweaveReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+
+            {/* Applied Digital Review */}
+            {cur.id === "apld_seed" && <AppliedDigitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+
+            {/* Cipher Digital Review */}
+            {cur.id === "cipher_seed" && <CipherDigitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+
+            {/* TeraWulf Review */}
+            {cur.id === "terawulf_seed" && <TerawulfReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+
+            {/* Tract Capital Review */}
+            {cur.id === "tractcapital_seed" && <TractCapitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+
+            {/* Recent Updates (hidden for companies with dedicated review tabs) */}
+            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Recent updates</span>
@@ -805,6 +825,7 @@ export default function App() {
                 ]},
               ];
               const moats = cur.moats || {};
+              const moatEnabled = moats._enabled !== false;
               const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
               const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
               const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
@@ -822,13 +843,35 @@ export default function App() {
                 }
                 updateCompanyMoats(cur.id, next);
               };
+              const toggleMoat = () => {
+                const next = { ...moats, _enabled: !moatEnabled };
+                const idx = companies.findIndex(c => c.id === cur.id);
+                if (idx >= 0) {
+                  const updated = [...companies];
+                  updated[idx] = { ...updated[idx], moats: next };
+                  setCompanies(updated);
+                }
+                updateCompanyMoats(cur.id, next);
+              };
               return (
                 <div style={s.section}>
                   <div style={s.sectionHdr}>
-                    <span>Moat vs AI</span>
-                    {wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
+                    <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      Moat vs AI
+                      <span onClick={toggleMoat} style={{
+                        display: "inline-flex", alignItems: "center", width: 36, height: 18, borderRadius: 9, cursor: "pointer",
+                        background: moatEnabled ? T_.green : T_.border, padding: 2, transition: "background 0.2s",
+                      }}>
+                        <span style={{
+                          width: 14, height: 14, borderRadius: 7, background: "#fff",
+                          transform: moatEnabled ? "translateX(18px)" : "translateX(0)", transition: "transform 0.2s",
+                        }} />
+                      </span>
+                    </span>
+                    {moatEnabled && wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
+                    {!moatEnabled && <span style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>Excluded from scoring</span>}
                   </div>
-                  {MOAT_TIERS.map(tier => (
+                  {moatEnabled && MOAT_TIERS.map(tier => (
                     <div key={tier.label} style={{ marginBottom: 10 }}>
                       <div style={{ fontSize: 10, fontWeight: 700, color: tier.color, textTransform: "uppercase", marginBottom: 6, letterSpacing: 0.5 }}>{tier.label}</div>
                       <div style={{ display: "grid", gridTemplateColumns: tier.moats.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: 6 }}>
@@ -971,7 +1014,7 @@ const s = {
   textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
   noteInput: { flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "11px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
   noteEntry: { padding: "18px 0", borderBottom: `1px solid ${T_.borderLight}` },
-  newsScroll: { maxHeight: 260, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
+  newsScroll: { maxHeight: 400, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
   newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
   listRow: { display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" },
   statCard: { background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: "16px 18px", cursor: "pointer" },
