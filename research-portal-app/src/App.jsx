@@ -399,9 +399,9 @@ export default function App() {
             <span>Business Models</span>
           </div>
 
-          {/* Credit Instruments */}
+          {/* Financial Instruments */}
           <div style={{ ...s.sectorHdr, color: view.type === "creditInstruments" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "creditInstruments" }); setEditingField(null); }}>
-            <span>Credit Instruments</span>
+            <span>Financial Instruments</span>
           </div>
 
           {/* Industry Primer */}
