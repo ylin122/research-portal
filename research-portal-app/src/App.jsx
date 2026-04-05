@@ -584,23 +584,41 @@ export default function App() {
             <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
-                { type: "researchWiki", label: "YL Research Wiki", icon: "\u{1F4DA}" },
-                { type: "ideaTracker", label: "Idea Tracker", icon: "\u{1F4A1}" },
-                { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
-                { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
-                { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
-                { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
-                { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
-                { type: "equityResearch", label: "Equity Research", icon: "\u{1F4C8}" },
+                { type: "home", label: "Dashboard", icon: "\u{2302}" },
+                { type: null, label: "— Agents —", icon: "" },
                 { type: "watchlistAgent", label: "Alerts", icon: "\u{1F514}" },
                 { type: "qaAgent", label: "Q&A", icon: "\u{2753}" },
                 { type: "researchAgent", label: "Research Agent", icon: "\u{1F50D}" },
                 { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
+                { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
+                { type: "dataVerificationAgent", label: "Data Verification", icon: "\u{2705}" },
+                { type: null, label: "— Trackers —", icon: "" },
+                { type: "ideaTracker", label: "Idea Tracker", icon: "\u{1F4A1}" },
+                { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
+                { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
+                { type: null, label: "— Research —", icon: "" },
+                { type: "equityResearch", label: "Equity Research", icon: "\u{1F4C8}" },
+                { type: null, label: "— Credit Research —", icon: "" },
+                ...Object.entries(SECTORS).filter(([sk]) => sk !== "sources").map(([sk, sec]) => ({
+                  type: "sector", sector: sk, label: sec.label, icon: "\u{1F4C1}"
+                })),
+                { type: null, label: "— Reference —", icon: "" },
+                { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
+                { type: "researchWiki", label: "YL Research Wiki", icon: "\u{1F4DA}" },
+                { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
+                { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
+                { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
                 { type: "sources", label: "Sources", icon: "\u{1F517}" },
                 { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },
-              ].map(item => (
-                <div key={item.type} onClick={() => { setView({ type: item.type }); setEditingField(null); }} style={{
+              ].map((item, idx) => (
+                item.type === null ? (
+                  <div key={idx} style={{ fontSize: 11, fontWeight: 600, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", padding: "14px 18px 4px", marginTop: idx > 0 ? 8 : 0 }}>{item.label.replace(/—/g, "").trim()}</div>
+                ) :
+                <div key={item.type + (item.sector || "") + idx} onClick={() => {
+                  if (item.sector) { setView({ type: "sector", sector: item.sector }); }
+                  else { setView({ type: item.type }); }
+                  setEditingField(null);
+                }} style={{
                   display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
                   background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, cursor: "pointer",
                 }}>
