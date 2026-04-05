@@ -12,6 +12,7 @@ import KnowledgeBase from "./KnowledgeBase";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
 import Dashboard from "./Dashboard";
+import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
 import QAAgent from "./QAAgent";
 import IdeaTracker from "./IdeaTracker";
@@ -320,6 +321,11 @@ export default function App() {
             <span>Idea Tracker</span>
           </div>
 
+          {/* Notes */}
+          <div style={{ ...s.sectorHdr, color: view.type === "quickNotes" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "quickNotes" }); setEditingField(null); }}>
+            <span>Notes</span>
+          </div>
+
           {/* AI Research */}
           <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
             <span>AI Research</span>
@@ -571,6 +577,9 @@ export default function App() {
 
         {/* CREDIT INSTRUMENTS */}
         {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
+
+        {/* QUICK NOTES */}
+        {view.type === "quickNotes" && <QuickNotes />}
 
         {/* SOURCES */}
         {view.type === "sources" && <Sources />}
