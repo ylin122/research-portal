@@ -434,7 +434,7 @@ export default function KnowledgeBase() {
             : "No articles match your search."}
         </div>
       ) : (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 16 }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {filtered.map(a => (
             <ArticleCard key={a.id} article={a} onClick={() => setSelected(a)} onDelete={handleDelete} />
           ))}
