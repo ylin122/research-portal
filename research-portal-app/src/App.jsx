@@ -301,7 +301,7 @@ export default function App() {
               </div>
             </div>
             {agentsOpen && [
-              { key: "watchlist", label: "Watchlist / Alerts" },
+              { key: "watchlist", label: "Alerts" },
               { key: "qa", label: "Q&A" },
               { key: "research", label: "Research" },
               { key: "thesis", label: "Thesis Tracker" },
