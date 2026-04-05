@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 
 const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
 
@@ -12,429 +12,348 @@ const T_ = {
   blue: "#70b0fa", red: "#f87171", redDim: "#7f1d1d",
 };
 
-async function callClaude(prompt, maxTokens = 4000) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) return null;
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514", max_tokens: maxTokens,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  const d = await r.json();
-  return d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
-}
+const PROMPTS_KEY = "research_portal_verify_prompts";
+const FLAGGED_KEY = "research_portal_verify_flagged";
+const ACCEPTED_KEY = "research_portal_verification_accepted";
 
-const STORAGE_KEY = "research_portal_verification";
-function loadResults() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}"); } catch { return {}; } }
-function saveResults(r) { localStorage.setItem(STORAGE_KEY, JSON.stringify(r)); }
+function load(key, fallback) { try { return JSON.parse(localStorage.getItem(key)) || fallback; } catch { return fallback; } }
+function save(key, val) { localStorage.setItem(key, JSON.stringify(val)); }
 
-const TIMER_KEY = "research_portal_verify_timer";
-function loadTimer() { try { return JSON.parse(localStorage.getItem(TIMER_KEY) || "null"); } catch { return null; } }
-function saveTimer(t) { localStorage.setItem(TIMER_KEY, JSON.stringify(t)); }
-
-const STATUS_COLORS = {
-  verified: { bg: T_.greenBg, color: T_.green, border: T_.greenBorder, label: "Verified" },
-  warning: { bg: T_.amberBg, color: T_.amber, border: T_.amberBorder, label: "Warning" },
-  error: { bg: T_.redDim, color: T_.red, border: T_.red, label: "Error" },
-  stale: { bg: T_.grayBadge, color: T_.grayBadgeText, border: T_.textGhost, label: "Stale" },
-  pending: { bg: "transparent", color: T_.textGhost, border: T_.border, label: "Pending" },
-};
-
-// Tab definitions for verification scope
-const VERIFY_TABS = [
-  { key: "credit", label: "Credit Research", color: "#3B82F6" },
-  { key: "equity", label: "Equity Research", color: "#10B981" },
-  { key: "primer", label: "Primer", color: "#0EA5E9" },
-  { key: "businessModels", label: "Business Models", color: "#F59E0B" },
-  { key: "creditInstruments", label: "Credit Instruments", color: "#EF4444" },
-  { key: "aiResearch", label: "AI Research", color: "#8B5CF6" },
-];
-
-const PRIMER_TABS = [
-  "Software", "Semiconductors", "Digital Infrastructure", "IT Services", "IT & BPO",
-  "Healthcare IT", "Healthcare & Pharma", "Healthcare Services", "Internet", "Education",
-  "Comms & Telecom", "Consumer Discretionary", "Consumer Staples", "Financials", "Fintech",
-  "Industrials", "Aerospace & Defense", "Energy & Materials", "Real Estate", "Utilities",
-];
-
-const BIZ_MODEL_TABS = [
-  "Aircraft Leasing", "GPU / Compute Leasing", "Equipment Leasing", "SaaS / Subscription",
-  "Payment Take Rates", "Marketplace / Platform", "REITs", "Regulated Utilities",
-  "Banking / Net Interest", "Franchise Model", "Royalties & Licensing", "Data & Info Services", "Specialty Finance",
-];
-
-const CREDIT_INST_SECTIONS = [
-  "Credit Instruments (Leveraged Loans, HY Bonds, IG Bonds, Private Credit, Mezzanine)",
-  "Structured Credit (CLO, CDO Mechanics, ABS, CMBS/RMBS, Synthetic CLO)",
-  "Derivatives (CDS, CDX Indices, IRS, TRS, Swaptions)",
-  "Hybrid Instruments (Convertibles, Preferred, Warrants, PIK Toggle)",
-  "Distressed (DIP, Exit Financing, Loan-to-Own, Claims Trading)",
+const TAB_OPTIONS = [
+  { key: "credit", label: "Credit Research" },
+  { key: "equity", label: "Equity Research" },
+  { key: "primer", label: "Primer" },
+  { key: "businessModels", label: "Business Models" },
+  { key: "creditInstruments", label: "Credit Instruments" },
+  { key: "aiResearch", label: "AI Research" },
 ];
 
 export default function DataVerificationAgent({ companies, fieldsMap, sectorNotes }) {
-  const [results, setResults] = useState(loadResults);
-  const [running, setRunning] = useState(false);
-  const [currentItem, setCurrentItem] = useState(null);
-  const [progress, setProgress] = useState({ done: 0, total: 0 });
-  const [timerInterval, setTimerInterval] = useState(() => loadTimer());
-  const [nextRun, setNextRun] = useState(null);
-  const timerRef = useRef(null);
-  const [expandedId, setExpandedId] = useState(null);
-  const [activeTab, setActiveTab] = useState("credit");
+  const [prompts, setPrompts] = useState(() => load(PROMPTS_KEY, []));
+  const [flagged, setFlagged] = useState(() => load(FLAGGED_KEY, []));
+  const [accepted, setAccepted] = useState(() => load(ACCEPTED_KEY, []));
 
-  const activeCos = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").sort((a, b) => a.name.localeCompare(b.name));
+  // Prompt editing
+  const [editingPrompt, setEditingPrompt] = useState(null); // null = not editing, "new" = adding, index = editing existing
+  const [draftText, setDraftText] = useState("");
+  const [draftTabs, setDraftTabs] = useState(new Set());
 
-  // Load equity data from localStorage
-  const equities = (() => { try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; } })();
-  const equityNotes = (() => { try { return JSON.parse(localStorage.getItem("research_portal_equity_notes") || "{}"); } catch { return {}; } })();
+  // Flagged issue input
+  const [addingFlag, setAddingFlag] = useState(false);
+  const [flagTitle, setFlagTitle] = useState("");
+  const [flagDetail, setFlagDetail] = useState("");
+  const [flagSeverity, setFlagSeverity] = useState("warning");
+  const [expandedFlag, setExpandedFlag] = useState(null);
 
-  // Timer logic
-  useEffect(() => {
-    if (timerRef.current) clearInterval(timerRef.current);
-    if (timerInterval) {
-      const ms = timerInterval * 60 * 1000;
-      setNextRun(new Date(Date.now() + ms));
-      timerRef.current = setInterval(() => {
-        runFullVerification();
-        setNextRun(new Date(Date.now() + ms));
-      }, ms);
+  // ── Prompt Management ──
+
+  function startNewPrompt() {
+    setEditingPrompt("new");
+    setDraftText("");
+    setDraftTabs(new Set());
+  }
+
+  function startEditPrompt(idx) {
+    const p = prompts[idx];
+    setEditingPrompt(idx);
+    setDraftText(p.text);
+    setDraftTabs(new Set(p.tabs));
+  }
+
+  function savePrompt() {
+    if (!draftText.trim()) return;
+    const entry = { text: draftText.trim(), tabs: [...draftTabs], updated: new Date().toISOString() };
+    let updated;
+    if (editingPrompt === "new") {
+      updated = [...prompts, entry];
+    } else {
+      updated = prompts.map((p, i) => i === editingPrompt ? entry : p);
     }
-    return () => { if (timerRef.current) clearInterval(timerRef.current); };
-  }, [timerInterval]);
-
-  // Generic verify function
-  async function verifyItem(id, name, category, dataText) {
-    if (!dataText || dataText.trim().length < 20) return { status: "stale", issues: ["No data to verify — content is empty or too short."], details: "" };
-
-    const prompt = `You are a data verification agent. Check the following ${category} data for accuracy, errors, outdated information, and inconsistencies. Search the web to verify key claims.
-
-Item: ${name}
-Category: ${category}
-
-Data to verify:
-${dataText.slice(0, 3000)}
-
-Check for:
-1. Factual accuracy (numbers, dates, names, companies, market data)
-2. Outdated information (M&A, leadership changes, market shifts, regulatory changes)
-3. Internal inconsistencies
-4. Missing critical information
-5. Source reliability
-
-Respond ONLY with a JSON object, no markdown backticks:
-{
-  "status": "verified" | "warning" | "error",
-  "score": 0-100,
-  "issues": ["issue 1", "issue 2"],
-  "details": "Summary of findings..."
-}
-
-Use "verified" if data is mostly accurate (score 80+), "warning" if some issues found (score 50-79), "error" if significant problems (score <50).`;
-
-    try {
-      const raw = await callClaude(prompt);
-      if (raw) return JSON.parse(raw.replace(/```json|```/g, "").trim());
-    } catch {}
-    return { status: "warning", score: 0, issues: ["Verification failed — could not reach AI."], details: "" };
+    setPrompts(updated);
+    save(PROMPTS_KEY, updated);
+    setEditingPrompt(null);
+    setDraftText("");
+    setDraftTabs(new Set());
   }
 
-  async function runSingleVerify(itemId, name, category, dataText) {
-    setCurrentItem(name);
-    const result = await verifyItem(itemId, name, category, dataText);
-    result.date = new Date().toISOString();
-    result.companyName = name;
-    result.category = category;
-    const updated = { ...results, [itemId]: result };
-    setResults(updated);
-    saveResults(updated);
-    setCurrentItem(null);
-    return result;
+  function deletePrompt(idx) {
+    const updated = prompts.filter((_, i) => i !== idx);
+    setPrompts(updated);
+    save(PROMPTS_KEY, updated);
   }
 
-  // Build verification items for each tab
-  function getItemsForTab(tab) {
-    switch (tab) {
-      case "credit":
-        return activeCos.map(co => {
-          const fields = fieldsMap[co.id] || {};
-          const text = Object.entries(fields).filter(([k, v]) => v.text && k !== "public_private").map(([k, v]) => `${k}: ${v.text.slice(0, 500)}`).join("\n");
-          return { id: co.id, name: co.name, category: "Credit Research", data: text };
-        });
-      case "equity":
-        return equities.map(eq => {
-          const notes = equityNotes[eq.id] || "";
-          return { id: `eq_${eq.id}`, name: eq.name, category: "Equity Research", data: notes };
-        });
-      case "primer":
-        return PRIMER_TABS.map((name, i) => ({
-          id: `primer_${i}`, name: `${name} Primer`, category: "Primer",
-          data: `Industry primer for ${name}: subsectors, TAM estimates, growth rates, key players, value chain, revenue models, key concepts. Verify that TAM figures, growth rates, company names, and market share data are current and accurate as of 2025-2026.`,
-        }));
-      case "businessModels":
-        return BIZ_MODEL_TABS.map((name, i) => ({
-          id: `bm_${i}`, name, category: "Business Models",
-          data: `Business model analysis for ${name}: economics, key metrics, valuation multiples, real company examples with specific financial figures. Verify that company examples, revenue figures, valuation multiples (P/E, EV/EBITDA, P/B), and market data are accurate and current.`,
-        }));
-      case "creditInstruments":
-        return CREDIT_INST_SECTIONS.map((name, i) => ({
-          id: `ci_${i}`, name, category: "Credit Instruments",
-          data: `Credit instrument reference for ${name}: structure mechanics, pricing conventions, key terms, market size, key players, regulatory framework. Verify that market sizes, spread ranges, recovery rates, and regulatory references are current.`,
-        }));
-      case "aiResearch":
-        return [{ id: "ai_disruption", name: "AI Disruption Analysis", category: "AI Research",
-          data: "AI disruption analysis: moat scores, Jevons Paradox analysis, sector disruption rankings, weighted moat tiers. Verify AI impact assessments, company moat classifications, and disruption rankings are current." }];
-      default:
-        return [];
-    }
+  function toggleDraftTab(key) {
+    setDraftTabs(prev => {
+      const next = new Set(prev);
+      if (next.has(key)) next.delete(key); else next.add(key);
+      return next;
+    });
   }
 
-  async function runFullVerification() {
-    if (running) return;
-    setRunning(true);
+  function copyPromptWithData(idx) {
+    const p = prompts[idx];
+    const dataSection = buildDataExport(p.tabs);
+    const full = `${p.text}\n\n--- DATA TO VERIFY ---\n${dataSection}`;
+    navigator.clipboard.writeText(full);
+  }
 
-    // Gather all items across all tabs
-    const allItems = VERIFY_TABS.flatMap(tab => getItemsForTab(tab.key));
-    setProgress({ done: 0, total: allItems.length });
+  function buildDataExport(tabs) {
+    const activeCos = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts");
+    let equities = [];
+    let equityNotes = {};
+    try { equities = JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch {}
+    try { equityNotes = JSON.parse(localStorage.getItem("research_portal_equity_notes") || "{}"); } catch {}
 
-    const updated = { ...results };
-    for (let i = 0; i < allItems.length; i++) {
-      const item = allItems[i];
-      setCurrentItem(item.name);
-      setProgress({ done: i, total: allItems.length });
-      const result = await verifyItem(item.id, item.name, item.category, item.data);
-      result.date = new Date().toISOString();
-      result.companyName = item.name;
-      result.category = item.category;
-      updated[item.id] = result;
-      setResults({ ...updated });
-      saveResults(updated);
+    const sections = [];
+
+    for (const tabKey of tabs) {
+      switch (tabKey) {
+        case "credit": {
+          const lines = activeCos.map(co => {
+            const fields = fieldsMap[co.id] || {};
+            const parts = Object.entries(fields)
+              .filter(([k, v]) => v.text && k !== "public_private")
+              .map(([k, v]) => `  ${k}: ${v.text.slice(0, 400)}`);
+            return parts.length > 0 ? `${co.name}\n${parts.join("\n")}` : null;
+          }).filter(Boolean);
+          if (lines.length > 0) sections.push(`[CREDIT RESEARCH — ${lines.length} companies]\n${lines.join("\n\n")}`);
+          break;
+        }
+        case "equity": {
+          const lines = equities.map(eq => {
+            const notes = equityNotes[eq.id] || "";
+            return notes ? `${eq.name}: ${notes.slice(0, 500)}` : `${eq.name}: (no notes)`;
+          });
+          if (lines.length > 0) sections.push(`[EQUITY RESEARCH — ${lines.length} equities]\n${lines.join("\n")}`);
+          break;
+        }
+        case "primer":
+          sections.push(`[PRIMER — 20 industry sectors]\nCovers: Software, Semiconductors, Digital Infrastructure, IT Services, Healthcare IT, Healthcare & Pharma, Healthcare Services, Internet, Education, Comms & Telecom, Consumer Discretionary, Consumer Staples, Financials, Fintech, Industrials, Aerospace & Defense, Energy & Materials, Real Estate, Utilities. Each sector has TAM estimates, growth rates, key players, value chains, and revenue models.`);
+          break;
+        case "businessModels":
+          sections.push(`[BUSINESS MODELS — 13 models]\nCovers: Aircraft Leasing, GPU/Compute Leasing, Equipment Leasing, SaaS/Subscription, Payment Take Rates, Marketplace/Platform, REITs, Regulated Utilities, Banking/Net Interest, Franchise, Royalties & Licensing, Data & Info Services, Specialty Finance. Each has economics, key metrics, valuation multiples, and company examples.`);
+          break;
+        case "creditInstruments":
+          sections.push(`[CREDIT INSTRUMENTS — 5 sections]\nCovers: Leveraged Loans & HY/IG Bonds, Structured Credit (CLO, ABS, CMBS), Derivatives (CDS, IRS, TRS), Hybrid Instruments (Convertibles, Preferred, PIK), Distressed (DIP, Loan-to-Own, Claims Trading). Each has mechanics, pricing, market size, and analysis frameworks.`);
+          break;
+        case "aiResearch":
+          sections.push(`[AI RESEARCH]\nAI disruption analysis: moat scores, Jevons Paradox analysis, sector disruption rankings, weighted moat tiers across 20+ sectors.`);
+          break;
+      }
     }
 
-    setCurrentItem(null);
-    setRunning(false);
-    setProgress({ done: allItems.length, total: allItems.length });
+    return sections.join("\n\n");
   }
 
-  async function runTabVerification(tabKey) {
-    if (running) return;
-    setRunning(true);
-    const items = getItemsForTab(tabKey);
-    setProgress({ done: 0, total: items.length });
+  // ── Flagged Issues ──
 
-    const updated = { ...results };
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      setCurrentItem(item.name);
-      setProgress({ done: i, total: items.length });
-      const result = await verifyItem(item.id, item.name, item.category, item.data);
-      result.date = new Date().toISOString();
-      result.companyName = item.name;
-      result.category = item.category;
-      updated[item.id] = result;
-      setResults({ ...updated });
-      saveResults(updated);
-    }
-
-    setCurrentItem(null);
-    setRunning(false);
-    setProgress({ done: items.length, total: items.length });
+  function addFlag() {
+    if (!flagTitle.trim()) return;
+    const entry = { title: flagTitle.trim(), detail: flagDetail.trim(), severity: flagSeverity, date: new Date().toISOString() };
+    const updated = [entry, ...flagged];
+    setFlagged(updated);
+    save(FLAGGED_KEY, updated);
+    setFlagTitle("");
+    setFlagDetail("");
+    setFlagSeverity("warning");
+    setAddingFlag(false);
   }
 
-  function setTimer(minutes) {
-    setTimerInterval(minutes);
-    saveTimer(minutes);
+  function acceptFlag(idx) {
+    const issue = flagged[idx];
+    const updatedAccepted = [{ ...issue, acceptedDate: new Date().toISOString() }, ...accepted];
+    setAccepted(updatedAccepted);
+    save(ACCEPTED_KEY, updatedAccepted);
+    const updatedFlagged = flagged.filter((_, i) => i !== idx);
+    setFlagged(updatedFlagged);
+    save(FLAGGED_KEY, updatedFlagged);
+    setExpandedFlag(null);
   }
 
-  const timerOptions = [
-    { label: "Off", value: null },
-    { label: "30m", value: 30 },
-    { label: "1h", value: 60 },
-    { label: "4h", value: 240 },
-    { label: "12h", value: 720 },
-    { label: "24h", value: 1440 },
-  ];
+  function removeFlag(idx) {
+    const updated = flagged.filter((_, i) => i !== idx);
+    setFlagged(updated);
+    save(FLAGGED_KEY, updated);
+  }
 
-  // Current tab items and stats
-  const currentItems = getItemsForTab(activeTab);
-  const currentItemIds = new Set(currentItems.map(i => i.id));
+  function dismissAccepted(idx) {
+    const updated = accepted.filter((_, i) => i !== idx);
+    setAccepted(updated);
+    save(ACCEPTED_KEY, updated);
+  }
 
-  const allResults = Object.entries(results).filter(([id]) => currentItemIds.has(id));
-  const verified = allResults.filter(([, r]) => r.status === "verified").length;
-  const warnings = allResults.filter(([, r]) => r.status === "warning").length;
-  const errors = allResults.filter(([, r]) => r.status === "error").length;
-  const unchecked = currentItems.length - allResults.length;
+  function clearAccepted() {
+    setAccepted([]);
+    save(ACCEPTED_KEY, []);
+  }
 
-  // Global stats
-  const globalVerified = Object.values(results).filter(r => r.status === "verified").length;
-  const globalWarnings = Object.values(results).filter(r => r.status === "warning").length;
-  const globalErrors = Object.values(results).filter(r => r.status === "error").length;
+  // ── Shared styles ──
+  const panelStyle = { background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 };
+  const headerStyle = { fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3 };
+  const btnSmall = (bg, color, border) => ({
+    padding: "5px 14px", fontSize: 11, fontWeight: 500, borderRadius: 6, cursor: "pointer",
+    background: bg, color, border: `1px solid ${border}`, fontFamily: FONT,
+  });
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: 1000, fontFamily: FONT }}>
-      <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Data Verification Agent</h1>
-      <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Verifies data accuracy across every tab in your portal. Select a section to verify, or run full verification across all tabs.
+    <div style={{ padding: "36px 44px", maxWidth: 960, fontFamily: FONT }}>
+      <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Data Verification</h1>
+      <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
+        Track flagged issues, manage accepted changes, and build verification prompts to run against your data.
       </p>
 
-      {/* Controls */}
-      <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
-          <button style={{
-            padding: "8px 20px", fontSize: 13, fontWeight: 500, borderRadius: 8, cursor: "pointer",
-            background: running ? T_.border : T_.accent, color: running ? T_.textDim : "#000",
-            border: "none", fontFamily: FONT, opacity: running ? 0.6 : 1,
-          }} onClick={runFullVerification} disabled={running}>
-            {running ? `Verifying ${currentItem || "..."}` : "Verify All Tabs"}
-          </button>
-          <button style={{
-            padding: "8px 20px", fontSize: 13, fontWeight: 500, borderRadius: 8, cursor: "pointer",
-            background: running ? T_.border : T_.blue + "22", color: running ? T_.textDim : T_.blue,
-            border: `1px solid ${running ? T_.border : T_.blue + "44"}`, fontFamily: FONT, opacity: running ? 0.6 : 1,
-          }} onClick={() => runTabVerification(activeTab)} disabled={running}>
-            Verify {VERIFY_TABS.find(t => t.key === activeTab)?.label}
-          </button>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 8, marginLeft: "auto" }}>
-            <span style={{ fontSize: 12, color: T_.textGhost }}>Auto-run:</span>
-            {timerOptions.map(opt => (
-              <span key={opt.label} style={{
-                padding: "4px 12px", fontSize: 11, borderRadius: 5, cursor: "pointer", fontFamily: FONT,
-                background: timerInterval === opt.value ? T_.amberBg : "transparent",
-                color: timerInterval === opt.value ? T_.amber : T_.textGhost,
-                border: `1px solid ${timerInterval === opt.value ? T_.amberBorder : T_.border}`,
-              }} onClick={() => setTimer(opt.value)}>{opt.label}</span>
-            ))}
+      {/* ── Section 1: Flagged Issues ── */}
+      <div style={panelStyle}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <span style={headerStyle}>Flagged Issues</span>
+          <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+            {flagged.length > 0 && (
+              <span style={{ fontSize: 11, color: T_.textGhost }}>
+                {flagged.filter(i => i.severity === "error").length} errors &middot; {flagged.filter(i => i.severity === "warning").length} warnings
+              </span>
+            )}
+            <button onClick={() => setAddingFlag(!addingFlag)} style={btnSmall(addingFlag ? T_.border : T_.accent + "22", addingFlag ? T_.textDim : T_.accent, addingFlag ? T_.border : T_.accent + "44")}>
+              {addingFlag ? "Cancel" : "+ Add Issue"}
+            </button>
           </div>
         </div>
 
-        {timerInterval && nextRun && (
-          <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 8 }}>
-            Next auto-run: {nextRun.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" })} — verifies all tabs
-          </div>
-        )}
-
-        {running && (
-          <div style={{ marginTop: 14 }}>
-            <div style={{ height: 4, background: T_.border, borderRadius: 2, overflow: "hidden" }}>
-              <div style={{ height: "100%", background: T_.accent, borderRadius: 2, width: `${(progress.done / Math.max(progress.total, 1)) * 100}%`, transition: "width 0.3s" }} />
+        {addingFlag && (
+          <div style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 12 }}>
+            <input value={flagTitle} onChange={e => setFlagTitle(e.target.value)} placeholder="Issue title..."
+              style={{ width: "100%", background: "transparent", border: "none", outline: "none", color: T_.text, fontSize: 13, fontFamily: FONT, marginBottom: 8 }} />
+            <textarea value={flagDetail} onChange={e => setFlagDetail(e.target.value)} placeholder="Details — what's wrong, what to check..."
+              rows={3} style={{ width: "100%", background: "transparent", border: `1px solid ${T_.border}`, borderRadius: 6, outline: "none", color: T_.textMid, fontSize: 12, fontFamily: FONT, padding: 8, resize: "vertical", marginBottom: 8 }} />
+            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+              {["error", "warning"].map(sev => (
+                <span key={sev} onClick={() => setFlagSeverity(sev)} style={{
+                  padding: "3px 12px", fontSize: 11, borderRadius: 5, cursor: "pointer",
+                  background: flagSeverity === sev ? (sev === "error" ? T_.redDim : T_.amberBg) : "transparent",
+                  color: flagSeverity === sev ? (sev === "error" ? T_.red : T_.amber) : T_.textGhost,
+                  border: `1px solid ${flagSeverity === sev ? (sev === "error" ? T_.red + "44" : T_.amberBorder) : T_.border}`,
+                }}>{sev}</span>
+              ))}
+              <button onClick={addFlag} style={{ ...btnSmall(T_.accent, "#000", T_.accent), marginLeft: "auto" }}>Add</button>
             </div>
-            <span style={{ fontSize: 11, color: T_.textGhost, marginTop: 6, display: "block" }}>
-              {progress.done} / {progress.total} items checked
-            </span>
           </div>
         )}
-      </div>
 
-      {/* Global stats bar */}
-      <div style={{ display: "flex", gap: 16, marginBottom: 16, fontSize: 12, color: T_.textGhost }}>
-        <span>Global: <span style={{ color: T_.green, fontWeight: 600 }}>{globalVerified}</span> verified</span>
-        <span><span style={{ color: T_.amber, fontWeight: 600 }}>{globalWarnings}</span> warnings</span>
-        <span><span style={{ color: T_.red, fontWeight: 600 }}>{globalErrors}</span> errors</span>
-      </div>
+        {flagged.length === 0 && !addingFlag && (
+          <div style={{ textAlign: "center", padding: "24px 0", color: T_.textGhost, fontSize: 13 }}>
+            No flagged issues. Add issues manually or paste findings from verification runs.
+          </div>
+        )}
 
-      {/* Tab selector */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}`, flexWrap: "wrap" }}>
-        {VERIFY_TABS.map(tab => {
-          const tabItems = getItemsForTab(tab.key);
-          const tabResults = tabItems.filter(i => results[i.id]);
-          const tabErrors = tabResults.filter(i => results[i.id]?.status === "error" || results[i.id]?.status === "warning").length;
+        {flagged.map((issue, idx) => {
+          const isError = issue.severity === "error";
+          const expanded = expandedFlag === idx;
           return (
-            <button key={tab.key} onClick={() => setActiveTab(tab.key)} style={{
-              padding: "10px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
-              border: "none", borderBottom: activeTab === tab.key ? `2px solid ${tab.color}` : "2px solid transparent",
-              background: "transparent", color: activeTab === tab.key ? T_.text : T_.textGhost,
-              fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
-              display: "flex", alignItems: "center", gap: 6,
-            }}>
-              {tab.label}
-              <span style={{ fontSize: 10, color: T_.textGhost }}>({tabItems.length})</span>
-              {tabErrors > 0 && <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 4, background: T_.amberBg, color: T_.amber }}>{tabErrors}</span>}
-            </button>
+            <div key={idx} style={{ borderRadius: 8, marginBottom: 6, overflow: "hidden", border: `1px solid ${isError ? T_.red + "44" : T_.amberBorder + "66"}` }}>
+              <div style={{
+                display: "flex", alignItems: "center", gap: 10, padding: "11px 14px", cursor: "pointer",
+                background: isError ? T_.redDim + "33" : T_.amberBg + "66",
+              }} onClick={() => setExpandedFlag(expanded ? null : idx)}>
+                <span style={{ fontSize: 13, color: isError ? T_.red : T_.amber }}>{isError ? "\u2716" : "\u26A0"}</span>
+                <span style={{ fontSize: 13, fontWeight: 500, color: T_.text, flex: 1 }}>{issue.title}</span>
+                <span style={{ fontSize: 11, color: T_.textGhost }}>
+                  {new Date(issue.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+                </span>
+                <span style={{ fontSize: 10, color: T_.textGhost, transform: expanded ? "rotate(180deg)" : "none", transition: "transform 0.15s" }}>&#9660;</span>
+              </div>
+              {expanded && (
+                <div style={{ padding: "14px 16px", borderTop: `1px solid ${T_.borderLight}`, background: T_.bgPanel }}>
+                  {issue.detail && <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6, marginBottom: 12, whiteSpace: "pre-wrap" }}>{issue.detail}</div>}
+                  <div style={{ display: "flex", gap: 8 }}>
+                    <button onClick={() => acceptFlag(idx)} style={btnSmall(T_.greenBg, T_.green, T_.greenBorder)}>Accept &amp; Resolve</button>
+                    <button onClick={() => removeFlag(idx)} style={btnSmall("transparent", T_.textGhost, T_.border)}>Dismiss</button>
+                  </div>
+                </div>
+              )}
+            </div>
           );
         })}
       </div>
 
-      {/* Tab stats */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 10, marginBottom: 20 }}>
-        {[
-          { label: "Verified", count: verified, color: T_.green, bg: T_.greenBg },
-          { label: "Warnings", count: warnings, color: T_.amber, bg: T_.amberBg },
-          { label: "Errors", count: errors, color: T_.red, bg: T_.redDim },
-          { label: "Unchecked", count: unchecked, color: T_.textGhost, bg: T_.grayBadge },
-        ].map(s => (
-          <div key={s.label} style={{ background: s.bg, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "12px 14px", textAlign: "center" }}>
-            <div style={{ fontSize: 20, fontWeight: 600, color: s.color }}>{s.count}</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 2 }}>{s.label}</div>
+      {/* ── Section 2: Accepted ── */}
+      <div style={panelStyle}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <span style={headerStyle}>Accepted</span>
+          {accepted.length > 0 && (
+            <span style={{ fontSize: 11, color: T_.textGhost, cursor: "pointer" }} onClick={clearAccepted}>Clear all</span>
+          )}
+        </div>
+
+        {accepted.length === 0 && (
+          <div style={{ textAlign: "center", padding: "24px 0", color: T_.textGhost, fontSize: 13 }}>
+            No accepted items yet.
+          </div>
+        )}
+
+        {accepted.map((item, idx) => (
+          <div key={idx} style={{
+            display: "flex", alignItems: "center", gap: 10, padding: "9px 14px", marginBottom: 4,
+            borderRadius: 8, border: `1px solid ${T_.greenBorder}33`, background: T_.greenBg + "44",
+          }}>
+            <span style={{ fontSize: 12, color: T_.green }}>&#10003;</span>
+            <span style={{ fontSize: 13, color: T_.text, flex: 1 }}>{item.title}</span>
+            <span style={{ fontSize: 11, color: T_.textGhost }}>
+              {new Date(item.acceptedDate).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+            </span>
+            <span style={{ fontSize: 11, color: T_.textGhost, cursor: "pointer", padding: "2px 6px" }}
+              onClick={() => dismissAccepted(idx)}>&#10005;</span>
           </div>
         ))}
       </div>
 
-      {/* Items for current tab */}
-      {currentItems.map(item => {
-        const r = results[item.id];
-        const st = r ? STATUS_COLORS[r.status] || STATUS_COLORS.pending : STATUS_COLORS.pending;
-        const expanded = expandedId === item.id;
-
-        return (
-          <div key={item.id} style={{
-            background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10,
-            padding: "14px 20px", marginBottom: 8, cursor: "pointer",
-          }} onClick={() => setExpandedId(expanded ? null : item.id)}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{
-                fontSize: 10, padding: "3px 10px", borderRadius: 4, fontFamily: FONT,
-                background: st.bg, color: st.color, border: `1px solid ${st.border}`, minWidth: 60, textAlign: "center",
-              }}>{st.label}</span>
-              <span style={{ fontSize: 14, fontWeight: 500, color: T_.text, flex: 1 }}>{item.name}</span>
-              {r?.score != null && (
-                <span style={{ fontSize: 12, fontWeight: 500, color: r.score >= 80 ? T_.green : r.score >= 50 ? T_.amber : T_.red }}>
-                  {r.score}/100
-                </span>
-              )}
-              {r?.date && (
-                <span style={{ fontSize: 11, color: T_.textGhost }}>
-                  {new Date(r.date).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
-                </span>
-              )}
-              {!running && (
-                <span style={{ fontSize: 11, color: T_.accent, padding: "2px 8px", cursor: "pointer" }}
-                  onClick={e => { e.stopPropagation(); runSingleVerify(item.id, item.name, item.category, item.data); }}>verify</span>
-              )}
-            </div>
-            {expanded && r && (
-              <div style={{ marginTop: 12, paddingTop: 12, borderTop: `1px solid ${T_.borderLight}` }}>
-                {r.issues?.length > 0 && (
-                  <div style={{ marginBottom: 10 }}>
-                    {r.issues.map((issue, i) => (
-                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8, marginBottom: 6 }}>
-                        <span style={{ color: r.status === "error" ? T_.red : T_.amber, fontSize: 12, flexShrink: 0 }}>
-                          {r.status === "error" ? "\u2716" : "\u26A0"}
-                        </span>
-                        <span style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.5 }}>{issue}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {r.details && (
-                  <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.6, whiteSpace: "pre-wrap" }}>
-                    {r.details}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        );
-      })}
-
-      {currentItems.length === 0 && (
-        <div style={{ color: T_.textDim, fontSize: 14, textAlign: "center", padding: "40px 0" }}>
-          No items to verify in this section.
+      {/* ── Section 3: Verification Prompts ── */}
+      <div style={panelStyle}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
+          <span style={headerStyle}>Verification Prompts</span>
+          {editingPrompt === null && (
+            <button onClick={startNewPrompt} style={btnSmall(T_.accent + "22", T_.accent, T_.accent + "44")}>+ Add Prompt</button>
+          )}
         </div>
-      )}
+
+        {/* Prompt editor */}
+        {editingPrompt !== null && (
+          <div style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: 16, marginBottom: 14 }}>
+            <textarea value={draftText} onChange={e => setDraftText(e.target.value)}
+              placeholder="Write your verification prompt..."
+              rows={5} style={{
+                width: "100%", background: "transparent", border: `1px solid ${T_.border}`, borderRadius: 6,
+                outline: "none", color: T_.text, fontSize: 13, fontFamily: FONT, padding: 10, resize: "vertical", marginBottom: 12, lineHeight: 1.6,
+              }} />
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={savePrompt} style={btnSmall(T_.accent, "#000", T_.accent)}>Save Prompt</button>
+              <button onClick={() => { setEditingPrompt(null); setDraftText(""); setDraftTabs(new Set()); }}
+                style={btnSmall("transparent", T_.textGhost, T_.border)}>Cancel</button>
+            </div>
+          </div>
+        )}
+
+        {/* Saved prompts */}
+        {prompts.length === 0 && editingPrompt === null && (
+          <div style={{ textAlign: "center", padding: "24px 0", color: T_.textGhost, fontSize: 13 }}>
+            No prompts yet. Add a verification prompt to get started.
+          </div>
+        )}
+
+        {prompts.map((p, idx) => (
+          <div key={idx} style={{
+            background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 8,
+          }}>
+            <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6, marginBottom: 10, whiteSpace: "pre-wrap" }}>{p.text}</div>
+            <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+              <button onClick={() => { navigator.clipboard.writeText(p.text); }} style={btnSmall(T_.blue + "22", T_.blue, T_.blue + "44")}>Copy</button>
+              <button onClick={() => startEditPrompt(idx)} style={btnSmall("transparent", T_.textGhost, T_.border)}>Edit</button>
+              <button onClick={() => deletePrompt(idx)} style={btnSmall("transparent", T_.textGhost, T_.border)}>Delete</button>
+              <span style={{ fontSize: 11, color: T_.textGhost, marginLeft: "auto" }}>
+                {new Date(p.updated).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
