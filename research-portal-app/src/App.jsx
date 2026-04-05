@@ -11,6 +11,7 @@ import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
+import Dashboard from "./Dashboard";
 import WatchlistAgent from "./WatchlistAgent";
 import QAAgent from "./QAAgent";
 import IdeaTracker from "./IdeaTracker";
@@ -447,53 +448,10 @@ export default function App() {
           </div>
         )}
 
-        {/* HOME */}
+        {/* HOME / DASHBOARD */}
         {view.type === "home" && (
-          <div style={s.page}>
-            <h1 style={s.pageTitle}>Research Portal</h1>
-            <p style={s.pageSub}>
-              {companies.length === 0
-                ? 'Your private company research wiki. Click "+ Add company" under any sector in the sidebar to get started.'
-                : `Tracking ${companies.length} companies across ${Object.keys(SECTORS).length} sectors.`}
-            </p>
-            {companies.length > 0 && (
-              <div style={{ display: "flex", gap: 8, marginBottom: 20, alignItems: "center", flexWrap: "wrap" }}>
-                <span style={{ fontSize: 12, color: T_.textGhost, marginRight: 4 }}>Research Agent Priority:</span>
-                {["", "High", "Medium", "Low"].map(p => (
-                  <span key={p} style={{
-                    ...s.prPill, padding: "5px 14px", fontSize: 12,
-                    ...(priorityFilter === p ? {
-                      background: p === "High" ? T_.greenBg : p === "Medium" ? T_.amberBg : p === "Low" ? T_.grayBadge : "rgba(245,158,11,0.1)",
-                      color: p === "High" ? T_.green : p === "Medium" ? T_.amber : p === "Low" ? T_.grayBadgeText : T_.accent,
-                      borderColor: p === "High" ? T_.greenBorder : p === "Medium" ? T_.amberBorder : p === "Low" ? T_.textGhost : T_.accent,
-                    } : {})
-                  }} onClick={() => setPriorityFilter(p)}>{p || "All"}</span>
-                ))}
-              </div>
-            )}
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0,1fr))", gap: 8, marginBottom: 32 }}>
-              {Object.entries(SECTORS).filter(([sk]) => sk !== "prompts" && sk !== "sources").map(([sk, sec]) => {
-                const cos = getCos(sk);
-                return (
-                  <div key={sk} style={{ ...s.statCard, padding: "12px 14px" }} onClick={() => setView({ type: "sector", sector: sk })}>
-                    <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 4 }}>{sec.label}</div>
-                    <div style={{ fontSize: 18, fontWeight: 500, color: T_.text }}>{cos.length}</div>
-                  </div>
-                );
-              })}
-            </div>
-            {recentUpdates().length > 0 && (
-              <div style={s.section}>
-                <div style={s.sectionHdr}>Recent updates</div>
-                {recentUpdates().map((u, i) => (
-                  <div key={`${u.cid}-${u.fieldKey}-${i}`} style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" }} onClick={() => setView({ type: "company", id: u.cid })}>
-                    <span style={{ fontSize: 13, fontWeight: 500, color: T_.accent, minWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{u.coName}</span>
-                    <span style={{ fontSize: 12, color: T_.textDim, minWidth: 140 }}>{u.fieldLabel}</span>
-                    <span style={{ fontSize: 12, color: T_.textGhost, marginLeft: "auto", flexShrink: 0 }}>{fmtShort(u.date)}</span>
-                  </div>
-                ))}
-              </div>
-            )}
+          <div style={{ ...s.page, maxWidth: "none" }}>
+            <Dashboard companies={companies} setView={setView} />
           </div>
         )}
 
