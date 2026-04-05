@@ -308,14 +308,14 @@ export default function App() {
             ))}
           </div>
 
-          {/* AI Research */}
-          <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
-            <span>AI Research</span>
-          </div>
-
           {/* Idea Tracker */}
           <div style={{ ...s.sectorHdr, color: view.type === "ideaTracker" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "ideaTracker" }); setEditingField(null); }}>
             <span>Idea Tracker</span>
+          </div>
+
+          {/* AI Research */}
+          <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
+            <span>AI Research</span>
           </div>
 
           {/* Equity Research */}
