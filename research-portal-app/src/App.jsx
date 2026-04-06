@@ -9,18 +9,20 @@ import BusinessModels from "./BusinessModels";
 import CreditInstruments from "./CreditInstruments";
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
+import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
 import QAAgent from "./QAAgent";
-import IdeaTracker from "./IdeaTracker";
+// import IdeaTracker from "./IdeaTracker";
 import CoreweaveReview from "./CoreweaveReview";
 import AppliedDigitalReview from "./AppliedDigitalReview";
 import CipherDigitalReview from "./CipherDigitalReview";
 import TerawulfReview from "./TerawulfReview";
 import TractCapitalReview from "./TractCapitalReview";
+import IndustryResearch from "./IndustryResearch";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -114,6 +116,7 @@ export default function App() {
   const [companiesOpen, setCompaniesOpen] = useState(false);
   const [agentsOpen, setAgentsOpen] = useState(false);
   const [equityOpen, setEquityOpen] = useState(false);
+  const [industryOpen, setIndustryOpen] = useState(false);
   const [equities, setEquities] = useState(() => {
     try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
   });
@@ -321,10 +324,7 @@ export default function App() {
             ))}
           </div>
 
-          {/* Idea Tracker */}
-          <div style={{ ...s.sectorHdr, color: view.type === "ideaTracker" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "ideaTracker" }); setEditingField(null); }}>
-            <span>Idea Tracker</span>
-          </div>
+          {/* Idea Tracker — removed */}
 
           {/* AI Research */}
           <div style={{ ...s.sectorHdr, color: view.type === "aidisruption" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "aidisruption" }); setEditingField(null); }}>
@@ -334,6 +334,37 @@ export default function App() {
           {/* Notes */}
           <div style={{ ...s.sectorHdr, color: view.type === "quickNotes" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "quickNotes" }); setEditingField(null); }}>
             <span>Notes</span>
+          </div>
+
+          {/* Industry Research */}
+          <div>
+            <div style={s.sectorHdr} onClick={() => setIndustryOpen(p => !p)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: industryOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                <span style={{ color: view.type === "industryResearch" ? T_.accent : T_.textDim }}>Industry Research</span>
+              </div>
+              <span style={s.badge}>7</span>
+            </div>
+            {industryOpen && (
+              <>
+                {[
+                  { key: "ailabs", label: "AI Labs" },
+                  { key: "ainative", label: "AI-Native" },
+                  { key: "capex", label: "AI Capex" },
+                  { key: "semicapex", label: "Semi Capex" },
+                  { key: "compute", label: "Compute" },
+                  { key: "chiproadmap", label: "GPU/ASIC" },
+                  { key: "aiinfra", label: "AI Infra" },
+                ].map(tab => {
+                  const active = view.type === "industryResearch" && view.sub === tab.key;
+                  return (
+                    <div key={tab.key} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 38 }} onClick={() => { setView({ type: "industryResearch", sub: tab.key }); setEditingField(null); }}>
+                      <span>{tab.label}</span>
+                    </div>
+                  );
+                })}
+              </>
+            )}
           </div>
 
           {/* Equity Research */}
@@ -409,6 +440,11 @@ export default function App() {
           {/* YL Research Wiki */}
           <div style={{ ...s.sectorHdr, color: view.type === "researchWiki" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "researchWiki" }); setEditingField(null); }}>
             <span>YL Research Wiki</span>
+          </div>
+
+          {/* Prompts */}
+          <div style={{ ...s.sectorHdr, color: view.type === "prompts" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "prompts" }); setEditingField(null); }}>
+            <span>Prompts</span>
           </div>
 
           {/* Business Models */}
@@ -503,6 +539,9 @@ export default function App() {
         {/* AI DISRUPTION */}
         {view.type === "aidisruption" && <AIDisruption companies={companies} initialTab={view.sub} />}
 
+        {/* INDUSTRY RESEARCH */}
+        {view.type === "industryResearch" && <IndustryResearch initialTab={view.sub} />}
+
         {/* RESEARCH AGENT */}
         {view.type === "researchAgent" && <ResearchAgentPage companies={companies} onSetPriority={setPriority} researchResults={researchResults} />}
 
@@ -570,6 +609,13 @@ export default function App() {
           </div>
         )}
 
+        {/* PROMPTS */}
+        {view.type === "prompts" && (
+          <div style={{ ...s.page, maxWidth: "none" }}>
+            <Prompts />
+          </div>
+        )}
+
         {/* KNOWLEDGE / INTERESTS */}
         {view.type === "knowledge" && (
           <div style={{ ...s.page, maxWidth: "none" }}>
@@ -598,8 +644,8 @@ export default function App() {
                 { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
                 { type: "dataVerificationAgent", label: "Data Verification", icon: "\u{2705}" },
                 { type: null, label: "— Trackers —", icon: "" },
-                { type: "ideaTracker", label: "Idea Tracker", icon: "\u{1F4A1}" },
                 { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
+                { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },
                 { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
                 { type: null, label: "— Research —", icon: "" },
                 { type: "equityResearch", label: "Equity Research", icon: "\u{1F4C8}" },
@@ -644,12 +690,7 @@ export default function App() {
         {/* AUDIT LOG */}
         {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
 
-        {/* IDEA TRACKER */}
-        {view.type === "ideaTracker" && (
-          <div style={s.page}>
-            <IdeaTracker />
-          </div>
-        )}
+        {/* IDEA TRACKER — removed */}
 
         {/* COMPANY */}
         {view.type === "company" && cur && (
@@ -782,8 +823,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Research Notes */}
-            {cur.sector !== "sources" && (
+            {/* Research Notes — hidden for companies with dedicated review tabs */}
+            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Research notes</span>
@@ -805,9 +846,8 @@ export default function App() {
               </div>
             )}
 
-            {/* Structured Fields */}
-            {/* Moat vs AI Scoring */}
-            {cur.sector !== "sources" && (() => {
+            {/* Moat vs AI Scoring — hidden for companies with dedicated review tabs */}
+            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (() => {
               const MOAT_TIERS = [
                 { label: "T1 — Structural (3x)", weight: 3, color: "#34d673", moats: [
                   { key: "data", name: "Proprietary Data" },
@@ -904,8 +944,8 @@ export default function App() {
               );
             })()}
 
-            {/* Structured Fields */}
-            {(cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+            {/* Structured Fields — hidden for companies with dedicated review tabs */}
+            {!["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
               const fd = curFields?.[f.key];
               const isEditing = editingField === f.key;
               const hasContent = fd?.text?.trim();
@@ -948,11 +988,10 @@ export default function App() {
           { type: "home", label: "Home", icon: "\u2302" },
           { type: "researchWiki", label: "Wiki", icon: "\u{1F4DA}" },
           { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
-          { type: "ideaTracker", label: "Ideas", icon: "\u{1F4A1}" },
           { type: "mobileMore", label: "More", icon: "\u2261" },
         ].map(tab => {
           const isActive = tab.type === "mobileMore"
-            ? !["home", "researchWiki", "quickNotes", "ideaTracker"].includes(view.type)
+            ? !["home", "researchWiki", "quickNotes"].includes(view.type)
             : view.type === tab.type;
           return (
             <div key={tab.type} onClick={() => {

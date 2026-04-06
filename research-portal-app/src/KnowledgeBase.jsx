@@ -47,6 +47,14 @@ function Section({ title, color, children }) {
   );
 }
 
+function fmtDate(d) {
+  if (!d) return "";
+  try {
+    const dt = new Date(d.includes("T") ? d : d + "T00:00:00");
+    return dt.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+  } catch { return d; }
+}
+
 // ─── Article Card ────────────────────────────────────
 function ArticleCard({ article, onClick, onDelete }) {
   const categoryColors = { articles: T_.blue, notes: T_.green, threads: T_.amber, papers: T_.accent };
@@ -81,7 +89,9 @@ function ArticleCard({ article, onClick, onDelete }) {
             </span>
           )}
         </div>
-        <span style={{ fontSize: 11, color: T_.textGhost }}>{article.date || ""}</span>
+        {article.published_date && <span style={{ fontSize: 11, color: T_.textMid, fontWeight: 500 }}>Published {article.published_date}</span>}
+        {article.published_date && article.date && <span style={{ fontSize: 11, color: T_.textGhost }}> · </span>}
+        <span style={{ fontSize: 11, color: T_.textGhost }}>Saved {fmtDate(article.date)}</span>
       </div>
       <div style={{ fontSize: 15, fontWeight: 600, color: T_.text, marginBottom: 8, lineHeight: 1.4 }}>
         {article.title || "Untitled"}
@@ -145,7 +155,9 @@ function ArticleDetail({ article, onBack }) {
           {article.category || "article"}
         </span>
         {hasAnalysis && <span style={{ fontSize: 10, fontWeight: 600, color: T_.green, background: `${T_.green}15`, padding: "3px 8px", borderRadius: 4 }}>Analyzed</span>}
-        <span style={{ fontSize: 12, color: T_.textGhost }}>{article.date}</span>
+        {article.published_date && <span style={{ fontSize: 12, color: T_.textMid, fontWeight: 500 }}>Published {article.published_date}</span>}
+        {article.published_date && <span style={{ fontSize: 12, color: T_.textGhost }}> · </span>}
+        <span style={{ fontSize: 12, color: T_.textGhost }}>Saved {fmtDate(article.date)}</span>
       </div>
       <h1 style={{ fontSize: 24, fontWeight: 700, color: T_.text, marginBottom: 8, lineHeight: 1.3 }}>
         {article.title}
@@ -184,20 +196,6 @@ function ArticleDetail({ article, onBack }) {
               <span style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{t}</span>
             </div>
           ))}
-        </Section>
-      )}
-
-      {/* Key Metrics */}
-      {metrics.length > 0 && (
-        <Section title="Key Metrics" color={T_.blue}>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 10 }}>
-            {metrics.map((m, i) => (
-              <div key={i} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", textAlign: "center" }}>
-                <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>{m.label}</div>
-                <div style={{ fontSize: 18, fontWeight: 700, color: T_.blue }}>{m.value}</div>
-              </div>
-            ))}
-          </div>
         </Section>
       )}
 
