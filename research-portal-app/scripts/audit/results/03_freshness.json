@@ -1,0 +1,1532 @@
+{
+  "check": "03_freshness",
+  "timestamp": "2026-04-06T13:35:48.768Z",
+  "summary": {
+    "news": {
+      "fresh": 1,
+      "stale": 0,
+      "very_stale": 0,
+      "missing": 156
+    },
+    "notes": {
+      "companies_with_notes": 48,
+      "companies_without_notes": 109
+    },
+    "stale_fields": 16
+  },
+  "news_flags": [
+    {
+      "company": "Cvent",
+      "id": "cvent_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cohesity",
+      "id": "cohesity_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Fortra",
+      "id": "fortra_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "McAfee Enterprise",
+      "id": "mcafee_ent_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "WatchGuard Technologies",
+      "id": "watchguard_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Sophos",
+      "id": "sophos_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Proofpoint",
+      "id": "proofpoint_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ping Identity",
+      "id": "pingid_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Imprivata",
+      "id": "imprivata_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "OpenText",
+      "id": "opentext_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "N-able",
+      "id": "nable_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Trace3",
+      "id": "trace3_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Veracode",
+      "id": "veracode_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Qlik",
+      "id": "qlik_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Gen Digital",
+      "id": "gendigital_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Datasite",
+      "id": "datasite_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ellucian",
+      "id": "ellucian_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Conga",
+      "id": "conga_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "BMC Software",
+      "id": "bmcsoftware_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Darktrace",
+      "id": "darktrace_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Corel (Alludo)",
+      "id": "corel_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Dye & Durham",
+      "id": "dyedurham_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Instructure",
+      "id": "instructure_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Veeam Software",
+      "id": "veeam_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SmartBear",
+      "id": "smartbear_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Celestica",
+      "id": "celestica_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Barracuda Networks",
+      "id": "barracuda_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "UKG",
+      "id": "ukg_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Dayforce",
+      "id": "dayforce_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Epicor Software",
+      "id": "epicor_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Virtusa",
+      "id": "virtusa_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Sovos Compliance",
+      "id": "sovos_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Jaggaer",
+      "id": "jaggaer_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SS&C Technologies",
+      "id": "ssctechnologies_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SonarSource",
+      "id": "sonarsource_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Allegro MicroSystems",
+      "id": "allegro_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Entegris",
+      "id": "entegris_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cotiviti",
+      "id": "cotiviti_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Waystar",
+      "id": "waystar_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Zywave",
+      "id": "zywave_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ultra Clean Holdings",
+      "id": "ultraclean_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Colibri Group",
+      "id": "colibri_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Bright Horizons",
+      "id": "brighthorizons_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ivanti",
+      "id": "ivanti_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cipher Digital (fka Cipher Mining)",
+      "id": "cipher_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Learning Care Group",
+      "id": "learningcare_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cengage",
+      "id": "cengage_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Electronics For Imaging",
+      "id": "efi_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Tenable",
+      "id": "tenable_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "LogMeIn",
+      "id": "logmein_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Rocket Software",
+      "id": "rocketsw_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Software AG",
+      "id": "softwareag_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SUSE",
+      "id": "suse_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "ConnectWise",
+      "id": "connectwise_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Kaseya",
+      "id": "kaseya_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Quest Software",
+      "id": "questsw_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Solera",
+      "id": "solera_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "GoDaddy",
+      "id": "godaddy_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Internet Brands",
+      "id": "internetbrands_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "ZoomInfo",
+      "id": "zoominfo_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Finastra",
+      "id": "finastra_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Zuora",
+      "id": "zuora_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "RealPage",
+      "id": "realpage_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "isolved",
+      "id": "isolved_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Precisely",
+      "id": "precisely_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Planview",
+      "id": "planview_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Qualtrics",
+      "id": "qualtrics_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Confluence Technologies",
+      "id": "confluence_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Sensata Technologies",
+      "id": "sensata_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Match Group",
+      "id": "matchgroup_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Snap Inc.",
+      "id": "snap_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Presidio",
+      "id": "presidio_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "JD Power",
+      "id": "jdpower_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Relativity",
+      "id": "relativity_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Rackspace Technology",
+      "id": "rackspace_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "KinderCare",
+      "id": "kindercare_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "World Wide Technology",
+      "id": "wwt_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Thoughtworks",
+      "id": "thoughtworks_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ahead DB",
+      "id": "ahead_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "MaxLinear",
+      "id": "maxlinear_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Adeia",
+      "id": "adeia_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Coherent",
+      "id": "coherent_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "NCR Atleos",
+      "id": "ncratleos_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "MKS Instruments",
+      "id": "mksinst_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Altera",
+      "id": "altera_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "AthenaHealth",
+      "id": "athenahealth_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "PointClickCare",
+      "id": "pointclickcare_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "R1 RCM",
+      "id": "r1rcm_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "WellSky",
+      "id": "wellsky_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "FinThrive",
+      "id": "finthrive_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Gainwell Technologies",
+      "id": "gainwell_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Motus",
+      "id": "motus_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ensemble Health Partners",
+      "id": "ensemble_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ensono",
+      "id": "ensono_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CoAdvantage",
+      "id": "coadvantage_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "EAB Global",
+      "id": "eab_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "UST Global",
+      "id": "ustglobal_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Tract Capital",
+      "id": "tractcapital_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "TeraWulf",
+      "id": "terawulf_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "McGraw Hill",
+      "id": "mcgrawhill_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Fullbloom",
+      "id": "fullbloom_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ascend Learning",
+      "id": "ascend_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Adtalem Global Education",
+      "id": "adtalem_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SonicWall",
+      "id": "sonicwall_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Idera",
+      "id": "idera_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Renaissance Learning",
+      "id": "renaissance_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CDK Global",
+      "id": "cdk_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cloudera",
+      "id": "cloudera_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "KnowBe4",
+      "id": "knowbe4_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Infoblox",
+      "id": "infoblox_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Optiv Security",
+      "id": "optiv_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Kofax",
+      "id": "kofax_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Houghton Mifflin Harcourt",
+      "id": "hmh_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CoreWeave",
+      "id": "coreweave_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CCC Intelligent Solutions",
+      "id": "ccinfo_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Omnissa (EUC)",
+      "id": "omnissa_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Liftoff Mobile",
+      "id": "liftoff_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Xerox",
+      "id": "xerox_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Ingram Micro",
+      "id": "ingrammicro_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Perforce",
+      "id": "perforce_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Caliper (Sympler)",
+      "id": "sympler_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Enlyte",
+      "id": "enlyte_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Spring Education",
+      "id": "springed_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Avalara",
+      "id": "avalara_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Conservice",
+      "id": "conservice_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "EverCommerce",
+      "id": "evercommerce_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Duck Creek Technologies",
+      "id": "duckck_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "ECI Software Solutions",
+      "id": "ecimacola_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Taxwell",
+      "id": "taxwell_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "McAfee Consumer",
+      "id": "mcafee_consumer_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CommerceHub (Rithum)",
+      "id": "commercehub_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Citrix (Cloud Software Group)",
+      "id": "citrix_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Synechron",
+      "id": "synechron_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Cornerstone OnDemand",
+      "id": "cornerstone_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Elastic NV",
+      "id": "elastic_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Imagine Learning",
+      "id": "weldnorth_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Newfold Digital",
+      "id": "newfold_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "SolarWinds",
+      "id": "solarwinds_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "CrowdStrike",
+      "id": "mn6ris5lgfa3v",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Calabrio",
+      "id": "calabrio_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "PTC",
+      "id": "ptc_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Amkor Technology",
+      "id": "amkor_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "On Semiconductor",
+      "id": "onsemi_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Synaptics",
+      "id": "synaptics_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "TTM Technologies",
+      "id": "ttmtech_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Zebra Technologies",
+      "id": "zebra_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "NCR Voyix",
+      "id": "ncrvoyix_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Perficient",
+      "id": "perficient_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Insight Enterprises",
+      "id": "insight_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Skillsoft",
+      "id": "skillsoft_seed",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Constant Contact",
+      "id": "constantcontact_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Storable",
+      "id": "storable_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Seagate Technology",
+      "id": "seagate_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "TriNet Group",
+      "id": "trinet_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Kioxia",
+      "id": "kioxia_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    },
+    {
+      "company": "Applied Systems",
+      "id": "appliedsys_s",
+      "issue": "no_news",
+      "detail": "No cached news at all"
+    }
+  ],
+  "no_notes": [
+    {
+      "name": "Cohesity",
+      "id": "cohesity_s"
+    },
+    {
+      "name": "Fortra",
+      "id": "fortra_s"
+    },
+    {
+      "name": "McAfee Enterprise",
+      "id": "mcafee_ent_s"
+    },
+    {
+      "name": "WatchGuard Technologies",
+      "id": "watchguard_s"
+    },
+    {
+      "name": "Sophos",
+      "id": "sophos_s"
+    },
+    {
+      "name": "Proofpoint",
+      "id": "proofpoint_s"
+    },
+    {
+      "name": "Ping Identity",
+      "id": "pingid_s"
+    },
+    {
+      "name": "Imprivata",
+      "id": "imprivata_s"
+    },
+    {
+      "name": "OpenText",
+      "id": "opentext_s"
+    },
+    {
+      "name": "N-able",
+      "id": "nable_s"
+    },
+    {
+      "name": "Veracode",
+      "id": "veracode_s"
+    },
+    {
+      "name": "Gen Digital",
+      "id": "gendigital_s"
+    },
+    {
+      "name": "Conga",
+      "id": "conga_s"
+    },
+    {
+      "name": "BMC Software",
+      "id": "bmcsoftware_s"
+    },
+    {
+      "name": "Darktrace",
+      "id": "darktrace_s"
+    },
+    {
+      "name": "Corel (Alludo)",
+      "id": "corel_s"
+    },
+    {
+      "name": "Dye & Durham",
+      "id": "dyedurham_s"
+    },
+    {
+      "name": "Veeam Software",
+      "id": "veeam_s"
+    },
+    {
+      "name": "Celestica",
+      "id": "celestica_s"
+    },
+    {
+      "name": "UKG",
+      "id": "ukg_s"
+    },
+    {
+      "name": "Dayforce",
+      "id": "dayforce_s"
+    },
+    {
+      "name": "Epicor Software",
+      "id": "epicor_s"
+    },
+    {
+      "name": "Virtusa",
+      "id": "virtusa_s"
+    },
+    {
+      "name": "Sovos Compliance",
+      "id": "sovos_s"
+    },
+    {
+      "name": "Jaggaer",
+      "id": "jaggaer_s"
+    },
+    {
+      "name": "SS&C Technologies",
+      "id": "ssctechnologies_s"
+    },
+    {
+      "name": "SonarSource",
+      "id": "sonarsource_s"
+    },
+    {
+      "name": "Allegro MicroSystems",
+      "id": "allegro_s"
+    },
+    {
+      "name": "Entegris",
+      "id": "entegris_s"
+    },
+    {
+      "name": "Cotiviti",
+      "id": "cotiviti_s"
+    },
+    {
+      "name": "Waystar",
+      "id": "waystar_s"
+    },
+    {
+      "name": "Zywave",
+      "id": "zywave_s"
+    },
+    {
+      "name": "Ultra Clean Holdings",
+      "id": "ultraclean_s"
+    },
+    {
+      "name": "Electronics For Imaging",
+      "id": "efi_s"
+    },
+    {
+      "name": "Tenable",
+      "id": "tenable_s"
+    },
+    {
+      "name": "LogMeIn",
+      "id": "logmein_s"
+    },
+    {
+      "name": "Rocket Software",
+      "id": "rocketsw_s"
+    },
+    {
+      "name": "Software AG",
+      "id": "softwareag_s"
+    },
+    {
+      "name": "SUSE",
+      "id": "suse_s"
+    },
+    {
+      "name": "ConnectWise",
+      "id": "connectwise_s"
+    },
+    {
+      "name": "Kaseya",
+      "id": "kaseya_s"
+    },
+    {
+      "name": "Quest Software",
+      "id": "questsw_s"
+    },
+    {
+      "name": "Solera",
+      "id": "solera_s"
+    },
+    {
+      "name": "ZoomInfo",
+      "id": "zoominfo_s"
+    },
+    {
+      "name": "Finastra",
+      "id": "finastra_s"
+    },
+    {
+      "name": "Zuora",
+      "id": "zuora_s"
+    },
+    {
+      "name": "RealPage",
+      "id": "realpage_s"
+    },
+    {
+      "name": "isolved",
+      "id": "isolved_s"
+    },
+    {
+      "name": "Confluence Technologies",
+      "id": "confluence_s"
+    },
+    {
+      "name": "Sensata Technologies",
+      "id": "sensata_s"
+    },
+    {
+      "name": "Match Group",
+      "id": "matchgroup_s"
+    },
+    {
+      "name": "Snap Inc.",
+      "id": "snap_s"
+    },
+    {
+      "name": "JD Power",
+      "id": "jdpower_s"
+    },
+    {
+      "name": "Relativity",
+      "id": "relativity_s"
+    },
+    {
+      "name": "Rackspace Technology",
+      "id": "rackspace_s"
+    },
+    {
+      "name": "World Wide Technology",
+      "id": "wwt_s"
+    },
+    {
+      "name": "Thoughtworks",
+      "id": "thoughtworks_s"
+    },
+    {
+      "name": "Ahead DB",
+      "id": "ahead_seed"
+    },
+    {
+      "name": "MaxLinear",
+      "id": "maxlinear_s"
+    },
+    {
+      "name": "Adeia",
+      "id": "adeia_s"
+    },
+    {
+      "name": "Coherent",
+      "id": "coherent_s"
+    },
+    {
+      "name": "NCR Atleos",
+      "id": "ncratleos_s"
+    },
+    {
+      "name": "MKS Instruments",
+      "id": "mksinst_s"
+    },
+    {
+      "name": "Altera",
+      "id": "altera_s"
+    },
+    {
+      "name": "AthenaHealth",
+      "id": "athenahealth_s"
+    },
+    {
+      "name": "PointClickCare",
+      "id": "pointclickcare_s"
+    },
+    {
+      "name": "R1 RCM",
+      "id": "r1rcm_s"
+    },
+    {
+      "name": "WellSky",
+      "id": "wellsky_s"
+    },
+    {
+      "name": "FinThrive",
+      "id": "finthrive_s"
+    },
+    {
+      "name": "Gainwell Technologies",
+      "id": "gainwell_s"
+    },
+    {
+      "name": "Motus",
+      "id": "motus_s"
+    },
+    {
+      "name": "Ensemble Health Partners",
+      "id": "ensemble_s"
+    },
+    {
+      "name": "Ensono",
+      "id": "ensono_s"
+    },
+    {
+      "name": "CoAdvantage",
+      "id": "coadvantage_s"
+    },
+    {
+      "name": "UST Global",
+      "id": "ustglobal_s"
+    },
+    {
+      "name": "Tract Capital",
+      "id": "tractcapital_seed"
+    },
+    {
+      "name": "TeraWulf",
+      "id": "terawulf_seed"
+    },
+    {
+      "name": "Optiv Security",
+      "id": "optiv_s"
+    },
+    {
+      "name": "CCC Intelligent Solutions",
+      "id": "ccinfo_s"
+    },
+    {
+      "name": "Omnissa (EUC)",
+      "id": "omnissa_s"
+    },
+    {
+      "name": "Liftoff Mobile",
+      "id": "liftoff_s"
+    },
+    {
+      "name": "Xerox",
+      "id": "xerox_s"
+    },
+    {
+      "name": "Ingram Micro",
+      "id": "ingrammicro_s"
+    },
+    {
+      "name": "Caliper (Sympler)",
+      "id": "sympler_s"
+    },
+    {
+      "name": "Enlyte",
+      "id": "enlyte_s"
+    },
+    {
+      "name": "Avalara",
+      "id": "avalara_s"
+    },
+    {
+      "name": "Conservice",
+      "id": "conservice_s"
+    },
+    {
+      "name": "EverCommerce",
+      "id": "evercommerce_s"
+    },
+    {
+      "name": "Duck Creek Technologies",
+      "id": "duckck_s"
+    },
+    {
+      "name": "ECI Software Solutions",
+      "id": "ecimacola_s"
+    },
+    {
+      "name": "Taxwell",
+      "id": "taxwell_s"
+    },
+    {
+      "name": "McAfee Consumer",
+      "id": "mcafee_consumer_s"
+    },
+    {
+      "name": "CommerceHub (Rithum)",
+      "id": "commercehub_s"
+    },
+    {
+      "name": "Elastic NV",
+      "id": "elastic_s"
+    },
+    {
+      "name": "CrowdStrike",
+      "id": "mn6ris5lgfa3v"
+    },
+    {
+      "name": "PTC",
+      "id": "ptc_s"
+    },
+    {
+      "name": "Amkor Technology",
+      "id": "amkor_s"
+    },
+    {
+      "name": "On Semiconductor",
+      "id": "onsemi_s"
+    },
+    {
+      "name": "Synaptics",
+      "id": "synaptics_s"
+    },
+    {
+      "name": "TTM Technologies",
+      "id": "ttmtech_s"
+    },
+    {
+      "name": "Zebra Technologies",
+      "id": "zebra_s"
+    },
+    {
+      "name": "NCR Voyix",
+      "id": "ncrvoyix_s"
+    },
+    {
+      "name": "Insight Enterprises",
+      "id": "insight_s"
+    },
+    {
+      "name": "Constant Contact",
+      "id": "constantcontact_s"
+    },
+    {
+      "name": "Storable",
+      "id": "storable_s"
+    },
+    {
+      "name": "Seagate Technology",
+      "id": "seagate_s"
+    },
+    {
+      "name": "TriNet Group",
+      "id": "trinet_s"
+    },
+    {
+      "name": "Kioxia",
+      "id": "kioxia_s"
+    },
+    {
+      "name": "Applied Systems",
+      "id": "appliedsys_s"
+    }
+  ],
+  "top_notes": [
+    {
+      "id": "citrix_seed",
+      "count": 3,
+      "name": "Citrix (Cloud Software Group)"
+    },
+    {
+      "id": "precisely_seed",
+      "count": 3,
+      "name": "Precisely"
+    },
+    {
+      "id": "sonicwall_seed",
+      "count": 3,
+      "name": "SonicWall"
+    },
+    {
+      "id": "barracuda_seed",
+      "count": 3,
+      "name": "Barracuda Networks"
+    },
+    {
+      "id": "kofax_seed",
+      "count": 3,
+      "name": "Kofax"
+    }
+  ],
+  "stale_fields": [
+    {
+      "company": "Sensata Technologies",
+      "id": "sensata_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Match Group",
+      "id": "matchgroup_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Snap Inc.",
+      "id": "snap_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Tract Capital",
+      "id": "tractcapital_seed",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Elastic NV",
+      "id": "elastic_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "PTC",
+      "id": "ptc_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Amkor Technology",
+      "id": "amkor_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "On Semiconductor",
+      "id": "onsemi_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Synaptics",
+      "id": "synaptics_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "TTM Technologies",
+      "id": "ttmtech_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Zebra Technologies",
+      "id": "zebra_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "NCR Voyix",
+      "id": "ncrvoyix_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Insight Enterprises",
+      "id": "insight_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Seagate Technology",
+      "id": "seagate_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "TriNet Group",
+      "id": "trinet_s",
+      "detail": "No field updates ever"
+    },
+    {
+      "company": "Kioxia",
+      "id": "kioxia_s",
+      "detail": "No field updates ever"
+    }
+  ],
+  "sector_note_flags": [
+    {
+      "sector": "software",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "itservices",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "internet",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "education",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "hardware",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "healthcare",
+      "issue": "No sector-level thesis/notes"
+    },
+    {
+      "sector": "aidigital",
+      "issue": "No sector-level thesis/notes"
+    }
+  ]
+}

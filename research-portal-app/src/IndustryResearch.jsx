@@ -1943,42 +1943,7 @@ export default function IndustryResearch({ initialTab }) {
           </div>
         </div>
 
-        {/* Ecosystem Connectivity */}
-        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Ecosystem &amp; Supply Chain</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-            {lab.ecosystem.map((e, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                <div style={{
-                  minWidth: 90, padding: "6px 12px", borderRadius: 6,
-                  background: `${e.color}15`, border: `1px solid ${e.color}40`,
-                  fontSize: 13, fontWeight: 700, color: e.color, textAlign: "center",
-                }}>
-                  {e.category}
-                </div>
-                <div style={{ fontSize: 16, color: "#E2E8F0", lineHeight: 1.6, flex: 1 }}>{e.partners}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Notes */}
-        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 10 }}>Notes &amp; Thesis \u2014 {lab.name}</div>
-          <textarea
-            value={labNotes[activeLab] || ""}
-            onChange={(e) => setLabNotes(prev => ({ ...prev, [activeLab]: e.target.value }))}
-            placeholder={`Your thoughts on ${lab.name}: competitive positioning, IPO timing, risks, catalysts...`}
-            style={{
-              width: "100%", minHeight: 120, padding: 14, fontSize: 16, lineHeight: 1.6,
-              background: "#0B0F19", border: "1px solid #1E293B", borderRadius: 8,
-              color: "#E2E8F0", outline: "none", resize: "vertical",
-              fontFamily: "'DM Sans', 'Segoe UI', sans-serif",
-            }}
-            onFocus={(e) => e.target.style.borderColor = "#334155"}
-            onBlur={(e) => e.target.style.borderColor = "#1E293B"}
-          />
-        </div>
 
         </>)}
 

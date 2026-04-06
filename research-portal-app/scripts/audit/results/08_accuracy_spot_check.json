@@ -1,0 +1,180 @@
+{
+  "check": "08_accuracy_spot_check",
+  "timestamp": "2026-04-06T13:35:51.785Z",
+  "week_number": 2935,
+  "summary": {
+    "companies_sampled": [
+      "MaxLinear",
+      "Colibri Group",
+      "Precisely",
+      "Ping Identity",
+      "Houghton Mifflin Harcourt"
+    ],
+    "total_checks": 25
+  },
+  "company_checks": [
+    {
+      "company": "MaxLinear",
+      "id": "maxlinear_s",
+      "sector": "hardware/semiconductors",
+      "checks": [
+        {
+          "field": "public_private",
+          "current_value": "Public",
+          "verify": "Verify MaxLinear is publicly traded. Find ticker and exchange."
+        },
+        {
+          "field": "overview",
+          "current_value": "• Public fabless semiconductor company (Nasdaq: MXL) — designs RF, analog, and mixed-signal ICs for broadband, connectivity, and infrastructure\n• Founded 2003 in Carlsbad, CA\n• CEO Kishore Seendripu (...",
+          "verify": "Verify key claims: ownership, HQ, employee count, founding date. Flag anything incorrect."
+        },
+        {
+          "field": "products",
+          "current_value": "• Broadband access ICs: Cable modem, DSL, and fiber chipsets\n• Connectivity: Wi-Fi and Ethernet controller ICs\n• Infrastructure: Data center PAM4 optical interconnect and 5G transceiver ICs\n• Customer...",
+          "verify": "Verify main products/services are current. Check for major product launches or discontinuations in last 6 months."
+        },
+        {
+          "field": "transactions",
+          "current_value": "• 2023: Broadcom's $3.8B acquisition attempt was terminated\n• Market cap ~$2-3B...",
+          "verify": "Verify transaction details (acquirer, date, amount). Check for any new transactions not listed."
+        }
+      ]
+    },
+    {
+      "company": "Colibri Group",
+      "id": "colibri_seed",
+      "sector": "education/corporate",
+      "checks": [
+        {
+          "field": "public_private",
+          "current_value": "Private",
+          "verify": "Verify Colibri Group is private. Check it has NOT IPO'd or been acquired by a public company."
+        },
+        {
+          "field": "overview",
+          "current_value": "• Private online professional education and licensing company — provides pre-licensing, continuing education (CE), and exam preparation for professionals in real estate, insurance, financial services,...",
+          "verify": "Verify key claims: ownership, HQ, employee count, founding date. Flag anything incorrect."
+        },
+        {
+          "field": "products",
+          "current_value": "• Revenue model: Mix of subscription (annual CE packages), per-course purchases, and exam prep fees. Revenue is highly recurring because continuing education is mandatory and cyclical (annual or bienn...",
+          "verify": "Verify main products/services are current. Check for major product launches or discontinuations in last 6 months."
+        },
+        {
+          "field": "transactions",
+          "current_value": "• 2019: Gridiron Capital recapitalization — management-led buyout with Gridiron as PE partner\n• Under Gridiron: Aggressive acquisition strategy — acquired Kaplan Professional real estate education, Go...",
+          "verify": "Verify transaction details (acquirer, date, amount). Check for any new transactions not listed."
+        }
+      ]
+    },
+    {
+      "company": "Precisely",
+      "id": "precisely_seed",
+      "sector": "software/infrastructure",
+      "checks": [
+        {
+          "field": "public_private",
+          "current_value": "Private",
+          "verify": "Verify Precisely is private. Check it has NOT IPO'd or been acquired by a public company."
+        },
+        {
+          "field": "overview",
+          "current_value": "• Private data integrity software company headquartered in Burlington, MA\r\n• Formed through a decade of PE-driven roll-ups: Syncsort (founded 1968) → acquired Vision Solutions (2017) → acquired Pitney...",
+          "verify": "Verify key claims: ownership, HQ, employee count, founding date. Flag anything incorrect."
+        },
+        {
+          "field": "products",
+          "current_value": "• Revenue model: Subscription/SaaS-based pricing for the Data Integrity Suite (cloud-hosted); legacy on-prem perpetual licenses still contribute but migrating to recurring; professional services and d...",
+          "verify": "Verify main products/services are current. Check for major product launches or discontinuations in last 6 months."
+        },
+        {
+          "field": "transactions",
+          "current_value": "• Jan 2026: Achieved FedRAMP Moderate authorization for Data Governance Service — unlocks federal procurement pipeline\r\n• Jan 2023: Acquired Transerve (location intelligence provider) — extended geosp...",
+          "verify": "Verify transaction details (acquirer, date, amount). Check for any new transactions not listed."
+        }
+      ]
+    },
+    {
+      "company": "Ping Identity",
+      "id": "pingid_s",
+      "sector": "software/security",
+      "checks": [
+        {
+          "field": "public_private",
+          "current_value": "Private",
+          "verify": "Verify Ping Identity is private. Check it has NOT IPO'd or been acquired by a public company."
+        },
+        {
+          "field": "overview",
+          "current_value": "• Private identity security company — provides enterprise identity and access management (IAM), single sign-on (SSO), multi-factor authentication (MFA), and identity governance\n• Founded 2002 in Denve...",
+          "verify": "Verify key claims: ownership, HQ, employee count, founding date. Flag anything incorrect."
+        },
+        {
+          "field": "products",
+          "current_value": "• Revenue model: SaaS subscription — per-user or per-identity annual contracts\n• PingOne Cloud Platform: Unified identity platform — SSO, MFA, directory, identity governance, and API security\n• PingFe...",
+          "verify": "Verify main products/services are current. Check for major product launches or discontinuations in last 6 months."
+        },
+        {
+          "field": "transactions",
+          "current_value": "• Oct 2022: Thoma Bravo acquired Ping Identity for $2.8B\n• Jul 2023: Thoma Bravo also acquired ForgeRock for $2.3B — creating potential for Ping + ForgeRock combination\n• Potential Ping + ForgeRock me...",
+          "verify": "Verify transaction details (acquirer, date, amount). Check for any new transactions not listed."
+        }
+      ]
+    },
+    {
+      "company": "Houghton Mifflin Harcourt",
+      "id": "hmh_seed",
+      "sector": "education/edtech",
+      "checks": [
+        {
+          "field": "public_private",
+          "current_value": "Private",
+          "verify": "Verify Houghton Mifflin Harcourt is private. Check it has NOT IPO'd or been acquired by a public company."
+        },
+        {
+          "field": "overview",
+          "current_value": "• Private K-12 education technology and curriculum company — one of the \"Big 3\" US K-12 curriculum publishers (alongside McGraw Hill and Savvas/Pearson)\n• Founded 1832 (one of the oldest publishers in...",
+          "verify": "Verify key claims: ownership, HQ, employee count, founding date. Flag anything incorrect."
+        },
+        {
+          "field": "products",
+          "current_value": "• Revenue model: Mix of digital subscriptions (SaaS, per-student), curriculum adoptions (large multi-year district purchases — lumpy, adoption-cycle driven), print materials (declining), and professio...",
+          "verify": "Verify main products/services are current. Check for major product launches or discontinuations in last 6 months."
+        },
+        {
+          "field": "transactions",
+          "current_value": "• Apr 2023: Veritas Capital acquired HMH for $2.8B. Veritas also owns Savvas Learning (ex-Pearson K-12) — creating a unique situation where one PE firm owns 2 of the Big 3 K-12 curriculum publishers\n•...",
+          "verify": "Verify transaction details (acquirer, date, amount). Check for any new transactions not listed."
+        }
+      ]
+    }
+  ],
+  "hardcoded_checks": [
+    {
+      "section": "AI Labs",
+      "item": "OpenAI valuation",
+      "verify": "Search for latest OpenAI valuation. Compare against what is in IndustryResearch.jsx."
+    },
+    {
+      "section": "AI Labs",
+      "item": "Anthropic ARR",
+      "verify": "Search for latest Anthropic ARR or revenue figure. Compare against portal data."
+    },
+    {
+      "section": "AI Labs",
+      "item": "AI lab latest models",
+      "verify": "For each lab (OpenAI, Anthropic, Google, xAI, Meta), verify the latest flagship model name is correct."
+    },
+    {
+      "section": "AI Labs",
+      "item": "AI lab CEO/leadership",
+      "verify": "Verify CEO for each AI lab has not changed."
+    },
+    {
+      "section": "AI-Native",
+      "item": "Fastest 0-$1B ARR",
+      "verify": "Verify current record holder for fastest 0 to $1B ARR among AI-native companies."
+    }
+  ],
+  "instructions": "Run each check via web search. For each, report: PASS (correct), STALE (was correct but outdated), or FAIL (incorrect). Include the correct value if STALE or FAIL."
+}

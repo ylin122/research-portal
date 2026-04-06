@@ -1,0 +1,13 @@
+{
+  "check": "07_cross_checks",
+  "timestamp": "2026-04-06T13:35:50.965Z",
+  "summary": {
+    "duplicate_companies": 0,
+    "orphaned_fields": 0,
+    "orphaned_notes": 0,
+    "orphaned_news": 0,
+    "date_anomalies": 0,
+    "total_flags": 0
+  },
+  "flags": []
+}

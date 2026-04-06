@@ -1,0 +1,23 @@
+{
+  "check": "06_agents_and_pipeline",
+  "timestamp": "2026-04-06T13:35:50.128Z",
+  "summary": {
+    "ideas": {},
+    "ideas_total": 0,
+    "qa_total": 0,
+    "qa_pending": 0,
+    "watchlist_count": 1,
+    "quick_notes": 0
+  },
+  "idea_flags": {
+    "stale_seeds": [],
+    "empty_thesis": []
+  },
+  "qa_flags": {
+    "stale_pending": []
+  },
+  "watchlist_keywords": [
+    "Semi Capacity"
+  ],
+  "errors": []
+}

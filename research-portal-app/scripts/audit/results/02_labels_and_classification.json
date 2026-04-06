@@ -1,0 +1,142 @@
+{
+  "check": "02_labels_and_classification",
+  "timestamp": "2026-04-06T13:35:47.723Z",
+  "summary": {
+    "public_private": {
+      "Public": 32,
+      "Private": 109,
+      "unset": 16
+    },
+    "priority": {
+      "High": 7,
+      "Medium": 24,
+      "Low": 9,
+      "Watching": 0,
+      "unset": 117
+    },
+    "sectors": {
+      "software/application": 39,
+      "software/infrastructure": 22,
+      "software/security": 17,
+      "itservices/var": 6,
+      "internet/other": 7,
+      "education/edtech": 9,
+      "hardware/other": 2,
+      "itservices/consulting": 5,
+      "hardware/semiconductors": 14,
+      "healthcare/analytics": 8,
+      "education/corporate": 2,
+      "education/traditional": 4,
+      "aidigital/compute": 4,
+      "internet/hosting": 2,
+      "internet/marketplace": 2,
+      "itservices/managed": 2,
+      "hardware/devices": 4,
+      "healthcare/ehr": 2,
+      "itservices/other": 1,
+      "aidigital/shell": 1,
+      "education/other": 2,
+      "internet/adtech": 1,
+      "healthcare/other": 1
+    },
+    "flag_count": 16
+  },
+  "flags": [
+    {
+      "company": "Sensata Technologies",
+      "id": "sensata_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Match Group",
+      "id": "matchgroup_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Snap Inc.",
+      "id": "snap_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Tract Capital",
+      "id": "tractcapital_seed",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Elastic NV",
+      "id": "elastic_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "PTC",
+      "id": "ptc_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Amkor Technology",
+      "id": "amkor_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "On Semiconductor",
+      "id": "onsemi_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Synaptics",
+      "id": "synaptics_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "TTM Technologies",
+      "id": "ttmtech_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Zebra Technologies",
+      "id": "zebra_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "NCR Voyix",
+      "id": "ncrvoyix_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Insight Enterprises",
+      "id": "insight_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Seagate Technology",
+      "id": "seagate_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "TriNet Group",
+      "id": "trinet_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    },
+    {
+      "company": "Kioxia",
+      "id": "kioxia_s",
+      "issue": "public_private_missing",
+      "detail": "No public/private label set"
+    }
+  ]
+}

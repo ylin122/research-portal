@@ -1,0 +1,266 @@
+{
+  "check": "04_industry_research_hardcoded",
+  "timestamp": "2026-04-06T13:35:48.939Z",
+  "summary": {
+    "file_lines": 3353,
+    "lab_names_found": [
+      "OpenAI",
+      "Anthropic",
+      "Google DeepMind",
+      "xAI",
+      "OpenAI",
+      "Anthropic",
+      "Google DeepMind",
+      "Anthropic",
+      "Anthropic",
+      "xAI"
+    ],
+    "valuation_refs": 31,
+    "dollar_refs": 520,
+    "date_refs": 83,
+    "potential_stale_dates": 43
+  },
+  "flags": [
+    {
+      "section": "AI Labs",
+      "issue": "valuation_check_needed",
+      "detail": "Found 31 valuation references. Verify these are current.",
+      "items": [
+        {
+          "value": "$55B+",
+          "line": 754
+        },
+        {
+          "value": "$35B+",
+          "line": 762
+        },
+        {
+          "value": "$4B+",
+          "line": 769
+        },
+        {
+          "value": "$5B+",
+          "line": 775
+        },
+        {
+          "value": "$2B+",
+          "line": 781
+        },
+        {
+          "value": "$1B+ est.",
+          "line": 788
+        },
+        {
+          "value": "$1B+ est.",
+          "line": 794
+        },
+        {
+          "value": "$1B+ est.",
+          "line": 800
+        },
+        {
+          "value": "$3.5B",
+          "line": 806
+        },
+        {
+          "value": "$2B+",
+          "line": 812
+        }
+      ]
+    },
+    {
+      "section": "All",
+      "issue": "dollar_figures_to_verify",
+      "detail": "Found 520 dollar amount references in hardcoded data. Sample below.",
+      "items": [
+        {
+          "value": "$852B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$122B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$50B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$30B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$30B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$3B",
+          "line": 14,
+          "context": "valuation: { current: \"$852B\", date: \"Mar 2026\", series: \"Series G ($122B)\", investors: \"Amazon ($50B), Nvidia ($30B), S"
+        },
+        {
+          "value": "$25B",
+          "line": 20,
+          "context": "arrCurrent: { value: \"$25B+ ARR\", date: \"Mar 2026\", source: \"Bloomberg (Mar 31). Crossed $25B end of Feb. $122B round cl"
+        },
+        {
+          "value": "$25B",
+          "line": 20,
+          "context": "arrCurrent: { value: \"$25B+ ARR\", date: \"Mar 2026\", source: \"Bloomberg (Mar 31). Crossed $25B end of Feb. $122B round cl"
+        },
+        {
+          "value": "$122B",
+          "line": 20,
+          "context": "arrCurrent: { value: \"$25B+ ARR\", date: \"Mar 2026\", source: \"Bloomberg (Mar 31). Crossed $25B end of Feb. $122B round cl"
+        },
+        {
+          "value": "$852B",
+          "line": 20,
+          "context": "arrCurrent: { value: \"$25B+ ARR\", date: \"Mar 2026\", source: \"Bloomberg (Mar 31). Crossed $25B end of Feb. $122B round cl"
+        },
+        {
+          "value": "$100B",
+          "line": 21,
+          "context": "arrSource: \"2023-2025: CFO Sarah Friar (Jan 2026 blog). 2027E: Altman ($100B). 2030E: CNBC ($280B high).\","
+        },
+        {
+          "value": "$280B",
+          "line": 21,
+          "context": "arrSource: \"2023-2025: CFO Sarah Friar (Jan 2026 blog). 2027E: Altman ($100B). 2030E: CNBC ($280B high).\","
+        },
+        {
+          "value": "$14B",
+          "line": 38,
+          "context": "burn: \"$14B projected loss 2026 \\u00b7 Cash flow positive ~2030\","
+        },
+        {
+          "value": "$250B",
+          "line": 40,
+          "context": "{ ticker: \"MSFT\", name: \"Microsoft\", exposure: \"49% economic interest (declining), $250B Azure deal, board seat\", color:"
+        },
+        {
+          "value": "$50B",
+          "line": 41,
+          "context": "{ ticker: \"AMZN\", name: \"Amazon\", exposure: \"$50B investor, $138B AWS deal, 2 GW Trainium\", color: \"#F59E0B\" },"
+        },
+        {
+          "value": "$138B",
+          "line": 41,
+          "context": "{ ticker: \"AMZN\", name: \"Amazon\", exposure: \"$50B investor, $138B AWS deal, 2 GW Trainium\", color: \"#F59E0B\" },"
+        },
+        {
+          "value": "$30B",
+          "line": 42,
+          "context": "{ ticker: \"NVDA\", name: \"Nvidia\", exposure: \"$30B investor, primary GPU supplier, Vera Rubin commitment\", color: \"#10B98"
+        },
+        {
+          "value": "$300B",
+          "line": 43,
+          "context": "{ ticker: \"ORCL\", name: \"Oracle\", exposure: \"~$300B Stargate cloud deal (2027-2031), ~$60B/yr\", color: \"#EF4444\" },"
+        },
+        {
+          "value": "$60B",
+          "line": 43,
+          "context": "{ ticker: \"ORCL\", name: \"Oracle\", exposure: \"~$300B Stargate cloud deal (2027-2031), ~$60B/yr\", color: \"#EF4444\" },"
+        },
+        {
+          "value": "$30B",
+          "line": 44,
+          "context": "{ ticker: \"9984.T\", name: \"SoftBank\", exposure: \"$30B investor, Stargate co-founder\", color: \"#8B5CF6\" },"
+        }
+      ]
+    },
+    {
+      "section": "All",
+      "issue": "date_references",
+      "detail": "Found 83 date references. Oldest non-estimate dates that may be stale:",
+      "items": [
+        "Q4 2024",
+        "Q3 2024",
+        "Q2 2024",
+        "Q1 2024",
+        "Q4 2023",
+        "Q3 2023",
+        "Q2 2023",
+        "Q1 2023",
+        "Mar 2023",
+        "Jul 2023",
+        "Nov 2023",
+        "Dec 2023",
+        "Mar 2024",
+        "May 2024",
+        "Jun 2024"
+      ]
+    }
+  ],
+  "stats": {
+    "total_lines": 3353,
+    "data_sections": [
+      {
+        "name": "AI Labs",
+        "referenced_at_lines": [
+          10,
+          225,
+          1166,
+          1236,
+          1259
+        ]
+      },
+      {
+        "name": "AI-Native",
+        "referenced_at_lines": [
+          1237,
+          1953,
+          1954,
+          1955,
+          1956
+        ]
+      },
+      {
+        "name": "AI Capex",
+        "referenced_at_lines": [
+          114,
+          115,
+          132,
+          197,
+          198
+        ]
+      },
+      {
+        "name": "GPU/ASIC",
+        "referenced_at_lines": [
+          42,
+          48,
+          50,
+          92,
+          131
+        ]
+      },
+      {
+        "name": "Compute",
+        "referenced_at_lines": [
+          22,
+          27,
+          28,
+          65,
+          70
+        ]
+      },
+      {
+        "name": "Semi Capex",
+        "referenced_at_lines": [
+          602,
+          604,
+          761,
+          1239,
+          2453
+        ]
+      }
+    ]
+  }
+}

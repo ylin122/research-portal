@@ -1,0 +1,3683 @@
+{
+  "check": "01_field_coverage",
+  "timestamp": "2026-04-06T13:35:47.199Z",
+  "summary": {
+    "total_companies": 157,
+    "fully_complete": 2,
+    "partially_complete": 135,
+    "zero_fields": 20,
+    "avg_completion": 75
+  },
+  "flags": [
+    {
+      "id": "sensata_s",
+      "name": "Sensata Technologies",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "matchgroup_s",
+      "name": "Match Group",
+      "sector": "internet",
+      "sub": "marketplace",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "snap_s",
+      "name": "Snap Inc.",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "tractcapital_seed",
+      "name": "Tract Capital",
+      "sector": "aidigital",
+      "sub": "shell",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "terawulf_seed",
+      "name": "TeraWulf",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "liftoff_s",
+      "name": "Liftoff Mobile",
+      "sector": "internet",
+      "sub": "adtech",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "elastic_s",
+      "name": "Elastic NV",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "mn6ris5lgfa3v",
+      "name": "CrowdStrike",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ptc_s",
+      "name": "PTC",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "amkor_s",
+      "name": "Amkor Technology",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "onsemi_s",
+      "name": "On Semiconductor",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "synaptics_s",
+      "name": "Synaptics",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ttmtech_s",
+      "name": "TTM Technologies",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "zebra_s",
+      "name": "Zebra Technologies",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ncrvoyix_s",
+      "name": "NCR Voyix",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "insight_s",
+      "name": "Insight Enterprises",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "constantcontact_s",
+      "name": "Constant Contact",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "seagate_s",
+      "name": "Seagate Technology",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "trinet_s",
+      "name": "TriNet Group",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "kioxia_s",
+      "name": "Kioxia",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "cvent_seed",
+      "name": "Cvent",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cohesity_s",
+      "name": "Cohesity",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "fortra_s",
+      "name": "Fortra",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcafee_ent_s",
+      "name": "McAfee Enterprise",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "watchguard_s",
+      "name": "WatchGuard Technologies",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sophos_s",
+      "name": "Sophos",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "proofpoint_s",
+      "name": "Proofpoint",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "pingid_s",
+      "name": "Ping Identity",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "imprivata_s",
+      "name": "Imprivata",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "opentext_s",
+      "name": "OpenText",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "nable_s",
+      "name": "N-able",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "trace3_seed",
+      "name": "Trace3",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "veracode_s",
+      "name": "Veracode",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "qlik_seed",
+      "name": "Qlik",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "gendigital_s",
+      "name": "Gen Digital",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "datasite_seed",
+      "name": "Datasite",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ellucian_seed",
+      "name": "Ellucian",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "conga_s",
+      "name": "Conga",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "bmcsoftware_s",
+      "name": "BMC Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "darktrace_s",
+      "name": "Darktrace",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "corel_s",
+      "name": "Corel (Alludo)",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "dyedurham_s",
+      "name": "Dye & Durham",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "instructure_seed",
+      "name": "Instructure",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "veeam_s",
+      "name": "Veeam Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "smartbear_seed",
+      "name": "SmartBear",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "celestica_s",
+      "name": "Celestica",
+      "sector": "hardware",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "barracuda_seed",
+      "name": "Barracuda Networks",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ukg_s",
+      "name": "UKG",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "dayforce_s",
+      "name": "Dayforce",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "epicor_s",
+      "name": "Epicor Software",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "virtusa_s",
+      "name": "Virtusa",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sovos_s",
+      "name": "Sovos Compliance",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "jaggaer_s",
+      "name": "Jaggaer",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ssctechnologies_s",
+      "name": "SS&C Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sonarsource_s",
+      "name": "SonarSource",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "allegro_s",
+      "name": "Allegro MicroSystems",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "entegris_s",
+      "name": "Entegris",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cotiviti_s",
+      "name": "Cotiviti",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "waystar_s",
+      "name": "Waystar",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zywave_s",
+      "name": "Zywave",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ultraclean_s",
+      "name": "Ultra Clean Holdings",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "colibri_seed",
+      "name": "Colibri Group",
+      "sector": "education",
+      "sub": "corporate",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "brighthorizons_seed",
+      "name": "Bright Horizons",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "apld_seed",
+      "name": "Applied Digital",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ivanti_seed",
+      "name": "Ivanti",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cipher_seed",
+      "name": "Cipher Digital (fka Cipher Mining)",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "learningcare_seed",
+      "name": "Learning Care Group",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cengage_seed",
+      "name": "Cengage",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "efi_s",
+      "name": "Electronics For Imaging",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "tenable_s",
+      "name": "Tenable",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "logmein_s",
+      "name": "LogMeIn",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "rocketsw_s",
+      "name": "Rocket Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "softwareag_s",
+      "name": "Software AG",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "suse_s",
+      "name": "SUSE",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "connectwise_s",
+      "name": "ConnectWise",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kaseya_s",
+      "name": "Kaseya",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "questsw_s",
+      "name": "Quest Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "solera_s",
+      "name": "Solera",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "godaddy_seed",
+      "name": "GoDaddy",
+      "sector": "internet",
+      "sub": "hosting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "internetbrands_seed",
+      "name": "Internet Brands",
+      "sector": "internet",
+      "sub": "marketplace",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zoominfo_s",
+      "name": "ZoomInfo",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "finastra_s",
+      "name": "Finastra",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zuora_s",
+      "name": "Zuora",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "realpage_s",
+      "name": "RealPage",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "isolved_s",
+      "name": "isolved",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "planview_seed",
+      "name": "Planview",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "qualtrics_seed",
+      "name": "Qualtrics",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "confluence_s",
+      "name": "Confluence Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "presidio_seed",
+      "name": "Presidio",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "jdpower_s",
+      "name": "JD Power",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "relativity_s",
+      "name": "Relativity",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "rackspace_s",
+      "name": "Rackspace Technology",
+      "sector": "itservices",
+      "sub": "managed",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kindercare_seed",
+      "name": "KinderCare",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "wwt_s",
+      "name": "World Wide Technology",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "thoughtworks_s",
+      "name": "Thoughtworks",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ahead_seed",
+      "name": "Ahead DB",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "maxlinear_s",
+      "name": "MaxLinear",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "adeia_s",
+      "name": "Adeia",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coherent_s",
+      "name": "Coherent",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ncratleos_s",
+      "name": "NCR Atleos",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mksinst_s",
+      "name": "MKS Instruments",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "altera_s",
+      "name": "Altera",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "athenahealth_s",
+      "name": "AthenaHealth",
+      "sector": "healthcare",
+      "sub": "ehr",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "pointclickcare_s",
+      "name": "PointClickCare",
+      "sector": "healthcare",
+      "sub": "ehr",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "r1rcm_s",
+      "name": "R1 RCM",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "wellsky_s",
+      "name": "WellSky",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "finthrive_s",
+      "name": "FinThrive",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "gainwell_s",
+      "name": "Gainwell Technologies",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "motus_s",
+      "name": "Motus",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ensemble_s",
+      "name": "Ensemble Health Partners",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ensono_s",
+      "name": "Ensono",
+      "sector": "itservices",
+      "sub": "managed",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coadvantage_s",
+      "name": "CoAdvantage",
+      "sector": "itservices",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "eab_seed",
+      "name": "EAB Global",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ustglobal_s",
+      "name": "UST Global",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcgrawhill_seed",
+      "name": "McGraw Hill",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "fullbloom_seed",
+      "name": "Fullbloom",
+      "sector": "education",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ascend_seed",
+      "name": "Ascend Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "adtalem_seed",
+      "name": "Adtalem Global Education",
+      "sector": "education",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "idera_seed",
+      "name": "Idera",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "renaissance_seed",
+      "name": "Renaissance Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cdk_seed",
+      "name": "CDK Global",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cloudera_seed",
+      "name": "Cloudera",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "knowbe4_seed",
+      "name": "KnowBe4",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "infoblox_seed",
+      "name": "Infoblox",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "optiv_s",
+      "name": "Optiv Security",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kofax_seed",
+      "name": "Kofax",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "hmh_seed",
+      "name": "Houghton Mifflin Harcourt",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coreweave_seed",
+      "name": "CoreWeave",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ccinfo_s",
+      "name": "CCC Intelligent Solutions",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "omnissa_s",
+      "name": "Omnissa (EUC)",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "xerox_s",
+      "name": "Xerox",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ingrammicro_s",
+      "name": "Ingram Micro",
+      "sector": "hardware",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "perforce_seed",
+      "name": "Perforce",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sympler_s",
+      "name": "Caliper (Sympler)",
+      "sector": "healthcare",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "enlyte_s",
+      "name": "Enlyte",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "springed_seed",
+      "name": "Spring Education",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "avalara_s",
+      "name": "Avalara",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "conservice_s",
+      "name": "Conservice",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "evercommerce_s",
+      "name": "EverCommerce",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "duckck_s",
+      "name": "Duck Creek Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ecimacola_s",
+      "name": "ECI Software Solutions",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "taxwell_s",
+      "name": "Taxwell",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcafee_consumer_s",
+      "name": "McAfee Consumer",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "commercehub_s",
+      "name": "CommerceHub (Rithum)",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "citrix_seed",
+      "name": "Citrix (Cloud Software Group)",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "synechron_seed",
+      "name": "Synechron",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cornerstone_seed",
+      "name": "Cornerstone OnDemand",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "weldnorth_seed",
+      "name": "Imagine Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "newfold_seed",
+      "name": "Newfold Digital",
+      "sector": "internet",
+      "sub": "hosting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "solarwinds_seed",
+      "name": "SolarWinds",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "calabrio_seed",
+      "name": "Calabrio",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "perficient_seed",
+      "name": "Perficient",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "skillsoft_seed",
+      "name": "Skillsoft",
+      "sector": "education",
+      "sub": "corporate",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "storable_s",
+      "name": "Storable",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "appliedsys_s",
+      "name": "Applied Systems",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    }
+  ],
+  "all": [
+    {
+      "id": "sensata_s",
+      "name": "Sensata Technologies",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "matchgroup_s",
+      "name": "Match Group",
+      "sector": "internet",
+      "sub": "marketplace",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "snap_s",
+      "name": "Snap Inc.",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "tractcapital_seed",
+      "name": "Tract Capital",
+      "sector": "aidigital",
+      "sub": "shell",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "terawulf_seed",
+      "name": "TeraWulf",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "liftoff_s",
+      "name": "Liftoff Mobile",
+      "sector": "internet",
+      "sub": "adtech",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "elastic_s",
+      "name": "Elastic NV",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "mn6ris5lgfa3v",
+      "name": "CrowdStrike",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ptc_s",
+      "name": "PTC",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "amkor_s",
+      "name": "Amkor Technology",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "onsemi_s",
+      "name": "On Semiconductor",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "synaptics_s",
+      "name": "Synaptics",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ttmtech_s",
+      "name": "TTM Technologies",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "zebra_s",
+      "name": "Zebra Technologies",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "ncrvoyix_s",
+      "name": "NCR Voyix",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "insight_s",
+      "name": "Insight Enterprises",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "constantcontact_s",
+      "name": "Constant Contact",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "seagate_s",
+      "name": "Seagate Technology",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "trinet_s",
+      "name": "TriNet Group",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "kioxia_s",
+      "name": "Kioxia",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "overview",
+        "products",
+        "customers",
+        "industry",
+        "competitive",
+        "transactions",
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 0
+    },
+    {
+      "id": "cvent_seed",
+      "name": "Cvent",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cohesity_s",
+      "name": "Cohesity",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "fortra_s",
+      "name": "Fortra",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcafee_ent_s",
+      "name": "McAfee Enterprise",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "watchguard_s",
+      "name": "WatchGuard Technologies",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sophos_s",
+      "name": "Sophos",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "proofpoint_s",
+      "name": "Proofpoint",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "pingid_s",
+      "name": "Ping Identity",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "imprivata_s",
+      "name": "Imprivata",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "opentext_s",
+      "name": "OpenText",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "nable_s",
+      "name": "N-able",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "trace3_seed",
+      "name": "Trace3",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "veracode_s",
+      "name": "Veracode",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "qlik_seed",
+      "name": "Qlik",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "gendigital_s",
+      "name": "Gen Digital",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "datasite_seed",
+      "name": "Datasite",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ellucian_seed",
+      "name": "Ellucian",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "conga_s",
+      "name": "Conga",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "bmcsoftware_s",
+      "name": "BMC Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "darktrace_s",
+      "name": "Darktrace",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "corel_s",
+      "name": "Corel (Alludo)",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "dyedurham_s",
+      "name": "Dye & Durham",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "instructure_seed",
+      "name": "Instructure",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "veeam_s",
+      "name": "Veeam Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "smartbear_seed",
+      "name": "SmartBear",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "celestica_s",
+      "name": "Celestica",
+      "sector": "hardware",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "barracuda_seed",
+      "name": "Barracuda Networks",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ukg_s",
+      "name": "UKG",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "dayforce_s",
+      "name": "Dayforce",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "epicor_s",
+      "name": "Epicor Software",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "virtusa_s",
+      "name": "Virtusa",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sovos_s",
+      "name": "Sovos Compliance",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "jaggaer_s",
+      "name": "Jaggaer",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ssctechnologies_s",
+      "name": "SS&C Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sonarsource_s",
+      "name": "SonarSource",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "allegro_s",
+      "name": "Allegro MicroSystems",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "entegris_s",
+      "name": "Entegris",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cotiviti_s",
+      "name": "Cotiviti",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "waystar_s",
+      "name": "Waystar",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zywave_s",
+      "name": "Zywave",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ultraclean_s",
+      "name": "Ultra Clean Holdings",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "colibri_seed",
+      "name": "Colibri Group",
+      "sector": "education",
+      "sub": "corporate",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "brighthorizons_seed",
+      "name": "Bright Horizons",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "apld_seed",
+      "name": "Applied Digital",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ivanti_seed",
+      "name": "Ivanti",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cipher_seed",
+      "name": "Cipher Digital (fka Cipher Mining)",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "learningcare_seed",
+      "name": "Learning Care Group",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cengage_seed",
+      "name": "Cengage",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "efi_s",
+      "name": "Electronics For Imaging",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "tenable_s",
+      "name": "Tenable",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "logmein_s",
+      "name": "LogMeIn",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "rocketsw_s",
+      "name": "Rocket Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "softwareag_s",
+      "name": "Software AG",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "suse_s",
+      "name": "SUSE",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "connectwise_s",
+      "name": "ConnectWise",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kaseya_s",
+      "name": "Kaseya",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "questsw_s",
+      "name": "Quest Software",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "solera_s",
+      "name": "Solera",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "godaddy_seed",
+      "name": "GoDaddy",
+      "sector": "internet",
+      "sub": "hosting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "internetbrands_seed",
+      "name": "Internet Brands",
+      "sector": "internet",
+      "sub": "marketplace",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zoominfo_s",
+      "name": "ZoomInfo",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "finastra_s",
+      "name": "Finastra",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "zuora_s",
+      "name": "Zuora",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "realpage_s",
+      "name": "RealPage",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "isolved_s",
+      "name": "isolved",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "planview_seed",
+      "name": "Planview",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "qualtrics_seed",
+      "name": "Qualtrics",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "confluence_s",
+      "name": "Confluence Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "presidio_seed",
+      "name": "Presidio",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "jdpower_s",
+      "name": "JD Power",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "relativity_s",
+      "name": "Relativity",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "rackspace_s",
+      "name": "Rackspace Technology",
+      "sector": "itservices",
+      "sub": "managed",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kindercare_seed",
+      "name": "KinderCare",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "wwt_s",
+      "name": "World Wide Technology",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "thoughtworks_s",
+      "name": "Thoughtworks",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ahead_seed",
+      "name": "Ahead DB",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "maxlinear_s",
+      "name": "MaxLinear",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "adeia_s",
+      "name": "Adeia",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coherent_s",
+      "name": "Coherent",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ncratleos_s",
+      "name": "NCR Atleos",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mksinst_s",
+      "name": "MKS Instruments",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "altera_s",
+      "name": "Altera",
+      "sector": "hardware",
+      "sub": "semiconductors",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "athenahealth_s",
+      "name": "AthenaHealth",
+      "sector": "healthcare",
+      "sub": "ehr",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "pointclickcare_s",
+      "name": "PointClickCare",
+      "sector": "healthcare",
+      "sub": "ehr",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "r1rcm_s",
+      "name": "R1 RCM",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "wellsky_s",
+      "name": "WellSky",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "finthrive_s",
+      "name": "FinThrive",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "gainwell_s",
+      "name": "Gainwell Technologies",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "motus_s",
+      "name": "Motus",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ensemble_s",
+      "name": "Ensemble Health Partners",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ensono_s",
+      "name": "Ensono",
+      "sector": "itservices",
+      "sub": "managed",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coadvantage_s",
+      "name": "CoAdvantage",
+      "sector": "itservices",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "eab_seed",
+      "name": "EAB Global",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ustglobal_s",
+      "name": "UST Global",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcgrawhill_seed",
+      "name": "McGraw Hill",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "fullbloom_seed",
+      "name": "Fullbloom",
+      "sector": "education",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ascend_seed",
+      "name": "Ascend Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "adtalem_seed",
+      "name": "Adtalem Global Education",
+      "sector": "education",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "idera_seed",
+      "name": "Idera",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "renaissance_seed",
+      "name": "Renaissance Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cdk_seed",
+      "name": "CDK Global",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cloudera_seed",
+      "name": "Cloudera",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "knowbe4_seed",
+      "name": "KnowBe4",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "infoblox_seed",
+      "name": "Infoblox",
+      "sector": "software",
+      "sub": "security",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "optiv_s",
+      "name": "Optiv Security",
+      "sector": "itservices",
+      "sub": "var",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "kofax_seed",
+      "name": "Kofax",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "hmh_seed",
+      "name": "Houghton Mifflin Harcourt",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "coreweave_seed",
+      "name": "CoreWeave",
+      "sector": "aidigital",
+      "sub": "compute",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ccinfo_s",
+      "name": "CCC Intelligent Solutions",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "omnissa_s",
+      "name": "Omnissa (EUC)",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "xerox_s",
+      "name": "Xerox",
+      "sector": "hardware",
+      "sub": "devices",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ingrammicro_s",
+      "name": "Ingram Micro",
+      "sector": "hardware",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "perforce_seed",
+      "name": "Perforce",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "sympler_s",
+      "name": "Caliper (Sympler)",
+      "sector": "healthcare",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "enlyte_s",
+      "name": "Enlyte",
+      "sector": "healthcare",
+      "sub": "analytics",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "springed_seed",
+      "name": "Spring Education",
+      "sector": "education",
+      "sub": "traditional",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "avalara_s",
+      "name": "Avalara",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "conservice_s",
+      "name": "Conservice",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "evercommerce_s",
+      "name": "EverCommerce",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "duckck_s",
+      "name": "Duck Creek Technologies",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "ecimacola_s",
+      "name": "ECI Software Solutions",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "taxwell_s",
+      "name": "Taxwell",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "mcafee_consumer_s",
+      "name": "McAfee Consumer",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "commercehub_s",
+      "name": "CommerceHub (Rithum)",
+      "sector": "internet",
+      "sub": "other",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "citrix_seed",
+      "name": "Citrix (Cloud Software Group)",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "synechron_seed",
+      "name": "Synechron",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "cornerstone_seed",
+      "name": "Cornerstone OnDemand",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "weldnorth_seed",
+      "name": "Imagine Learning",
+      "sector": "education",
+      "sub": "edtech",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "newfold_seed",
+      "name": "Newfold Digital",
+      "sector": "internet",
+      "sub": "hosting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "solarwinds_seed",
+      "name": "SolarWinds",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "calabrio_seed",
+      "name": "Calabrio",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "perficient_seed",
+      "name": "Perficient",
+      "sector": "itservices",
+      "sub": "consulting",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "skillsoft_seed",
+      "name": "Skillsoft",
+      "sector": "education",
+      "sub": "corporate",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "storable_s",
+      "name": "Storable",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "appliedsys_s",
+      "name": "Applied Systems",
+      "sector": "software",
+      "sub": "application",
+      "missing": [
+        "financials"
+      ],
+      "empty": [],
+      "pct_complete": 86
+    },
+    {
+      "id": "precisely_seed",
+      "name": "Precisely",
+      "sector": "software",
+      "sub": "infrastructure",
+      "missing": [],
+      "empty": [],
+      "pct_complete": 100
+    },
+    {
+      "id": "sonicwall_seed",
+      "name": "SonicWall",
+      "sector": "software",
+      "sub": "security",
+      "missing": [],
+      "empty": [],
+      "pct_complete": 100
+    }
+  ]
+}

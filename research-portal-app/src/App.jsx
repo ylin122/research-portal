@@ -17,10 +17,6 @@ import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
 import QAAgent from "./QAAgent";
 // import IdeaTracker from "./IdeaTracker";
-import CoreweaveReview from "./CoreweaveReview";
-import AppliedDigitalReview from "./AppliedDigitalReview";
-import CipherDigitalReview from "./CipherDigitalReview";
-import TerawulfReview from "./TerawulfReview";
 import TractCapitalReview from "./TractCapitalReview";
 import IndustryResearch from "./IndustryResearch";
 import {
@@ -157,16 +153,28 @@ export default function App() {
 
   // Seed equity companies on first load
   useEffect(() => {
+    const SEED = [
+      { id: "eq_micron", name: "Micron", sub: "" },
+      { id: "eq_alibaba", name: "Alibaba", sub: "" },
+      { id: "eq_tencent", name: "Tencent", sub: "" },
+      { id: "eq_lumentum", name: "Lumentum", sub: "" },
+      { id: "eq_coherent", name: "Coherent", sub: "" },
+      { id: "eq_nvda", name: "NVIDIA", sub: "" },
+      { id: "eq_amzn", name: "Amazon", sub: "" },
+      { id: "eq_msft", name: "Microsoft", sub: "" },
+      { id: "eq_tsm", name: "TSMC", sub: "" },
+    ];
     if (equities.length === 0) {
-      const seed = [
-        { id: "eq_micron", name: "Micron", sub: "" },
-        { id: "eq_alibaba", name: "Alibaba", sub: "" },
-        { id: "eq_tencent", name: "Tencent", sub: "" },
-        { id: "eq_lumentum", name: "Lumentum", sub: "" },
-        { id: "eq_coherent", name: "Coherent", sub: "" },
-      ];
-      setEquities(seed);
-      localStorage.setItem("research_portal_equities", JSON.stringify(seed));
+      setEquities(SEED);
+      localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
+    } else {
+      const ids = new Set(equities.map(e => e.id));
+      const missing = SEED.filter(s => !ids.has(s.id));
+      if (missing.length > 0) {
+        const updated = [...equities, ...missing];
+        setEquities(updated);
+        localStorage.setItem("research_portal_equities", JSON.stringify(updated));
+      }
     }
   }, []);
 
@@ -518,7 +526,7 @@ export default function App() {
                     return (
                       <div key={c.id} style={s.listRow} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
                         <span style={{ fontSize: 14, color: T_.text, flex: 1 }}>{c.name}</span>
-                        <span style={{ fontSize: 10, color: fieldsMap[c.id]?.public_private?.text === "Public" ? T_.blue : T_.textGhost, opacity: 0.7 }}>{fieldsMap[c.id]?.public_private?.text === "Public" ? "PUB" : "PVT"}</span>
+                        <span style={{ fontSize: 10, color: (fieldsMap[c.id]?.public_private?.text || "").startsWith("Public") ? T_.blue : T_.textGhost, opacity: 0.7 }}>{(fieldsMap[c.id]?.public_private?.text || "").startsWith("Public") ? "PUB" : "PVT"}</span>
                         {pr && <span style={{ ...s.prBadge, background: pr === "High" ? T_.greenBg : pr === "Medium" ? T_.amberBg : T_.grayBadge, color: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.grayBadgeText, borderColor: pr === "High" ? T_.greenBorder : pr === "Medium" ? T_.amberBorder : T_.textGhost }}>{pr}</span>}
                         <span style={{ color: T_.textGhost, fontSize: 14 }}>&rarr;</span>
                       </div>
@@ -718,11 +726,12 @@ export default function App() {
                     </span>
                     <span style={{
                       fontSize: 11, padding: "2px 10px", borderRadius: 4, cursor: "pointer",
-                      background: curFields?.public_private?.text === "Public" ? "rgba(112,176,250,0.12)" : "rgba(138,153,171,0.12)",
-                      color: curFields?.public_private?.text === "Public" ? T_.blue : T_.textGhost,
-                      border: `1px solid ${curFields?.public_private?.text === "Public" ? "rgba(112,176,250,0.3)" : T_.border}`,
+                      background: (curFields?.public_private?.text || "").startsWith("Public") ? "rgba(112,176,250,0.12)" : "rgba(138,153,171,0.12)",
+                      color: (curFields?.public_private?.text || "").startsWith("Public") ? T_.blue : T_.textGhost,
+                      border: `1px solid ${(curFields?.public_private?.text || "").startsWith("Public") ? "rgba(112,176,250,0.3)" : T_.border}`,
                     }} onClick={() => {
-                      const newVal = curFields?.public_private?.text === "Public" ? "Private" : "Public";
+                      const cur_ = curFields?.public_private?.text || "Private";
+                      const newVal = cur_.startsWith("Public") ? "Private" : "Public";
                       updateField(cur.id, "public_private", newVal);
                     }}>{curFields?.public_private?.text || "Private"}</span>
                   </span>
@@ -770,23 +779,11 @@ export default function App() {
               </div>
             )}
 
-            {/* CoreWeave Review */}
-            {cur.id === "coreweave_seed" && <CoreweaveReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
-
-            {/* Applied Digital Review */}
-            {cur.id === "apld_seed" && <AppliedDigitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
-
-            {/* Cipher Digital Review */}
-            {cur.id === "cipher_seed" && <CipherDigitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
-
-            {/* TeraWulf Review */}
-            {cur.id === "terawulf_seed" && <TerawulfReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
-
             {/* Tract Capital Review */}
             {cur.id === "tractcapital_seed" && <TractCapitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
 
-            {/* Recent Updates (hidden for companies with dedicated review tabs) */}
-            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (
+            {/* Recent Updates */}
+            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Recent updates</span>
@@ -824,7 +821,7 @@ export default function App() {
             )}
 
             {/* Research Notes — hidden for companies with dedicated review tabs */}
-            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (
+            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (
               <div style={s.section}>
                 <div style={s.sectionHdr}>
                   <span>Research notes</span>
@@ -847,7 +844,7 @@ export default function App() {
             )}
 
             {/* Moat vs AI Scoring — hidden for companies with dedicated review tabs */}
-            {cur.sector !== "sources" && !["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (() => {
+            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (() => {
               const MOAT_TIERS = [
                 { label: "T1 — Structural (3x)", weight: 3, color: "#34d673", moats: [
                   { key: "data", name: "Proprietary Data" },
@@ -945,7 +942,7 @@ export default function App() {
             })()}
 
             {/* Structured Fields — hidden for companies with dedicated review tabs */}
-            {!["coreweave_seed","apld_seed","cipher_seed","terawulf_seed","tractcapital_seed"].includes(cur.id) && (cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+            {!["tractcapital_seed"].includes(cur.id) && (cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
               const fd = curFields?.[f.key];
               const isEditing = editingField === f.key;
               const hasContent = fd?.text?.trim();
