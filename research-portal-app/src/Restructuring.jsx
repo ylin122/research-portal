@@ -259,6 +259,7 @@ function WindstreamCase() {
          ORG CHART — Bond prospectus style
          Click boxes for detail panels below the chart.
          ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Click any entity for details. Dashed = outside credit group.</div>
@@ -409,6 +410,7 @@ function WindstreamCase() {
 
       {/* ── Detail Panel (appears below chart when something is clicked) ── */}
       {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
 
       {/* ════════════════════════════════════════════════════
          KEY CONCEPTS
@@ -580,6 +582,7 @@ function EnvisionCase() {
          ORG CHART — Pre-Filing (Post-LME) Structure
          Shows the dual-silo structure after the 2022 transactions
          ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure (Post-LME, at Filing)</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>After the Apr–Aug 2022 dropdown + uptier. Two separately capitalized silos. Click any box for details.</div>
@@ -726,6 +729,7 @@ function EnvisionCase() {
 
       {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
 
       {/* ════════════════════════════════════════════════════
          KEY CONCEPTS
@@ -949,6 +953,7 @@ function SertaCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 900, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-2020 uptier, at filing. Click any box for details. Case 23-90020, S.D. Tex., Judge David Jones.</div>
@@ -1104,6 +1109,7 @@ function SertaCase() {
 
       {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
 
       {/* ════════════════════════════════════════════════════
          KEY CONCEPTS
@@ -1357,6 +1363,7 @@ function JCrewCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-2017 IP transfer, at filing. Click any entity or tranche for details. Case 20-32181, E.D. Va., Judge Phillips.</div>
@@ -1538,6 +1545,7 @@ function JCrewCase() {
 
       {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
 
       {/* ════════════════════════════════════════════════════
          KEY CONCEPTS
@@ -1791,6 +1799,7 @@ function DieboldNixdorfCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
@@ -1963,6 +1972,7 @@ function DieboldNixdorfCase() {
 
       {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
 
       {/* ════════════════════════════════════════════════════
          KEY CONCEPTS
