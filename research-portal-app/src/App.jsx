@@ -12,6 +12,7 @@ import KnowledgeBase from "./KnowledgeBase";
 import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
+import Restructuring from "./Restructuring";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
@@ -450,6 +451,11 @@ export default function App() {
             <span>YL Research Wiki</span>
           </div>
 
+          {/* Restructuring */}
+          <div style={{ ...s.sectorHdr, color: view.type === "restructuring" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "restructuring" }); setEditingField(null); }}>
+            <span>Restructuring</span>
+          </div>
+
           {/* Prompts */}
           <div style={{ ...s.sectorHdr, color: view.type === "prompts" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "prompts" }); setEditingField(null); }}>
             <span>Prompts</span>
@@ -637,6 +643,9 @@ export default function App() {
         {/* CREDIT INSTRUMENTS */}
         {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
 
+        {/* RESTRUCTURING */}
+        {view.type === "restructuring" && <Restructuring initialTab={view.sub} />}
+
         {/* MOBILE MORE MENU */}
         {view.type === "mobileMore" && (
           <div style={{ ...s.page, maxWidth: "none" }}>
@@ -666,6 +675,7 @@ export default function App() {
                 { type: "researchWiki", label: "YL Research Wiki", icon: "\u{1F4DA}" },
                 { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
                 { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
+                { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
                 { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
                 { type: "sources", label: "Sources", icon: "\u{1F517}" },
                 { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },

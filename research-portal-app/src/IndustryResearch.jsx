@@ -60,16 +60,16 @@ const AI_LABS_DATA = {
       { year: 2026, value: 26, est: true }, { year: 2027, value: 45, est: true }, { year: 2028, value: 70, est: true },
       { year: 2029, value: 85, est: true }, { year: 2030, value: 100, est: true },
     ],
-    arrCurrent: { value: "$19B ARR", date: "Mar 2026", source: "Bloomberg (Mar 3, 2026). Up from $14B (Feb) and $9B (end 2025)" },
+    arrCurrent: { value: "$30B+ ARR", date: "Apr 2026", source: "Bloomberg/Anthropic (Apr 6, 2026). Up from $19B (Mar), $14B (Feb), $9B (end 2025). Surpassed OpenAI (~$24-25B)." },
     arrSource: "2024: $1B ARR exit (company). 2025: $9B ARR exit (SaaStr). 2026E: $20-26B (TechCrunch). 2028E: $70B bull (The Information).",
     compute: [
       { year: 2023, value: 0.05 }, { year: 2024, value: 0.15 }, { year: 2025, value: 0.5 },
       { year: 2026, value: 1.5, est: true }, { year: 2027, value: 3, est: true }, { year: 2028, value: 5, est: true },
       { year: 2029, value: 7, est: true }, { year: 2030, value: 10, est: true },
     ],
-    computeCurrent: { value: "~1 GW", date: "Feb 2026", source: "Google TPU deal (1+ GW) + AWS + Azure" },
-    computeSource: "Google Cloud TPU deal (1M TPUs, 1+ GW), AWS Bedrock, Azure ($30B compute deal)",
-    users: { paying: "300K+ biz customers, 500+ at $1M+/yr", trend: "8 of Fortune 10 are Claude customers" },
+    computeCurrent: { value: "~1 GW (scaling to ~3.5 GW)", date: "Apr 2026", source: "1 GW live (2026) + 3.5 GW Google TPU via Broadcom (online 2027) + AWS + Azure" },
+    computeSource: "Apr 2026: Expanded Google/Broadcom deal — multi-GW next-gen TPU capacity (online 2027), US-sited. AWS Bedrock (Project Rainier), Azure ($30B compute deal). Total commitment largest in industry.",
+    users: { paying: "300K+ biz customers, 1,000+ at $1M+/yr (doubled from 500+ in Feb)", trend: "8 of Fortune 10 are Claude customers" },
     mau: [
       { q: "Q1 23", value: 0.1 }, { q: "Q2 23", value: 0.5 }, { q: "Q3 23", value: 1 }, { q: "Q4 23", value: 4 },
       { q: "Q1 24", value: 5 }, { q: "Q2 24", value: 10 }, { q: "Q3 24", value: 15 }, { q: "Q4 24", value: 19 },
@@ -81,12 +81,12 @@ const AI_LABS_DATA = {
     burn: "Fastest to profitability \u00b7 FCF positive projected 2027-2028",
     equity: [
       { ticker: "AMZN", name: "Amazon", exposure: "$8B+ invested, primary AWS Bedrock partner", color: "#F59E0B" },
-      { ticker: "GOOGL", name: "Google", exposure: "$3B invested, 1M TPU deal (1+ GW), Vertex AI", color: "#3B82F6" },
+      { ticker: "GOOGL", name: "Google", exposure: "$3B invested, expanded TPU deal via Broadcom (1 GW live + 3.5 GW 2027), Vertex AI", color: "#3B82F6" },
       { ticker: "MSFT", name: "Microsoft", exposure: "$5B invested, Azure compute ($30B)", color: "#8B5CF6" },
       { ticker: "NVDA", name: "Nvidia", exposure: "$10B invested, Grace Blackwell + Vera Rubin supply", color: "#10B981" },
     ],
     ecosystem: [
-      { category: "Cloud", partners: "AWS Bedrock (primary), Google Cloud (1M TPUs), Azure ($30B)", color: "#3B82F6" },
+      { category: "Cloud", partners: "AWS Bedrock (primary), Google Cloud (1 GW live + 3.5 GW via Broadcom 2027), Azure ($30B)", color: "#3B82F6" },
       { category: "Chips", partners: "Google TPU v7, AWS Trainium, Nvidia Grace Blackwell + Vera Rubin", color: "#F59E0B" },
       { category: "Power", partners: "Fluidstack ($50B own DCs — TX, NY), AWS Rainier (2.2 GW), Google TPU DCs", color: "#10B981" },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via TPU/GPU from cloud partners", color: "#A855F7" },
@@ -224,6 +224,8 @@ const AI_LABS_DATA = {
 
 // AI Labs Industry News — Update during refresh alongside dashNewsUpdates
 const AI_LABS_NEWS = [
+  { date: "Apr 6", text: "Anthropic tops $30B ARR, surpassing OpenAI (~$24-25B) — up from $19B (Mar) and $9B (end 2025). 1,000+ customers at $1M+/yr (doubled from Feb). Claude Code ARR >$2.5B. Simultaneously announces expanded Google/Broadcom compute deal: ~3.5 GW of next-gen TPU capacity (online 2027), adding to 1 GW already live. Largest compute commitment by any AI lab. US-sited. AWS remains primary cloud partner (Bloomberg, Anthropic)." },
+  { date: "Apr 6", text: "Broadcom confirms expanded long-term deal with Google — custom TPU design + networking through 2031. Anthropic named as key customer for the new TPU capacity. Deal is INCREMENTAL to existing Broadcom-Google relationship (TPU co-design ongoing), but significantly larger in scale (multi-GW). AWS relationship with Anthropic unchanged (CNBC, Broadcom IR)." },
   { date: "Mar 31", text: "OpenAI closes $122B round at $852B valuation — largest private funding in history. Amazon ($50B), Nvidia ($30B), SoftBank ($30B), $3B from individual investors via banks. Now valued higher than Intel + AMD + Qualcomm combined (Bloomberg)." },
   { date: "Mar 30", text: "Mistral AI raises $830M debt for Paris data center — first European AI lab to self-host training. Total raised $2.6B+. Codestral (code) + Pixtral (vision) gaining traction (TechCrunch)." },
   { date: "Mar 29", text: "Anthropic in IPO talks as soon as Q4 2026 — targeting $200B+ public valuation. Revenue tripling in 2026. CNBC reports Morgan Stanley + Goldman Sachs advising (CNBC, Bloomberg)." },
@@ -319,7 +321,7 @@ const AI_CAPEX_DATA = {
       ],
       spendingOn: "TPU v7 Ironwood fabs, global DC expansion, Nvidia GPUs for GCP customers, subsea cables, DeepMind compute",
       news: "2026 capex guided $175-185B (Q4 2025 earnings, Feb 5 2026). Nearly double 2025's $91B. Cloud backlog surged to $240B. Supply-constrained per Pichai. Street expected $119B — guidance shocked at +50%.",
-      partners: "Broadcom (TPU co-design), TSMC (fab), Anthropic, Meta (TPU lease talks), Apple (Gemini deal ~$5B)",
+      partners: "Broadcom (TPU co-design thru 2031, expanded Apr 2026 — multi-GW for Anthropic), TSMC (fab), Anthropic (3.5 GW TPU 2027), Meta (TPU lease talks), Apple (Gemini deal ~$5B)",
     },
     { name: "Microsoft (Azure)", ticker: "MSFT", color: "#8B5CF6",
       capex: [
@@ -1712,7 +1714,9 @@ export default function IndustryResearch({ initialTab }) {
                 { date: "2023", partner: "Anthropic", type: "Investment", amount: "$2B (initial)", duration: "Ongoing", deploy: "Equity stake, TPU usage", status: "Active" },
                 { date: "Jan 2025", partner: "Anthropic", type: "Investment", amount: "$1B (total ~$3B+)", duration: "Ongoing", deploy: "14% equity (capped 15%)", status: "Active" },
                 { date: "Oct 2025", partner: "Anthropic", type: "TPU Cloud Deal", amount: "Tens of $B", duration: "Multi-year", deploy: "1M TPUs · 1+ GW online 2026", status: "Active" },
+                { date: "Apr 2026", partner: "Anthropic (expanded)", type: "TPU Cloud Deal", amount: "Multi-$B (incremental)", duration: "Multi-year", deploy: "~3.5 GW next-gen TPU via Broadcom · online 2027 · US-sited", status: "Active" },
                 { date: "Nov 2025", partner: "Meta (in talks)", type: "TPU Cloud + On-prem", amount: "Multi-$B (est.)", duration: "Cloud 2026, on-prem 2027", deploy: "Inference → training migration", status: "In negotiations" },
+                { date: "Apr 2026", partner: "Broadcom (expanded)", type: "ASIC Design + Supply", amount: "Undisclosed (significant)", duration: "Through 2031", deploy: "Next-gen TPU design + networking + components for AI racks", status: "Active" },
                 { date: "2025", partner: "Broadcom", type: "ASIC Design Partner", amount: "Undisclosed", duration: "Ongoing", deploy: "TPU v6/v7 co-design + fab via TSMC", status: "Active" },
                 { date: "2025", partner: "TeraWulf", type: "Equity + Backstop", amount: "14% equity + loan backstop", duration: "Multi-year", deploy: "Via Fluidstack for Anthropic DCs", status: "Active" },
                 { date: "2025", partner: "Cipher Mining", type: "Equity + Backstop", amount: "5.4% equity + $1.4B lease backstop", duration: "Multi-year", deploy: "Via Fluidstack for Anthropic DCs", status: "Active" },
@@ -2810,7 +2814,7 @@ export default function IndustryResearch({ initialTab }) {
               { vendor: "Google", chip: "TPU v6 Trillium", status: "Shipping", shipDate: "2024-12", vol2025: "~2.5M units", vol2026: "~1.6M (transition)", customers: "DeepMind, Anthropic, Midjourney", notes: "ASP ~$4,500. Anthropic 1M-chip deal. Meta in talks.", color: "#3B82F6", sortOrder: 2 },
               { vendor: "Amazon", chip: "Trainium3", status: "H1 2026", shipDate: "2026-03", vol2025: "—", vol2026: "Ramp begins", customers: "Anthropic, AWS customers", notes: "4x perf vs T2. Co-designed with Anthropic.", color: "#F59E0B", sortOrder: 1 },
               { vendor: "Amazon", chip: "Trainium2", status: "Shipping (Oct 2025)", shipDate: "2025-10", vol2025: "~1M+ (Rainier)", vol2026: "~2-3M", customers: "Anthropic (primary), Bedrock", notes: "Rainier: 500K→1M+. 30-40% better price-perf. Co-designed.", color: "#F59E0B", sortOrder: 2 },
-              { vendor: "Broadcom", chip: "Custom XPUs (TPU, OAI)", status: "Shipping / In dev", shipDate: "2024-06", vol2025: "~2.5M+ (via Google)", vol2026: "~3-4M+", customers: "Google (TPU), OpenAI (custom)", notes: "ASIC design + TSMC fab. $100B AI rev target FY2027.", color: "#A855F7", sortOrder: 2 },
+              { vendor: "Broadcom", chip: "Custom XPUs (TPU, OAI)", status: "Shipping / In dev", shipDate: "2024-06", vol2025: "~2.5M+ (via Google)", vol2026: "~3-4M+", customers: "Google (TPU), OpenAI (custom), Anthropic (via Google)", notes: "ASIC design + networking thru 2031. Apr 2026: expanded deal for multi-GW Anthropic TPU capacity. $100B AI rev target FY2027.", color: "#A855F7", sortOrder: 2 },
               { vendor: "Meta", chip: "MTIA v2 (In-house)", status: "In deployment", shipDate: "2025-06", vol2025: "Internal only", vol2026: "Scaling", customers: "Meta (ranking, reco, inference)", notes: "Custom inference chip. Supplements GPU fleet.", color: "#64748B", sortOrder: 3 },
             ];
             const dSorted = [...deliveryData].sort((a, b) => {
