@@ -163,6 +163,8 @@ const CASES = [
   { key: "windstream", label: "Windstream Holdings", sector: "Telecom", year: "2019", color: "#3B82F6" },
   { key: "envision", label: "Envision Healthcare", sector: "Healthcare", year: "2023", color: "#8B5CF6" },
   { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: "#10B981" },
+  { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: "#F59E0B" },
+  { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
 ];
 
 function WindstreamCase() {
@@ -1150,6 +1152,873 @@ function SertaCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   J.CREW GROUP
+   ═══════════════════════════════════════════════════════ */
+
+function JCrewCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    lbo: (
+      <DetailPanel title="The 2011 LBO — TPG & Leonard Green" onClose={() => setDetail(null)}>
+        <p><strong>Nov 2010:</strong> TPG Capital and Leonard Green & Partners announce take-private of J.Crew Group for <strong>$43.50/share</strong> (~$3.0B total value including assumed debt). TPG held ~75%, Leonard Green ~25%.</p>
+        <p><strong>Mar 7, 2011:</strong> LBO closes after stockholder approval. Bank of America and Goldman Sachs arranged $1.85B in credit facilities:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Term Loan:</strong> ~$1.2B (senior secured, covenant-lite, LIBOR + spread)</li>
+          <li><strong>ABL Revolver:</strong> $250M (5-year, asset-based, undrawn at close)</li>
+          <li><strong>Senior Unsecured Bridge:</strong> $600M</li>
+          <li><strong>Equity:</strong> ~$1.1B from TPG/Leonard Green</li>
+        </ul>
+        <p>TPG had a long history with J.Crew — first acquired a majority stake in <strong>1997</strong>, then took the company public via IPO in <strong>2006</strong> ($376M raised). The 2011 deal was a re-take-private.</p>
+        <p><strong>Mar 2014:</strong> Refinanced into a new <strong>$1.567B Term Loan B</strong> (LIBOR + 300 bps, covenant-lite). Arranged by BofA and Goldman.</p>
+        <p style={{ color: T_.red }}>The thesis was that J.Crew's premium brand, led by CEO Mickey Drexler and Creative Director Jenna Lyons, could support significant leverage. That thesis collapsed when the brand lost cultural relevance while fast fashion and athleisure captured the market.</p>
+      </DetailPanel>
+    ),
+    dividends: (
+      <DetailPanel title="Dividend Recapitalization — $766M Extracted" onClose={() => setDetail(null)}>
+        <p>Between 2011 and 2019, TPG and Leonard Green extracted <strong>$765.9 million</strong> from J.Crew:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>2012:</strong> $197.5M dividend + $9.1M monitoring fees = $206.6M</li>
+          <li><strong>2013:</strong> $484.0M dividend + $9.9M monitoring fees = $493.9M</li>
+          <li><strong>2014-2019:</strong> $0 dividends + $57.7M cumulative monitoring fees</li>
+        </ul>
+        <p>The <strong>$484M dividend in 2013</strong> was funded by issuing <strong>$500M PIK Toggle Notes</strong> at Chinos Intermediate Holdings A (the HoldCo above J.Crew Group). Bookrunners: Goldman, BofA, Morgan Stanley, Wells Fargo.</p>
+        <p style={{ color: T_.red }}>The sponsors extracted nearly <strong>70% of their ~$1.1B equity investment</strong> in dividends alone — before the company even began its decline. By the time J.Crew filed Ch.11 in 2020, the sponsors' equity was cancelled for $0, but they'd already pocketed $766M. This is a textbook dividend recap: extracting value via debt-funded distributions while the business bears the leverage burden.</p>
+      </DetailPanel>
+    ),
+    chinosA: (
+      <DetailPanel title="Chinos Intermediate Holdings A — PIK Note Issuer" onClose={() => setDetail(null)}>
+        <p>Delaware corporation. Intermediate holding entity between Chinos Holdings (ultimate parent) and J.Crew Group (borrower).</p>
+        <p><strong>Issuer of the $500M PIK Toggle Notes</strong> (7.75% cash / 8.50% PIK, due May 2019). Proceeds funded the 2013 $484M dividend to TPG/Leonard Green.</p>
+        <p>Because J.Crew elected PIK interest (paying in kind rather than cash), the outstanding balance grew to <strong>~$566.5M</strong> by 2017. These notes were <strong>structurally subordinated</strong> to the Term Loan — Chinos A sat above J.Crew Group in the corporate structure and had no direct claim on operating assets.</p>
+        <p style={{ color: T_.amber }}>The approaching <strong>May 2019 maturity</strong> of these notes was the catalyst for the IP transfer. J.Crew had no unencumbered assets and no liquidity to refinance $566M in notes. The only option: create value outside the existing collateral pool by moving IP to an unrestricted subsidiary, then use that IP to back new financing to exchange the PIK notes.</p>
+        <p>Also served as an unconditional <strong>guarantor of the IPCo Notes</strong> after the 2017 exchange.</p>
+      </DetailPanel>
+    ),
+    jcrewGroup: (
+      <DetailPanel title="J.Crew Group, Inc. — The Borrower" onClose={() => setDetail(null)}>
+        <p>Delaware corporation (originally incorporated in New York 1988, reincorporated in Delaware 2005). Post-LBO, became a subsidiary of Chinos Intermediate Holdings B.</p>
+        <p><strong>The Borrower</strong> under the 2014 Amended and Restated Credit Agreement ($1.567B Term Loan B). Administrative/Collateral Agent: Bank of America, N.A.</p>
+        <p><strong>Guarantors of the Term Loan:</strong> Chinos Intermediate Holdings B ("Holdings"), J.Crew Operating Corp., J.Crew Inc., J.Crew International Inc., Madewell Inc., Grace Holmes Inc., H.F.D. No. 55 Inc., and each wholly-owned Material Domestic Subsidiary.</p>
+        <p><strong>Collateral:</strong> First-priority security interest in substantially all assets — equity interests of subsidiaries, intellectual property (trademarks, copyrights), inventory, receivables, equipment, up to 65% of foreign sub equity.</p>
+        <p style={{ color: T_.red }}>This is the entity whose collateral was stripped when IP was transferred to J.Crew Cayman (a non-loan-party restricted subsidiary) and then to unrestricted subsidiaries. The Term Loan lenders' security interest in the trademarks — their most valuable collateral after inventory — was effectively removed without their consent.</p>
+      </DetailPanel>
+    ),
+    ipTransfer: (
+      <DetailPanel title="The IP Transfer — The 'Trap Door' (Dec 2016 – Aug 2017)" onClose={() => setDetail(null)}>
+        <p>The defining transaction of the case. J.Crew transferred its most valuable intangible assets — the J.Crew trademarks — through a chain of entities to move them beyond secured lenders' reach:</p>
+        <p><strong>Step 1 — Transfer to Cayman Restricted Sub (Dec 5, 2016):</strong></p>
+        <p>J.Crew International, Inc. (a <strong>Loan Party</strong> that held the trademarks) assigned an <strong>undivided 72.04% ownership interest</strong> in the Licensed Marks (valued at ~$250M) to <strong>J.Crew International Cayman Limited</strong>, a newly created Cayman Islands restricted subsidiary.</p>
+        <p>Because J.Crew Cayman was a <strong>non-U.S. entity</strong>, it was <strong>not required to become a Loan Party</strong> under the credit agreement — no guarantee or pledge obligations. The IP left the collateral pool while staying in the restricted subsidiary group.</p>
+        <p><strong>Basket used:</strong> Section 7.02(c) — investments in non-loan-party restricted subs, capped at the greater of <strong>$150M or 4.00% of total assets</strong>, plus Available Amount.</p>
+        <p><strong>Step 2 — Transfer from Cayman to Unrestricted Sub (the "Trap Door"):</strong></p>
+        <p>J.Crew Cayman transferred the IP to <strong>J.Crew Brand Holdings, LLC</strong> — designated as an <strong>unrestricted subsidiary</strong>. Then cascaded: Brand Holdings → Brand Intermediate → Brand LLC → <strong>J.Crew Domestic Brand, LLC ("IPCo")</strong>.</p>
+        <p><strong>Basket used:</strong> Section <strong>7.02(t)</strong> — allowed investments by non-loan-party restricted subs in unrestricted subs if <em>"financed with the proceeds received"</em> from prior baskets. The word <strong>"proceeds" was never defined</strong> in the 100+ uses throughout the credit agreement. J.Crew argued the IP itself was "proceeds" of the initial investment.</p>
+        <p><strong>Step 3 — Raise Debt Against the IP:</strong></p>
+        <p>IPCo issued <strong>$250M of 13% Senior Secured Notes due 2021</strong> backed by the trademarks. An additional <strong>$97M of new money notes</strong> were sold (3% OID).</p>
+        <p><strong>Step 4 — Exchange the PIK Notes:</strong></p>
+        <p>$566.5M PIK Toggle Notes exchanged for $250M IPCo Notes + $190M preferred stock + ~15% common equity. <strong>99.85% tendered.</strong></p>
+        <p><strong>Jul 2017:</strong> The remaining 27.96% IP interest also transferred.</p>
+        <p style={{ color: T_.red }}>The entire chain — Loan Party → non-loan-party restricted sub (Cayman, no guarantee obligation) → unrestricted sub (outside credit group entirely) — was a three-step maneuver that moved ~$347M of IP beyond the reach of $1.5B+ of secured term loan lenders. This is the original "dropdown" that spawned an entire category of protective covenant language.</p>
+      </DetailPanel>
+    ),
+    ipco: (
+      <DetailPanel title="IPCo Entities — The Unrestricted Subsidiary Chain" onClose={() => setDetail(null)}>
+        <p>A chain of newly created entities designed to hold the transferred IP outside the credit group:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>J.Crew Brand Holdings, LLC</strong> — designated as an <strong>unrestricted subsidiary</strong></li>
+          <li><strong>J.Crew Brand Intermediate, LLC</strong> — guarantor of IPCo Notes</li>
+          <li><strong>J.Crew Brand, LLC</strong> — <strong>co-issuer</strong> of the 13% Senior Secured Notes due 2021</li>
+          <li><strong>J.Crew Brand Corp.</strong> — <strong>co-issuer</strong> of IPCo Notes</li>
+          <li><strong>J.Crew Domestic Brand, LLC ("IPCo")</strong> — guarantor; ultimate IP-holding entity</li>
+          <li><strong>J.Crew International Brand, LLC</strong> — guarantor</li>
+        </ul>
+        <p><strong>IPCo Notes:</strong> $249.6M in exchange notes + $97M new money = <strong>~$347M total</strong>. 13% coupon, due 2021. Trustee/Collateral Agent: U.S. Bank National Association. Secured by the transferred J.Crew trademarks.</p>
+        <p>IPCo entities <strong>licensed the trademarks back</strong> to J.Crew's operating companies, which paid licensing fees — effectively creating a priority claim on operating cash flows ahead of the Term Loan.</p>
+        <p style={{ color: T_.amber }}>In Ch.11, IPCo Noteholders received <strong>23.5% of reorganized equity</strong> (~83.9% recovery on asserted claims). Despite the controversy, these holders — originally PIK noteholders who were facing a potential wipeout — ended up with meaningful recovery because the IP they held as collateral retained significant value.</p>
+      </DetailPanel>
+    ),
+    termLoan: (
+      <DetailPanel title="Term Loan B (~$1.337B at Filing)" onClose={() => setDetail(null)}>
+        <p><strong>$1.567B Term Loan B</strong> originated Mar 2014 (Amended and Restated Credit Agreement). LIBOR + 300 bps. Covenant-lite (no financial maintenance covenants). Administrative Agent: Bank of America.</p>
+        <p>Outstanding at filing: <strong>~$1.337B</strong> (reduced from original through partial repayments, including $150M buyback in the 2017 consent solicitation).</p>
+        <p><strong>Collateral:</strong> First-priority lien on substantially all assets of J.Crew Group and guarantor subsidiaries. Originally included the J.Crew trademarks — until the IP transfer stripped them out.</p>
+        <p><strong>2017 Consent Solicitation:</strong> ~85-88% of TL lenders consented to amendments ratifying the IP transfer. In exchange: $150M par repayment of term loans + Section 7.02(t) (the trap door) was deleted from the credit agreement. The administrative agent (Wilmington Savings Fund Society) dismissed its litigation. ~12% held out (Eaton Vance, Highland Capital).</p>
+        <p style={{ color: T_.amber }}><strong>Ch.11 Recovery:</strong> Term Loan lenders received <strong>76.5% of reorganized equity</strong>. Estimated recovery ~40-60% depending on enterprise valuation (plan valued the reorganized enterprise at ~$1.75B; the UCC argued $2.94B). The fulcrum security. TL lenders became the new owners, with Anchorage Capital, GSO, and Davidson Kempner as the largest holders.</p>
+      </DetailPanel>
+    ),
+    abl: (
+      <DetailPanel title="ABL Revolving Credit Facility" onClose={() => setDetail(null)}>
+        <p>Originally $250M (increased capacity to ~$350M). Asset-based, secured by inventory and receivables. Co-borrowers: J.Crew Group, Inc. and J.Crew Operating Corp. Agent: Bank of America. Co-documentation agent: Wells Fargo.</p>
+        <p>Outstanding at filing: <strong>~$310M drawn</strong> + ~$65M in letters of credit.</p>
+        <p style={{ color: T_.green }}><strong>Recovery: 100%.</strong> Paid in full, in cash. ABL facilities are first-priority on current assets (inventory, A/R) and are typically the most senior obligation in retail bankruptcies. Unimpaired.</p>
+      </DetailPanel>
+    ),
+    litigation: (
+      <DetailPanel title="Eaton Vance / Highland Litigation" onClose={() => setDetail(null)}>
+        <p><strong>Plaintiffs:</strong> Eaton Vance Management (~$100M TL) and Highland Capital Management (~$61M TL) — representing ~12% of term loan lenders who refused to consent to the 2017 amendments.</p>
+        <p><strong>Filed:</strong> Jun 22, 2017 in Manhattan Supreme Court (Index No. 654397/2017).</p>
+        <p><strong>Claims:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>IP transfer violated the credit agreement</li>
+          <li>Trademarks being stripped from collateral = transfer of "all or substantially all" collateral, requiring <strong>unanimous consent</strong></li>
+          <li>J.Crew was insolvent at time of transfer (fraudulent conveyance)</li>
+          <li>2017 amendments were coercive toward holdouts</li>
+        </ul>
+        <p><strong>Court Rulings:</strong></p>
+        <p>Judge <strong>Shirley Kornreich</strong> (NY Supreme Court) <strong>denied the preliminary injunction</strong>, characterizing the plaintiffs as having filed because they "did not get what they want" when 88% consented.</p>
+        <p><strong>Appellate Division (2019):</strong> <em>Eaton Vance Mgt. v. Wilmington Sav. Fund Socy., FSB</em>, 171 A.D.3d 626, 99 N.Y.S.3d 28 — minority lenders <strong>lost their appeal</strong>.</p>
+        <p style={{ color: T_.red }}>The holdout lenders were left with their original term loan positions, now secured by collateral that no longer included the most valuable intangible assets. When J.Crew filed Ch.11, they received the same pro-rata share of reorganized equity as consenting lenders — but had no recourse for the collateral value lost to the IP transfer.</p>
+      </DetailPanel>
+    ),
+    madewell: (
+      <DetailPanel title="Madewell — The Crown Jewel" onClose={() => setDetail(null)}>
+        <p><strong>History:</strong> J.Crew acquired the defunct workwear brand in 2004 and relaunched it in 2006. By FY2019, Madewell was generating <strong>$602M revenue</strong> (14% YoY growth) with positive comparable sales in <strong>41 of 42 quarters</strong>.</p>
+        <p><strong>Financials vs. J.Crew brand:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>FY2018: Madewell revenue $529M (+32% YoY), net income $60M</li>
+          <li>FY2019: Madewell revenue $602M (+14%), 87% direct-to-consumer</li>
+          <li>Meanwhile J.Crew brand: $1.71B revenue (-4%), declining since ~2013 peak of $2.3B</li>
+        </ul>
+        <p><strong>IPO Plan:</strong> S-1 filed Oct 2019 to spin off Madewell as a separate public company. The IPO proceeds were intended to pay down J.Crew's debt. <strong>Pulled Mar 2, 2020</strong> due to COVID market volatility and lack of investor conviction.</p>
+        <p>Madewell was a <strong>guarantor</strong> of the Term Loan (not borrower). In Ch.11, Madewell remained part of J.Crew Group — no spinoff or separate IPO.</p>
+        <p style={{ color: T_.amber }}>Madewell was simultaneously J.Crew's greatest asset and most frustrating missed opportunity. Had the IPO succeeded pre-COVID, it could have generated ~$800M-$1B in proceeds to deleverage. Instead, the pandemic killed the IPO and pushed the entire group into Ch.11.</p>
+      </DetailPanel>
+    ),
+    planTreatment: (
+      <DetailPanel title="Chapter 11 Plan Treatment — Class Recoveries" onClose={() => setDetail(null)}>
+        <p>Pre-arranged plan. Confirmed <strong>Aug 25, 2020</strong> by Judge Keith Phillips (E.D. Va.). Emerged <strong>Sep 10, 2020</strong> — ~4 months in bankruptcy.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Treatment</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "ABL Claims (~$310M)", treat: "Paid in full, cash", rec: "100%", c: T_.green },
+              { cls: "DIP Claims ($400M)", treat: "Converted to exit term loans (dollar-for-dollar)", rec: "100%", c: T_.green },
+              { cls: "Term Loan (~$1,337M)", treat: "76.5% of reorganized equity", rec: "~40-60%", c: T_.amber },
+              { cls: "IPCo Notes (~$347M)", treat: "23.5% of reorganized equity", rec: "~83.9%", c: T_.blue },
+              { cls: "Trade Unsecured (~$320M pool)", treat: "$71M for trade (50% if signed new agreements); $6M other", rec: "~22%", c: T_.red },
+              { cls: "Equity (TPG/Leonard Green)", treat: "Cancelled, zero recovery", rec: "0%", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> $400M ABL (BofA, due 2025) + $400M Exit Term Loan (Anchorage/GSO/Davidson Kempner, due 2027). Over <strong>$1.6B of pre-petition debt eliminated</strong> through equitization.</p>
+        <p><strong>New Ownership:</strong> Anchorage Capital Group (majority), GSO Capital Partners (Blackstone), Davidson Kempner — all former secured lenders who converted debt to equity.</p>
+        <p><strong>UCC Objection:</strong> The UCC argued the company was worth $2.94B (vs. the plan's $1.75B valuation), and that secured lenders were over-allocated. They negotiated the unsecured pool up from $3M to ~$77M total.</p>
+      </DetailPanel>
+    ),
+    postEmergence: (
+      <DetailPanel title="Post-Emergence & Current State" onClose={() => setDetail(null)}>
+        <p><strong>Emergence:</strong> Sep 10, 2020. First major national retailer to emerge from COVID-era bankruptcy.</p>
+        <p><strong>Store Count at Emergence:</strong> 170 J.Crew retail + 170 J.Crew Factory + 142 Madewell. Closed all 6 UK stores.</p>
+        <p><strong>Leadership Turmoil Continued:</strong> Jan Singer (CEO, appointed Jan 2020) departed Nov 2020 after &lt;10 months. <strong>Libby Wadle</strong> (Madewell CEO) named CEO of J.Crew Group.</p>
+        <p><strong>IP Resolution:</strong> The transferred IP was reunified under the reorganized corporate structure. The IP controversy was resolved through equitizing both TL and IPCo noteholders into the same equity pool.</p>
+        <p><strong>Madewell IPO:</strong> Never revisited. Remains a wholly-owned subsidiary.</p>
+        <p><strong>2024 Refinancing:</strong> J.Crew returned to the leveraged loan market with a <strong>$450M refinancing</strong> led by Goldman Sachs. Priced at SOFR + 625 bps at 98 cents (yielding &gt;11%). Notably, the new loan docs included a <strong>"J.Crew blocker"</strong> provision — the company that created the loophole now has its own protective covenant.</p>
+        <p><strong>Revenue (LTM Q2 2024):</strong> $2.72B. Company remains privately held.</p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Premium apparel retailer (J.Crew, Madewell, Factory). <span style={{ color: T_.purple }}>TPG + Leonard Green</span> took the company private in 2011 for ~$3B, then extracted <span style={{ color: T_.red }}>$766M in dividends and fees</span> — funding the $484M dividend with <span style={{ color: T_.red }}>$500M PIK Toggle Notes</span>. Facing a PIK maturity wall, J.Crew executed the original <span style={{ color: T_.accent }}>"trap door" IP transfer</span> — moving trademarks to unrestricted subsidiaries to raise new secured debt, stripping collateral from $1.5B+ of term loan lenders. This maneuver spawned the market-standard <span style={{ color: T_.accent }}>"J.Crew Blocker"</span> covenant provision and became the foundational precedent for Envision, Serta, and every modern LME.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "LBO Price", v: "~$3.0B", c: T_.purple },
+            { l: "Sponsor Extractions", v: "$766M", c: T_.red },
+            { l: "Total Debt", v: "~$1.7B", c: T_.red },
+            { l: "Filed", v: "May 4, 2020", c: T_.red },
+            { l: "Emerged", v: "Sep 10, 2020", c: T_.green },
+            { l: "Debt Cut", v: ">$1.6B", c: T_.green },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-2017 IP transfer, at filing. Click any entity or tranche for details. Case 20-32181, E.D. Va., Judge Phillips.</div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: Sponsors */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="TPG Capital (~75%) + Leonard Green (~25%)"
+            sub="PE Sponsors · LBO Mar 2011 · ~$1.1B equity contributed"
+            color={T_.purple}
+            badges={[{ text: "EQUITY CANCELLED — $0", color: T_.red }, { text: "EXTRACTED $766M", color: T_.amber }]}
+            onClick={() => toggle("lbo")} selected={detail === "lbo"}
+            width={420}
+          />
+        </div>
+
+        <VLineLabel label="100% equity (via merger sub)" color={T_.purple} />
+
+        {/* ROW 2: Chinos Holdings */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Chinos Holdings, Inc."
+            sub="Ultimate Parent · Delaware · Acquisition vehicle"
+            color={T_.textDim}
+            badges={[{ text: "HOLDCO", color: T_.textGhost }]}
+            width={340}
+          />
+        </div>
+
+        <VLineLabel label="100% equity" />
+
+        {/* ROW 3: Chinos A — PIK Notes */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Chinos Intermediate Holdings A, Inc."
+            sub="Intermediate HoldCo · PIK Note Issuer · Guarantor of IPCo Notes"
+            color={T_.red}
+            badges={[{ text: "PIK NOTES ISSUER", color: T_.red }]}
+            debt={[{ name: "7.75%/8.50% PIK Toggle Notes (due 2019)", amount: "~$566.5M", color: T_.red }]}
+            onClick={() => toggle("chinosA")} selected={detail === "chinosA"}
+            width={420}
+          />
+        </div>
+
+        <VLineLabel label="↓ Chinos Inter → Chinos B ('Holdings')" color={T_.textGhost} />
+
+        {/* ROW 4: J.Crew Group — The Borrower */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="J.Crew Group, Inc."
+            sub="Operating HoldCo · Delaware · Borrower under Credit Agreement"
+            color={T_.blue}
+            badges={[
+              { text: "BORROWER", color: T_.blue },
+              { text: "TERM LOAN", color: T_.blue },
+            ]}
+            debt={[
+              { name: "ABL Revolver (BofA)", amount: "~$310M drawn", color: T_.green },
+              { name: "Term Loan B (LIBOR+300, cov-lite)", amount: "~$1,337M", color: T_.blue },
+            ]}
+            onClick={() => toggle("jcrewGroup")} selected={detail === "jcrewGroup"}
+            width={440}
+          />
+        </div>
+
+        {/* Guarantee annotations */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+            <span style={{ fontSize: 9, color: T_.green }}>▲ Guarantors: OpCo, Madewell, J.Crew Int'l, J.Crew Inc., others</span>
+            <span style={{ fontSize: 9, color: T_.textGhost }}>▲ Collateral Agent: Bank of America</span>
+          </div>
+        </div>
+
+        <VLine h={14} />
+
+        {/* ROW 5: Operating subs + IPCo side-by-side */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
+
+          {/* LEFT: Operating entities */}
+          <div>
+            <VLine h={14} />
+            <Box
+              label="Operating Subsidiaries"
+              sub="J.Crew Operating Corp · J.Crew Inc · J.Crew Int'l"
+              color={T_.emerald}
+              badges={[
+                { text: "GUARANTORS", color: T_.green },
+                { text: "REVENUE SOURCE", color: T_.emerald },
+              ]}
+            />
+            <VLine h={10} />
+            <Box
+              label="Madewell Inc."
+              sub="$602M rev (FY2019) · 142 stores · IPO pulled Mar 2020"
+              color={T_.emerald}
+              badges={[
+                { text: "GUARANTOR", color: T_.green },
+                { text: "CROWN JEWEL", color: T_.accent },
+              ]}
+              onClick={() => toggle("madewell")} selected={detail === "madewell"}
+            />
+          </div>
+
+          {/* RIGHT: IPCo chain */}
+          <div>
+            <VLine h={14} />
+            <div style={{ border: `2px dashed ${T_.red}40`, borderRadius: 10, padding: 2, background: `${T_.red}04` }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px", textAlign: "center", padding: "4px 0 2px" }}>Unrestricted Subsidiary (Dec 2016)</div>
+              <Box
+                label="IPCo Entity Chain"
+                sub="Brand Holdings → Brand Intermediate → Brand LLC → Domestic Brand LLC"
+                color={T_.red}
+                badges={[
+                  { text: "TRANSFERRED IP", color: T_.red },
+                  { text: "OUTSIDE CREDIT GROUP", color: T_.red },
+                ]}
+                debt={[
+                  { name: "13% Sr Secured Notes due 2021 (IPCo Notes)", amount: "~$347M", color: T_.amber },
+                ]}
+                onClick={() => toggle("ipco")} selected={detail === "ipco"}
+              />
+            </div>
+            <VLine h={10} />
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
+              J.Crew Cayman (restricted, non-loan party) was the intermediary
+            </div>
+          </div>
+        </div>
+
+        {/* IP license-back arrow */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 4px" }}>
+          <div onClick={() => toggle("ipTransfer")} style={{ fontSize: 10, color: T_.accent, background: `${T_.accent}10`, padding: "4px 14px", borderRadius: 6, border: `1px dashed ${T_.accent}30`, cursor: "pointer" }}>
+            ↔ IPCo licenses trademarks back to OpCo · licensing fees create priority cash claim · click for full IP transfer mechanics
+          </div>
+        </div>
+      </div>
+
+      {/* ── Detail buttons ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+        {[
+          { k: "dividends", label: "Dividend Recap", color: T_.purple, sub: "$766M extracted · $500M PIK funded $484M dividend" },
+          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: "TL → 76.5% equity · IPCo → 23.5% · Equity → $0" },
+          { k: "postEmergence", label: "Post-Emergence", color: T_.green, sub: "Emerged Sep 2020 · $450M refi 2024 · now has its own blocker" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Additional detail buttons */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 4 }}>
+        <div onClick={() => toggle("termLoan")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "termLoan" ? `${T_.blue}12` : T_.bgInput,
+          border: `1px solid ${detail === "termLoan" ? T_.blue : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Term Loan Detail</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$1.567B → ~$1.337M · 88% consented · 12% held out</div>
+        </div>
+        <div onClick={() => toggle("litigation")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "litigation" ? `${T_.red}12` : T_.bgInput,
+          border: `1px solid ${detail === "litigation" ? T_.red : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Eaton Vance / Highland Litigation</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Minority holdouts sued · injunction denied · lost appeal 2019</div>
+        </div>
+      </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "The 'Trap Door' — Section 7.02(t)", color: T_.accent, summary: "A credit agreement loophole that allowed assets to cascade from loan parties to unrestricted subsidiaries in two hops.", detail: "The 2014 credit agreement had three investment baskets that, combined, created a pathway: (1) Section 7.02(c) — investments in non-loan-party restricted subs up to $150M or 4% of assets. (2) Section 7.02(n) — general investment basket up to $100M or 3.25% of assets. (3) Section 7.02(t) — the 'trap door' — allowing non-loan-party restricted subs to invest in unrestricted subs using 'proceeds received' from prior baskets. Because 'proceeds' was never defined in the 100+ uses throughout the document, J.Crew argued the IP assets themselves constituted 'proceeds.' This created a daisy chain: Loan Party → non-loan-party restricted sub (no guarantee required) → unrestricted sub (outside credit group entirely). The trap door was later deleted as part of the 2017 settlement, but the damage was done." },
+          { label: "The 'J.Crew Blocker' — Market Response", color: T_.green, summary: "Post-2017, credit agreements now include specific provisions preventing IP/asset transfers to unrestricted subsidiaries.", detail: "The J.Crew maneuver triggered a fundamental rewrite of leveraged loan documentation. 'J.Crew Blockers' typically include: (1) IP transfer restrictions — expressly prohibiting transfer or exclusive licensing of material IP to unrestricted subs. (2) Trap door closure — preventing non-loan-party restricted subs from investing in unrestricted subs using loan-party-derived proceeds. (3) Designation restrictions — preventing redesignation of IP-holding subs as unrestricted. (4) 'Proceeds' definition — requiring investment baskets only be used for cash, not in-kind asset transfers. (5) Anti-leakage provisions — EBITDA/asset caps on unrestricted subs. This became the first generation of LME blockers, followed by Envision blockers (enhanced dropdown), Serta blockers (uptier protection), and current catch-all LME blockers." },
+          { label: "Dividend Recapitalization — PE Extraction", color: T_.purple, summary: "Sponsors extracted $766M from a company that filed bankruptcy 7 years later — debt-funded distributions in action.", detail: "In 2013, TPG/Leonard Green had Chinos Intermediate Holdings A issue $500M PIK Toggle Notes (7.75% cash / 8.50% PIK) to fund a $484M dividend. Combined with a $197.5M 2012 dividend and $84M in cumulative monitoring fees, they extracted $766M — nearly 70% of their original $1.1B equity investment — before J.Crew's operations began declining. The PIK notes matured in 2019 and had grown to $566.5M due to PIK interest accrual. This approaching maturity wall, combined with no unencumbered assets to refinance, was the direct catalyst for the IP transfer. This is the standard PE distress pattern: (1) LBO with leveraged financing, (2) dividend recap while business is stable, (3) business declines under leverage weight, (4) sponsors have already extracted most of their capital, (5) equity cancelled in restructuring while sponsors keep prior distributions." },
+          { label: "Structural Subordination of PIK Notes", color: T_.red, summary: "PIK Notes at Chinos A were structurally junior to the Term Loan at J.Crew Group — different entity, no claim on operating assets.", detail: "The PIK Toggle Notes were issued by Chinos Intermediate Holdings A — an entity ABOVE J.Crew Group in the corporate structure. Chinos A had no operations, no revenue, and no direct claim on J.Crew's operating assets. Its only asset was equity in the entities below it. The Term Loan was at J.Crew Group — the actual operating holding company with a first-priority lien on substantially all assets. This meant PIK noteholders were structurally subordinated: they could only recover after all of J.Crew Group's creditors (ABL, Term Loan, trade) were satisfied. Facing a $566M maturity with zero access to operating cash flows, the IP transfer was their only option — move value to a new entity where they could create a direct secured claim." },
+          { label: "Covenant-Lite — The Double-Edged Sword", color: T_.blue, summary: "The $1.567B Term Loan had no financial maintenance covenants, giving J.Crew maximum flexibility — including flexibility to transfer IP.", detail: "Covenant-lite (cov-lite) loans lack financial maintenance covenants (e.g., leverage ratios, interest coverage tests) that would typically trigger defaults as performance deteriorates. This gives borrowers breathing room during downturns. But it also means lenders have fewer early warning triggers and limited ability to intervene. In J.Crew's case, cov-lite meant lenders couldn't force the company to the negotiating table as revenue declined from $2.5B to $2.0B. The investment baskets in Section 7.02 were the primary restrictions — and they proved porous. After J.Crew, the market recognized that cov-lite doesn't just affect financial triggers; it also weakens the covenant architecture that protects collateral." },
+          { label: "HoldCo vs. OpCo — Where Debt Sits Matters", color: T_.amber, summary: "PIK Notes at the HoldCo level could not reach OpCo assets directly. The corporate structure created winners and losers.", detail: "J.Crew illustrates how corporate structure determines creditor outcomes: (1) ABL at J.Crew Group/OpCo = paid in full (first-priority on current assets). (2) Term Loan at J.Crew Group = fulcrum security, received 76.5% equity (~40-60% recovery). (3) PIK Notes at Chinos A (HoldCo) = structurally subordinated, exchanged at massive discount for IPCo Notes. (4) Equity at Chinos Holdings = $0. Each level up from the operating entity = lower priority. The IP transfer was essentially an arbitrage of this structure: moving value from the OpCo level (where TL lenders had liens) to an unrestricted sub (where PIK noteholders could create new liens)." },
+          { label: "First to File, First to Define — COVID Retail Bankruptcy", color: T_.emerald, summary: "J.Crew was the first major retailer to file in the COVID pandemic — setting the template for retail restructurings.", detail: "Filing on May 4, 2020 — barely two months after COVID shuttered retail — J.Crew was the first major national retailer to enter Chapter 11 in the pandemic era. The pre-arranged deal (TSA with 71% of TL holders and 78% of IPCo noteholders) allowed a 4-month process, emerging Sep 10, 2020. The DIP ($400M from Anchorage/GSO/Davidson Kempner) converted to exit financing, and $1.6B+ of debt was eliminated through equitization. This speed-to-emergence became the model for subsequent retail filings (Neiman Marcus, Brooks Brothers, J.C. Penney), demonstrating that pre-arranged deals with aligned creditor groups could navigate pandemic uncertainty." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "1983", event: "J.Crew founded as a catalog retailer. Mickey Drexler joins as CEO in 2003 and transforms the brand.", color: T_.textMid },
+          { date: "1997", event: "TPG Capital acquires majority stake in J.Crew. Takes company public via IPO in 2006 ($376M raised).", color: T_.purple },
+          { date: "Mar 2011", event: "TPG + Leonard Green close take-private LBO at $43.50/share (~$3B). $1.2B Term Loan + $250M ABL + $600M bridge + $1.1B equity.", color: T_.purple },
+          { date: "2012-13", event: "Sponsors extract $681.5M in dividends. $484M (2013) funded by $500M PIK Toggle Notes at Chinos Intermediate Holdings A.", color: T_.red },
+          { date: "Mar 2014", event: "Refinanced to $1.567B Term Loan B (LIBOR+300, covenant-lite). BofA and Goldman arrangers.", color: T_.textMid },
+          { date: "2014-16", event: "J.Crew brand declines: fast fashion, athleisure competition, trendier/pricier strategy alienates core customers. Rev: $2.5B peak → declining.", color: T_.red },
+          { date: "Dec 2016", event: "THE IP TRANSFER: 72.04% of J.Crew trademarks ($250M) transferred from J.Crew Int'l → J.Crew Cayman (restricted, non-loan-party) → J.Crew Brand Holdings (unrestricted). Exploits Sections 7.02(c) and 7.02(t) 'trap door.'", color: T_.accent },
+          { date: "Apr 2017", event: "Jenna Lyons (Creative Director) departs. Jun: Mickey Drexler steps down as CEO after 14 years.", color: T_.red },
+          { date: "Jun 2017", event: "Eaton Vance/Highland Capital file suit (12% holdout lenders). J.Crew files preemptive declaratory judgment. Court denies injunction.", color: T_.amber },
+          { date: "Aug 2017", event: "EXCHANGE CLOSES: $566.5M PIK Notes → $250M IPCo Notes (13%, secured by IP) + $190M preferred + ~15% equity. 99.85% tendered. $97M new money IPCo notes. $150M TL buyback. Section 7.02(t) trap door deleted.", color: T_.amber },
+          { date: "Nov 2018", event: "CEO James Brett resigns after 16 months. Company operates without permanent CEO for 14+ months.", color: T_.red },
+          { date: "2019", event: "Appellate Division rules against minority lenders (Eaton Vance v. Wilmington). J.Crew brand rev: $1.71B (-26% from peak). Madewell rev: $602M (+14%).", color: T_.amber },
+          { date: "Oct 2019", event: "Madewell IPO S-1 filed with SEC. Proceeds intended for debt paydown.", color: T_.blue },
+          { date: "Mar 2, 2020", event: "Madewell IPO pulled. COVID shutters all stores. TSA extended with ad hoc creditor group.", color: T_.red },
+          { date: "May 4, 2020", event: "J.CREW FILES CH.11 (E.D. Va., Case 20-32181, Judge Phillips). 18 debtor entities. First major retailer to file in COVID. $400M DIP from Anchorage/GSO/Davidson Kempner.", color: T_.red },
+          { date: "Aug 25, 2020", event: "Plan confirmed. ~$1.65B secured debt → equity. TL → 76.5% equity. IPCo → 23.5%. Unsecured negotiated from $3M to $77M. Sponsors → $0.", color: T_.amber },
+          { date: "Sep 10, 2020", event: "EMERGENCE. ~4 months in Ch.11. >$1.6B debt eliminated. Exit ABL ($400M) + Exit TL ($400M). Anchorage Capital = majority owner.", color: T_.green },
+          { date: "Sep 2024", event: "J.Crew returns to loan market: $450M refinancing (Goldman, SOFR+625bps). New docs include a 'J.Crew blocker' — the company that created the loophole now has its own protective covenant.", color: T_.green },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   DIEBOLD NIXDORF
+   ═══════════════════════════════════════════════════════ */
+
+function DieboldNixdorfCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    wincorMerger: (
+      <DetailPanel title="The Wincor Nixdorf Acquisition (2016)" onClose={() => setDetail(null)}>
+        <p><strong>Nov 2015:</strong> Diebold announces acquisition of <strong>Wincor Nixdorf AG</strong>, a German ATM/POS manufacturer (f/k/a Siemens Nixdorf). Completed <strong>Aug 15, 2016</strong> for ~$1.8B in cash and stock.</p>
+        <p><strong>Consideration:</strong> EUR 38.98 cash + 0.434 Diebold shares per Wincor share. Total: ~EUR 892M (~$1B) cash + ~9.9M newly issued Diebold shares.</p>
+        <p><strong>Rationale:</strong> Combined entity would control ~35% of global ATM market. Expected ~$160M in annual cost synergies. Pro forma net debt/EBITDA targeted &lt;4x at close, &lt;3x by year three.</p>
+        <p><strong>Financing:</strong> Cash portion funded from existing credit agreement + $400M aggregate principal of new <strong>8.50% Senior Notes due 2024</strong>.</p>
+        <p style={{ color: T_.red }}>The thesis failed: integration proved far more difficult than anticipated — delayed systems rollouts, slow order-to-revenue conversion, cost synergies fell short. CEO Andy Mattes stepped down Dec 2017 after dramatically widening the 2017 net loss guidance from $50-75M to $110-125M. Stock fell 23% in one day (Jul 2017).</p>
+      </DetailPanel>
+    ),
+    usParent: (
+      <DetailPanel title="Diebold Nixdorf, Incorporated (US Parent)" onClose={() => setDetail(null)}>
+        <p>Delaware corporation. Publicly traded on NYSE under <strong>DBD</strong>. Founded 1859 in Canton, Ohio as Diebold Bahmann Safe Company. Listed on NYSE since 1964. 60+ consecutive years of dividend increases as of 2013.</p>
+        <p><strong>Borrower</strong> under the senior secured credit facilities. Co-obligor (jointly and severally liable) with the Dutch Holding entity on almost all credit facilities.</p>
+        <p>For bankruptcy filing purposes, the US debtor was reorganized as <strong>Diebold Holding Company, LLC</strong> — the lead debtor in the Ch.11 case.</p>
+        <p style={{ color: T_.amber }}>Market cap had fallen to ~$146M by late 2022, from $3B+ pre-merger. Revenue declined from $4.6B (2017 peak) to $3.5B (2022). Net loss widened from $78M (2021) to $581M (2022). Negative EBITDA of -$127M in 2022.</p>
+      </DetailPanel>
+    ),
+    dutchHolding: (
+      <DetailPanel title="Diebold Nixdorf Dutch Holding B.V." onClose={() => setDetail(null)}>
+        <p>Dutch entity incorporated 2017, headquartered in Utrecht, Netherlands. Intermediate holding company for all European operations (12+ subsidiaries across UK and Europe).</p>
+        <p><strong>Co-issuer</strong> of the EUR 350M 9.000% Senior Secured Notes due 2025. <strong>Jointly and severally liable</strong> with the US parent under almost all credit facilities.</p>
+        <p>Subject to the <strong>WHOA</strong> (Wet Homologatie Onderhands Akkoord — Dutch Scheme of Arrangement) proceeding in the District Court of Amsterdam. The WHOA Plan was contractually interdependent with the Ch.11 Plan — neither could be implemented without the other.</p>
+        <p style={{ color: T_.amber }}>The same creditor pool had claims against both US and Dutch entities, but their priority positions differed based on jurisdiction-specific security packages and intercreditor arrangements. All distributions ultimately flowed through the Ch.11 plan waterfall.</p>
+      </DetailPanel>
+    ),
+    superpriority: (
+      <DetailPanel title="Superpriority Term Loan ($400M) — Dec 2022 New Money" onClose={() => setDetail(null)}>
+        <p>In Dec 2022, Diebold closed a comprehensive recapitalization with key creditors:</p>
+        <p><strong>$400M new money superpriority senior secured term loan</strong> — primes all existing debt. Provided by an ad hoc group of existing creditors who signed a Transaction Support Agreement (TSA).</p>
+        <p>The TSA was supported by ~78.8% of existing term loan holders, ~59.3% of unsecured 8.50% noteholders, and ~89.7% of secured noteholders.</p>
+        <p style={{ color: T_.amber }}>This was a classic liability management exercise: existing creditors provided new money at the top of the capital structure, subordinating both non-participating creditors and their own existing positions. The new money was necessary to fill a ~$213M liquidity hole and address impending maturities.</p>
+      </DetailPanel>
+    ),
+    abl: (
+      <DetailPanel title="ABL Facility (~$250M)" onClose={() => setDetail(null)}>
+        <p><strong>Replacement revolving credit facility</strong> arranged by JPMorgan Chase as part of the Dec 2022 recapitalization. Superpriority status alongside the $400M term loan.</p>
+        <p>Asset-based — secured by accounts receivable, inventory, and other current assets. Replaced the prior revolver that was approaching maturity.</p>
+        <p style={{ color: T_.green }}><strong>Recovery: 100%.</strong> Repaid in full via DIP financing proceeds at the outset of the Ch.11 case.</p>
+      </DetailPanel>
+    ),
+    firstLien: (
+      <DetailPanel title="First Lien Secured Claims" onClose={() => setDetail(null)}>
+        <p>Multiple tranches of first lien debt, all pari passu:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>First Lien Term Loans:</strong> Extended from original maturities as part of the Dec 2022 refinancing. Existing TL holders exchanged into extended-maturity loans.</li>
+          <li><strong>9.375% First Lien Secured Notes due 2025:</strong> ~$700M (issued Jul 2020 at 99.031%). Issued by Diebold Nixdorf, Inc.</li>
+          <li><strong>9.000% First Lien Secured Notes due 2025:</strong> ~EUR 350M (issued Jul 2020 at 99.511%). Issued by Diebold Nixdorf Dutch Holding B.V.</li>
+        </ul>
+        <p>Both note offerings were oversubscribed in Jul 2020. Proceeds repaid all Term Loan A/A-1, ~$194M revolving credit, and extended ~$330M in revolving commitments from Apr 2022 to Jul 2023.</p>
+        <p>Secured by substantially all assets of both US and Dutch entities. First priority lien behind only the superpriority facilities.</p>
+        <p style={{ color: T_.amber }}><strong>Recovery: ~38%</strong> at TEV midpoint. Received <strong>98% of reorganized equity</strong> (new Diebold shares). Despite being secured, first lien holders were significantly undersecured — valuation evidence showed TEV was insufficient to cover first lien claims in full. Early RSA signers received a 10% participation premium in new shares.</p>
+      </DetailPanel>
+    ),
+    secondLien: (
+      <DetailPanel title="Second Lien Notes" onClose={() => setDetail(null)}>
+        <p>Created in the Dec 2022 recapitalization when unsecured 8.50% noteholders exchanged into new junior-lien bonds — converting from unsecured to second lien status.</p>
+        <p>Participating 8.50% noteholders (~59.3% of the outstanding amount) received new second lien notes with extended maturity as part of the TSA. They gained lien protection they didn't previously have, but behind all first lien and superpriority debt.</p>
+        <p style={{ color: T_.amber }}><strong>Recovery: ~4.8%.</strong> Received <strong>2% of reorganized equity</strong> — a voluntary "gift" from first lien holders to secure plan support and avoid litigation. Because first lien holders themselves only recovered ~38%, there was zero residual collateral value for second lien. The 2% equity was pure negotiation currency.</p>
+      </DetailPanel>
+    ),
+    unsecured: (
+      <DetailPanel title="2024 Stub Unsecured Notes (8.50% Senior Notes)" onClose={() => setDetail(null)}>
+        <p><strong>8.50% Senior Notes due 2024</strong> — original $400M issuance to fund the Wincor Nixdorf acquisition in 2016. Issued by Diebold Nixdorf, Inc.</p>
+        <p>In the Dec 2022 recapitalization, participating holders (~59.3%) exchanged into new second lien notes. The remainder (~40.7%) who did not participate were left holding unsecured stub notes with stripped covenants.</p>
+        <p><strong>Covenant Stripping:</strong> As part of the TSA, participating holders consented to amend the indenture to remove <strong>substantially all negative covenants</strong> and extend the <strong>interest payment default grace period to the maturity date</strong> — effectively rendering non-participating noteholders unable to enforce remedies even if interest went unpaid.</p>
+        <p style={{ color: T_.red }}><strong>Recovery: ~4.8%.</strong> Received a limited cash payment ("gift" from first lien holders). Class 7 <strong>voted to reject</strong> the Ch.11 plan but was <strong>crammed down</strong> under Section 1129. The Feb-May 2023 exchange offer (8.50%/12.50% PIK Toggle + warrants) was overtaken by the Ch.11 filing.</p>
+      </DetailPanel>
+    ),
+    equity: (
+      <DetailPanel title="Existing Equity — Total Wipeout" onClose={() => setDetail(null)}>
+        <p>All pre-petition common shares (NYSE: DBD, previously also Frankfurt-listed) were <strong>cancelled with zero recovery</strong>.</p>
+        <p>Stock had already declined ~79% through 2022 before cancellation. Market cap was ~$146M at the time of the Dec 2022 recapitalization — a fraction of the $3B+ valuation pre-merger.</p>
+        <p style={{ color: T_.red }}>Shareholders in Class 8 were <strong>deemed to reject</strong> the plan (no vote required). The company that had paid 60+ consecutive years of dividends delivered a total equity wipeout.</p>
+      </DetailPanel>
+    ),
+    europeanSubs: (
+      <DetailPanel title="European Subsidiaries (WHOA Entities)" onClose={() => setDetail(null)}>
+        <p><strong>12+ UK and European entities</strong> under Diebold Nixdorf Dutch Holding B.V., including the legacy Wincor Nixdorf operations across Germany, UK, and continental Europe.</p>
+        <p>These entities were restructured through the <strong>Dutch WHOA proceeding</strong> (District Court of Amsterdam), not through US Chapter 11. However, their restructuring was contractually linked to the Ch.11 plan.</p>
+        <p><strong>WHOA Voting:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Class 1 (First Lien Claims) — Approved</li>
+          <li>Class 2 (2023 Stub First Lien TL) — Approved</li>
+          <li>Class 3 (Second Lien Notes) — Approved</li>
+          <li>Class 4 (2024 Stub Unsecured Notes) — <strong>Rejected</strong></li>
+        </ul>
+        <p>Dutch Court sanctioned the plan on Aug 2, 2023 — finding the requisite 2/3 majority in at least one "in the money" class. Classes 1-3 voted to approve; Class 4 rejected but was bound.</p>
+        <p style={{ color: T_.amber }}><strong>WHOA Stay:</strong> Unlike Ch.11's automatic stay, WHOA does not provide an automatic stay. The Dutch Court granted an ex parte group-wide stay on Jun 8, 2023, extending it to non-debtor group companies under Section 2:24(b) of the Dutch Civil Code — a significant expansion of WHOA stay powers.</p>
+        <p><strong>Ferdinand Hengst</strong> was appointed as court observer to confirm joint creditor interests were protected across all three proceedings (Ch.11 + WHOA + Ch.15).</p>
+      </DetailPanel>
+    ),
+    dip: (
+      <DetailPanel title="DIP Financing — $1.25B" onClose={() => setDetail(null)}>
+        <p><strong>$1.25 billion</strong> debtor-in-possession term loan facility, backstopped by the ad hoc group of creditors. Approved on interim basis at the first-day hearing on Jun 2, 2023.</p>
+        <p><strong>Use of Proceeds:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Repay in full the $400M superpriority term loan</li>
+          <li>Repay in full the ~$250M ABL facility</li>
+          <li>Cover reorganization costs and professional fees</li>
+          <li>Make adequate protection payments to secured creditors</li>
+          <li>Fund working capital during restructuring</li>
+        </ul>
+        <p><strong>Conversion Feature:</strong> Upon plan confirmation, the DIP facility converted directly into a <strong>$1.25B exit term loan</strong>. If the plan was not confirmed, the DIP would become immediately due — strong incentive for swift resolution.</p>
+        <p style={{ color: T_.green }}>The ad hoc group that backstopped the DIP and signed the RSA early received both repayment priority and a participation premium (10% of new shares) — positioning first lien holders as gatekeepers of the restructuring.</p>
+      </DetailPanel>
+    ),
+    crossBorder: (
+      <DetailPanel title="Three-Pronged Cross-Border Structure (First-of-Its-Kind)" onClose={() => setDetail(null)}>
+        <p>Diebold Nixdorf's restructuring pioneered a <strong>first-ever dual US-Dutch proceeding</strong>:</p>
+        <p><strong>1. US Chapter 11:</strong> Prepackaged plan for Diebold Holding Company, LLC and 9 US/Canadian affiliates (S.D. Tex., Houston, Case 4:23-bk-90602, Judge Marvin Isgur). Filed Jun 1, 2023.</p>
+        <p><strong>2. Dutch WHOA:</strong> Scheme of arrangement for Diebold Nixdorf Dutch Holding B.V. and 12 European affiliates (District Court of Amsterdam). Sanctioned Aug 2, 2023.</p>
+        <p><strong>3. US Chapter 15:</strong> Recognition of the Dutch WHOA as a "foreign main proceeding," granting US enforcement of Dutch restructuring orders.</p>
+        <p style={{ color: T_.amber }}><strong>Structural Interdependence:</strong> The WHOA and Ch.11 plans were <strong>contractually interdependent</strong> — confirmation of each was a condition for the other's implementation. Creditors voted for or against both plans simultaneously. This prevented creditor arbitrage across jurisdictions.</p>
+        <p><strong>Guarantee Restructuring:</strong> Under Section 372 DBA, the WHOA Plan restructured group guarantees provided by European affiliates. Dutch Tax Authorities were unaffected.</p>
+      </DetailPanel>
+    ),
+    planTreatment: (
+      <DetailPanel title="Chapter 11 Plan Treatment — Class Recoveries" onClose={() => setDetail(null)}>
+        <p><strong>Second Amended Joint Prepackaged Plan.</strong> Confirmed Jul 13, 2023. Effective Aug 11, 2023. <strong>71 days</strong> from filing to emergence.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Treatment</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "Admin / DIP Claims", treat: "Paid in full (cash). DIP converts to exit TL.", rec: "100%", c: T_.green },
+              { cls: "Classes 1-4 (Priority / Secured)", treat: "Unimpaired. Paid in full.", rec: "100%", c: T_.green },
+              { cls: "Class 5 (First Lien Claims)", treat: "98% reorganized equity. RSA signers: +10% premium.", rec: "~38%", c: T_.amber },
+              { cls: "Class 6 (Second Lien Notes)", treat: "2% reorganized equity ('gift' from 1L)", rec: "~4.8%", c: T_.red },
+              { cls: "Class 7 (Unsecured Stub Notes)", treat: "Limited cash ('gift'). REJECTED plan → crammed down.", rec: "~4.8%", c: T_.red },
+              { cls: "Class 8 (Existing Equity)", treat: "Cancelled. Zero recovery.", rec: "0%", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Key Valuation Finding:</strong> First lien holders were <strong>undersecured</strong> — TEV at midpoint was insufficient to cover first lien claims in full (~38% recovery). This meant second lien and unsecured had zero value on a strict priority basis. The 4.8% recoveries were purely negotiated "gifts" to avoid litigation and secure plan votes.</p>
+        <p><strong>Cramdown:</strong> Class 7 (unsecured stub notes) voted to reject. Plan confirmed via cramdown under §1129 — fair and equitable, no unfair discrimination.</p>
+      </DetailPanel>
+    ),
+    postEmergence: (
+      <DetailPanel title="Post-Emergence & Recovery" onClose={() => setDetail(null)}>
+        <p><strong>Emergence:</strong> Aug 11, 2023. New shares relisted on NYSE under "DBD" on Aug 14, 2023. Old Frankfurt Stock Exchange listing delisted. ~35.17M new shares outstanding.</p>
+        <p><strong>Debt Reduction:</strong> ~$2.7B pre-filing → ~$1.25B exit term loan. Over <strong>$2.1B of funded debt eliminated</strong>. Fresh start accounting adopted.</p>
+        <p><strong>2024 Refinancing:</strong> Completed $950M senior secured notes offering and repurchased all exit term loans — reducing debt by an additional $100M and lowering interest costs.</p>
+        <p><strong>Financial Recovery:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>2023 Rev: $3.76B · EBITDA: $87.8M (includes restructuring gains)</li>
+          <li>2024 Rev: $3.75B · EBITDA: $184M · Operating income: $182M</li>
+          <li>2025 Rev: $3.81B · EBITDA: $248.4M · Net income: $94.6M</li>
+        </ul>
+        <p><strong>Market Cap:</strong> ~$2.66B (as of Mar 2026), stock ~$75.57/share. S&P and Moody's credit upgrades received.</p>
+        <p><strong>Leadership:</strong> CEO Octavio Marquez, CFO Jim Barna.</p>
+        <p style={{ color: T_.green }}>The restructuring validated the thesis that the business had value if freed from its debt burden. EBITDA tripled from $87.8M to $248.4M in two years post-emergence. Former first lien creditors who received equity at ~38% recovery have seen significant appreciation.</p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Global banking tech & retail POS company (ATMs, self-checkout, software). Distress from <span style={{ color: T_.red }}>overleveraged 2016 acquisition of Wincor Nixdorf (~$1.8B)</span>, <span style={{ color: T_.red }}>failed integration</span>, <span style={{ color: T_.red }}>revenue decline ($4.6B→$3.5B)</span>, and <span style={{ color: T_.red }}>COVID/supply-chain margin compression</span>. After a Dec 2022 <span style={{ color: T_.amber }}>liability management exercise</span> (superpriority priming + covenant stripping), filed a <span style={{ color: T_.accent }}>prepackaged Ch.11</span> with a <span style={{ color: T_.accent }}>first-ever parallel Dutch WHOA proceeding</span>. Emerged in 71 days — a landmark cross-border restructuring.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Acquisition", v: "~$1.8B", c: T_.purple },
+            { l: "Total Debt", v: "~$2.7B", c: T_.red },
+            { l: "Filed", v: "Jun 1, 2023", c: T_.red },
+            { l: "Emerged", v: "Aug 11, 2023", c: T_.green },
+            { l: "Debt Cut", v: ">$2.1B", c: T_.green },
+            { l: "Days in Ch.11", v: "71", c: T_.accent },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: Equity */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box label="Public Shareholders (NYSE: DBD)" sub="Common equity · 60+ yr dividend streak ended" color={T_.textGhost} badges={[{ text: "CANCELLED — $0", color: T_.red }]}
+            onClick={() => toggle("equity")} selected={detail === "equity"} width={320} />
+        </div>
+
+        <VLineLabel label="100% equity ownership" />
+
+        {/* ROW 2: US Parent */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Diebold Nixdorf, Incorporated"
+            sub="US Parent · Delaware · NYSE: DBD · Canton, OH"
+            color={T_.blue}
+            badges={[
+              { text: "BORROWER", color: T_.blue },
+              { text: "JOINTLY & SEVERALLY LIABLE", color: T_.amber },
+            ]}
+            onClick={() => toggle("usParent")} selected={detail === "usParent"}
+            width={400}
+          />
+        </div>
+
+        <VLine h={14} />
+
+        {/* DUAL JURISDICTION SPLIT */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
+
+          {/* ─── LEFT: US DEBTORS ─── */}
+          <div>
+            <VLine h={14} />
+            <Box
+              label="US / Canadian Debtors"
+              sub="Diebold Holding Co. LLC + 9 affiliates · Ch.11 (S.D. Tex.)"
+              color={T_.blue}
+              badges={[
+                { text: "CHAPTER 11", color: T_.blue },
+                { text: "PREPACKAGED", color: T_.green },
+              ]}
+            />
+            <VLine h={10} />
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
+              ATM mfg · software · services · ~21,000 employees globally
+            </div>
+          </div>
+
+          {/* ─── RIGHT: DUTCH / EUROPEAN ─── */}
+          <div>
+            <VLine h={14} />
+            <Box
+              label="Diebold Nixdorf Dutch Holding B.V."
+              sub="Netherlands · Co-issuer EUR Notes · 12+ European subs"
+              color={T_.amber}
+              badges={[
+                { text: "WHOA (AMSTERDAM)", color: T_.amber },
+                { text: "CHAPTER 15 RECOGNITION", color: T_.purple },
+              ]}
+              onClick={() => toggle("dutchHolding")} selected={detail === "dutchHolding"}
+            />
+            <VLine h={10} />
+            <div onClick={() => toggle("europeanSubs")} style={{ fontSize: 9, color: detail === "europeanSubs" ? T_.amber : T_.textGhost, textAlign: "center", padding: "4px 8px", cursor: "pointer", borderRadius: 4, border: `1px solid ${detail === "europeanSubs" ? T_.amber + "40" : "transparent"}` }}>
+              12+ European subs (click for WHOA details) · Wincor Nixdorf legacy
+            </div>
+          </div>
+        </div>
+
+        {/* Cross-border annotation */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 4px" }}>
+          <div onClick={() => toggle("crossBorder")} style={{ fontSize: 10, color: T_.accent, background: `${T_.accent}10`, padding: "4px 14px", borderRadius: 6, border: `1px dashed ${T_.accent}30`, cursor: "pointer" }}>
+            First-ever dual Ch.11 + Dutch WHOA + Ch.15 restructuring (click for details)
+          </div>
+        </div>
+
+        {/* ── DEBT STACK ── */}
+        <div style={{ border: `1px solid ${T_.border}`, borderRadius: 10, padding: 16, background: T_.bgPanel, marginTop: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Debt Stack (Post-Dec 2022 LME — Priority Order ↓)</div>
+
+          {/* DIP / Superpriority */}
+          <div onClick={() => toggle("dip")} style={{ padding: "8px 14px", borderRadius: 8, border: `2px solid ${detail === "dip" ? T_.green : T_.border}`, background: detail === "dip" ? `${T_.green}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.green }}>DIP Facility (replaced Superpriority TL + ABL)</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Backstopped by ad hoc group</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>$1.25B</div>
+                <div style={{ fontSize: 9, color: T_.green }}>→ Exit TL</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Superpriority", "Converts to exit debt", "Repaid SP TL ($400M) + ABL ($250M)"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.green}15`, color: T_.green }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* First Lien */}
+          <div onClick={() => toggle("firstLien")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "firstLien" ? T_.blue : T_.border}`, background: detail === "firstLien" ? `${T_.blue}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.blue }}>First Lien (TL + 9.375% USD Notes + 9.000% EUR Notes)</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue }}>~$1.1B+</div>
+                <div style={{ fontSize: 9, color: T_.amber }}>FULCRUM → 98% equity</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Undersecured (~38% recovery)", "US + Dutch entities", "RSA signers: +10% premium"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.blue}15`, color: T_.blue }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* Second Lien */}
+          <div onClick={() => toggle("secondLien")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "secondLien" ? T_.amber : T_.border}`, background: detail === "secondLien" ? `${T_.amber}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.amber }}>Second Lien Notes (ex-Unsecured exchange)</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Dec 2022 exchange from 8.50% Notes</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 9, color: T_.red }}>Recovery: ~4.8% ("gift")</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["2% reorg equity", "Zero residual value", "Gift from 1L to avoid litigation"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.amber}15`, color: T_.amber }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* Unsecured Stub */}
+          <div onClick={() => toggle("unsecured")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "unsecured" ? T_.red : T_.border}`, background: detail === "unsecured" ? `${T_.red}08` : T_.bgInput, marginBottom: 0, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.red }}>2024 Stub Unsecured Notes (8.50%)</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Non-participants — covenants stripped</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 9, color: T_.red }}>Recovery: ~4.8% · CRAMMED DOWN</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Rejected plan", "Covenants stripped in Dec 2022", "Interest default grace → maturity"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.red}15`, color: T_.red }}>{t}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Detail buttons ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+        {[
+          { k: "wincorMerger", label: "Wincor Nixdorf Acquisition", color: T_.purple, sub: "2016 · $1.8B · integration failure" },
+          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: "Class recoveries · cramdown · 71-day prepack" },
+          { k: "postEmergence", label: "Post-Emergence", color: T_.green, sub: "Relisting · EBITDA tripled · $2.66B mkt cap" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "Cross-Border Restructuring (Ch.11 + WHOA + Ch.15)", color: T_.accent, summary: "First-ever parallel US-Dutch restructuring — a template for future cross-border cases.", detail: "Diebold pioneered a three-pronged approach: US Chapter 11 for American/Canadian entities, Dutch WHOA (Wet Homologatie Onderhands Akkoord) for European entities, and Chapter 15 recognition of the WHOA as a 'foreign main proceeding.' The plans were contractually interdependent — each required the other's confirmation. This prevented creditor forum-shopping and ensured global enforcement. The Dutch Court's grant of a group-wide stay (extending to non-debtor affiliates under Section 2:24(b)) was a significant expansion of WHOA powers." },
+          { label: "Prepackaged Bankruptcy — Speed as Strategy", color: T_.green, summary: "71 days from filing to emergence. Votes solicited pre-filing under the RSA.", detail: "A prepackaged Ch.11 means the debtor negotiates the plan and solicits votes BEFORE filing. The RSA (signed May 30, 2023) secured support from 58-80%+ of each creditor class. This allowed Diebold to file Jun 1, get DIP approved Jun 2, confirm the plan Jul 13, and emerge Aug 11. The speed minimized business disruption, preserved customer/vendor relationships, and reduced administrative costs. Contrast with Windstream (18 months) or Envision (6 months)." },
+          { label: "Superpriority Priming — The Dec 2022 LME", color: T_.red, summary: "New $400M superpriority loan jumped ahead of all existing debt — a classic pre-filing maneuver.", detail: "The Dec 2022 recapitalization was a liability management exercise: existing creditors provided $400M new money at the top of the capital structure (superpriority), plus a new $250M ABL. This primed all existing first lien and unsecured debt. Supporting creditors also consented to strip covenants from the 8.50% unsecured notes and extend the interest default grace period to maturity — effectively neutering non-participating noteholders' enforcement rights. This is the same playbook as Envision and Serta: majority creditors using document flexibility to improve their position at minority expense." },
+          { label: "Gift Doctrine — Buying Peace from Junior Creditors", color: T_.amber, summary: "First lien holders voluntarily gave 2% equity + cash to junior classes with zero entitlement.", detail: "Valuation showed first lien holders were undersecured (~38% recovery). Strictly, second lien and unsecured were entitled to nothing. But first lien holders voluntarily 'gifted' 2% of reorganized equity to second lien and a cash payment to unsecured (~4.8% recovery each). Why? To buy plan votes, avoid litigation, and accelerate emergence. The 'gift' doesn't violate absolute priority because it comes from the senior class's own recovery, not from value that belongs to juniors. This is standard in prepacks where speed matters more than maximizing senior recovery." },
+          { label: "Cramdown — Binding Rejecting Classes", color: T_.blue, summary: "Class 7 (unsecured stub notes) voted to reject but was bound by the plan anyway.", detail: "Under §1129(b), a plan can be confirmed over a rejecting class if it is 'fair and equitable' and does not 'unfairly discriminate.' For unsecured creditors, 'fair and equitable' means no junior class receives anything unless seniors are paid in full. Since equity was cancelled ($0), the absolute priority rule was satisfied. The ~4.8% cash recovery was a gift from first lien — unsecured was entitled to zero. The cramdown power is essential for prepackaged cases where holdout classes could otherwise delay emergence." },
+          { label: "Covenant Stripping as Offensive Weapon", color: T_.purple, summary: "Non-participating 8.50% noteholders had their covenants gutted and interest default rights eliminated.", detail: "In the Dec 2022 TSA, the ~59.3% of 8.50% noteholders who participated consented to amend the indenture: remove substantially all negative covenants AND extend the interest payment default grace period to the maturity date. This meant non-participating noteholders — holding valid claims — could not enforce even if interest went unpaid. Their remedies were stripped by a majority vote of their own class. This is more aggressive than typical LMEs and mirrors the creditor-on-creditor dynamics seen in Serta and Envision." },
+          { label: "Joint & Several Liability — Same Creditors, Two Jurisdictions", color: T_.emerald, summary: "US parent and Dutch Holding were co-obligors — creditors had claims in both but different priority.", detail: "Unlike a typical parent/sub structure where debt sits at one level, Diebold's credit facilities made the US parent and Dutch Holding jointly and severally liable. The same creditor could pursue either entity. But security packages and intercreditor arrangements differed by jurisdiction — making the cross-border coordination essential. Without the contractual interdependence of the Ch.11 and WHOA plans, creditors could have forum-shopped or sought inconsistent relief. The observer (Ferdinand Hengst) monitored this risk." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "1859", event: "Diebold founded in Canton, OH as Diebold Bahmann Safe Company. Enters ATM market in early 1970s. NYSE-listed since 1964.", color: T_.textMid },
+          { date: "Nov 2015", event: "Diebold announces acquisition of Wincor Nixdorf AG (German ATM/POS manufacturer) for ~$1.8B in cash and stock.", color: T_.purple },
+          { date: "Aug 2016", event: "Wincor acquisition closes. Combined entity = ~35% global ATM market. Pro forma leverage ~4x, target <3x by 2019.", color: T_.purple },
+          { date: "Jul 2017", event: "Diebold widens 2017 net loss guidance from $50-75M to $110-125M. Stock drops 23% in one day. Integration failing.", color: T_.red },
+          { date: "Dec 2017", event: "CEO Andy Mattes steps down. Interim Office of the CEO formed. Cost synergies falling short of $160M target.", color: T_.red },
+          { date: "Jul 2020", event: "$1.1B Notes Offering: $700M 9.375% USD + EUR 350M 9.000% Secured Notes. Both oversubscribed. Extends maturities to 2025.", color: T_.textMid },
+          { date: "2020-22", event: "COVID hits ATM demand. Supply chain inflation compresses margins. Revenue: $4.6B (2017) → $3.5B (2022). Net loss: $581M. Negative EBITDA.", color: T_.red },
+          { date: "Oct 2022", event: "Transaction Support Agreement: ~79% of TL holders, ~59% of unsecured, ~90% of secured notes. $213M liquidity gap identified.", color: T_.amber },
+          { date: "Dec 2022", event: "RECAPITALIZATION CLOSES: $400M new superpriority TL + $250M ABL. Unsecured → 2L exchange. Covenant stripping on 8.50% Notes. Interest default grace period extended to maturity.", color: T_.red },
+          { date: "Feb-May 2023", event: "Exchange offer for remaining 8.50% Notes (PIK Toggle + warrants). Extended multiple times. Overtaken by Ch.11 filing.", color: T_.amber },
+          { date: "May 30, 2023", event: "RSA signed with 58-80%+ of each creditor class. Prepackaged plan votes solicited.", color: T_.amber },
+          { date: "Jun 1, 2023", event: "Ch.11 filed (S.D. Tex., Judge Isgur). 10 US/Canadian debtors. WHOA commenced in Amsterdam. Ch.15 filed for recognition.", color: T_.red },
+          { date: "Jun 2, 2023", event: "First-day hearing. $1.25B DIP approved (interim). Repays superpriority TL + ABL in full.", color: T_.blue },
+          { date: "Jun 8, 2023", event: "Dutch Court grants ex parte group-wide WHOA stay — extends to non-debtor European affiliates.", color: T_.amber },
+          { date: "Jul 13, 2023", event: "Ch.11 Plan confirmed. Class 7 (unsecured stub) crammed down. 1L → 98% equity. 2L → 2% equity (gift).", color: T_.green },
+          { date: "Aug 2, 2023", event: "Dutch Court sanctions WHOA Plan. 2/3 majority in Classes 1-3. Class 4 rejected but bound.", color: T_.green },
+          { date: "Aug 11, 2023", event: "EMERGENCE. 71 days in Ch.11. >$2.1B debt eliminated. DIP converts to $1.25B exit TL. New shares issued.", color: T_.green },
+          { date: "Aug 14, 2023", event: "New DBD shares begin trading on NYSE. Former first lien holders = new owners.", color: T_.green },
+          { date: "2024", event: "$950M refinancing replaces exit TL. Debt reduced by additional $100M. S&P and Moody's upgrades.", color: T_.green },
+          { date: "Mar 2026", event: "Market cap ~$2.66B. EBITDA $248M (vs. negative at filing). Stock ~$75.57. Restructuring thesis validated.", color: T_.green },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -1161,7 +2030,7 @@ export default function Restructuring({ initialTab }) {
   }, [initialTab]);
 
   return (
-    <div style={{ padding: "36px 44px", fontFamily: FONT, maxWidth: 900, margin: "0 auto" }}>
+    <div style={{ padding: "36px 44px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Restructuring</h1>
 
       <div style={{ display: "flex", gap: 6, marginBottom: 28, flexWrap: "wrap" }}>
@@ -1181,15 +2050,17 @@ export default function Restructuring({ initialTab }) {
         })}
         <div style={{
           padding: "10px 18px", borderRadius: 8, border: `1px dashed ${T_.border}`,
-          color: T_.textGhost, fontSize: 13, display: "flex", alignItems: "center", cursor: "default", opacity: 0.5,
+          color: T_.textGhost, fontSize: 13, display: "flex", alignItems: "center", cursor: "default", opacity: 0.4,
         }}>
-          + More cases coming
+          + More coming
         </div>
       </div>
 
       {activeCase === "windstream" && <WindstreamCase />}
       {activeCase === "envision" && <EnvisionCase />}
       {activeCase === "serta" && <SertaCase />}
+      {activeCase === "diebold" && <DieboldNixdorfCase />}
+      {activeCase === "jcrew" && <JCrewCase />}
     </div>
   );
 }
