@@ -13,6 +13,7 @@ import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
 import Restructuring from "./Restructuring";
+import Principles from "./Principles";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
@@ -456,6 +457,11 @@ export default function App() {
             <span>Restructuring</span>
           </div>
 
+          {/* Principles */}
+          <div style={{ ...s.sectorHdr, color: view.type === "principles" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "principles" }); setEditingField(null); }}>
+            <span>Principles</span>
+          </div>
+
           {/* Prompts */}
           <div style={{ ...s.sectorHdr, color: view.type === "prompts" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "prompts" }); setEditingField(null); }}>
             <span>Prompts</span>
@@ -620,6 +626,13 @@ export default function App() {
         {view.type === "researchWiki" && (
           <div style={{ ...s.page, maxWidth: "none" }}>
             <KnowledgeBase />
+          </div>
+        )}
+
+        {/* PRINCIPLES */}
+        {view.type === "principles" && (
+          <div style={{ ...s.page, maxWidth: "none" }}>
+            <Principles />
           </div>
         )}
 
