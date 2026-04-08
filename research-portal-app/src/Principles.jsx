@@ -68,6 +68,21 @@ export default function Principles() {
     setPrinciples(prev => prev.filter(p => p.id !== id));
   };
 
+  const handleMove = async (idx, dir) => {
+    const swapIdx = idx + dir;
+    if (swapIdx < 0 || swapIdx >= principles.length) return;
+    const next = [...principles];
+    [next[idx], next[swapIdx]] = [next[swapIdx], next[idx]];
+    // Update sort_order for both
+    const a = { ...next[idx], sort_order: idx + 1, updated_at: new Date().toISOString() };
+    const b = { ...next[swapIdx], sort_order: swapIdx + 1, updated_at: new Date().toISOString() };
+    next[idx] = a;
+    next[swapIdx] = b;
+    setPrinciples(next);
+    await upsertPrinciple(a);
+    await upsertPrinciple(b);
+  };
+
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
@@ -137,7 +152,10 @@ export default function Principles() {
                         outline: "none", boxSizing: "border-box", lineHeight: "1.6",
                       }}
                     />
-                    <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    <div style={{ display: "flex", gap: 8, marginTop: 8, alignItems: "center" }}>
+                      <button onClick={() => handleMove(i, -1)} disabled={i === 0} style={{ background: "transparent", color: i === 0 ? T_.textGhost : T_.textMid, border: `1px solid ${T_.border}`, borderRadius: 5, padding: "4px 10px", fontSize: 12, cursor: i === 0 ? "default" : "pointer", fontFamily: FONT }}>Move Up</button>
+                      <button onClick={() => handleMove(i, 1)} disabled={i === principles.length - 1} style={{ background: "transparent", color: i === principles.length - 1 ? T_.textGhost : T_.textMid, border: `1px solid ${T_.border}`, borderRadius: 5, padding: "4px 10px", fontSize: 12, cursor: i === principles.length - 1 ? "default" : "pointer", fontFamily: FONT }}>Move Down</button>
+                      <div style={{ flex: 1 }} />
                       <button onClick={() => setEditing(null)} style={{ background: T_.accent, color: "#000", border: "none", borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Done</button>
                       <button onClick={() => handleDelete(p.id)} style={{ background: "transparent", color: T_.red, border: `1px solid ${T_.red}`, borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Delete</button>
                     </div>

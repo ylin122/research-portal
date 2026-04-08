@@ -312,6 +312,11 @@ export default function App() {
           <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
         </div>
         <div style={s.navTree}>
+          {/* Principles */}
+          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "principles" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "principles" }); setEditingField(null); }}>
+            <span>Principles</span>
+          </div>
+
           {/* Agents */}
           <div>
             <div style={{ ...s.sectorHdr, marginTop: 0 }} onClick={() => setAgentsOpen(p => !p)}>
@@ -455,11 +460,6 @@ export default function App() {
           {/* Restructuring */}
           <div style={{ ...s.sectorHdr, color: view.type === "restructuring" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "restructuring" }); setEditingField(null); }}>
             <span>Restructuring</span>
-          </div>
-
-          {/* Principles */}
-          <div style={{ ...s.sectorHdr, color: view.type === "principles" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "principles" }); setEditingField(null); }}>
-            <span>Principles</span>
           </div>
 
           {/* Prompts */}
