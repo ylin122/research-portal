@@ -89,24 +89,14 @@ export default function Principles() {
       {/* Add new */}
       {adding && (
         <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 24 }}>
-          <input
+          <textarea
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
-            placeholder="Principle title (bold heading)"
-            style={{
-              width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
-              padding: "10px 14px", color: T_.text, fontSize: 14, fontFamily: FONT, marginBottom: 10,
-              outline: "none", boxSizing: "border-box",
-            }}
-          />
-          <textarea
-            value={newText}
-            onChange={e => setNewText(e.target.value)}
-            placeholder="Description / explanation (optional)"
+            placeholder="Write your principle..."
             rows={3}
             style={{
               width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
-              padding: "10px 14px", color: T_.text, fontSize: 13, fontFamily: FONT, resize: "vertical",
+              padding: "10px 14px", color: T_.text, fontSize: 14, fontFamily: FONT, resize: "vertical",
               outline: "none", boxSizing: "border-box",
             }}
           />
@@ -128,57 +118,36 @@ export default function Principles() {
           <div
             key={p.id}
             style={{
-              padding: "20px 0",
+              padding: "18px 0",
               borderBottom: i < principles.length - 1 ? `1px solid ${T_.borderLight}` : "none",
             }}
           >
             {editing === p.id ? (
-              /* Edit mode */
               <div>
-                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                  <span style={{ fontSize: 18, fontWeight: 700, color: T_.accent, minWidth: 28 }}>{i + 1}.</span>
-                  <input
-                    value={p.title}
-                    onChange={e => handleUpdate(p.id, "title", e.target.value)}
-                    style={{
-                      flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
-                      padding: "8px 12px", color: T_.text, fontSize: 15, fontWeight: 600, fontFamily: FONT, outline: "none",
-                    }}
-                  />
-                </div>
-                <div style={{ paddingLeft: 38 }}>
-                  <textarea
-                    value={p.description || ""}
-                    onChange={e => handleUpdate(p.id, "description", e.target.value)}
-                    placeholder="Description..."
-                    rows={3}
-                    style={{
-                      width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
-                      padding: "8px 12px", color: T_.textMid, fontSize: 13, fontFamily: FONT, resize: "vertical",
-                      outline: "none", boxSizing: "border-box",
-                    }}
-                  />
-                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                    <button onClick={() => setEditing(null)} style={{ background: T_.accent, color: "#000", border: "none", borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Done</button>
-                    <button onClick={() => handleDelete(p.id)} style={{ background: "transparent", color: T_.red, border: `1px solid ${T_.red}`, borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Delete</button>
+                <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: T_.accent, minWidth: 28, lineHeight: "1.6", paddingTop: 6 }}>{i + 1}.</span>
+                  <div style={{ flex: 1 }}>
+                    <textarea
+                      value={p.title}
+                      onChange={e => handleUpdate(p.id, "title", e.target.value)}
+                      rows={3}
+                      style={{
+                        width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
+                        padding: "8px 12px", color: T_.text, fontSize: 14, fontFamily: FONT, resize: "vertical",
+                        outline: "none", boxSizing: "border-box", lineHeight: "1.6",
+                      }}
+                    />
+                    <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                      <button onClick={() => setEditing(null)} style={{ background: T_.accent, color: "#000", border: "none", borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Done</button>
+                      <button onClick={() => handleDelete(p.id)} style={{ background: "transparent", color: T_.red, border: `1px solid ${T_.red}`, borderRadius: 5, padding: "5px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT }}>Delete</button>
+                    </div>
                   </div>
                 </div>
               </div>
             ) : (
-              /* Read mode */
-              <div
-                onClick={() => setEditing(p.id)}
-                style={{ cursor: "pointer" }}
-              >
-                <div style={{ display: "flex", alignItems: "flex-start", gap: 10 }}>
-                  <span style={{ fontSize: 18, fontWeight: 700, color: T_.accent, minWidth: 28, lineHeight: "1.4" }}>{i + 1}.</span>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 600, color: T_.text, lineHeight: "1.4" }}>{p.title}</div>
-                    {p.description && (
-                      <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4, lineHeight: "1.6" }}>{p.description}</div>
-                    )}
-                  </div>
-                </div>
+              <div onClick={() => setEditing(p.id)} style={{ cursor: "pointer", display: "flex", alignItems: "flex-start", gap: 10 }}>
+                <span style={{ fontSize: 16, fontWeight: 700, color: T_.accent, minWidth: 28, lineHeight: "1.6" }}>{i + 1}.</span>
+                <span style={{ fontSize: 14, color: T_.text, lineHeight: "1.6" }}>{p.title}</span>
               </div>
             )}
           </div>
