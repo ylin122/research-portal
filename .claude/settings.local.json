@@ -16,7 +16,8 @@
       "Bash(node insert-batch7-remaining.cjs)",
       "Bash(node insert-batch8-final.cjs)",
       "Bash(node set-public-private.cjs)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(node add-rev-models.cjs)"
     ]
   }
 }

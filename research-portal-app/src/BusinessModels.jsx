@@ -91,7 +91,7 @@ const MODELS = {
     color: "#3B82F6",
     tagline: "Buy planes, lease to airlines, earn the spread between financing cost and lease rate",
     howItWorks: "Aircraft lessors purchase new or used aircraft from manufacturers (Boeing, Airbus) and lease them to airlines on long-term operating leases (typically 6-12 years). Revenue = monthly lease rental payments. The lessor owns the asset, bears residual value risk, and manages transitions between lessees. At lease end, the aircraft is either re-leased, sold, or parted out. Lessors finance purchases with a mix of unsecured bonds, bank debt, ABS, and equity — the spread between lease yield (~10-12% on invested capital) and borrowing cost (~4-6%) drives profit.",
-    economics: "Lease yields: 10-12% of aircraft value annually. Cost of debt: 4-6% (investment-grade lessors). Net spread: 4-7%. Depreciation: 20-25 year useful life. Residual value at lease end is the key variable — narrowbody aircraft (A320neo, 737 MAX) hold value better than widebody. Fleet utilization: 97-99% for top lessors. Maintenance reserves collected from lessees offset redelivery costs. SG&A is minimal — AerCap runs a ~$70B fleet with ~600 employees.",
+    economics: "Lease yields: 10-12% of aircraft value annually. Cost of debt: 4-6% (investment-grade lessors). Net spread: 4-7%. Depreciation: 20-25 year useful life. Residual value at lease end is the key variable — narrowbody aircraft (A320neo, 737 MAX) hold value better than widebody. Fleet utilization: 97-99% for top lessors. Maintenance reserves collected from lessees offset redelivery costs. SG&A is minimal — AerCap runs ~$72B total assets with ~730 employees.",
     keyMetrics: [
       { label: "Lease Yield", value: "10-12%", sub: "Annual rent / aircraft value" },
       { label: "Cost of Funds", value: "4-6%", sub: "Weighted avg borrowing rate" },
@@ -100,13 +100,13 @@ const MODELS = {
       { label: "Lease Term", value: "6-12 yr", sub: "Operating lease duration" },
       { label: "LTV Ratio", value: "2.5-3x", sub: "Debt / equity target" },
     ],
-    valuation: "Traded on price-to-book (P/B). AerCap: ~1.0-1.2x book. Air Lease: ~0.8-1.0x book. Book value reflects depreciated fleet — below-market P/B implies market discounts residual values. P/E: 6-9x. EV/EBITDA: 8-12x. Higher P/B for lessors with younger, more liquid fleets (narrowbody-heavy). Discount for older, less liquid fleets or high geographic concentration.",
+    valuation: "Traded on price-to-book (P/B). AerCap: ~1.3x book. Air Lease: ~0.8-1.0x book. Book value reflects depreciated fleet — below-market P/B implies market discounts residual values. P/E: 6-9x. EV/EBITDA: 8-12x. Higher P/B for lessors with younger, more liquid fleets (narrowbody-heavy). Discount for older, less liquid fleets or high geographic concentration.",
     goodVsBad: "A GOOD leasing business has: young fleet (avg age <8 years), predominantly narrowbody, diversified airline customer base (100+ airlines), investment-grade rating (lower cost of funds), strong order book at favorable pricing. A BAD one has: old fleet, widebody-heavy (harder to re-lease), concentrated in weak airlines, high leverage, poor transition management.",
     examples: [
-      { name: "AerCap", detail: "World's largest aircraft lessor. ~$70B fleet, ~1,800 aircraft, 300+ airline customers. Acquired GECAS in 2021 for $30B. Investment-grade rated.", metric: "~1.1x P/B" },
+      { name: "AerCap", detail: "World's largest aircraft lessor. ~$72B total assets, ~1,680 aircraft, 300+ airline customers. Acquired GECAS in 2021 for $30B. Investment-grade rated. ~730 employees.", metric: "~1.1x P/B" },
       { name: "Air Lease (AL)", detail: "Founded by Steven Udvar-Hazy. Young fleet (~4 yr avg age), order-heavy model, delivers new aircraft directly from manufacturers to airlines.", metric: "~0.9x P/B" },
-      { name: "SMBC Aviation Capital", detail: "#3 global lessor. Japanese bank-owned. ~700 aircraft. Conservative, relationship-driven model.", metric: "Private" },
-      { name: "Avolon", detail: "#4 global. Owned by Bohai Leasing (China). ~580 aircraft. Focused on new-tech narrowbody.", metric: "Private" },
+      { name: "SMBC Aviation Capital", detail: "#2 global lessor. Japanese bank-owned. ~760+ aircraft. Conservative, relationship-driven model.", metric: "Private" },
+      { name: "Avolon", detail: "#3 global. Owned by Bohai Leasing (China). ~1,100+ aircraft (owned+managed). Focused on new-tech narrowbody.", metric: "Private" },
     ],
     risks: [
       "Residual value risk — aircraft worth less than expected at lease end (especially widebody or older tech)",
@@ -132,7 +132,7 @@ const MODELS = {
     color: "#8B5CF6",
     tagline: "Finance and lease GPU clusters to AI companies, earn the spread on high-demand compute assets",
     howItWorks: "GPU lessors acquire NVIDIA (H100/B200) and other AI accelerators, build them into data center clusters, and lease compute capacity to AI companies, startups, and enterprises. Contracts range from months to 3+ years. Revenue = contracted lease payments or usage-based fees. The model mirrors aircraft leasing but with faster depreciation (3-5 years vs 20-25 for planes) and higher utilization demand. Some operate as cloud providers (CoreWeave), others as pure financing vehicles. Capital is raised through equity, debt, and structured finance (GPU-backed ABS).",
-    economics: "GPU cost: $25-40K per H100 chip, $50-70K+ per B200. Cluster build cost: $500M-2B+ for large deployments. Lease yields: 30-50%+ annualized (current demand-supply imbalance). Depreciation: 3-5 years (aggressive — next-gen chips obsolete prior gen). Power costs: significant (50-100MW+ per large cluster). Utilization: 85-95% when contracted. Net margins: potentially 20-40%+ at scale. The key risk is technology obsolescence — unlike planes, GPUs can lose value rapidly when next-gen ships.",
+    economics: "GPU cost: $25-40K per H100 chip, $30-40K per B200. Cluster build cost: $500M-2B+ for large deployments. Lease yields: 30-50%+ annualized (current demand-supply imbalance). Depreciation: 3-5 years (aggressive — next-gen chips obsolete prior gen). Power costs: significant (50-100MW+ per large cluster). Utilization: 85-95% when contracted. Net margins: potentially 20-40%+ at scale. The key risk is technology obsolescence — unlike planes, GPUs can lose value rapidly when next-gen ships.",
     keyMetrics: [
       { label: "GPU Unit Cost", value: "$25-70K", sub: "Per chip (H100 to B200)" },
       { label: "Lease Yield", value: "30-50%+", sub: "Annualized on invested capital" },
@@ -141,12 +141,12 @@ const MODELS = {
       { label: "Power Cost", value: "$0.04-0.08/kWh", sub: "Major operating expense" },
       { label: "Contract Length", value: "1-3+ yr", sub: "Enterprise commitments" },
     ],
-    valuation: "Emerging model — limited public comp set. CoreWeave valued at ~$35B (2025 private). Valuation approaches: EV/EBITDA (if profitable), EV/Revenue (10-20x for high-growth), or asset-based (fleet value). Premium for long-term contracted revenue, discount for technology obsolescence risk. The market debates whether this is more like 'cloud infrastructure' (high multiples) or 'equipment leasing' (low multiples).",
+    valuation: "Emerging model — limited public comp set. CoreWeave IPO'd Mar 2025 at ~$23B, now public (NYSE: CRWV). Valuation approaches: EV/EBITDA (if profitable), EV/Revenue (10-20x for high-growth), or asset-based (fleet value). Premium for long-term contracted revenue, discount for technology obsolescence risk. The market debates whether this is more like 'cloud infrastructure' (high multiples) or 'equipment leasing' (low multiples).",
     goodVsBad: "A GOOD GPU lessor has: long-term take-or-pay contracts with creditworthy customers (hyperscalers, well-funded AI labs), access to latest-gen chips (NVIDIA preferred customer), low power costs, secured financing at reasonable rates. A BAD one has: short-term or spot-priced contracts, old-gen GPUs (depreciating fast), high power costs, excessive leverage, concentrated customer base.",
     examples: [
-      { name: "CoreWeave", detail: "Leading GPU cloud provider. Raised $12B+. Major NVIDIA partner. Microsoft, Meta as customers. Building 28+ data centers.", metric: "~$35B val" },
-      { name: "Lambda", detail: "GPU cloud for AI training. On-demand and reserved instances. NVIDIA DGX partner. Smaller scale than CoreWeave.", metric: "~$1.5B val" },
-      { name: "Crusoe Energy", detail: "Uses stranded natural gas for GPU data centers. Lower power costs. Sustainable computing angle.", metric: "~$3B val" },
+      { name: "CoreWeave", detail: "Leading GPU cloud provider. Raised $12B+. Major NVIDIA partner. Microsoft, Meta as customers. Building 28+ data centers.", metric: "NYSE: CRWV" },
+      { name: "Lambda", detail: "GPU cloud for AI training. On-demand and reserved instances. NVIDIA DGX partner. Smaller scale than CoreWeave.", metric: "~$5.9B val" },
+      { name: "Crusoe Energy", detail: "Uses stranded natural gas for GPU data centers. Lower power costs. Sustainable computing angle.", metric: "~$10B val" },
       { name: "Voltage Park", detail: "Provides GPU compute access. Backed by significant capital. Focused on AI research and startups.", metric: "Private" },
     ],
     risks: [
@@ -186,7 +186,7 @@ const MODELS = {
     valuation: "Price-to-book: 0.8-1.5x depending on asset quality and earnings growth. P/E: 8-14x. EV/EBITDA: 7-11x. Railcar lessors trade at premium (long-lived assets). Truck/trailer lessors trade at modest multiples (shorter lives, cyclical). Dividend yield is important — many lessors return 30-50% of earnings. NAV-based analysis common: sum of asset values minus debt.",
     goodVsBad: "GOOD: diversified asset pool, long-lived assets, essential/non-discretionary use, high re-lease rates, conservative leverage. BAD: concentrated in one asset type, short-lived or rapidly depreciating assets, cyclical end markets, high customer concentration, aggressive leverage.",
     examples: [
-      { name: "GATX", detail: "North America's largest railcar lessor. ~170,000 railcars. 125+ year operating history. 99%+ utilization.", metric: "~1.3x P/B" },
+      { name: "GATX", detail: "North America's largest railcar lessor. ~156,000 railcars. 125+ year operating history. 99%+ utilization.", metric: "~1.3x P/B" },
       { name: "Triton (Brookfield)", detail: "World's largest intermodal container lessor. ~7M+ TEUs. Acquired by Brookfield Infrastructure for $13.3B.", metric: "Acquired" },
       { name: "Air Lease / GECAS", detail: "Aircraft leasing (covered separately). The aircraft leasing model is the largest and most sophisticated equipment leasing segment.", metric: "See Aircraft" },
       { name: "PACCAR Leasing", detail: "Captive truck leasing arm of PACCAR (Kenworth, Peterbilt). Finances own product sales.", metric: "Captive" },
@@ -227,10 +227,10 @@ const MODELS = {
     valuation: "EV/Revenue: 5-20x for growth SaaS. EV/ARR: similar. Premium for: high NDR (>120%), durable growth (>25%), strong FCF, large TAM. Discount for: decelerating growth, NDR <110%, high churn, small TAM. At maturity, valued on EV/FCF: 25-40x. The best SaaS companies (ServiceNow, CrowdStrike) compound at 25%+ growth with 30%+ FCF margins for years.",
     goodVsBad: "GOOD: NDR >120%, gross margins >75%, growing 25%+ organically, expanding into adjacent products, low churn, strong platform/ecosystem. BAD: NDR <100% (net churn), growth decelerating toward single digits, reliant on acquisitions for growth, high customer concentration, commoditized product with pricing pressure.",
     examples: [
-      { name: "Salesforce", detail: "The original SaaS company. $35B+ revenue. CRM + platform + marketing + analytics. NDR ~110%. ~25% FCF margin.", metric: "~7x Rev" },
-      { name: "ServiceNow", detail: "IT workflow automation. $10B+ revenue, growing 22%+. NDR ~125%. 30%+ FCF margin. One of the best SaaS businesses.", metric: "~15x Rev" },
-      { name: "CrowdStrike", detail: "Endpoint security SaaS. $4B+ revenue, growing 30%+. NDR ~120%. Module expansion drives land-and-expand.", metric: "~18x Rev" },
-      { name: "Datadog", detail: "Observability platform. $2.5B+ revenue. Consumption + subscription hybrid. NDR ~115%. Multi-product expansion.", metric: "~14x Rev" },
+      { name: "Salesforce", detail: "The original SaaS company. ~$38B revenue. CRM + platform + marketing + analytics. NDR ~110%. ~35% FCF margin.", metric: "~7x Rev" },
+      { name: "ServiceNow", detail: "IT workflow automation. ~$13B revenue, growing ~21%. NDR ~125%. 30%+ FCF margin. One of the best SaaS businesses.", metric: "~15x Rev" },
+      { name: "CrowdStrike", detail: "Endpoint security SaaS. ~$4B revenue, growing ~29%. NDR ~115%+. Module expansion drives land-and-expand.", metric: "~18x Rev" },
+      { name: "Datadog", detail: "Observability platform. ~$3.4B revenue. Consumption + subscription hybrid. NDR ~120%. Multi-product expansion.", metric: "~14x Rev" },
     ],
     risks: [
       "Growth deceleration — market saturation or competitive displacement",
@@ -256,22 +256,22 @@ const MODELS = {
     color: "#F59E0B",
     tagline: "Sit in the flow of money — take a small cut of every transaction processed, at massive volume",
     howItWorks: "Payment companies insert themselves into the transaction flow between buyer and seller. For every card swipe, online checkout, or money transfer, multiple parties take a fee: card networks (Visa/Mastercard ~0.13-0.15%), issuing banks (interchange ~1.5-2.0%), acquirers/processors (~0.2-0.5%), and payment facilitators (Stripe, Square ~0.3-0.5% above interchange). Total merchant discount rate: 2.0-3.5% of transaction value. Revenue scales linearly with total payment volume (TPV) — as the economy grows and cash shifts to digital, volume compounds.",
-    economics: "Visa/Mastercard (networks): 65-70% operating margins. They don't take credit risk — pure toll model. Revenue = assessments + transaction fees on $15T+ annual volume. Processors (FIS, Fiserv): 30-40% margins, more operational complexity. Fintechs (Stripe, Adyen): 50-60% gross margins, still scaling. Interchange (bank revenue): ~$100B+ annually in the US alone. The key insight: payment companies earn more revenue as prices inflate (% of a larger transaction), making them natural inflation hedges.",
+    economics: "Visa/Mastercard (networks): 65-70% operating margins. They don't take credit risk — pure toll model. Revenue = assessments + transaction fees on $17T+ annual volume. Processors (FIS, Fiserv): 30-40% margins, more operational complexity. Fintechs (Stripe, Adyen): 50-60% gross margins, still scaling. Interchange (bank revenue): ~$100B+ annually in the US alone. The key insight: payment companies earn more revenue as prices inflate (% of a larger transaction), making them natural inflation hedges.",
     keyMetrics: [
-      { label: "TPV", value: "$15T+", sub: "Visa annual payment volume" },
+      { label: "TPV", value: "$17T+", sub: "Visa annual payment volume" },
       { label: "Network Take", value: "~0.13%", sub: "Visa/MA assessment rate" },
       { label: "Total MDR", value: "2.0-3.5%", sub: "Merchant discount rate" },
       { label: "Op Margin", value: "55-70%", sub: "Networks (Visa/MA)" },
       { label: "Revenue Growth", value: "10-12%", sub: "Secular cash-to-digital shift" },
-      { label: "Cash→Digital", value: "~40% done", sub: "Global digital penetration" },
+      { label: "Cash→Digital", value: "~60% done", sub: "Global digital penetration" },
     ],
     valuation: "Visa/Mastercard: 25-35x earnings. Premium for: duopoly moat, near-zero credit risk, secular volume growth, extraordinary margins. Processors (FIS, Fiserv, GPN): 10-18x earnings — more competitive, lower margins. Fintechs (Adyen, Stripe): 30-60x revenue — priced for share gain and global expansion. PayPal: 15-20x — discount for decelerating growth and competitive pressure.",
     goodVsBad: "GOOD: toll-booth position (networks), high volume with low credit risk, secular penetration tailwinds, pricing power, cross-border exposure (higher take rate). BAD: purely commodity processing (race to zero), high customer concentration, exposed to interchange regulation (Durbin Amendment), losing share to alternative payment rails.",
     examples: [
-      { name: "Visa", detail: "Largest payment network globally. ~$15T annual volume. ~67% operating margin. No credit risk — pure toll model.", metric: "~30x P/E" },
-      { name: "Mastercard", detail: "#2 network. ~$9T volume. Similar margin profile to Visa. Growing faster in cross-border and value-added services.", metric: "~33x P/E" },
-      { name: "Stripe", detail: "Leading online payment facilitator. ~$1T+ TPV. ~$3.5B revenue. Powers internet commerce for millions of businesses.", metric: "~$70B val" },
-      { name: "Adyen", detail: "European payment processor. Unified commerce platform. ~60% EBITDA margin. Direct acquirer model.", metric: "~40x Rev" },
+      { name: "Visa", detail: "Largest payment network globally. ~$17T annual volume. ~67% operating margin. No credit risk — pure toll model.", metric: "~30x P/E" },
+      { name: "Mastercard", detail: "#2 network. ~$11T volume. Similar margin profile to Visa. Growing faster in cross-border and value-added services.", metric: "~33x P/E" },
+      { name: "Stripe", detail: "Leading online payment facilitator. ~$1.9T TPV. ~$5.8B revenue. Powers internet commerce for millions of businesses.", metric: "~$160B val" },
+      { name: "Adyen", detail: "European payment processor. Unified commerce platform. ~50% EBITDA margin. Direct acquirer model.", metric: "~8x Rev" },
     ],
     risks: [
       "Regulatory risk — interchange caps (Durbin Amendment, EU regulation) directly compress economics",
@@ -282,7 +282,7 @@ const MODELS = {
     ],
     rewards: [
       "Extraordinary moat — Visa/Mastercard duopoly is one of the strongest in all of business",
-      "Secular tailwind — global cash-to-digital shift is ~40% complete; decades of growth ahead",
+      "Secular tailwind — global cash-to-digital shift is ~60% complete; decades of growth ahead",
       "Inflation hedge — revenue is a % of transaction value; higher prices = higher fees",
       "Near-zero credit risk — networks don't lend, they just process",
       "Operating leverage — incremental volume at near-zero marginal cost",
@@ -298,7 +298,7 @@ const MODELS = {
     color: "#EF4444",
     tagline: "Connect buyers and sellers, take a cut of each transaction — network effects create winner-take-most dynamics",
     howItWorks: "Marketplace platforms match supply (sellers, service providers, hosts) with demand (buyers, consumers, guests) and charge a take rate on each transaction. Revenue = Gross Merchandise Value (GMV) \u00D7 take rate. The platform doesn't hold inventory or deliver the service — it facilitates the connection and handles trust, payment, and discovery. Network effects are the key: more buyers attract more sellers, which attracts more buyers. Once a marketplace achieves liquidity, it becomes very hard to displace. Monetization expands through advertising, fintech (payments, lending), and premium tools for sellers.",
-    economics: "Take rates: 5-30% depending on category. Airbnb: ~14% (host + guest fees). Uber: ~25-30% (driver + rider). DoorDash: ~15-20%. Etsy: ~22% (fees + ads + payments). Booking.com: ~15-18%. Gross margins: 50-75%. The 'holy grail' is a marketplace with high take rate, high frequency, and strong network effects. Contribution margin per transaction increases over time as CAC amortizes and repeat usage grows. At scale, marketplaces can achieve 25-40% EBITDA margins.",
+    economics: "Take rates: 5-30% depending on category. Airbnb: ~13.5% (host + guest fees). Uber: ~25-30% (driver + rider). DoorDash: ~15-20%. Etsy: ~22% (fees + ads + payments). Booking.com: ~14.5%. Gross margins: 50-75%. The 'holy grail' is a marketplace with high take rate, high frequency, and strong network effects. Contribution margin per transaction increases over time as CAC amortizes and repeat usage grows. At scale, marketplaces can achieve 25-40% EBITDA margins.",
     keyMetrics: [
       { label: "GMV", value: "varies", sub: "Gross merchandise/booking value" },
       { label: "Take Rate", value: "5-30%", sub: "Revenue / GMV" },
@@ -310,10 +310,10 @@ const MODELS = {
     valuation: "EV/GMV: 0.5-3x (efficient way to compare across take rates). EV/Revenue: 5-20x for growth marketplaces. Premium for: high take rate, strong network effects, demonstrated liquidity, expanding into adjacencies (fintech, ads). Discount for: low take rate, subsidy-driven growth, no clear path to profitability, regulatory risk (gig economy classification).",
     goodVsBad: "GOOD: genuine two-sided network effects, high frequency, expanding take rate over time, multiple revenue streams (ads, fintech), high seller/buyer retention. BAD: subsidy-dependent (growth collapses when discounts end), single-sided (no real network effect), commoditized supply (easy to multi-home), regulatory risk.",
     examples: [
-      { name: "Airbnb", detail: "~$100B GMV. 14% take rate. $10B+ revenue. Asset-light, 40%+ FCF margins. Dominant in short-term rental.", metric: "~25x P/E" },
-      { name: "Uber", detail: "~$150B+ gross bookings. Mobility + delivery. 25-30% take rate. Reached profitability at scale after years of subsidies.", metric: "~30x P/E" },
-      { name: "Etsy", detail: "Handmade/vintage marketplace. ~$13B GMV. ~22% take rate. High seller lock-in but facing competition from Amazon Handmade, Temu.", metric: "~15x P/E" },
-      { name: "Booking Holdings", detail: "Largest online travel agency. ~$150B+ gross bookings. 15-18% take rate. Includes Booking.com, Priceline, Kayak.", metric: "~20x P/E" },
+      { name: "Airbnb", detail: "~$91B GMV. ~13.5% take rate. ~$12B revenue. Asset-light, 40%+ FCF margins. Dominant in short-term rental.", metric: "~25x P/E" },
+      { name: "Uber", detail: "~$194B gross bookings. Mobility + delivery. 25-30% take rate. Reached profitability at scale after years of subsidies.", metric: "~30x P/E" },
+      { name: "Etsy", detail: "Handmade/vintage marketplace. ~$12B GMV. ~22% take rate. High seller lock-in but facing competition from Amazon Handmade, Temu.", metric: "~15x P/E" },
+      { name: "Booking Holdings", detail: "Largest online travel agency. ~$150B+ gross bookings. ~14.5% take rate. Includes Booking.com, Priceline, Kayak.", metric: "~20x P/E" },
     ],
     risks: [
       "Disintermediation — buyers and sellers take the relationship off-platform",
@@ -351,10 +351,10 @@ const MODELS = {
     valuation: "P/FFO: 12-25x depending on property type and growth. P/AFFO for comparison. Premium/discount to NAV: most REITs trade within +/-15% of NAV. Data center REITs (Equinix, Digital Realty): 20-30x FFO — AI/cloud demand. Industrial (Prologis): 20-25x — e-commerce logistics. Office: 8-12x — secular headwind from remote work. Triple-net (Realty Income): 14-18x — bond-like stability.",
     goodVsBad: "GOOD: irreplaceable locations, long-term leases with contractual escalators, high occupancy, secular demand tailwinds (data centers, logistics), conservative balance sheet. BAD: oversupplied market, short-term leases with cyclical tenants (office, retail), high leverage, development risk, geographic concentration.",
     examples: [
-      { name: "Prologis", detail: "World's largest logistics REIT. ~1.2B sq ft. Amazon is ~5% of rent. E-commerce secular tailwind.", metric: "~22x FFO" },
-      { name: "Equinix", detail: "Largest data center REIT. ~260 data centers in 70+ metros globally. AI/cloud demand driving growth.", metric: "~28x FFO" },
-      { name: "Realty Income", detail: "'The Monthly Dividend Company.' Triple-net retail REIT. 15,000+ properties. 25+ years of monthly dividend increases.", metric: "~15x FFO" },
-      { name: "Public Storage", detail: "Largest self-storage REIT. ~3,000 facilities. High NOI margins (~75%). Low maintenance capex.", metric: "~20x FFO" },
+      { name: "Prologis", detail: "World's largest logistics REIT. ~1.3B sq ft. Amazon is ~5% of rent. E-commerce secular tailwind.", metric: "~22x FFO" },
+      { name: "Equinix", detail: "Largest data center REIT. ~270 data centers in 70+ metros globally. AI/cloud demand driving growth.", metric: "~28x FFO" },
+      { name: "Realty Income", detail: "'The Monthly Dividend Company.' Triple-net retail REIT. 15,000+ properties. 30+ years of monthly dividend increases.", metric: "~15x FFO" },
+      { name: "Public Storage", detail: "Largest self-storage REIT. ~3,200 facilities. High NOI margins (~75%). Low maintenance capex.", metric: "~20x FFO" },
     ],
     risks: [
       "Interest rate sensitivity — rising rates increase cost of debt and compress property values",
@@ -394,7 +394,7 @@ const MODELS = {
     valuation: "P/E: 16-22x forward earnings. Premium for: constructive regulatory jurisdictions, high rate base growth (data center load, renewables), T&D-focused (lower risk than generation). Discount for: merchant generation exposure, unfriendly regulators, wildfire liability (California). Regulated utilities trade as 'bond proxies' — P/E expands when rates fall, compresses when rates rise. Dividend yield + EPS growth = 8-12% total expected return.",
     goodVsBad: "GOOD: constructive regulatory environment, high capital deployment opportunity (grid modernization, renewables, data center load growth), transmission-focused (federally regulated, more predictable), strong balance sheet. BAD: hostile regulators (disallowed costs), merchant/unregulated generation exposure, wildfire or storm liability, weak load growth, over-leveraged.",
     examples: [
-      { name: "NextEra Energy", detail: "Largest US utility by market cap. FPL (regulated FL) + NextEra Energy Resources (largest wind/solar operator). 10%+ EPS growth.", metric: "~22x P/E" },
+      { name: "NextEra Energy", detail: "Largest US utility by market cap. FPL (regulated FL) + NextEra Energy Resources (largest wind/solar operator). ~8% EPS growth.", metric: "~22x P/E" },
       { name: "Duke Energy", detail: "Large regulated utility. Southeast/Midwest. $45B+ rate base. Heavy CapEx in grid modernization and renewables.", metric: "~17x P/E" },
       { name: "Southern Company", detail: "Large regulated. Southeast US. Transmission + distribution. Nuclear (Vogtle 3&4). $55B+ rate base.", metric: "~18x P/E" },
       { name: "AES Corporation", detail: "Diversified utility with large renewables pipeline. US + international. Data center power contracts growing.", metric: "~12x P/E" },
@@ -438,7 +438,7 @@ const MODELS = {
     examples: [
       { name: "JPMorgan Chase", detail: "Largest US bank by assets ($4T+). Fortress balance sheet. 16%+ ROE. Dominant across all banking segments.", metric: "~2x P/TBV" },
       { name: "Bank of America", detail: "#2 US bank. Largest deposit base. Consumer + wealth (Merrill) + IB. NIM-sensitive.", metric: "~1.4x P/TBV" },
-      { name: "Wells Fargo", detail: "#3. Largest US mortgage originator. Under consent orders (asset cap). Turnaround story.", metric: "~1.3x P/TBV" },
+      { name: "Wells Fargo", detail: "4th largest US bank. Under consent orders with asset cap. Exited mortgage origination business. Turnaround story.", metric: "~1.3x P/TBV" },
       { name: "First Republic (cautionary)", detail: "Failed in 2023. Concentrated in low-rate jumbo mortgages + high-cost deposits. Deposit flight + unrealized bond losses = insolvency.", metric: "Failed" },
     ],
     risks: [
@@ -478,10 +478,10 @@ const MODELS = {
     valuation: "EV/EBITDA: 18-30x for premium franchisors. P/E: 20-35x. Premium for: high unit growth runway, strong same-store sales, asset-light model, brand strength. McDonald's: ~25x EBITDA. Yum Brands: ~22x. Restaurant Brands (Burger King/Tim Hortons): ~16x. Marriott/Hilton: ~22-25x. Franchise royalty streams are valued like annuities — high predictability commands premium multiples.",
     goodVsBad: "GOOD: strong brand with pricing power, large unit growth runway (international expansion), high franchisee profitability (unit economics work), asset-light with high FCF conversion, self-funding growth (franchisees invest). BAD: declining brand, franchisee profitability under pressure, saturated domestic market, high franchisee turnover, capital-intensive company-owned units mixed in.",
     examples: [
-      { name: "McDonald's", detail: "~40,000 restaurants, 95% franchised. Collects royalties + rent (owns real estate). $25B+ revenue. 45%+ op margins.", metric: "~25x EBITDA" },
-      { name: "Marriott International", detail: "~8,800 properties, 98% franchised/managed. Largest hotel company. Asset-light transformation complete.", metric: "~23x EBITDA" },
-      { name: "Yum Brands", detail: "KFC, Taco Bell, Pizza Hut. ~55,000 restaurants, 98% franchised. International growth (China, India).", metric: "~22x EBITDA" },
-      { name: "Wingstop", detail: "Fast-growing chicken wing franchise. ~2,400 units. 95%+ franchised. 60%+ unit-level margins. Digital-forward.", metric: "~50x P/E" },
+      { name: "McDonald's", detail: "~45,000 restaurants, 95% franchised. Collects royalties + rent (owns real estate). ~$26B revenue. 45%+ op margins.", metric: "~25x EBITDA" },
+      { name: "Marriott International", detail: "~9,700 properties, 98% franchised/managed. Largest hotel company. Asset-light transformation complete.", metric: "~23x EBITDA" },
+      { name: "Yum Brands", detail: "KFC, Taco Bell, Pizza Hut. ~63,000 restaurants, 98% franchised. International growth (China, India).", metric: "~22x EBITDA" },
+      { name: "Wingstop", detail: "Fast-growing chicken wing franchise. ~3,000+ units. 95%+ franchised. 60%+ unit-level margins. Digital-forward.", metric: "~50x P/E" },
     ],
     risks: [
       "Brand damage — franchisee misconduct or quality decline tarnishes system-wide brand",
@@ -562,10 +562,10 @@ const MODELS = {
     valuation: "EV/EBITDA: 20-35x. P/E: 25-40x. Among the most expensive business models in public markets. Premium for: regulatory moat (ratings agencies), index-linked AUM flows (MSCI), mission-critical data (Bloomberg, Refinitiv). S&P Global: ~28x EBITDA. MSCI: ~35x EBITDA. Verisk: ~25x EBITDA. The premium reflects extraordinary predictability, pricing power, and compounding.",
     goodVsBad: "GOOD: regulatory moat (mandated usage), deeply embedded in workflows, no viable substitute, high switching costs, network effects (more data = better product), consistent 95%+ retention. BAD: commoditized data (easily replicated), low switching costs, small addressable market, single-product dependency, regulatory risk (ratings agency reform).",
     examples: [
-      { name: "S&P Global", detail: "Credit ratings (#1 globally) + indices (S&P 500) + Market Intelligence (data/analytics). $14B+ revenue. Merged with IHS Markit.", metric: "~28x EBITDA" },
-      { name: "MSCI", detail: "Indices (drives $15T+ in linked AUM), ESG ratings, real estate analytics. Revenue grows with global AUM. Extraordinary pricing power.", metric: "~35x EBITDA" },
-      { name: "Bloomberg LP", detail: "Bloomberg Terminal (~$25K/yr per seat, 350K+ subscribers). Dominant in fixed income data. ~$12B revenue. Privately held.", metric: "Private" },
-      { name: "Verisk Analytics", detail: "Insurance data/analytics monopoly. ISO statistical agent. Property data (Wood Mackenzie). 95%+ retention.", metric: "~25x EBITDA" },
+      { name: "S&P Global", detail: "Credit ratings (#1 globally) + indices (S&P 500) + Market Intelligence (data/analytics). ~$15B revenue. Merged with IHS Markit.", metric: "~28x EBITDA" },
+      { name: "MSCI", detail: "Indices (drives ~$7T in linked AUM), ESG ratings, real estate analytics. Revenue grows with global AUM. Extraordinary pricing power.", metric: "~35x EBITDA" },
+      { name: "Bloomberg LP", detail: "Bloomberg Terminal (~$30K/yr per seat, 350K+ subscribers). Dominant in fixed income data. ~$12B revenue. Privately held.", metric: "Private" },
+      { name: "Verisk Analytics", detail: "Insurance data/analytics monopoly. ISO statistical agent. PCS catastrophe data. 95%+ retention.", metric: "~25x EBITDA" },
     ],
     risks: [
       "Regulatory scrutiny — ratings agency reform, antitrust on data monopolies",
@@ -604,10 +604,10 @@ const MODELS = {
     valuation: "P/TBV: 0.8-2.5x. P/E: 7-14x. Premium for: consistent credit performance through cycles, niche underwriting expertise, strong funding access, growing origination. Discount for: rising delinquencies, funding concentration, single-product dependency. BDCs (business development companies): 0.8-1.2x NAV with 8-12% dividend yields. Auto finance: 1.0-1.5x TBV.",
     goodVsBad: "GOOD: proven credit track record through cycles (2008, COVID), diversified funding sources (deposits, ABS, warehouse), proprietary data/underwriting models, niche with limited competition, scalable origination. BAD: untested credit through recession, funding concentration (single warehouse lender), loose underwriting to chase growth, macro-cyclical portfolio, regulatory risk.",
     examples: [
-      { name: "Ares Capital (ARCC)", detail: "Largest BDC. ~$25B portfolio. Middle-market direct lending. 9-10% dividend yield. Managed by Ares Management.", metric: "~1.1x NAV" },
-      { name: "Ally Financial", detail: "Leading auto finance company. $140B+ assets. Bank charter (cheap deposits). Digital banking platform.", metric: "~0.9x TBV" },
+      { name: "Ares Capital (ARCC)", detail: "Largest BDC. ~$30B portfolio. Middle-market direct lending. 9-10% dividend yield. Managed by Ares Management.", metric: "~1.1x NAV" },
+      { name: "Ally Financial", detail: "Leading auto finance company. ~$192B assets. Bank charter (cheap deposits). Digital banking platform.", metric: "~0.9x TBV" },
       { name: "SoFi Technologies", detail: "Digital finance platform. Student refinancing + personal loans + banking + investing. Growing deposits rapidly.", metric: "~3x P/B" },
-      { name: "OneMain Financial", detail: "Subprime consumer installment lender. ~$21B portfolio. ~25% APR. 2,000+ branches. Deep underwriting expertise.", metric: "~1.2x TBV" },
+      { name: "OneMain Financial", detail: "Subprime consumer installment lender. ~$21B portfolio. ~25% APR. 1,300+ branches. Deep underwriting expertise.", metric: "~1.2x TBV" },
     ],
     risks: [
       "Credit risk — loan losses can spike rapidly in recession; subprime portfolios are especially vulnerable",

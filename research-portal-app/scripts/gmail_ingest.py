@@ -1,25 +1,31 @@
 """
 Gmail → Supabase Research Wiki Ingest
 =====================================
-Pulls emails tagged with [RW] or [idea] from ylresearchwiki@gmail.com
-and pushes them to the Supabase kb_articles or idea_tracker tables.
+Pulls emails tagged with [Research] from ylresearchwiki@gmail.com
+and pushes them to the Supabase kb_articles table.
+Handles PDF attachments automatically (extracts text via PyMuPDF).
 
 Usage:
-  python scripts/gmail_ingest.py           # ingest new [RW] and [idea] emails
-  python scripts/gmail_ingest.py --dry-run # preview without writing to Supabase
+  research-ingest              # ingest new [Research] emails
+  research-ingest --dry-run    # preview without writing
+  research-ingest --all        # also match subject "Research" (no brackets)
+  research-export              # Supabase → Obsidian vault
+  research-sync                # both in one shot
 
 Setup:
   1. Download OAuth credentials from Google Cloud Console → save as scripts/credentials.json
   2. First run will open browser for OAuth consent → saves token.json
   3. .env in research-portal-app root must have VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+  4. pip install pymupdf (for PDF extraction)
 """
 
 import os
 import sys
-import json
+import io
 import base64
 import re
 import argparse
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from email.utils import parsedate_to_datetime
@@ -32,16 +38,20 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 
+# Fix encoding on Windows
+if sys.platform == "win32":
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+
 # ─── Config ───────────────────────────────────────────
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_DIR = SCRIPT_DIR.parent
 CREDENTIALS_FILE = SCRIPT_DIR / "credentials.json"
 TOKEN_FILE = SCRIPT_DIR / "token.json"
+PDF_DIR = SCRIPT_DIR / "pdfs"
 SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 # Tags to search for
-TAG_RW = "[RW]"        # → kb_articles table
-TAG_IDEA = "[idea]"    # → idea_tracker table (future)
+TAG_RESEARCH = "[Research]"  # → kb_articles table
 
 load_dotenv(PROJECT_DIR / ".env")
 SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
@@ -75,6 +85,42 @@ def get_gmail_service():
     return build("gmail", "v1", credentials=creds)
 
 
+# ─── PDF Extraction ──────────────────────────────────
+def extract_pdf_text(pdf_bytes, max_chars=5000):
+    """Extract text from PDF bytes using PyMuPDF."""
+    try:
+        import fitz
+    except ImportError:
+        print("  WARN: pymupdf not installed. Run: pip install pymupdf")
+        return ""
+
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as f:
+        f.write(pdf_bytes)
+        tmp_path = f.name
+
+    try:
+        doc = fitz.open(tmp_path)
+        text = ""
+        for page in doc:
+            text += page.get_text()
+            if len(text) > max_chars * 2:  # grab extra for summary, truncate later
+                break
+        doc.close()
+        return text
+    finally:
+        os.unlink(tmp_path)
+
+
+def download_attachment(service, msg_id, part):
+    """Download an attachment from Gmail and return (filename, bytes)."""
+    att_id = part["body"]["attachmentId"]
+    att = service.users().messages().attachments().get(
+        userId="me", messageId=msg_id, id=att_id
+    ).execute()
+    data = base64.urlsafe_b64decode(att["data"])
+    return data
+
+
 # ─── Email Parsing ────────────────────────────────────
 def get_header(headers, name):
     for h in headers:
@@ -89,16 +135,13 @@ def decode_body(payload):
         return base64.urlsafe_b64decode(payload["body"]["data"]).decode("utf-8", errors="replace")
 
     parts = payload.get("parts", [])
-    # Prefer plain text
     for part in parts:
         if part.get("mimeType") == "text/plain" and part.get("body", {}).get("data"):
             return base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="replace")
-    # Fall back to HTML → text
     for part in parts:
         if part.get("mimeType") == "text/html" and part.get("body", {}).get("data"):
             html = base64.urlsafe_b64decode(part["body"]["data"]).decode("utf-8", errors="replace")
             return html_to_text(html)
-    # Recurse into nested multipart
     for part in parts:
         if part.get("parts"):
             result = decode_body(part)
@@ -108,23 +151,35 @@ def decode_body(payload):
 
 
 def html_to_text(html):
-    """Convert HTML to clean text."""
     soup = BeautifulSoup(html, "html.parser")
-    # Remove script/style
     for tag in soup(["script", "style"]):
         tag.decompose()
     return soup.get_text(separator="\n", strip=True)
 
 
 def extract_urls(text):
-    """Pull URLs from text."""
     return re.findall(r'https?://[^\s<>"\')\]]+', text)
 
 
-def classify_content(subject, body, urls):
-    """Auto-classify: articles (has URL), notes (no URL), threads, papers."""
+def get_pdf_parts(payload):
+    """Find all PDF attachment parts in the email."""
+    pdfs = []
+    parts = payload.get("parts", [])
+    for part in parts:
+        fn = part.get("filename", "")
+        mime = part.get("mimeType", "")
+        if (fn.lower().endswith(".pdf") or mime == "application/pdf") and part.get("body", {}).get("attachmentId"):
+            pdfs.append(part)
+        # Recurse into nested parts
+        if part.get("parts"):
+            pdfs.extend(get_pdf_parts(part))
+    return pdfs
+
+
+def classify_content(subject, body, urls, has_pdf):
+    """Auto-classify: papers (PDF), articles (URL), notes (text only), threads."""
     subject_lower = subject.lower()
-    if "paper" in subject_lower or "arxiv" in subject_lower:
+    if has_pdf or "paper" in subject_lower or "arxiv" in subject_lower:
         return "papers"
     if "thread" in subject_lower:
         return "threads"
@@ -133,52 +188,99 @@ def classify_content(subject, body, urls):
     return "notes"
 
 
-def parse_email(msg):
-    """Parse a Gmail message into a structured dict."""
+def parse_email(service, msg):
+    """Parse a Gmail message into a structured dict, including PDF text."""
     headers = msg["payload"]["headers"]
     subject = get_header(headers, "Subject")
     sender = get_header(headers, "From")
     date_str = get_header(headers, "Date")
     msg_id = msg["id"]
 
-    # Parse date
     try:
         dt = parsedate_to_datetime(date_str)
     except Exception:
         dt = datetime.now(timezone.utc)
 
-    # Strip tag from subject
+    # Strip tags from subject
     clean_subject = subject
-    for tag in [TAG_RW, TAG_IDEA, "[rw]", "[Rw]", "[IDEA]", "[Idea]"]:
+    for tag in [TAG_RESEARCH, "[Research]", "[research]", "[RESEARCH]", "[RW]", "[rw]"]:
         clean_subject = clean_subject.replace(tag, "").strip()
 
-    # Get body
+    # Get body text
     body = decode_body(msg["payload"])
     urls = extract_urls(body)
-    category = classify_content(clean_subject, body, urls)
 
-    # Determine which table
-    subject_lower = subject.lower()
-    if "[idea]" in subject_lower:
-        target_table = "idea_tracker"
-    else:
-        target_table = "kb_articles"
+    # If subject is empty or generic after stripping, try to extract title from body content
+    if not clean_subject or clean_subject.lower() in ("research", "fwd:", "fwd", "fw:", "fw", "re:", "re"):
+        # Try to find a heading in the body (markdown # or first meaningful line)
+        for line in body.split("\n"):
+            line = line.strip()
+            if line.startswith("# "):
+                clean_subject = line.lstrip("# ").strip()
+                break
+            # Skip empty lines, URLs, short lines
+            if len(line) > 15 and not line.startswith("http") and not line.startswith("Sent from"):
+                clean_subject = line[:120]
+                break
+        # If still generic, try to extract from URL slug
+        if not clean_subject or clean_subject.lower() in ("research",):
+            for u in urls:
+                slug = u.rstrip("/").split("/")[-1].split("?")[0]
+                if len(slug) > 5:
+                    clean_subject = slug.replace("-", " ").replace("_", " ").title()[:120]
+                    break
+        if not clean_subject:
+            clean_subject = "Untitled Research"
+
+    # Handle PDF attachments
+    pdf_parts = get_pdf_parts(msg["payload"])
+    pdf_text = ""
+    pdf_filenames = []
+
+    for pdf_part in pdf_parts:
+        fn = pdf_part.get("filename", "attachment.pdf")
+        pdf_filenames.append(fn)
+        print(f"  PDF found: {fn} — downloading & extracting text...")
+
+        pdf_bytes = download_attachment(service, msg_id, pdf_part)
+
+        # Save locally
+        PDF_DIR.mkdir(exist_ok=True)
+        local_path = PDF_DIR / fn
+        local_path.write_bytes(pdf_bytes)
+        print(f"  Saved to {local_path} ({len(pdf_bytes):,} bytes)")
+
+        # Extract text
+        text = extract_pdf_text(pdf_bytes)
+        if text:
+            pdf_text += f"\n\n--- {fn} ---\n{text}"
+            print(f"  Extracted {len(text):,} chars from {fn}")
+        else:
+            print(f"  WARN: No text extracted from {fn}")
+
+    has_pdf = bool(pdf_parts)
+    category = classify_content(clean_subject, body, urls, has_pdf)
+
+    # Combine body + PDF text
+    combined_content = body.strip()
+    if pdf_text:
+        combined_content = (combined_content + "\n\n" + pdf_text.strip()).strip()
 
     return {
         "gmail_id": msg_id,
         "subject": clean_subject,
-        "body": body.strip(),
+        "body": combined_content,
         "urls": urls,
         "category": category,
         "sender": sender,
         "date": dt.isoformat(),
-        "target_table": target_table,
+        "pdf_filenames": pdf_filenames,
+        "has_pdf": has_pdf,
     }
 
 
 # ─── Supabase ─────────────────────────────────────────
 def get_existing_gmail_ids(table="kb_articles"):
-    """Fetch gmail_ids already in Supabase to avoid duplicates."""
     r = httpx.get(
         f"{SUPABASE_URL}/rest/v1/{table}?select=gmail_id&gmail_id=not.is.null",
         headers={
@@ -189,12 +291,10 @@ def get_existing_gmail_ids(table="kb_articles"):
     )
     if r.status_code == 200:
         return {row["gmail_id"] for row in r.json()}
-    # Table might not have gmail_id column yet — that's ok
     return set()
 
 
 def upsert_to_supabase(table, record):
-    """Insert a record into Supabase."""
     r = httpx.post(
         f"{SUPABASE_URL}/rest/v1/{table}",
         headers={
@@ -217,13 +317,15 @@ def main():
     parser = argparse.ArgumentParser(description="Gmail → Supabase Research Wiki Ingest")
     parser.add_argument("--dry-run", action="store_true", help="Preview without writing to Supabase")
     parser.add_argument("--max", type=int, default=50, help="Max emails to process (default: 50)")
+    parser.add_argument("--all", action="store_true", help="Also match 'subject:Research' without brackets")
     args = parser.parse_args()
 
     print("Connecting to Gmail...")
     service = get_gmail_service()
 
-    # Search for [RW] and [idea] tagged emails
-    query = "subject:[RW] OR subject:[idea]"
+    query = 'subject:[Research]'
+    if args.all:
+        query = 'subject:Research OR subject:[Research]'
     print(f"Searching: {query}")
 
     results = service.users().messages().list(
@@ -235,12 +337,9 @@ def main():
         print("No tagged emails found.")
         return
 
-    print(f"Found {len(messages)} tagged email(s)")
+    print(f"Found {len(messages)} email(s)")
 
-    # Get existing IDs to skip duplicates
-    existing_kb = get_existing_gmail_ids("kb_articles")
-    existing_ideas = get_existing_gmail_ids("idea_tracker")
-    existing = existing_kb | existing_ideas
+    existing = get_existing_gmail_ids("kb_articles")
     print(f"Already ingested: {len(existing)} email(s)")
 
     new_count = 0
@@ -252,18 +351,27 @@ def main():
             skip_count += 1
             continue
 
-        # Fetch full message
         msg = service.users().messages().get(
             userId="me", id=msg_id, format="full"
         ).execute()
 
-        parsed = parse_email(msg)
-        table = parsed["target_table"]
+        parsed = parse_email(service, msg)
+
+        # Skip non-research emails (Google Cloud notifications, etc.)
+        skip_keywords = ["reinstated", "google cloud platform", "suspended", "billing", "your project has been"]
+        body_lower = parsed["body"][:500].lower()
+        subj_lower = parsed["subject"].lower()
+        if any(kw in subj_lower or kw in body_lower for kw in skip_keywords):
+            print(f"  SKIP (non-research): {parsed['subject'][:60]}")
+            skip_count += 1
+            continue
 
         print(f"\n{'[DRY RUN] ' if args.dry_run else ''}Processing: {parsed['subject']}")
-        print(f"  Category: {parsed['category']} → {table}")
+        print(f"  Category: {parsed['category']} → kb_articles")
         print(f"  Date: {parsed['date']}")
         print(f"  URLs: {len(parsed['urls'])}")
+        if parsed["has_pdf"]:
+            print(f"  PDFs: {', '.join(parsed['pdf_filenames'])}")
         if parsed['urls']:
             for u in parsed['urls'][:3]:
                 print(f"    {u}")
@@ -272,35 +380,30 @@ def main():
             new_count += 1
             continue
 
-        # Build record for Supabase
         uid = f"gmail_{msg_id}"
 
-        if table == "kb_articles":
-            record = {
-                "id": uid,
-                "gmail_id": msg_id,
-                "title": parsed["subject"],
-                "content": parsed["body"][:5000],  # Truncate if huge
-                "url": parsed["urls"][0] if parsed["urls"] else None,
-                "category": parsed["category"],
-                "source": parsed["sender"],
-                "created_at": parsed["date"],
-            }
-        else:  # idea_tracker
-            record = {
-                "id": uid,
-                "gmail_id": msg_id,
-                "title": parsed["subject"],
-                "description": parsed["body"][:5000],
-                "status": "new",
-                "created_at": parsed["date"],
-            }
+        tags = [parsed["category"]]
+        if parsed["has_pdf"]:
+            tags.append("pdf-attachment")
 
-        if upsert_to_supabase(table, record):
-            print(f"  ✓ Saved to {table}")
+        record = {
+            "id": uid,
+            "gmail_id": msg_id,
+            "title": parsed["subject"],
+            "content": parsed["body"][:5000],
+            "source_url": parsed["urls"][0] if parsed["urls"] else None,
+            "source_type": "paper" if parsed["has_pdf"] else ("article" if parsed["urls"] else "note"),
+            "category": parsed["category"],
+            "tags": tags,
+            "date": parsed["date"][:10],
+            "created_at": parsed["date"],
+        }
+
+        if upsert_to_supabase("kb_articles", record):
+            print(f"  \u2713 Saved to kb_articles")
             new_count += 1
         else:
-            print(f"  ✗ Failed")
+            print(f"  \u2717 Failed")
 
     print(f"\nDone. New: {new_count}, Skipped (already ingested): {skip_count}")
 

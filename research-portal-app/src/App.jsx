@@ -383,7 +383,7 @@ function AppContent() {
               { key: "research", label: "Research" },
               { key: "thesis", label: "Thesis Tracker" },
               { key: "notesIdeas", label: "Ideas" },
-              { key: "dataVerification", label: "Data Verification" },
+              { key: "dataVerification", label: "Agent Commands" },
             ].map(t => (
               <div key={t.key} style={{ ...s.navCo, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
                 <span>{t.label}</span>
@@ -724,7 +724,7 @@ function AppContent() {
                 { type: "researchAgent", label: "Research Agent", icon: "\u{1F50D}" },
                 { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
                 { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
-                { type: "dataVerificationAgent", label: "Data Verification", icon: "\u{2705}" },
+                { type: "dataVerificationAgent", label: "Agent Commands", icon: "\u{2705}" },
                 { type: null, label: "— Trackers —", icon: "" },
                 { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
                 { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },

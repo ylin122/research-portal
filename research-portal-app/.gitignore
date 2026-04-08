@@ -24,3 +24,5 @@ _seed_extract.cjs
 *.njsproj
 *.sln
 *.sw?
+
+.vercel

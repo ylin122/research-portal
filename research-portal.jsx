@@ -71,6 +71,14 @@ const SEED_COMPANIES = [
   { id: "terawulf_seed", name: "TeraWulf", sector: "aidigital", sub: "compute" },
   { id: "cipher_seed", name: "Cipher Digital (fka Cipher Mining)", sector: "aidigital", sub: "compute" },
   { id: "idera_seed", name: "Idera", sector: "software", sub: "infrastructure" },
+  { id: "appliedsystems_seed", name: "Applied Systems", sector: "software", sub: "application" },
+  { id: "avalara_seed", name: "Avalara", sector: "software", sub: "application" },
+  { id: "bmc_seed", name: "BMC Software", sector: "software", sub: "infrastructure" },
+  { id: "cccs_seed", name: "CCC Intelligent Solutions", sector: "software", sub: "application" },
+  { id: "cohesity_seed", name: "Cohesity", sector: "software", sub: "infrastructure" },
+  { id: "commercehub_seed", name: "CommerceHub (Rithum)", sector: "software", sub: "application" },
+  { id: "confluence_seed", name: "Confluence Technologies", sector: "software", sub: "application" },
+  { id: "conga_seed", name: "Conga", sector: "software", sub: "application" },
   { id: "prompt_researchbrief_seed", name: "Company Research Brief", sector: "prompts", sub: "all" },
   { id: "source_master_seed", name: "Research Sources", sector: "sources", sub: "all" },
 ];
@@ -1210,6 +1218,588 @@ const SEED_DATA = {
       { id: "cifr1", text: "Cipher has the cleanest tenant credit quality in the crypto-to-AI peer group. AWS is investment-grade, no backstop needed — this is a direct hyperscaler relationship. The Fluidstack/Google structure mirrors TeraWulf's deals (same counterparties, same credit enhancement structure). Together, these two leases represent ~$9.3B in contracted revenue with effectively investment-grade counterparties. For a company doing ~$224M in 2025 revenue, this backlog is enormous. The question is execution — can they deliver 600 MW on time in 2026?", date: "2026-03-20T00:00:00Z" },
       { id: "cifr2", text: "The power shell model is a deliberate strategic choice with important implications for valuation. By providing only facility + power (no GPUs, no compute), Cipher avoids GPU depreciation risk and doesn't need to manage complex technology refresh cycles. But this also caps upside — Cipher is essentially a data center REIT in AI clothing. The market may eventually value CIFR closer to data center REITs (Equinix trades at ~20x EBITDA) than AI infrastructure plays (CoreWeave has traded at much higher multiples). This is the central valuation debate for the stock. At ~$14/share and ~$5.7B market cap, the question is whether the market is pricing in real estate economics or AI economics.", date: "2026-03-20T00:00:00Z" },
     ],
+  },
+  appliedsystems_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Largest provider of agency management systems (AMS) to independent insurance agents, brokers, and MGAs in North America and UK/Ireland
+• Founded 1983; headquartered in University Park, IL (Chicago metro)
+• Core system of record for insurance distribution — manages policies, commissions, accounting, and insurer connectivity for the independent agency channel
+• Hellman & Friedman and Ontario Teachers' Pension Plan Board closed acquisition in late 2024 at ~$16B EV — one of the largest insurtech take-privates in history
+• Prior majority owners were TA Associates and Warburg Pincus (since 2019, valued at ~$2B at entry)
+• Never been publicly traded; estimated ~$750-800M revenue at time of H&F deal
+• ~8x valuation step-up from ~$2B (2019) to ~$16B (2024) in five years`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue predominantly recurring SaaS/subscription — estimated 85%+ of total revenue
+• Applied Epic: Flagship cloud-based agency management system for mid-to-large agencies and brokerages; the primary revenue driver. Switching costs are extremely high due to data migration complexity, workflow integration, and staff retraining
+• Applied TAM (The Agency Manager): Legacy on-premise AMS for smaller agencies; still a meaningful installed base but declining as customers migrate to Epic
+• Applied IVANS: Dominant electronic data exchange network connecting agents to carriers (policy download, eDocs, messaging). Network effect is a significant moat — agents need it to connect to carriers and vice versa; very difficult to replicate
+• Applied Rater: Comparative rating engine for personal lines
+• EZLynx (acquired 2021): Cloud-native AMS and rating platform targeting SMB agencies; serves as the downmarket offering
+• Applied Analytics / Applied AI: Newer analytics and AI-powered automation tools
+• Applied CSR24 / Applied Mobile: Client self-service portals
+• Professional services and implementation are a smaller, non-recurring revenue stream
+• Customers buy because Applied Epic is the industry-standard system of record; IVANS integration is often a must-have for agency-carrier connectivity`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Spans from large national brokerages (top 100 US brokers) through upper-mid and mid-market agencies down to SMB (via EZLynx)
+• Core sweet spot: mid-market to large independent P&C insurance agencies and brokerages
+• Also serves MGAs, wholesalers, and some carrier-side connectivity via IVANS
+• End markets: independent insurance distribution — primarily P&C, some benefits/life. Heavily concentrated in independent agency channel
+• Geography: estimated ~85% North America, ~15% UK/Ireland; limited presence in continental Europe, APAC, or LATAM
+• PE-fueled insurance brokerage consolidation is a major demand driver — acquirers (Hub, Acrisure, Gallagher) often standardize on Epic post-acquisition
+• Buying drivers: single system of record for policies/clients/commissions/accounting, carrier connectivity (IVANS), compliance and E&O risk management, workflow automation to improve agency productivity`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Cloud migration (durable, multi-year): Long runway as many agencies still on older on-premise systems. Cloud migration of legacy AMS installations is the primary organic growth driver
+• Tailwind — PE-fueled brokerage consolidation (3-5+ years): Hub, Acrisure, Gallagher and other consolidators standardize on modern AMS platforms post-acquisition, driving Epic adoption
+• Tailwind — Hard P&C market: Increased premium volumes indirectly lift agency revenue and willingness to invest in technology
+• Tailwind — AI/automation in insurance distribution is early-stage — significant upsell opportunity
+• Headwind — Customer concentration risk if large broker roll-ups build or buy proprietary systems
+• Headwind — Increasing competition from modern cloud-native entrants (HawkSoft, Vertafore modernization)
+• Headwind — Some carrier disintermediation risk long-term (direct-to-consumer), though independent agent channel has proven resilient
+• US insurance agency management software market estimated at ~$3-4B; broader insurance distribution technology market ~$6-8B (estimated)
+• Applied Systems is #1 or #2 (alongside Vertafore) with estimated 40-50% combined market share of the independent agency AMS market
+• Market growth: estimated ~8-12% CAGR over last 5 years, driven by cloud migration and consolidation (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Vertafore (owned by Roper Technologies): Closest direct competitor; AMS360, Sagitta, PL Rating Engine. Strongest in mid-market and personal lines rating
+• HawkSoft: Cloud-native AMS gaining share with smaller/mid-market agencies; known for ease of use and customer satisfaction
+• NowCerts: Low-cost cloud AMS for SMB agencies
+• QQCatalyst (Zywave): Targets small to mid agencies
+• Salesforce / custom CRM solutions: Some larger brokerages build proprietary front-ends, though they still typically rely on Applied/Vertafore as back-end system of record
+• Competitive advantage: IVANS network is a powerful two-sided network effect — very difficult to replicate. Massive installed base creates high switching costs. Breadth of product suite (AMS + rating + connectivity + analytics) is unmatched. Deep carrier integrations built over decades
+• Competes best: Large and mid-market agencies, UK market, carrier connectivity (IVANS dominance)
+• Competes worst: SMB segment (HawkSoft, NowCerts have better UX and lower price points); Epic's UI is often criticized as dated compared to newer entrants
+• Biggest threats (3 years): A major broker consolidator deciding to build or buy proprietary AMS technology; Vertafore executing a successful modernization under Roper's ownership; AI-native startups that could leapfrog legacy architecture
+• Biggest opportunities (3 years): AI-powered automation upsell to existing base; international expansion beyond UK/Ireland; IVANS monetization via increasing transaction-based pricing as data volumes grow`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2024: Acquired by Hellman & Friedman + Ontario Teachers' at ~$16B EV; implies ~20x+ revenue multiple — one of the largest software take-privates in history
+• 2021: Acquired EZLynx — cloud-native AMS and rating platform for SMB agencies; extended Applied's downmarket reach
+• 2019: TA Associates and Warburg Pincus acquired majority stake from JMI Equity; deal reportedly valued Applied at ~$2B+
+• 2018-2021: Series of smaller tuck-in acquisitions including Indio Technologies (digital forms/intake), AgencyZoom (sales automation/CRM for agencies)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  avalara_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Automates tax compliance — calculating, collecting, and remitting indirect taxes (sales tax, VAT, excise, customs) across jurisdictions
+• Founded 2004 in Seattle (originally Advantage Solutions); IPO on NYSE in 2018 (ticker: AVLR)
+• Taken private by Vista Equity Partners in November 2022 at ~$8.4B enterprise value ($93.50/share)
+• Pre-acquisition run-rate revenue was ~$700M+ (FY2022); estimated to be approaching or exceeding $1B under Vista ownership (unconfirmed)
+• Vista executing standard PE playbook: margin expansion, platform consolidation, AI/automation investment
+• Market speculation around potential re-IPO or secondary sale since late 2024; no confirmed timeline
+• Core thesis: tax compliance is painful, high-stakes, and getting more complex — Avalara sells the "set it and forget it" layer`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model is predominantly subscription/SaaS with volume-based transaction pricing on top — customers pay a platform fee plus per-transaction or per-return fees. Hybrid recurring/transactional model
+• AvaTax: Real-time sales and use tax calculation engine via API; flagship product, largest revenue contributor
+• Returns: Automated filing and remittance of tax returns across jurisdictions
+• Exemption Certificate Management (CertCapture/ECMS): Manages tax-exempt customer documentation
+• Cross-border / Customs: Landed cost calculation, HS code classification, duties/tariffs for international commerce
+• E-invoicing & VAT compliance: Particularly for EU/LATAM mandates
+• Excise tax: Specialized for fuel, tobacco, alcohol, telecom
+• Business licenses: License application and renewal management
+• 17+ acquisitions historically to expand tax content coverage, geographic reach, and adjacencies
+• Customers buy to avoid audit risk, reduce manual compliance burden, and keep pace with constantly changing tax rules across 12,000+ US jurisdictions and 190+ countries`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Broad range — from SMB (Shopify/BigCommerce merchants) to upper-mid-market and large enterprise (ERP-integrated deployments on SAP, Oracle, NetSuite)
+• Sweet spot historically has been mid-market — companies large enough to have multi-state nexus but too small for dedicated tax departments
+• Growing enterprise penetration, especially post-Vista with more investment in SAP/Oracle connectors
+• End markets: highly diversified — retail, e-commerce, manufacturing, software/SaaS, distribution, hospitality, communications, beverage/alcohol. No single vertical dominates; e-commerce is the largest demand driver
+• Geography: predominantly North America (~80%+ of revenue, estimated); growing EMEA presence through acquisitions (particularly VAT/e-invoicing in EU); limited but expanding APAC and LATAM
+• Buying decision driven by: regulatory complexity, audit exposure, ERP modernization, e-commerce expansion into new states/countries, Wayfair-driven nexus obligations`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Post-Wayfair nexus expansion (permanent): Every US state with sales tax now enforces economic nexus; creates ongoing compliance burden for any business selling across state lines
+• Tailwind — Global e-invoicing mandates (3-5+ years): EU ViDA directive, India GST, Saudi Arabia, Brazil, Mexico — forces digital tax compliance adoption across new markets
+• Tailwind — E-commerce secular growth: Drives transaction volume and multi-jurisdiction complexity
+• Tailwind — Marketplace facilitator laws pushing compliance burden onto platforms
+• Headwind — Macro sensitivity: SMB churn rises in downturns; transaction volume dips with consumer spending
+• Headwind — Price sensitivity in SMB segment; some commoditization of basic tax calc
+• Headwind — Integration complexity for enterprise deals lengthens sales cycles
+• Global tax compliance software market estimated at ~$15-20B (broad definition); indirect tax automation specifically ~$5-8B TAM
+• Avalara is the clear market leader in cloud-native indirect tax automation for mid-market; Vertex is the primary rival in enterprise
+• Market growth: estimated ~10-15% CAGR over the last 5 years (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Vertex Inc (VERX, public): The most formidable competitor. Strongest in large enterprise / ERP-native (SAP, Oracle). Avalara's most direct rival
+• Thomson Reuters ONESOURCE: Legacy enterprise tax suite; strong in corporate income tax, less agile in indirect
+• Sovos Compliance (Hg Capital): Strong in e-invoicing, regulatory reporting, beverage alcohol
+• Wolters Kluwer CCH: Corporate tax focus, some indirect tax capabilities
+• Native ERP tax engines: SAP, Oracle built-in tax modules; "good enough" for some enterprises
+• TaxJar (acquired by Stripe): Embedded in Stripe ecosystem; targets SMB e-commerce
+• Competitive advantage: Largest tax content database (rates, rules, boundaries) across jurisdictions. Broadest integration ecosystem — 1,200+ pre-built connectors to ERPs, e-commerce platforms, billing systems. Network effects from transaction volume improving accuracy. Brand recognition as the default "tax API"
+• Competes best: Mid-market, e-commerce, multi-channel sellers, API-first / cloud-native deployments
+• Competes worst: Large enterprise (Vertex has deeper SAP/Oracle relationships); corporate income tax (not Avalara's focus)
+• Biggest threats (3 years): Vertex accelerating cloud migration and closing the mid-market gap; Stripe/TaxJar embedding tax compliance into payments, commoditizing basic calc; ERP vendors improving native tax capabilities
+• Biggest opportunities (3 years): Global e-invoicing mandates (EU ViDA) opening large new TAM; cross-border/customs gaining relevance with tariff uncertainty; AI-driven improvements reducing implementation friction; re-IPO at higher multiples if growth and margins expanded under Vista`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• Nov 2022: Vista Equity Partners acquired Avalara for ~$8.4B ($93.50/share cash); represented ~30% premium to pre-announcement price
+• 2021-2022 (pre-acquisition): Track1099 (1099 reporting), 3CE (customs/trade compliance), Inposia (EU e-invoicing), CrowdReason (property tax data), Business Licenses LLC
+• 2019-2020: DAVO Technologies (SMB POS tax), Compli (beverage alcohol compliance), Transaction Tax Resources (tax research/content)
+• 17+ acquisitions completed historically, primarily to expand tax content coverage, geographic reach, and adjacencies
+• Under Vista ownership, further bolt-on acquisitions are likely but not publicly confirmed given private status`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  bmc_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Enterprise software company selling IT management, automation, and mainframe solutions to the world's largest organizations
+• Founded 1980 in Houston, TX; taken private in 2013 by Bain Capital-led consortium for ~$6.9B
+• Sold to KKR in 2023; remains privately held. Purchase price reportedly ~$8.5-9B enterprise value
+• Estimated ~6,000+ employees globally; estimated annual revenue in the ~$2.5-3B range (not publicly disclosed)
+• Repositioning around Helix platform (cloud-native ITSM/ITOM) and HelixGPT AI capabilities`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue is predominantly recurring — a mix of perpetual license maintenance and growing subscription/SaaS
+• Intelligent Automation (Control-M): Industry-leading workload automation / orchestration platform. Deep enterprise penetration; highly sticky. Large maintenance base converting to subscription. Control-M is the clear market leader in workload automation
+• Service Management (BMC Helix ITSM/ITOM): Cloud-native IT service management and IT operations management. Competes with ServiceNow. AI/ML capabilities layered in (HelixGPT)
+• Mainframe (AMI): Mainframe performance, security, cost optimization, and DevOps tooling. BMC is one of two dominant vendors alongside Broadcom/CA. Very high-margin, annuity-like revenue
+• Compuware assets (acquired 2020): Mainframe DevOps and testing tools — strengthened mainframe portfolio significantly
+• Customers buy because BMC is deeply embedded in mission-critical workflows — switching costs are extremely high, particularly in mainframe and Control-M`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Overwhelmingly large enterprise and Global 2000; heavy representation among Fortune 500
+• Financial services, insurance, healthcare, government, telecom, retail — diversified but skews heavily toward regulated industries with mainframe estates
+• Geography: estimated ~55-60% North America, ~25-30% EMEA, ~10-15% APAC, small LATAM presence
+• Buying drivers: reduce operational complexity, automate IT workflows, modernize (not replace) mainframe environments, consolidate tooling, meet compliance/audit requirements`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Mainframe modernization spend (multi-year): Large banks and governments are investing in modernizing mainframe ops rather than migrating off; BMC is a primary beneficiary
+• Tailwind — IT automation / AIOps demand (3-5 years): Accelerating as enterprises face complexity from hybrid/multi-cloud environments
+• Tailwind — AI integration into ITSM and workload automation creating upsell opportunities
+• Headwind — ServiceNow dominance in ITSM is pulling share in new logo wins; BMC Helix competing from behind
+• Headwind — Long-term secular decline in mainframe install base (slow but real — measured in decades)
+• Headwind — PE ownership raises questions about R&D reinvestment levels vs margin extraction
+• Enterprise IT management software (ITSM + ITOM + automation) is a ~$50B+ TAM; mainframe software is ~$5-6B
+• ITSM/ITOM market ~8-12% CAGR over last 5 years (estimated); mainframe software ~flat to low-single-digit growth; workload automation ~5-7% CAGR (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• ITSM/ITOM: ServiceNow (dominant #1), Ivanti, Freshworks, Atlassian (Jira Service Management)
+• Workload Automation: Stonebranch, Redwood, Broadcom (CA Automic). Control-M is the market leader here
+• Mainframe: Broadcom (CA Technologies) is the primary competitor; IBM (native tooling)
+• Competes best: Control-M (clear market leader in workload automation), mainframe software (co-leader with Broadcom), and existing Helix ITSM installed base renewals
+• Competes worst: New-logo ITSM deals vs ServiceNow; cloud-native / born-in-cloud companies that have no legacy tooling
+• Biggest threats (3 years): ServiceNow expanding into automation and AIOps, encroaching on BMC's adjacencies; Broadcom aggressive pricing in mainframe post-CA acquisition; GenAI potentially disrupting traditional ITSM workflows
+• Biggest opportunities (3 years): Control-M as the automation orchestration layer for hybrid/multi-cloud pipelines and data ops; AI-powered service management upsell to existing base; mainframe DevOps and security (Compuware assets) as enterprises modernize mainframe development`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2023: KKR acquired BMC Software from Bain Capital / Golden Gate / GIC / Insight Partners consortium; estimated ~$8.5-9B enterprise value
+• 2020: Acquired Compuware (mainframe DevOps and testing tools) from Thoma Bravo for ~$2B; significantly strengthened mainframe portfolio
+• 2019: Acquired StreamWeaver (mainframe cost optimization)
+• 2018: KKR initially invested as a minority partner in the Bain/Golden Gate consortium
+• 2013: Bain Capital and Golden Gate Capital took BMC private for ~$6.9B ($46.25/share)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  cccs_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Cloud-based SaaS platform that digitizes and automates the P&C insurance claims lifecycle, primarily auto insurance
+• Founded 1980 as a vehicle valuation data provider; evolved into an end-to-end claims platform
+• Went public via SPAC (Dragoneer Growth Opportunities Corp) in 2021; previously PE-owned (Advent International)
+• Headquartered in Chicago, IL; ~2,800 employees as of 2024
+• NASDAQ: CCCS. FY2024 revenue ~$950M, mid-to-high single-digit organic growth
+• AI adoption narrative is the primary sentiment driver — GenAI and computer vision positioned as key growth levers
+• Stock re-rated higher through 2024 on durable SaaS metrics (NRR ~107-108%, gross margins ~77-78%)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• SaaS subscriptions billed per-transaction and per-seat, with multi-year contracts (typically 3-5 years) — ~99% software revenue is recurring
+• CCC ONE: Core claims management workbench used by insurers and repair shops
+• CCC Estimate (AI-powered): Automated damage estimation using photos and AI — key growth product
+• Casualty: Injury claims workflow and analytics — large underpenetrated market
+• Subrogation: Recovery automation (acquired Safekeep 2024)
+• CCC Payments: Embedded payments for claims settlement — incremental revenue per claim
+• Parts procurement: OEM and aftermarket parts sourcing network
+• Total loss / valuation: Vehicle valuation data (legacy strength)
+• Telematics / IoT: Crash detection and FNOL triggers
+• Network effects are the moat: connects insurers, body shops, parts suppliers, rental car companies, and lenders on a single platform. The more participants, the more valuable the data and workflow`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Primary buyers: Large and mid-market P&C auto insurers — CCC claims ~300 insurance companies, including most of the top 20 US auto carriers (State Farm, GEICO, Progressive, Allstate)
+• Secondary buyers: ~28,000+ collision repair facilities on the network
+• Also serves OEMs, parts suppliers, rental car companies, lenders, and independent adjusters
+• End market: Heavily concentrated in US auto insurance — this is both a strength (dominance) and a risk (concentration)
+• Geography: ~95%+ North America; minimal international presence. Overwhelmingly a US story
+• Buying decision driven by: claims cycle time reduction, loss cost accuracy, fraud reduction, digital consumer experience, and regulatory compliance`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Claims automation (multi-year): Insurers under pressure to digitize claims — still early innings for AI-driven automation
+• Tailwind — Rising auto repair costs (3-5 years): EVs, ADAS sensors, labor shortages increase need for accurate estimation tools
+• Tailwind — Elevated insurance premiums drive tech investment budgets. Auto insurance premiums rose sharply 2023-2024 driving higher claims volumes
+• Tailwind — GenAI / computer vision enabling new product categories (photo-based estimation, virtual appraisal)
+• Headwind — Auto insurance cycle normalization: If premiums and loss ratios normalize, IT spend growth may decelerate
+• Headwind — Large insurers building more in-house capability
+• Headwind — Regulatory scrutiny on AI in claims decisions (bias, transparency)
+• Headwind — ADAS/autonomous driving could structurally reduce accident frequency over 10+ year horizon
+• TAM ~$10-12B across the P&C insurance ecosystem; core auto claims tech market ~$3-5B
+• Dominant position — estimated 50%+ share of digital US auto claims volume
+• Market growth: estimated ~8-12% CAGR for insurtech/claims automation over last 5 years (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Mitchell International (Enlyte / Stone Point Capital): Closest direct competitor in auto claims estimation. Effectively a duopoly with CCC in US auto physical damage claims; CCC has the larger network
+• Solera / Audatex: Strong internationally, weaker in US relative to CCC
+• Tractable: AI-native photo estimation startup; potential disruptor if it gains traction with large carriers
+• Verisk (ISO ClaimSearch, Xactware): Adjacent in property claims; some overlap in auto
+• Snapsheet: Insurtech challenger in virtual claims
+• Duck Creek, Guidewire, Majesco: Core insurance platforms with claims modules (indirect competitors)
+• Competes best: US auto physical damage claims — dominant network position
+• Competes worst: International markets (Solera dominates), property/casualty lines outside auto (Verisk/Xactware), full-suite policy admin (Guidewire/Duck Creek)
+• Biggest threats (3 years): AI-native startups (Tractable) getting traction with carriers; Mitchell/Enlyte investing aggressively under PE; large carriers consolidating to fewer vendors or insourcing AI
+• Biggest opportunities (3 years): Casualty/injury claims — large underpenetrated market; embedded payments (CCC Payments); parts and repair shop network monetization; international expansion`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2024: Acquired Safekeep (subrogation automation platform) — bolsters casualty/recovery capabilities
+• 2021: Went public via SPAC merger with Dragoneer Growth Opportunities Corp at ~$6.5B enterprise value
+• 2017: Acquired by Advent International (PE buyout)
+• 2014: Acquired Injury Sciences (casualty analytics)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  cohesity_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Enterprise data management and data protection platform (backup, recovery, file/object services, disaster recovery)
+• Founded 2013 by Mohit Aron (also co-founded Nutanix) in San Jose, CA
+• Completed acquisition of Veritas's data protection business in Feb 2024, creating one of the largest data management/backup players globally with combined ARR reportedly north of $2B
+• Combined entity manages/protects data for ~12,000+ customers including a large share of the Fortune 500
+• Backed by SoftBank, Sequoia, CPPIB; last private valuation ~$7B pre-Veritas deal
+• Confidential IPO filing reported late 2024/early 2025 — status should be verified
+• Post-merger integration is the critical execution risk; channel overlap with Veritas and customer migration are key watch items`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Subscription-based (term licenses + SaaS), shifting toward higher SaaS mix. Legacy Veritas book includes maintenance/support revenue being converted
+• Cohesity Data Cloud: Unified platform for backup, recovery, file/object storage, ransomware defense, cyber vaulting, archival, and compliance
+• DataProtect: Backup & recovery — the core cash cow
+• FortKnox: SaaS-based cyber vaulting / data isolation — increasingly important as ransomware defense
+• DataHawk: Threat intelligence, classification, ML-based anomaly detection
+• SmartFiles: File and object services, tiering
+• SiteContinuity: Disaster recovery orchestration
+• Veritas NetBackup: Legacy installed base is massive (~80,000 customers historically); Cohesity is migrating viable accounts to its modern platform. This migration/upsell is the key value creation lever
+• Customers buy because legacy backup is fragmented, expensive, and slow to recover from ransomware; Cohesity consolidates multiple point products into one platform`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Primarily large enterprise and upper-mid-market; Veritas deal significantly expanded Fortune 500 / Global 2000 penetration
+• Financial services, healthcare, government/public sector, technology, manufacturing — reasonably diversified, no single vertical dominance
+• Geography: majority North America (~60%+, estimated); meaningful EMEA (~25-30%); APAC (~10-15%); limited LATAM. Veritas deal expanded international reach significantly, especially EMEA and APAC
+• Buying drivers: ransomware recovery SLAs, regulatory compliance (GDPR, HIPAA, DORA), infrastructure modernization, TCO reduction vs legacy fragmented backup, cyber insurance requirements increasingly mandating modern data protection`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Ransomware epidemic (durable, 3-5+ years): Driving urgency for modern backup/recovery and cyber vaulting across all industries
+• Tailwind — Regulatory pressure (multi-year): SEC cyber disclosure rules, DORA in EU, HIPAA increasing data protection spend
+• Tailwind — Cloud migration and hybrid/multi-cloud complexity requiring unified data management
+• Tailwind — AI/ML data management narrative — companies need to manage and govern data feeding AI workloads
+• Headwind — Hyperscaler-native backup tools (AWS Backup, Azure Backup) adequate for cloud-only workloads
+• Headwind — Budget scrutiny on infrastructure spend in macro slowdown
+• Headwind — Integration execution risk post-Veritas — customer churn and channel disruption are real risks
+• Global data protection and recovery market estimated at ~$15-18B (2024); broader data management ~$25B+
+• Post-Veritas, Cohesity is arguably #1 or #2 in enterprise data protection by revenue alongside Veeam and Commvault
+• Market growth: ~8-12% CAGR over last 5 years (estimated); cyber resilience sub-segment growing faster at ~15%+`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Veeam (Insight Partners-owned): Strongest in mid-market and VMware environments; most direct competitor
+• Commvault (CVLT, public): SaaS pivot (Metallic/Cloud Command) gaining traction; strong in compliance-heavy verticals
+• Dell Technologies (DELL): PowerProtect/APEX; incumbent in large enterprise but losing share to modern platforms
+• Rubrik (RBRK, public since 2024): Closest analog; cloud-native, cyber resilience positioning, strong growth. Public-market momentum is a competitive factor
+• Druva: SaaS-only, mid-market focused
+• Hyperscalers (AWS, Azure, GCP native tools): Competitive for cloud-only workloads
+• Competitive advantage: Broadest enterprise installed base post-Veritas; only vendor with scale in both modern (Cohesity platform) and legacy (NetBackup) data protection; strong cyber resilience product suite
+• Competes best: Large enterprise hybrid environments, ransomware recovery, multi-workload consolidation
+• Competes worst: Pure SaaS / cloud-native only environments (Rubrik, Druva stronger narrative); SMB (Veeam dominates)
+• Biggest threats (3 years): Rubrik's public-market momentum and R&D investment; Commvault's SaaS acceleration; hyperscaler encroachment; integration missteps causing Veritas customer attrition
+• Biggest opportunities (3 years): Converting Veritas NetBackup base to Cohesity platform (massive upsell); cyber vaulting/FortKnox becoming standard; AI data governance as new product vector; IPO capital fueling go-to-market expansion`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• Feb 2024: Completed acquisition of Veritas's data protection business — transformational deal, reportedly valued combined enterprise at ~$7B+; created one of the largest pure-play data management companies
+• Late 2024/early 2025: Confidential S-1 IPO filing reported — current status requires live verification
+• 2022-2023: Multiple funding rounds; raised ~$250M in 2022 at ~$3.7B valuation (down from prior); additional capital infusion leading into Veritas deal
+• 2019-2020: Series E ($250M, SoftBank-led) at ~$2.5B valuation`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  commercehub_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Cloud-based ecommerce platform connecting retailers/brands with suppliers, marketplaces, and digital marketing channels
+• Enables dropship fulfillment (retailer lists product, supplier ships direct to consumer) and marketplace/channel management
+• Founded 1997 in Albany, NY; went public on Nasdaq in 2016; taken private in 2018 by GTCR and Insight Partners at ~$1.1B EV
+• Merged with ChannelAdvisor (acquired 2022 for ~$767M) to create combined entity rebranded as Rithum in late 2023
+• Remains privately held under GTCR and Insight Partners
+• Leadership transitions post-merger ongoing; integration of ChannelAdvisor platform is the central execution risk`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model is primarily SaaS/transactional hybrid — platform fees plus volume-based fees tied to GMV processed through the network
+• Dropship & Marketplace Enablement (legacy CommerceHub core): Connects retailers (Walmart, Nordstrom, Wayfair) to thousands of suppliers for virtual inventory/dropship. Revenue tied to order volume — highly recurring, usage-based
+• Channel Management & Digital Marketing (legacy ChannelAdvisor core): SaaS platform for brands/sellers to manage product listings, pricing, inventory, and advertising across 200+ online channels. Subscription-based with some variable/performance pricing
+• Delivery Management: Carrier rate shopping, label generation, shipment tracking
+• Brand Analytics: Data and insights on pricing, MAP compliance, competitive intelligence
+• Customers buy because managing multi-channel ecommerce at scale is operationally complex; Rithum reduces manual work, errors, and time-to-market`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Dual-sided network: serves both large enterprise retailers AND brands/sellers of all sizes
+• Retailer side: Skews large enterprise and upper-mid (Walmart, Home Depot, Nordstrom, Wayfair, Macy's, Target) — highly concentrated in top accounts
+• Brand/seller side: Broader mix from enterprise brands to mid-market and SMB sellers (legacy ChannelAdvisor long tail)
+• End markets: General retail, home/furniture, apparel/fashion, consumer electronics, sporting goods, health & beauty — reasonably diversified
+• Geography: predominantly North America (~75-80% estimated), meaningful EMEA (~15-20% via ChannelAdvisor's international book), minimal APAC/LATAM
+• Buying drivers: Need to scale online assortment without inventory risk (dropship), manage selling across dozens of marketplaces efficiently, optimize digital ad spend across channels`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Secular ecommerce shift (durable, 5+ years): Continued migration of retail spend online
+• Tailwind — Marketplace proliferation (3-5 years): New marketplaces from retailers, social commerce platforms increase complexity and need for channel management
+• Tailwind — Dropship/asset-light fulfillment models gaining share as retailers avoid inventory risk
+• Tailwind — Retail media network growth increases need for ad optimization tools
+• Headwind — Enterprise software budget rationalization post-2022 boom
+• Headwind — Large retailers/marketplaces could build in-house capabilities
+• Headwind — Customer concentration risk on retailer side
+• Headwind — Integration execution risk from CommerceHub + ChannelAdvisor merger
+• Global ecommerce enablement/channel management software TAM estimated at ~$8-12B; dropship enablement niche ~$1-2B
+• Rithum is the clear market leader in dropship enablement and a top-3 player in channel management post-merger
+• Market growth: estimated ~12-18% CAGR for ecommerce enablement software over 2019-2024 (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Mirakl: Marketplace platform competitor, strong in Europe, focused on enterprise marketplace creation
+• Feedonomics (BigCommerce): Product feed management, competes with ChannelAdvisor feed capabilities
+• Linnworks: Multichannel order/inventory management, mid-market focused
+• Pipe17 / Zentail: Newer entrants in channel management
+• Shopify: Increasingly offering channel management natively for its merchant base — expanding upstream
+• Amazon Seller Central / Walmart Connect: First-party tools that reduce need for third-party managers for simpler sellers
+• Competitive advantage: Deepest network effects in dropship — more retailers attract more suppliers and vice versa; very difficult to replicate. Scale of integrations (200+ channels) creates switching costs. Only player offering both dropship enablement AND channel management at enterprise scale
+• Competes best: Enterprise dropship enablement (near-monopoly among top US retailers); multi-channel management for mid-to-large brands
+• Competes worst: SMB segment where Shopify native tools and low-cost SaaS are "good enough"; pure-play marketplace creation (Mirakl stronger)
+• Biggest threats (3 years): Large customers (Walmart, Amazon) investing in proprietary supplier tools; Shopify expanding upstream into enterprise; failure to integrate tech stacks leading to churn
+• Biggest opportunities (3 years): Cross-sell ChannelAdvisor seller base into CommerceHub retailer network; international expansion leveraging EMEA base; retail media / advertising optimization as growth vector`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2023: CommerceHub + ChannelAdvisor merged entity rebranded as Rithum
+• 2022: CommerceHub (GTCR/Insight) acquired ChannelAdvisor (publicly traded, ECOM) for ~$767M ($23.50/share)
+• 2020: Acquired Mercatus Technologies (product information management)
+• 2018: GTCR and Insight Partners took CommerceHub private from Nasdaq for ~$1.1B (~$34/share)
+• 2016: CommerceHub spun off from Liberty Interactive (now Qurate Retail Group) and listed on Nasdaq (CHUB)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  confluence_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Automated investment data management, performance reporting, regulatory reporting, and analytics software for the asset management industry
+• Founded 1991 in Pittsburgh, PA; grew organically and through acquisitions (StatPro, Investment Metrics)
+• Acquired by SS&C Technologies (NASDAQ: SSNC) in October 2023 for approximately $1.1B; now operates as a division within SS&C
+• Prior to acquisition, PE-backed by TA Associates and Clearlake Capital (since 2019)
+• Post-acquisition, SS&C integrating Confluence's products into its broader investment management suite
+• Serves 8 of the top 10 global asset managers; ~1,000+ clients globally`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Primarily recurring SaaS/subscription and licensed software fees — estimated 80%+ recurring revenue pre-acquisition. Supplemented by professional services and implementation fees
+• Unity: Cloud-native data management and reporting platform; flagship product consolidating data across investment operations
+• Unity NXT Regulatory Reporting: Automates fund regulatory filings (N-PORT, N-CEN, Form PF, Solvency II, AIFMD, SFDR). This is the dominant product in US regulatory fund reporting
+• Unity NXT Performance: Performance measurement and attribution (legacy StatPro Revolution acquisition)
+• Investment Metrics: Analytics, peer benchmarking, and style analysis for asset managers and asset owners (acquired 2021)
+• Data management/warehouse services: Aggregation, reconciliation, and distribution of investment data
+• Customers buy to reduce manual data handling, automate complex regulatory filings, and provide a single source of truth for investment data across front-to-back office`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Large enterprise and upper-mid-market — primarily large asset managers, fund administrators, insurance companies, pension funds, and wealth managers
+• Serves 8 of top 10 global asset managers; ~1,000+ clients globally
+• End markets: Asset management (mutual funds, ETFs, alternatives), fund administration, insurance general accounts, pension/sovereign wealth — moderately concentrated in traditional asset management
+• Geography: predominantly North America (~60-65% estimated), EMEA (~25-30%), APAC/LATAM (~5-10%). EMEA share grew post-StatPro acquisition
+• Buying drivers: regulatory compliance burden (particularly US SEC and EU reporting mandates), operational efficiency, data quality/governance, reduction of spreadsheet-driven processes`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Regulatory reporting complexity (durable, multi-year): SEC modernization rules, SFDR, AIFMD II continue to expand filing requirements globally
+• Tailwind — Industry shift from manual/spreadsheet processes to automated SaaS platforms
+• Tailwind — Growing AUM globally increasing volume of reporting obligations
+• Tailwind — Consolidation among asset managers creating demand for scalable platforms
+• Headwind — Fee compression in asset management pressuring vendor budgets
+• Headwind — Large asset managers building in-house data capabilities
+• Headwind — Competition from broader platform players (Bloomberg, FactSet) expanding into reporting
+• Investment management software/data management TAM estimated at $8-12B globally; regulatory reporting sub-segment ~$2-4B
+• Confluence is a market leader in regulatory fund reporting in North America; strong but not dominant in performance measurement
+• Market growth: estimated ~6-10% CAGR over the last 5 years for the investment management data/reporting software segment (estimated)`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• Bloomberg AIM/PORT: Broader platform with performance and risk; strength in large enterprise
+• FactSet: Expanding into reporting and analytics; strong data infrastructure
+• SimCorp (Deutsche Boerse): Front-to-back investment management; strong in EMEA
+• Rimes Technologies: Managed data services; competes on data management
+• Clearwater Analytics: Cloud-native accounting and reporting; growing rapidly, particularly in insurance
+• Eagle (BNY Mellon): Investment data management and performance
+• Linedata: Mid-market asset management software
+• Competitive advantage: Deep regulatory reporting automation (unmatched breadth of filing types), large installed base with high switching costs, integration into SS&C's broader ecosystem post-acquisition
+• Competes best: US regulatory fund reporting (N-PORT, Form PF) — dominant position; performance measurement for asset managers
+• Competes worst: Front-office analytics (loses to Bloomberg, FactSet); alternatives/private markets reporting (Clearwater and specialized vendors gaining share)
+• Biggest threats (3 years): Clearwater Analytics aggressively expanding into adjacent reporting; FactSet and Bloomberg bundling reporting into broader platform deals; integration risk within SS&C if product development slows
+• Biggest opportunities (3 years): Cross-selling into SS&C's massive client base (fund admin, transfer agency); EU regulatory reporting expansion (SFDR, AIFMD II); ESG/sustainability reporting as new product vector; alternatives market growth creating new regulatory demand`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• Oct 2023: SS&C Technologies acquired Confluence Technologies for ~$1.1B
+• 2021: Acquired Investment Metrics (performance analytics and benchmarking)
+• 2020: Acquired StatPro Group plc (~$70M; UK-listed performance measurement and risk analytics firm)
+• 2019: TA Associates and Clearlake Capital acquired majority stake in Confluence Technologies`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
+  },
+  conga_seed: {
+    priority: "Watching",
+    fields: {
+      overview: {
+        text: `• Software that automates the "revenue lifecycle" — from quoting and configuring deals, through contract creation/negotiation, to billing and renewals
+• Formed through a roll-up: Apttus (CPQ/CLM, founded 2006) merged with Conga (document automation, founded 2006) in 2020, backed by Thoma Bravo
+• Headquartered in Broomfield, Colorado; estimated ~$500-600M ARR range (unconfirmed, based on industry estimates)
+• Deep Salesforce-native heritage but has expanded to multi-platform (Microsoft, standalone)
+• Significant leadership changes 2023-2024, including CEO transition (Noel Goggin departed)
+• Multiple rounds of layoffs (2022-2024) as PE sponsor drives toward profitability
+• Market buzz around potential exit (IPO or secondary sale) but no confirmed transaction as of early 2025
+• PE hold period approaching 5-6 years — within typical exit windows`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      products: {
+        text: `• Revenue model: Predominantly recurring SaaS subscriptions (~85-90% of revenue, estimated), plus professional services
+• CPQ (Configure, Price, Quote): Automated quoting and pricing engine; historically strongest product. Salesforce-native roots. Critical for companies with complex product catalogs and pricing rules
+• CLM (Contract Lifecycle Management): Contract authoring, negotiation, redlining, e-signature, obligation management. Growing product line
+• Document Generation (Composer): Automated creation of proposals, contracts, and other commercial documents — legacy Conga strength and well-known product
+• Revenue Lifecycle Platform: Unified suite tying CPQ + CLM + billing + renewals into one workflow
+• Professional services and implementation tied to deployments
+• Customers buy because commercial operations (quote-to-cash) are fragmented, manual, and error-prone — Conga consolidates disparate tools into one platform`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      customers: {
+        text: `• Primary segment: Large enterprise and upper-mid-market (1,000+ employees); some mid-market penetration
+• 10,000+ customers claimed; notable logos include Hilton, Cardinal Health, Siemens, T-Mobile, Samsung
+• Key verticals: Technology, financial services, healthcare/life sciences, manufacturing, telecommunications — relatively diversified
+• Geography: predominantly North America (~65-70% estimated), EMEA (~20-25%), APAC/rest of world (~10%)
+• Buying decision drivers: Reduce deal cycle times, eliminate revenue leakage, improve compliance and audit trails, consolidate CPQ/CLM/billing point solutions, Salesforce ecosystem alignment`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      industry: {
+        text: `• Tailwind — Digital transformation of commercial/revenue operations accelerating (multi-year)
+• Tailwind — Regulatory and compliance pressure driving CLM adoption, especially in financial services and healthcare (3-5 years)
+• Tailwind — AI/GenAI creating new value in contract analysis, auto-redlining, and intelligent quoting
+• Tailwind — Consolidation trend: Buyers prefer integrated suites over point solutions
+• Headwind — Enterprise software spending scrutiny in uncertain macro environment
+• Headwind — Long sales cycles and complex implementations create churn risk
+• Headwind — Salesforce building more native CPQ/CLM capabilities (Revenue Cloud), creating platform risk
+• Headwind — PE ownership and cost cuts may have impacted R&D velocity and customer satisfaction
+• CLM TAM: ~$3-4B globally (2024 estimates), growing ~15-18% CAGR (estimated)
+• CPQ TAM: ~$3-5B globally (2024 estimates), growing ~12-15% CAGR (estimated)
+• Combined revenue lifecycle management TAM: ~$8-12B depending on scope definition
+• Conga is a top-3 player in CLM and a top-5 player in CPQ by revenue`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      competitive: {
+        text: `• CLM: Icertis (strongest direct rival, PE-backed), DocuSign CLM, Agiloft, Ironclad (mid-market disruptor), SAP, Sirion
+• CPQ: Salesforce CPQ (Revenue Cloud), Oracle CPQ, PROS, DealHub, Vendavo
+• Document automation: PandaDoc, Proposify, Nintex (niche)
+• Competitive advantage: Breadth of integrated suite (CPQ+CLM+doc gen in one), deep Salesforce-native integration, large installed base, enterprise-grade scale
+• Competes best: Salesforce-heavy enterprises needing CPQ+CLM together; complex quoting environments (manufacturing, tech)
+• Competes worst: Pure-play CLM deals against Icertis (deeper AI, stronger CLM brand); greenfield mid-market deals against Ironclad/Agiloft (more modern UX, faster time-to-value); non-Salesforce environments
+• Biggest threats (3 years): Salesforce continuing to build out native Revenue Cloud / CPQ+ capabilities, disintermediating Conga; Icertis and Ironclad winning CLM share with superior AI and UX; customer churn if PE cost cuts erode product quality and support
+• Biggest opportunities (3 years): AI-powered contract intelligence and autonomous quoting as differentiation; cross-sell/upsell within massive installed base (CPQ customers adding CLM and vice versa); strategic exit (IPO or sale) providing growth capital`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      transactions: {
+        text: `• 2020: Apttus and Conga merged (backed by Thoma Bravo), creating combined entity under the Conga brand — valued at ~$1.6-1.8B (estimated)
+• 2019: Thoma Bravo acquired majority stake in Apttus (~$1B+ estimated valuation)
+• 2018: Apttus raised $88M Series C (led by K1 Investment Management)
+• Pre-merger Conga had received backing from Insight Partners`,
+        date: "2026-03-23T00:00:00Z"
+      },
+      financials: {
+        text: "",
+        date: ""
+      }
+    },
+    notes: [],
   },
   source_master_seed: {
     fields: {

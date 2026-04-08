@@ -72,50 +72,6 @@ function Box({ label, sub, color, borderColor, badges, debt, selected, onClick, 
   );
 }
 
-// Horizontal split with branch lines from center
-function BranchDown({ children, color }) {
-  const count = Array.isArray(children) ? children.length : 1;
-  if (count === 1) return <>{children}</>;
-  return (
-    <div>
-      {/* Vertical stub down from parent */}
-      <VLine h={14} color={color} />
-      {/* Horizontal bar spanning all children */}
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${count}, 1fr)`, gap: 0 }}>
-        {Array.from({ length: count }).map((_, i) => (
-          <div key={i} style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{
-              width: "100%", height: 0,
-              borderTop: `2px solid ${color || T_.border}`,
-              ...(i === 0 ? { marginLeft: "50%" } : i === count - 1 ? { marginRight: "50%" } : {}),
-            }} />
-          </div>
-        ))}
-      </div>
-      {/* Vertical stubs down to each child + the children */}
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${count}, 1fr)`, gap: 12 }}>
-        {(Array.isArray(children) ? children : [children]).map((child, i) => (
-          <div key={i}>
-            <VLine h={14} color={color} />
-            {child}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-// Guarantee arrow (horizontal, from subs pointing to a debt box)
-function GuaranteeArrow({ from, to, color }) {
-  return (
-    <div style={{ display: "flex", alignItems: "center", gap: 6, padding: "3px 10px", fontSize: 9, color: color || T_.green }}>
-      <span style={{ fontWeight: 600 }}>{from}</span>
-      <span>{"─── guarantees ───▸"}</span>
-      <span style={{ fontWeight: 600 }}>{to}</span>
-    </div>
-  );
-}
-
 // Detail flyout
 function DetailPanel({ title, onClose, children }) {
   return (
@@ -165,6 +121,7 @@ const CASES = [
   { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: "#10B981" },
   { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: "#F59E0B" },
   { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
+  { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
 ];
 
 function WindstreamCase() {
@@ -230,6 +187,37 @@ function WindstreamCase() {
         <p><strong>Settlement:</strong> Uniti committed ~$1.75B in FTTP network upgrades + modified lease terms. Windstream was ~65% of Uniti's revenue — massive leverage in negotiation.</p>
       </DetailPanel>
     ),
+    planTreatment: (
+      <DetailPanel title="Chapter 11 Plan Treatment — Class Recoveries" onClose={() => setDetail(null)}>
+        <p>Plan confirmed <strong>Jun 2020</strong> by Judge Robert Drain (S.D.N.Y.). Emerged <strong>Sep 21, 2020</strong> as Windstream Holdings II, LLC (private). 205 debtor entities.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Treatment</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "DIP Claims ($1B)", treat: "Paid in full or rolled into exit facilities", rec: "100%", c: T_.green },
+              { cls: "1st Lien (~$3,151M)", treat: "New equity + exit debt ($1.25B + $1.4B Notes)", rec: "62.8–71.3%", c: T_.amber },
+              { cls: "Midwest Notes", treat: "6.750% Secured Notes at Midwest HoldCo", rec: "Varies", c: T_.purple },
+              { cls: "2nd Lien (~$1,235M)", treat: "$0.00125 per $1.00", rec: "~0%", c: T_.red },
+              { cls: "Sr Unsecured (~$1,183M)", treat: "Crammed down — $0", rec: "~0%", c: T_.red },
+              { cls: "Equity (Public)", treat: "Cancelled", rec: "0%", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> $1.25B credit facilities + $1.4B new 7.750% Senior Secured Notes. Over <strong>$4B of pre-petition debt eliminated</strong> through equitization.</p>
+        <p><strong>New Ownership:</strong> Elliott Management (largest holder), other former 1st lien lenders. Private company post-emergence.</p>
+        <p><strong>Uniti Settlement:</strong> Uniti committed ~$1.75B in FTTP network upgrades + modified lease terms. Windstream was ~65% of Uniti's revenue.</p>
+      </DetailPanel>
+    ),
   };
 
   return (
@@ -237,15 +225,16 @@ function WindstreamCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Rural/regional telecom (18 states). Distress from <span style={{ color: T_.red }}>secular decline</span> + <span style={{ color: T_.red }}>overleveraged M&A</span> + <span style={{ color: T_.red }}>2015 Uniti REIT spin-off</span> that moved network assets outside the credit group. Aurelius exploited a covenant breach to force Ch.11.
+          Rural/regional telecom (18 states). Distress from <span style={{ color: T_.red }}>secular decline</span> + <span style={{ color: T_.red }}>overleveraged M&A</span> + <span style={{ color: T_.red }}>2015 Uniti REIT spin-off</span> that moved network assets outside the credit group. <span style={{ color: T_.amber }}>Aurelius</span> exploited a <span style={{ color: T_.accent }}>sale-leaseback covenant breach</span> to force Ch.11. The Uniti spin-off created a structural problem: the network assets that generated revenue were owned by a separate public REIT, while Windstream was obligated to pay ~$659M/yr in rent — effectively a super-senior claim ahead of all debt.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "Revenue (2018)", v: "~$5.7B", c: T_.blue },
             { l: "Total Debt", v: "~$5.6B", c: T_.red },
             { l: "Filed", v: "Feb 25, 2019", c: T_.red },
             { l: "Emerged", v: "Sep 21, 2020", c: T_.green },
-            { l: "Debt Cut", v: ">$4B", c: T_.green },
+            { l: "Debt Eliminated", v: ">$4B", c: T_.green },
+            { l: "Time in Ch.11", v: "~19 months", c: T_.textMid },
+            { l: "Fulcrum", v: "1st Lien", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -256,20 +245,23 @@ function WindstreamCase() {
       </div>
 
       {/* ════════════════════════════════════════════════════
-         ORG CHART — Bond prospectus style
-         Click boxes for detail panels below the chart.
+         ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Click any entity for details. Dashed = outside credit group.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Click any entity for details. Case 19-22312, S.D.N.Y., Judge Robert Drain.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Outside Credit Group</span></span>
+        </div>
       </div>
 
       <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
 
         {/* ROW 1: Equity */}
         <div style={{ display: "flex", justifyContent: "center" }}>
-          <Box label="Public Shareholders" sub="Common equity" color={T_.textGhost} badges={[{ text: "CANCELLED — $0", color: T_.red }]} width={260} />
+          <Box label="Public Shareholders" sub="Common equity" color={T_.textGhost} badges={[{ text: "CANCELLED — $0", color: T_.red }]} width={340} />
         </div>
 
         <VLineLabel label="100% equity ownership" />
@@ -278,11 +270,11 @@ function WindstreamCase() {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
             label="Windstream Holdings, Inc."
-            sub="HoldCo · Delaware · No operations"
+            sub="HoldCo · Delaware · No operations · Not a borrower or guarantor"
             color={T_.red}
-            badges={[{ text: "STRUCTURALLY SUBORDINATED", color: T_.red }]}
+            badges={[{ text: "STRUCTURALLY SUBORDINATED", color: T_.red }, { text: "NOT A LOAN PARTY", color: T_.red }]}
             onClick={() => toggle("holdco")} selected={detail === "holdco"}
-            width={320}
+            width={400}
           />
         </div>
 
@@ -294,73 +286,115 @@ function WindstreamCase() {
             label="Windstream Holding of the Midwest, Inc."
             sub="Intermediate HoldCo · Nebraska · Guarantor"
             color={T_.purple}
+            badges={[{ text: "GUARANTOR", color: T_.green }]}
             debt={[{ name: "6.750% Secured Notes due 2028", amount: "Secured", color: T_.purple }]}
             onClick={() => toggle("midwest")} selected={detail === "midwest"}
-            width={360}
+            width={440}
           />
         </div>
 
         <VLineLabel label="100% equity" />
 
-        {/* ROW 4: OpCo */}
+        {/* ROW 4: OpCo — Borrower */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
             label="Windstream Services, LLC"
-            sub="OpCo · Delaware · Borrower & Co-Issuer"
+            sub="OpCo · Delaware · Borrower & Co-Issuer · Admin Agent: JPMorgan Chase"
             color={T_.blue}
             badges={[
               { text: "BORROWER", color: T_.blue },
-              { text: "STRUCTURALLY SENIOR", color: T_.green },
-            ]}
-            debt={[
-              { name: "1st Lien (RCF ~$800M + TL ~$1.8B + Notes $400M)", amount: "~$3,151M", color: T_.green },
-              { name: "2nd Lien (10.5% + 9.0% Notes)", amount: "~$1,235M", color: T_.amber },
-              { name: "Sr Unsecured (6 series)", amount: "~$1,183M", color: T_.red },
+              { text: "RESTRICTED SUB", color: T_.green },
             ]}
             onClick={() => toggle("opco")} selected={detail === "opco"}
-            width={400}
+            width={440}
           />
         </div>
 
-        {/* Guarantee & co-issuer annotations */}
-        <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+        <VLine h={14} />
+
+        {/* DEBT STACK */}
+        <div style={{ border: `1px solid ${T_.border}`, borderRadius: 10, padding: 16, background: T_.bgPanel, marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Debt Stack at Windstream Services (Priority Order ↓)</div>
+
+          {/* 1st Lien */}
+          <div onClick={() => toggle("firstlien")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "firstlien" ? T_.green : T_.border}`, background: detail === "firstlien" ? `${T_.green}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.green }}>1st Lien Secured</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>RCF + Term Loans + 8.625% Notes</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.green }}>~$3,151M</div>
+                <div style={{ fontSize: 9, color: T_.amber }}>FULCRUM · Recovery: 62.8–71.3%</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Elliott: ~$1.1B", "92 sub guarantees", "Became new owners"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.green}15`, color: T_.green }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* 2nd Lien */}
+          <div onClick={() => toggle("secondlien")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "secondlien" ? T_.amber : T_.border}`, background: detail === "secondlien" ? `${T_.amber}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.amber }}>2nd Lien Secured</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>10.500% + 9.000% Notes</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.amber }}>~$1,235M</div>
+                <div style={{ fontSize: 9, color: T_.red }}>Recovery: ~0%</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Same collateral, junior lien", "Intercreditor standstill", "$0.00125 per $1.00"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.amber}15`, color: T_.amber }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* Unsecured */}
+          <div onClick={() => toggle("unsecured")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "unsecured" ? T_.red : T_.border}`, background: detail === "unsecured" ? `${T_.red}08` : T_.bgInput, marginBottom: 0, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.red }}>Senior Unsecured Notes</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>6 series incl. 6.375% Aurelius Notes</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.red }}>~$1,183M</div>
+                <div style={{ fontSize: 9, color: T_.red }}>Recovery: ~0% · CRAMMED DOWN</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Aurelius triggered default", "Covenant weapon", "Sale-leaseback breach"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.red}15`, color: T_.red }}>{t}</span>)}
+            </div>
+          </div>
+        </div>
+
+        {/* Guarantee annotations */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "0 0 6px" }}>
           <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
-            <span style={{ fontSize: 9, color: T_.green }}>▲ 92 subs guarantee secured debt</span>
-            <span style={{ fontSize: 9, color: T_.textGhost }}>▲ Finance Corp. co-issues all notes</span>
+            <span style={{ fontSize: 9, color: T_.green }}>▲ 92 restricted subs guarantee secured debt</span>
+            <span style={{ fontSize: 9, color: T_.amber }}>▲ 63+ restricted subs are non-guarantors (state regulatory restrictions)</span>
           </div>
         </div>
 
         <VLine h={14} />
 
-        {/* ROW 5: Three children — Finance Corp, Subs, and click-targets for debt detail */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, alignItems: "start" }}>
-
-          {/* Finance Corp */}
-          <Box
-            label="Windstream Finance Corp."
-            sub="Co-Issuer · Delaware · No assets"
-            color={T_.textDim}
-            badges={[{ text: "CO-ISSUER ONLY", color: T_.textMid }]}
-          />
-
-          {/* Operating Subs */}
+        {/* ROW 5: Subsidiaries — two-column like other cases */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
           <Box
             label="Operating Subsidiaries"
             sub="155+ entities · ILECs + CLECs · 18 states"
             color={T_.emerald}
             badges={[
               { text: "92 GUARANTORS", color: T_.green },
-              { text: "REVENUE SOURCE", color: T_.emerald },
+              { text: "63+ NON-GUARANTORS", color: T_.amber },
             ]}
             onClick={() => toggle("subs")} selected={detail === "subs"}
           />
-
-          {/* Receivables SPV */}
           <Box
-            label="Windstream Receivables LLC"
-            sub="A/R Securitization · Bankruptcy-remote SPV"
+            label="Windstream Finance Corp. / Receivables LLC"
+            sub="Co-Issuer (no assets) · A/R Securitization SPV"
             color={T_.textDim}
-            badges={[{ text: "SPECIAL PURPOSE", color: T_.textGhost }]}
+            badges={[{ text: "CO-ISSUER ONLY", color: T_.textMid }, { text: "SPECIAL PURPOSE", color: T_.textGhost }]}
           />
         </div>
       </div>
@@ -371,7 +405,7 @@ function WindstreamCase() {
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
             label="Uniti Group Inc."
-            sub="REIT · NASDAQ: UNIT · Spun off April 2015"
+            sub="REIT · NASDAQ: UNIT · Spun off April 2015 · Owns fiber/copper network"
             color={T_.red}
             dashed
             debt={[{ name: "Master Lease (triple-net)", amount: "~$659M/yr", color: T_.red }]}
@@ -380,7 +414,7 @@ function WindstreamCase() {
               { text: "SEPARATE PUBLIC CO", color: T_.red },
             ]}
             onClick={() => toggle("uniti")} selected={detail === "uniti"}
-            width={380}
+            width={440}
           />
         </div>
         <div style={{ textAlign: "center", marginTop: 6, fontSize: 9, color: T_.red }}>
@@ -388,12 +422,12 @@ function WindstreamCase() {
         </div>
       </div>
 
-      {/* ── Debt detail click targets ── */}
+      {/* ── Detail buttons ── */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {[
-          { k: "firstlien", label: "1st Lien Detail", color: T_.green, amount: "~$3,151M", recovery: "62.8–71.3%" },
-          { k: "secondlien", label: "2nd Lien Detail", color: T_.amber, amount: "~$1,235M", recovery: "~0%" },
-          { k: "unsecured", label: "Unsecured Detail", color: T_.red, amount: "~$1,183M", recovery: "~0%" },
+          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: ">$4B eliminated · Class recoveries" },
+          { k: "subs", label: "Operating Subsidiaries", color: T_.emerald, sub: "155+ entities · 92 guarantors · 18 states" },
+          { k: "uniti", label: "Uniti / Master Lease", color: T_.red, sub: "Spin-off · ~$659M/yr · covenant breach" },
         ].map(d => (
           <div key={d.k} onClick={() => toggle(d.k)} style={{
             padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
@@ -402,13 +436,12 @@ function WindstreamCase() {
             transition: "all .15s",
           }}>
             <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
-            <div style={{ fontSize: 13, fontWeight: 700, color: d.color, marginTop: 2 }}>{d.amount}</div>
-            <div style={{ fontSize: 9, color: d.recovery.includes("0%") ? T_.red : T_.amber }}>Recovery: {d.recovery}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
           </div>
         ))}
       </div>
 
-      {/* ── Detail Panel (appears below chart when something is clicked) ── */}
+      {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
       </div>{/* end org chart max-width wrapper */}
 
@@ -563,12 +596,12 @@ function EnvisionCase() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "LBO Price", v: "$9.9B", c: T_.purple },
             { l: "Total Debt", v: "~$8B+", c: T_.red },
             { l: "Filed", v: "May 15, 2023", c: T_.red },
             { l: "Emerged", v: "Nov 3, 2023", c: T_.green },
-            { l: "Debt Cut", v: "~$7B", c: T_.green },
-            { l: "Debtor Entities", v: "216", c: T_.textMid },
+            { l: "Debt Eliminated", v: "~$7B", c: T_.green },
+            { l: "Time in Ch.11", v: "~6 months", c: T_.textMid },
+            { l: "Fulcrum", v: "2nd-out TL", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -585,7 +618,11 @@ function EnvisionCase() {
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure (Post-LME, at Filing)</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>After the Apr–Aug 2022 dropdown + uptier. Two separately capitalized silos. Click any box for details.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>After the Apr–Aug 2022 dropdown + uptier. Two separately capitalized silos. Click any box for details.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted / Outside Credit Group</span></span>
+        </div>
       </div>
 
       <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
@@ -623,27 +660,33 @@ function EnvisionCase() {
           {/* Horizontal connector line */}
           <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
 
-          {/* ─── LEFT: EVPS SILO ─── */}
+          {/* ─── LEFT: EVPS SILO (RESTRICTED GROUP) ─── */}
           <div>
             <VLine h={14} />
-            <Box
-              label="EVPS Silo"
-              sub="Envision Physician Services · 25,000+ clinicians"
-              color={T_.blue}
-              badges={[
-                { text: "PHYSICIAN STAFFING", color: T_.blue },
-                { text: "~$6.4B DEBT", color: T_.red },
-              ]}
-              debt={[
-                { name: "ABL Facility", amount: "≤$550M", color: T_.green },
-                { name: "1st-out TL (new money)", amount: "$300M", color: T_.green },
-                { name: "2nd-out TL (17% discount)", amount: "~$2.2B", color: T_.blue },
-                { name: "3rd-out TL (at par)", amount: "~$1.0B", color: T_.amber },
-                { name: "4th-out TL (non-participants)", amount: "~$153M", color: T_.red },
-                { name: "Sr Unsecured Notes (8.75%)", amount: "$938.9M", color: T_.red },
-              ]}
-              onClick={() => toggle("evps")} selected={detail === "evps"}
-            />
+            <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 12, padding: "12px 10px 10px", background: `${T_.green}04`, position: "relative" }}>
+              <div style={{ position: "absolute", top: -10, left: 10, background: T_.bgPanel, padding: "0 6px" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group</span>
+              </div>
+              <Box
+                label="EVPS Silo"
+                sub="Envision Physician Services · 25,000+ clinicians"
+                color={T_.blue}
+                badges={[
+                  { text: "PHYSICIAN STAFFING", color: T_.blue },
+                  { text: "RESTRICTED SUBS", color: T_.green },
+                  { text: "~$6.4B DEBT", color: T_.red },
+                ]}
+                debt={[
+                  { name: "ABL Facility", amount: "≤$550M", color: T_.green },
+                  { name: "1st-out TL (new money)", amount: "$300M", color: T_.green },
+                  { name: "2nd-out TL (17% discount)", amount: "~$2.2B", color: T_.blue },
+                  { name: "3rd-out TL (at par)", amount: "~$1.0B", color: T_.amber },
+                  { name: "4th-out TL (non-participants)", amount: "~$153M", color: T_.red },
+                  { name: "Sr Unsecured Notes (8.75%)", amount: "$938.9M", color: T_.red },
+                ]}
+                onClick={() => toggle("evps")} selected={detail === "evps"}
+              />
+            </div>
             <VLine h={10} />
             <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
               ER depts · surgical suites · ICUs · birthing · admin agent: Credit Suisse
@@ -661,8 +704,9 @@ function EnvisionCase() {
                 color={T_.amber}
                 badges={[
                   { text: "SURGERY CENTERS", color: T_.amber },
+                  { text: "UNRESTRICTED SUB", color: T_.red },
+                  { text: "OUTSIDE CREDIT GROUP", color: T_.red },
                   { text: "~$3.2B DEBT", color: T_.red },
-                  { text: "DROPPED DOWN", color: T_.red },
                 ]}
                 debt={[
                   { name: "RCF", amount: "$301M", color: T_.green },
@@ -935,12 +979,12 @@ function SertaCase() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "Original Debt", v: "$2.625B", c: T_.red },
-            { l: "Debt at Filing", v: "~$1.9B", c: T_.red },
+            { l: "Total Debt", v: "~$1.9B", c: T_.red },
             { l: "Filed", v: "Jan 23, 2023", c: T_.red },
             { l: "Emerged", v: "Jun 29, 2023", c: T_.green },
-            { l: "Debt Post-Ch.11", v: "$315M", c: T_.green },
-            { l: "5th Cir. Ruling", v: "Dec 31, 2024", c: T_.accent },
+            { l: "Debt Eliminated", v: "~$1.6B", c: T_.green },
+            { l: "Time in Ch.11", v: "~5 months", c: T_.textMid },
+            { l: "Fulcrum", v: "FLSO (2nd-out)", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -953,15 +997,19 @@ function SertaCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 900, margin: "0 auto" }}>
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-2020 uptier, at filing. Click any box for details. Case 23-90020, S.D. Tex., Judge David Jones.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-2020 uptier, at filing. Click any box for details. Case 23-90020, S.D. Tex., Judge David Jones.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted / Outside Credit Group</span></span>
+        </div>
       </div>
 
       <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
 
-        {/* SPONSORS */}
+        {/* SPONSORS — Outside */}
         <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
             label="PE Sponsors"
@@ -975,23 +1023,29 @@ function SertaCase() {
 
         <VLineLabel label="100% equity (via AOT Bedding Super Holdings)" color={T_.purple} />
 
-        {/* HOLDCO */}
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <Box
-            label="Dawn Intermediate LLC → Serta Simmons Bedding, LLC"
-            sub="Borrower under 2016 Credit Agreement · Doraville, GA"
-            color={T_.blue}
-            badges={[{ text: "BORROWER", color: T_.blue }, { text: "DEBTOR", color: T_.red }]}
-            onClick={() => toggle("holdco")} selected={detail === "holdco"}
-            width={440}
-          />
-        </div>
+        {/* ── RESTRICTED GROUP ── */}
+        <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 14, padding: "14px 16px 16px", background: `${T_.green}04`, position: "relative" }}>
+          <div style={{ position: "absolute", top: -10, left: 16, background: T_.bgPanel, padding: "0 8px" }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group — Borrower & Guarantors</span>
+          </div>
 
-        <VLine h={14} />
+          {/* HOLDCO / BORROWER */}
+          <div style={{ display: "flex", justifyContent: "center", marginTop: 8 }}>
+            <Box
+              label="Dawn Intermediate LLC → Serta Simmons Bedding, LLC"
+              sub="Borrower under 2016 Credit Agreement · Doraville, GA"
+              color={T_.blue}
+              badges={[{ text: "BORROWER", color: T_.blue }, { text: "RESTRICTED SUB", color: T_.green }, { text: "DEBTOR", color: T_.red }]}
+              onClick={() => toggle("holdco")} selected={detail === "holdco"}
+              width={440}
+            />
+          </div>
 
-        {/* DEBT STACK */}
-        <div style={{ border: `1px solid ${T_.border}`, borderRadius: 10, padding: 16, background: T_.bgPanel, marginBottom: 0 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Debt Stack (Post-2020 Uptier — Priority Order ↓)</div>
+          <VLine h={14} />
+
+          {/* DEBT STACK */}
+          <div style={{ border: `1px solid ${T_.border}`, borderRadius: 10, padding: 16, background: T_.bgPanel, marginBottom: 0 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Debt Stack (Post-2020 Uptier — Priority Order ↓)</div>
 
           {/* ABL */}
           <div style={{ padding: "8px 14px", borderRadius: 8, border: `1px solid ${T_.border}`, background: T_.bgInput, marginBottom: 4 }}>
@@ -1062,19 +1116,20 @@ function SertaCase() {
             label="National Bedding Company, L.L.C."
             sub="Largest Serta licensee · Owns ~83% of Serta, Inc."
             color={T_.emerald}
-            badges={[{ text: "SERTA BRAND", color: T_.emerald }]}
+            badges={[{ text: "SERTA BRAND", color: T_.emerald }, { text: "RESTRICTED SUB", color: T_.green }]}
           />
           <Box
             label="Simmons Bedding Company, LLC"
             sub="Beautyrest brand · Manufacturing operations"
             color={T_.emerald}
-            badges={[{ text: "BEAUTYREST BRAND", color: T_.emerald }]}
+            badges={[{ text: "BEAUTYREST BRAND", color: T_.emerald }, { text: "RESTRICTED SUB", color: T_.green }]}
           />
         </div>
+        </div>{/* end restricted group */}
 
         <div style={{ marginTop: 8, display: "flex", justifyContent: "center" }}>
-          <div style={{ fontSize: 9, color: T_.textGhost, padding: "4px 12px", background: T_.bgInput, borderRadius: 4, border: `1px solid ${T_.border}` }}>
-            Serta, Inc. (5 minority licensees, ~17% ownership) did NOT file bankruptcy
+          <div style={{ fontSize: 9, color: T_.amber, padding: "4px 12px", background: `${T_.amber}08`, borderRadius: 4, border: `1px dashed ${T_.amber}30` }}>
+            Serta, Inc. (5 minority licensees, ~17% ownership) — OUTSIDE the debtor group, did NOT file bankruptcy
           </div>
         </div>
       </div>
@@ -1345,12 +1400,12 @@ function JCrewCase() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "LBO Price", v: "~$3.0B", c: T_.purple },
-            { l: "Sponsor Extractions", v: "$766M", c: T_.red },
             { l: "Total Debt", v: "~$1.7B", c: T_.red },
             { l: "Filed", v: "May 4, 2020", c: T_.red },
             { l: "Emerged", v: "Sep 10, 2020", c: T_.green },
-            { l: "Debt Cut", v: ">$1.6B", c: T_.green },
+            { l: "Debt Eliminated", v: ">$1.6B", c: T_.green },
+            { l: "Time in Ch.11", v: "~4 months", c: T_.textMid },
+            { l: "Fulcrum", v: "Term Loan B", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -1366,7 +1421,12 @@ function JCrewCase() {
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-2017 IP transfer, at filing. Click any entity or tranche for details. Case 20-32181, E.D. Va., Judge Phillips.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-2017 IP transfer, at filing. Click any entity or tranche for details. Case 20-32181, E.D. Va., Judge Phillips.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group / Loan Parties</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted / Outside Credit Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.amber}50`, background: `${T_.amber}08`, display: "inline-block" }} /><span style={{ color: T_.amber }}>Non-Loan Party Restricted Sub</span></span>
+        </div>
       </div>
 
       <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
@@ -1421,7 +1481,7 @@ function JCrewCase() {
             color={T_.blue}
             badges={[
               { text: "BORROWER", color: T_.blue },
-              { text: "TERM LOAN", color: T_.blue },
+              { text: "RESTRICTED SUB", color: T_.green },
             ]}
             debt={[
               { name: "ABL Revolver (BofA)", amount: "~$310M drawn", color: T_.green },
@@ -1446,41 +1506,49 @@ function JCrewCase() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
           <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
 
-          {/* LEFT: Operating entities */}
+          {/* LEFT: Operating entities — RESTRICTED GROUP */}
           <div>
             <VLine h={14} />
-            <Box
-              label="Operating Subsidiaries"
-              sub="J.Crew Operating Corp · J.Crew Inc · J.Crew Int'l"
-              color={T_.emerald}
-              badges={[
-                { text: "GUARANTORS", color: T_.green },
-                { text: "REVENUE SOURCE", color: T_.emerald },
-              ]}
-            />
-            <VLine h={10} />
-            <Box
-              label="Madewell Inc."
-              sub="$602M rev (FY2019) · 142 stores · IPO pulled Mar 2020"
-              color={T_.emerald}
-              badges={[
-                { text: "GUARANTOR", color: T_.green },
-                { text: "CROWN JEWEL", color: T_.accent },
-              ]}
-              onClick={() => toggle("madewell")} selected={detail === "madewell"}
-            />
+            <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 12, padding: "12px 10px 10px", background: `${T_.green}04`, position: "relative" }}>
+              <div style={{ position: "absolute", top: -10, left: 10, background: T_.bgPanel, padding: "0 6px" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group — Loan Parties</span>
+              </div>
+              <Box
+                label="Operating Subsidiaries"
+                sub="J.Crew Operating Corp · J.Crew Inc · J.Crew Int'l"
+                color={T_.emerald}
+                badges={[
+                  { text: "GUARANTORS", color: T_.green },
+                  { text: "RESTRICTED SUBS", color: T_.green },
+                  { text: "REVENUE SOURCE", color: T_.emerald },
+                ]}
+              />
+              <VLine h={10} />
+              <Box
+                label="Madewell Inc."
+                sub="$602M rev (FY2019) · 142 stores · IPO pulled Mar 2020"
+                color={T_.emerald}
+                badges={[
+                  { text: "GUARANTOR", color: T_.green },
+                  { text: "RESTRICTED SUB", color: T_.green },
+                  { text: "CROWN JEWEL", color: T_.accent },
+                ]}
+                onClick={() => toggle("madewell")} selected={detail === "madewell"}
+              />
+            </div>
           </div>
 
-          {/* RIGHT: IPCo chain */}
+          {/* RIGHT: IPCo chain — UNRESTRICTED */}
           <div>
             <VLine h={14} />
             <div style={{ border: `2px dashed ${T_.red}40`, borderRadius: 10, padding: 2, background: `${T_.red}04` }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px", textAlign: "center", padding: "4px 0 2px" }}>Unrestricted Subsidiary (Dec 2016)</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px", textAlign: "center", padding: "4px 0 2px" }}>Unrestricted Subsidiary — Outside Credit Group (Dec 2016)</div>
               <Box
                 label="IPCo Entity Chain"
                 sub="Brand Holdings → Brand Intermediate → Brand LLC → Domestic Brand LLC"
                 color={T_.red}
                 badges={[
+                  { text: "UNRESTRICTED SUB", color: T_.red },
                   { text: "TRANSFERRED IP", color: T_.red },
                   { text: "OUTSIDE CREDIT GROUP", color: T_.red },
                 ]}
@@ -1491,8 +1559,8 @@ function JCrewCase() {
               />
             </div>
             <VLine h={10} />
-            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
-              J.Crew Cayman (restricted, non-loan party) was the intermediary
+            <div style={{ fontSize: 9, color: T_.amber, textAlign: "center", padding: "0 4px" }}>
+              J.Crew Cayman — <strong>Non-Loan Party Restricted Sub</strong> (the intermediary that enabled the transfer)
             </div>
           </div>
         </div>
@@ -1781,12 +1849,12 @@ function DieboldNixdorfCase() {
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "Acquisition", v: "~$1.8B", c: T_.purple },
             { l: "Total Debt", v: "~$2.7B", c: T_.red },
             { l: "Filed", v: "Jun 1, 2023", c: T_.red },
             { l: "Emerged", v: "Aug 11, 2023", c: T_.green },
-            { l: "Debt Cut", v: ">$2.1B", c: T_.green },
-            { l: "Days in Ch.11", v: "71", c: T_.accent },
+            { l: "Debt Eliminated", v: ">$2.1B", c: T_.green },
+            { l: "Time in Ch.11", v: "71 days", c: T_.textMid },
+            { l: "Fulcrum", v: "1st Lien", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -1802,7 +1870,10 @@ function DieboldNixdorfCase() {
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 16 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group (Co-Obligors)</span></span>
+        </div>
       </div>
 
       <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
@@ -1832,47 +1903,55 @@ function DieboldNixdorfCase() {
 
         <VLine h={14} />
 
-        {/* DUAL JURISDICTION SPLIT */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
-          <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
-
-          {/* ─── LEFT: US DEBTORS ─── */}
-          <div>
-            <VLine h={14} />
-            <Box
-              label="US / Canadian Debtors"
-              sub="Diebold Holding Co. LLC + 9 affiliates · Ch.11 (S.D. Tex.)"
-              color={T_.blue}
-              badges={[
-                { text: "CHAPTER 11", color: T_.blue },
-                { text: "PREPACKAGED", color: T_.green },
-              ]}
-            />
-            <VLine h={10} />
-            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
-              ATM mfg · software · services · ~21,000 employees globally
-            </div>
+        {/* DUAL JURISDICTION SPLIT — Both Restricted Group, co-obligors */}
+        <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 14, padding: "14px 16px 16px", background: `${T_.green}04`, position: "relative" }}>
+          <div style={{ position: "absolute", top: -10, left: 16, background: T_.bgPanel, padding: "0 8px" }}>
+            <span style={{ fontSize: 10, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group — Jointly & Severally Liable Co-Obligors</span>
           </div>
 
-          {/* ─── RIGHT: DUTCH / EUROPEAN ─── */}
-          <div>
-            <VLine h={14} />
-            <Box
-              label="Diebold Nixdorf Dutch Holding B.V."
-              sub="Netherlands · Co-issuer EUR Notes · 12+ European subs"
-              color={T_.amber}
-              badges={[
-                { text: "WHOA (AMSTERDAM)", color: T_.amber },
-                { text: "CHAPTER 15 RECOGNITION", color: T_.purple },
-              ]}
-              onClick={() => toggle("dutchHolding")} selected={detail === "dutchHolding"}
-            />
-            <VLine h={10} />
-            <div onClick={() => toggle("europeanSubs")} style={{ fontSize: 9, color: detail === "europeanSubs" ? T_.amber : T_.textGhost, textAlign: "center", padding: "4px 8px", cursor: "pointer", borderRadius: 4, border: `1px solid ${detail === "europeanSubs" ? T_.amber + "40" : "transparent"}` }}>
-              12+ European subs (click for WHOA details) · Wincor Nixdorf legacy
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative", marginTop: 8 }}>
+            <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
+
+            {/* ─── LEFT: US DEBTORS ─── */}
+            <div>
+              <VLine h={14} />
+              <Box
+                label="US / Canadian Debtors"
+                sub="Diebold Holding Co. LLC + 9 affiliates · Ch.11 (S.D. Tex.)"
+                color={T_.blue}
+                badges={[
+                  { text: "CHAPTER 11", color: T_.blue },
+                  { text: "RESTRICTED SUBS", color: T_.green },
+                  { text: "PREPACKAGED", color: T_.green },
+                ]}
+              />
+              <VLine h={10} />
+              <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", padding: "0 4px" }}>
+                ATM mfg · software · services · ~21,000 employees globally
+              </div>
+            </div>
+
+            {/* ─── RIGHT: DUTCH / EUROPEAN ─── */}
+            <div>
+              <VLine h={14} />
+              <Box
+                label="Diebold Nixdorf Dutch Holding B.V."
+                sub="Netherlands · Co-issuer EUR Notes · 12+ European subs"
+                color={T_.amber}
+                badges={[
+                  { text: "WHOA (AMSTERDAM)", color: T_.amber },
+                  { text: "RESTRICTED SUBS", color: T_.green },
+                  { text: "CHAPTER 15 RECOGNITION", color: T_.purple },
+                ]}
+                onClick={() => toggle("dutchHolding")} selected={detail === "dutchHolding"}
+              />
+              <VLine h={10} />
+              <div onClick={() => toggle("europeanSubs")} style={{ fontSize: 9, color: detail === "europeanSubs" ? T_.amber : T_.textGhost, textAlign: "center", padding: "4px 8px", cursor: "pointer", borderRadius: 4, border: `1px solid ${detail === "europeanSubs" ? T_.amber + "40" : "transparent"}` }}>
+                12+ European subs (click for WHOA details) · Wincor Nixdorf legacy
+              </div>
             </div>
           </div>
-        </div>
+        </div>{/* end restricted group */}
 
         {/* Cross-border annotation */}
         <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 4px" }}>
@@ -2029,6 +2108,478 @@ function DieboldNixdorfCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   PETSMART / CHEWY
+   ═══════════════════════════════════════════════════════ */
+
+function PetSmartCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    lbo: (
+      <DetailPanel title="The 2015 LBO — BC Partners Consortium" onClose={() => setDetail(null)}>
+        <p><strong>Dec 14, 2014:</strong> Consortium led by <strong>BC Partners</strong> announces take-private of PetSmart for <strong>$83.00/share</strong> (~$8.7B total enterprise value, ~9.1x adjusted EBITDA). Premium: ~39% over unaffected price on Jul 2, 2014.</p>
+        <p><strong>Consortium:</strong> BC Partners (lead), La Caisse de dépôt et placement du Québec (CDPQ), GIC Special Investments (Singapore SWF), Longview Asset Management (~9% pre-LBO shareholder, rolled ~1/3 of holdings), StepStone Group.</p>
+        <p><strong>Mar 11, 2015:</strong> LBO closes after stockholder approval (Mar 6). <strong>~$6.2B debt raised</strong> — a 15x increase from PetSmart's pre-LBO debt of ~$560M.</p>
+        <p><strong>Financing:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Senior Secured Term Loan B:</strong> $4,300M (7-year, cov-lite, floating)</li>
+          <li><strong>Senior Unsecured Notes (7.125% due 2023):</strong> $1,900M — largest bond backing an LBO in 2015</li>
+          <li><strong>ABL Revolving Facility:</strong> $750M</li>
+          <li><strong>Equity:</strong> ~$2.0-2.5B from sponsors</li>
+        </ul>
+        <p><strong>Arrangers:</strong> Citigroup, Nomura Securities, Jefferies Finance, Barclays, Deutsche Bank.</p>
+        <p><strong>Legal:</strong> Simpson Thacher & Bartlett (sponsor counsel).</p>
+        <p style={{ color: T_.red }}>PetSmart went from $560M of pre-LBO debt and ~$343M cash to $6.2B of funded debt overnight. Leverage was ~7x at close — aggressive even by LBO standards.</p>
+      </DetailPanel>
+    ),
+    dividend: (
+      <DetailPanel title="$800M Dividend Recapitalization" onClose={() => setDetail(null)}>
+        <p>Within ~10 months of the March 2015 closing, BC Partners and the consortium extracted an <strong>$800 million special dividend</strong> from PetSmart.</p>
+        <p>This recouped <strong>~38-40% of their initial equity investment</strong> (~$2.0-2.5B) before the business had meaningfully deleveraged.</p>
+        <p style={{ color: T_.red }}>The dividend recap further strained PetSmart's balance sheet at a time when brick-and-mortar retail was already under pressure from Amazon and e-commerce competition. This is the classic PE playbook: extract cash early via debt-funded distributions while the business bears the leverage burden.</p>
+        <p>Compare: J.Crew sponsors extracted $766M (70% of equity); PetSmart sponsors extracted $800M (~38% of equity) on a much larger deal.</p>
+      </DetailPanel>
+    ),
+    chewyAcq: (
+      <DetailPanel title="Chewy Acquisition — $3.35B (May 2017)" onClose={() => setDetail(null)}>
+        <p>PetSmart acquired <strong>Chewy.com</strong> in May 2017 for <strong>~$3.35 billion</strong> — then the largest e-commerce acquisition ever (larger than Walmart's $3.3B purchase of Jet.com).</p>
+        <p><strong>Financing:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>8.875% Senior First Lien Notes due 2025:</strong> $1,350M (new issuance)</li>
+          <li><strong>5.875% Senior Unsecured Notes due 2025:</strong> $650M (new issuance)</li>
+          <li><strong>Equity contribution from sponsors:</strong> ~$1,000M</li>
+        </ul>
+        <p><strong>Post-acquisition total debt: ~$8.0-8.6B</strong></p>
+        <p>Chewy was growing rapidly but burning cash (not yet profitable). It became a <strong>wholly-owned domestic restricted subsidiary</strong> and <strong>guarantor</strong> of PetSmart's secured debt, with liens granted on its assets.</p>
+        <p style={{ color: T_.amber }}>The thesis: Chewy's e-commerce platform would complement PetSmart's 1,650+ brick-and-mortar stores. The reality: Chewy became PetSmart's most valuable asset — worth more than the entire parent company — creating the incentive for the 2018 collateral-stripping transaction.</p>
+      </DetailPanel>
+    ),
+    chewyTransfer: (
+      <DetailPanel title="The Chewy Equity Transfer — June 1, 2018 (The Key LME)" onClose={() => setDetail(null)}>
+        <p>This is the centerpiece of the case. On <strong>June 1, 2018</strong>, PetSmart executed two coordinated transactions that stripped Chewy from secured lenders' collateral pool:</p>
+        <p><strong>Transaction 1 — Restricted Payment (20% of Chewy):</strong></p>
+        <p>PetSmart distributed 20% of Chewy common stock to parent Argos Holdings Inc., which immediately passed it up to the BC Partners consortium. Covenant basket used: Section 6.08(a)(viii) — permitted restricted payments up to $200M + the "Available Equity Amount" (~$1.0B in sponsor equity contributions for Chewy). Claimed value: <strong>$908.5M</strong>.</p>
+        <p><strong>Transaction 2 — Investment (16.5% of Chewy):</strong></p>
+        <p>PetSmart contributed 16.5% of Chewy stock to a <strong>newly formed unrestricted subsidiary</strong>. Covenant basket used: Section 6.04 — permitted "other Investments" up to $375M + the "Available Amount." Claimed value: <strong>$749.5M</strong>.</p>
+        <p><strong>The "Phantom Guarantee" Release:</strong></p>
+        <p style={{ color: T_.red }}>Section 9.15 of the term loan agreement provided that a subsidiary guarantor would be <strong>automatically released</strong> from guarantee obligations when it "ceases to be a wholly-owned Subsidiary." After the two transfers, PetSmart held only 63.5% of Chewy — no longer wholly owned. Result: Chewy's guarantee of ~$4.3B in secured debt was <strong>automatically terminated</strong>, and all liens on Chewy's assets were released. ~$3.35B of acquisition value moved beyond creditors' reach.</p>
+        <p><strong>Litigation:</strong> Wilmington Trust (term loan administrative agent) filed suit June 26, 2018. Citibank (collateral agent) refused to deliver release documents. An ad hoc lender group formed.</p>
+      </DetailPanel>
+    ),
+    settlement: (
+      <DetailPanel title="2019 Settlement & Chewy IPO" onClose={() => setDetail(null)}>
+        <p><strong>April 17, 2019:</strong> Settlement effective. ~90% of $4.1B term loan lenders consented.</p>
+        <p><strong>Settlement Terms:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>50 bps consent fee to participating lenders</li>
+          <li>Higher interest rate spread</li>
+          <li>Tighter covenants going forward</li>
+          <li>$250M par paydown commitment within 12 months</li>
+          <li>Lenders ratified the Chewy transactions as permitted</li>
+          <li>PetSmart committed to IPO Chewy and pledge proceeds to prepay the term loan</li>
+        </ul>
+        <p><strong>Chewy IPO (June 14, 2019):</strong></p>
+        <p>Priced at <strong>$22/share</strong> (above expected range). First-day pop: shares surged ~59%, closing at ~$35. Raised <strong>~$1.02B</strong> in proceeds. Market cap at IPO: ~$15B. PetSmart's paper gain on day one: <strong>~$10B</strong> — one of the largest PE-backed IPO gains ever.</p>
+        <p>Post-IPO, PetSmart retained ~70% of common stock, ~77% of voting power.</p>
+        <p style={{ color: T_.green }}>IPO proceeds were used to pay down PetSmart's secured term loan per the settlement agreement. The Chewy IPO validated the sponsors' thesis that the asset was worth far more than its acquisition price — while demonstrating that secured lenders had lost collateral worth multiples of their claims.</p>
+      </DetailPanel>
+    ),
+    refi2021: (
+      <DetailPanel title="2020-2021 Refinancing & Chewy Separation" onClose={() => setDetail(null)}>
+        <p>In late 2020, BC Partners executed a <strong>~$6 billion comprehensive recapitalization</strong>:</p>
+        <p><strong>New Capital Structure:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>New Senior Secured Term Loan:</strong> $2,300M</li>
+          <li><strong>Senior First Lien Notes (4.75% due 2028):</strong> $1,200M</li>
+          <li><strong>Senior Unsecured Notes (7.75% due 2029):</strong> $1,150M</li>
+          <li><strong>ABL Revolver:</strong> $750M</li>
+          <li><strong>Total new debt:</strong> ~$5,400M</li>
+        </ul>
+        <p><strong>Equity contribution:</strong> ~$1.3B from Argos Holdings.</p>
+        <p><strong>Use of proceeds:</strong> Retire ALL existing PetSmart debt (original term loan, 2023 notes, 2025 secured notes, 2025 unsecured notes).</p>
+        <p><strong>Chewy Distribution:</strong> PetSmart distributed <strong>all remaining Chewy common stock</strong> to Argos Holdings. Post-distribution, PetSmart owned zero Chewy shares. An Argos affiliate pledged ~$4.0B of Chewy Class B stock as <strong>collateral</strong> for the new first lien secured debt and <strong>guaranteed</strong> both secured and unsecured notes.</p>
+        <p style={{ color: T_.green }}>Leverage declined from ~4.8x to ~4.0x. S&P upgraded PetSmart to B from B-. The refinancing transformed the capital structure: original creditors who were impaired in 2018 were made whole at par if they held through, and new creditors got Chewy stock collateral — an unusual structural support from a HoldCo affiliate.</p>
+        <p style={{ color: T_.amber }}>An initial refinancing attempt in October 2020 was withdrawn due to lender opposition, then revised with improved terms including the Chewy collateral pledge and parent guarantee.</p>
+      </DetailPanel>
+    ),
+    planTreatment: (
+      <DetailPanel title="Debt Evolution & Recoveries" onClose={() => setDetail(null)}>
+        <p>PetSmart <strong>never filed Chapter 11</strong>. All restructuring was out-of-court. Here's how each tranche fared:</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Outcome</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "ABL ($750M)", treat: "Refinanced at par in 2021", rec: "100%", c: T_.green },
+              { cls: "Term Loan B ($4,300M)", treat: "Partially repaid via Chewy IPO; fully retired 2021 refi", rec: "100%", c: T_.green },
+              { cls: "8.875% 1L Notes ($1,350M)", treat: "Retired in 2021 refinancing", rec: "100%", c: T_.green },
+              { cls: "7.125% Unsecured ($1,900M)", treat: "Retired in 2021 refinancing", rec: "100%", c: T_.green },
+              { cls: "5.875% Unsecured ($650M)", treat: "Retired in 2021 refinancing", rec: "100%", c: T_.green },
+              { cls: "Equity (BC Partners et al.)", treat: "Retained control + $800M dividends + $10B Chewy gain", rec: "Massive", c: T_.purple },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Key insight:</strong> Despite the 2018 crisis (unsecured notes trading at $0.48, Caa1/CCC ratings), <strong>every creditor was ultimately made whole</strong>. The Chewy IPO and COVID pet boom rescued the capital structure. Holders who panic-sold in 2018 crystallized losses; holders who held through were repaid at par in the 2021 refi.</p>
+        <p><strong>2025 Refinancing:</strong> $2.0B new TL + $1.95B secured notes (7.5%, 2032) + $750M unsecured notes (10%, 2033). Chewy Class B shares (~$1.4B) remain as collateral.</p>
+      </DetailPanel>
+    ),
+    postEmergence: (
+      <DetailPanel title="Current State" onClose={() => setDetail(null)}>
+        <p><strong>Ownership:</strong> BC Partners remains <strong>majority shareholder</strong> with board control. GIC and management hold equity. Apollo Global Management acquired a <strong>minority equity stake</strong> in July 2023 (Kirkland & Ellis advised).</p>
+        <p><strong>Revenue:</strong> Increased &gt;40% under BC Partners ownership. PetSmart operates <strong>~1,650+ stores</strong> across US, Canada, and Puerto Rico.</p>
+        <p><strong>Capital Structure (post-Aug 2025 refi):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>~$2.0B Senior Secured Term Loan</li>
+          <li>~$1.95B Senior First Lien Notes due 2032 (7.500%)</li>
+          <li>~$750M Senior Unsecured Notes due 2033 (10.000%)</li>
+          <li>ABL Revolver (~$750M)</li>
+          <li>Chewy Class B stock (~$1.4B) pledged as collateral</li>
+        </ul>
+        <p><strong>Chewy:</strong> Fully independent public company (NYSE: CHWY). PetSmart owns zero shares directly. An Argos Holdings affiliate still holds Chewy Class B shares pledged as collateral for PetSmart debt.</p>
+        <p style={{ color: T_.green }}>COVID was a massive tailwind — pet stores were deemed essential, and pandemic pet adoption drove +36% sales in March 2020 and +18% revenue growth in FY2020/21. PetSmart avoided bankruptcy entirely, unlike many other PE-backed retailers.</p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Largest pet retailer (1,650+ stores). <span style={{ color: T_.purple }}>BC Partners consortium</span> took PetSmart private in 2015 for $8.7B, then acquired <span style={{ color: T_.cyan }}>Chewy.com for $3.35B</span> in 2017 — the largest e-commerce acquisition ever. Facing <span style={{ color: T_.red }}>$8B+ in debt</span> and deteriorating retail fundamentals, BC Partners executed a <span style={{ color: T_.accent }}>collateral-stripping transaction</span> in June 2018 — transferring 36.5% of Chewy equity out of the credit group, triggering automatic release of Chewy's guarantee on ~$4.3B of secured debt. This "phantom guarantee" maneuver spawned <span style={{ color: T_.accent }}>"Chewy blocker"</span> provisions in credit agreements and became a landmark case alongside J.Crew and Envision.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Total Debt", v: "~$8.6B", c: T_.red },
+            { l: "LME Date", v: "Jun 1, 2018", c: T_.red },
+            { l: "Chewy IPO", v: "Jun 14, 2019", c: T_.green },
+            { l: "Debt Eliminated", v: "~$3B+", c: T_.green },
+            { l: "Ch.11 Filed?", v: "No — OOC", c: T_.textMid },
+            { l: "Fulcrum", v: "None (all par)", c: T_.blue },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART
+         ════════════════════════════════════════════════════ */}
+      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Chewy acquisition, pre-2018 transfer. Click any entity or debt tranche for details.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted / Outside Credit Group</span></span>
+        </div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: Sponsors */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="BC Partners Consortium"
+            sub="BC Partners (lead) · CDPQ · GIC · Longview · StepStone"
+            color={T_.purple}
+            badges={[{ text: "EXTRACTED $800M DIVIDEND", color: T_.amber }, { text: "~$10B CHEWY GAIN", color: T_.green }]}
+            onClick={() => toggle("lbo")} selected={detail === "lbo"}
+            width={440}
+          />
+        </div>
+
+        <VLineLabel label="100% equity (via Argos Holdings L.P.)" color={T_.purple} />
+
+        {/* ROW 2: HoldCo chain */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Argos Holdings Inc."
+            sub="HoldCo · Downstream guarantor of ABL + TL · Parent of PetSmart Inc."
+            color={T_.textDim}
+            badges={[{ text: "HOLDCO", color: T_.textGhost }, { text: "GUARANTOR", color: T_.green }]}
+            width={440}
+          />
+        </div>
+
+        <VLineLabel label="↓ via Argos Intermediate Holdcos I → II → III" color={T_.textGhost} />
+
+        {/* ROW 3: PetSmart Inc — Borrower */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="PetSmart, Inc."
+            sub="Borrower / Issuer · Delaware · 1,650+ stores"
+            color={T_.blue}
+            badges={[
+              { text: "BORROWER", color: T_.blue },
+              { text: "RESTRICTED SUB", color: T_.green },
+            ]}
+            width={440}
+          />
+        </div>
+
+        <VLine h={14} />
+
+        {/* DEBT STACK */}
+        <div style={{ border: `1px solid ${T_.border}`, borderRadius: 10, padding: 16, background: T_.bgPanel, marginBottom: 12 }}>
+          <div style={{ fontSize: 12, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Debt Stack at PetSmart Inc. (Post-Chewy Acquisition — Priority Order ↓)</div>
+
+          {/* ABL */}
+          <div style={{ padding: "8px 14px", borderRadius: 8, border: `1px solid ${T_.border}`, background: T_.bgInput, marginBottom: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span style={{ fontSize: 12, fontWeight: 600, color: T_.green }}>ABL Revolving Facility</span>
+              <span style={{ fontSize: 12, fontWeight: 700, color: T_.green }}>$750M</span>
+            </div>
+            <div style={{ fontSize: 9, color: T_.textGhost, marginTop: 2 }}>Asset-based · First priority on current assets</div>
+          </div>
+
+          {/* TLB */}
+          <div onClick={() => toggle("chewyTransfer")} style={{ padding: "10px 14px", borderRadius: 8, border: `2px solid ${detail === "chewyTransfer" ? T_.blue : T_.border}`, background: detail === "chewyTransfer" ? `${T_.blue}08` : T_.bgInput, marginBottom: 4, cursor: "pointer" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.blue }}>Senior Secured Term Loan B</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Cov-lite · Floating · 7-year</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue }}>$4,300M</div>
+                <div style={{ fontSize: 9, color: T_.green }}>Recovery: 100% (held through)</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Chewy was guarantor → released Jun 2018", "Wilmington Trust = admin agent", "90% consented to 2019 settlement"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.blue}15`, color: T_.blue }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* 1L Notes */}
+          <div style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${T_.border}`, background: T_.bgInput, marginBottom: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.emerald }}>8.875% Senior First Lien Notes due 2025</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Issued May 2017 for Chewy acquisition</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.emerald }}>$1,350M</div>
+                <div style={{ fontSize: 9, color: T_.green }}>Recovery: 100%</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Unsecured 7.125% */}
+          <div style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${T_.border}`, background: T_.bgInput, marginBottom: 4 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.amber }}>7.125% Senior Unsecured Notes due 2023</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Largest LBO bond of 2015</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.amber }}>$1,900M</div>
+                <div style={{ fontSize: 9, color: T_.green }}>Recovery: 100%</div>
+              </div>
+            </div>
+            <div style={{ display: "flex", gap: 4, marginTop: 4, flexWrap: "wrap" }}>
+              {["Traded at $0.48 in May 2018", "Yield ~24.6% at trough", "Made whole at par in 2021 refi"].map(t => <span key={t} style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: `${T_.amber}15`, color: T_.amber }}>{t}</span>)}
+            </div>
+          </div>
+
+          {/* Unsecured 5.875% */}
+          <div style={{ padding: "10px 14px", borderRadius: 8, border: `1px solid ${T_.border}`, background: T_.bgInput, marginBottom: 0 }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <span style={{ fontSize: 13, fontWeight: 700, color: T_.red }}>5.875% Senior Unsecured Notes due 2025</span>
+                <span style={{ fontSize: 10, color: T_.textDim, marginLeft: 8 }}>Issued May 2017 for Chewy acquisition</span>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: T_.red }}>$650M</div>
+                <div style={{ fontSize: 9, color: T_.green }}>Recovery: 100%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Guarantee annotations */}
+        <div style={{ display: "flex", justifyContent: "center", padding: "0 0 6px" }}>
+          <div style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: "center" }}>
+            <span style={{ fontSize: 9, color: T_.green }}>▲ Wholly-owned domestic restricted subs guarantee all debt</span>
+            <span style={{ fontSize: 9, color: T_.red }}>▲ Chewy guarantee RELEASED Jun 2018 (phantom guarantee)</span>
+          </div>
+        </div>
+
+        <VLine h={14} />
+
+        {/* ROW 5: Subsidiaries — two-column */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
+          <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
+
+          {/* LEFT: OpCo + Stores */}
+          <div>
+            <VLine h={14} />
+            <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 12, padding: "12px 10px 10px", background: `${T_.green}04`, position: "relative" }}>
+              <div style={{ position: "absolute", top: -10, left: 10, background: T_.bgPanel, padding: "0 6px" }}>
+                <span style={{ fontSize: 9, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group</span>
+              </div>
+              <Box
+                label="PetSmart LLC + Subsidiaries"
+                sub="Co-Issuer · 1,650+ stores · US, Canada, PR"
+                color={T_.emerald}
+                badges={[
+                  { text: "OPERATING ENTITY", color: T_.emerald },
+                  { text: "GUARANTORS", color: T_.green },
+                  { text: "RESTRICTED SUBS", color: T_.green },
+                ]}
+              />
+            </div>
+          </div>
+
+          {/* RIGHT: Chewy */}
+          <div>
+            <VLine h={14} />
+            <Box
+              label="Chewy, Inc."
+              sub="E-commerce · Acquired May 2017 for $3.35B"
+              color={T_.cyan}
+              badges={[
+                { text: "WAS RESTRICTED + GUARANTOR", color: T_.green },
+                { text: "GUARANTEE RELEASED JUN 2018", color: T_.red },
+                { text: "IPO JUN 2019 — $15B MKT CAP", color: T_.cyan },
+              ]}
+              onClick={() => toggle("chewyAcq")} selected={detail === "chewyAcq"}
+            />
+            <VLine h={10} />
+            <div style={{ fontSize: 9, color: T_.amber, textAlign: "center", padding: "0 4px" }}>
+              20% → sponsors · 16.5% → unrestricted sub · 63.5% retained → no longer wholly owned → guarantee auto-released
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Unrestricted sub callout */}
+      <div style={{ padding: "12px 16px", background: `${T_.red}04`, borderRadius: 12, border: `2px dashed ${T_.red}30`, marginTop: 12, marginBottom: 4 }}>
+        <div style={{ fontSize: 10, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 6, textAlign: "center" }}>Unrestricted Subsidiary (Created Jun 2018)</div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="NewCo Unrestricted Sub"
+            sub="Received 16.5% of Chewy equity · Outside credit group"
+            color={T_.red}
+            dashed
+            badges={[
+              { text: "UNRESTRICTED", color: T_.red },
+              { text: "16.5% CHEWY", color: T_.red },
+              { text: "OUTSIDE CREDIT GROUP", color: T_.red },
+            ]}
+            width={440}
+          />
+        </div>
+        <div style={{ textAlign: "center", marginTop: 6, fontSize: 9, color: T_.red }}>
+          Combined with the 20% dividend to sponsors, PetSmart no longer wholly owned Chewy → Section 9.15 automatic guarantee release triggered
+        </div>
+      </div>
+
+      {/* ── Detail buttons ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+        {[
+          { k: "dividend", label: "Dividend Recap", color: T_.purple, sub: "$800M extracted within 10 months of LBO" },
+          { k: "planTreatment", label: "Debt Evolution", color: T_.blue, sub: "All tranches → 100% recovery · No Ch.11" },
+          { k: "refi2021", label: "2021 Refinancing", color: T_.green, sub: "$6B recap · Chewy separated · stock pledged" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`,
+            transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Additional detail buttons */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 4 }}>
+        <div onClick={() => toggle("settlement")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "settlement" ? `${T_.accent}12` : T_.bgInput,
+          border: `1px solid ${detail === "settlement" ? T_.accent : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Settlement & Chewy IPO</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>90% lender consent · $1B IPO · ~$10B paper gain</div>
+        </div>
+        <div onClick={() => toggle("postEmergence")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "postEmergence" ? `${T_.green}12` : T_.bgInput,
+          border: `1px solid ${detail === "postEmergence" ? T_.green : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.green }}>Current State</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>BC Partners majority · Apollo minority (2023) · private</div>
+        </div>
+      </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "The 'Phantom Guarantee' — Automatic Release Provisions", color: T_.accent, summary: "Chewy's guarantee was automatically released when PetSmart ceased to wholly own it — no lender vote required.", detail: "Section 9.15 of PetSmart's term loan agreement stated that a subsidiary guarantor would be automatically released from its guarantee when it 'ceases to be a wholly-owned Subsidiary' in connection with a permitted transaction. By distributing 20% to sponsors and investing 16.5% in an unrestricted sub, PetSmart reduced its Chewy ownership to 63.5% — triggering automatic release. The guarantee evaporated without lender consent, without a vote, and without advance notice. This is the 'phantom guarantee' — it existed on paper but could be dissolved through permitted transactions. Post-PetSmart, credit agreements now include 'Chewy blockers' that restrict automatic guarantee release mechanics." },
+          { label: "Collateral Stripping via Covenant Baskets", color: T_.red, summary: "Two covenant baskets, used in combination, moved $1.66B of Chewy value beyond creditors' reach.", detail: "PetSmart used two separate covenant baskets: (1) Section 6.08(a)(viii) — the restricted payment basket — to distribute 20% of Chewy ($908.5M) to sponsors, and (2) Section 6.04 — the investment basket — to contribute 16.5% ($749.5M) to an unrestricted subsidiary. Neither transaction alone would have triggered the guarantee release. Combined, they reduced PetSmart's ownership below 100%, activating the automatic release. This is the same playbook as J.Crew (investment baskets → non-loan-party restricted sub → unrestricted sub) but with a different trigger mechanism (ownership threshold vs. designation)." },
+          { label: "The 'Chewy Blocker' — Market Response", color: T_.green, summary: "Post-2018, credit agreements include specific provisions preventing automatic guarantee release through ownership dilution.", detail: "Chewy blockers typically include: (1) Anti-dilution provisions — preventing guarantee release solely because a subsidiary ceases to be wholly owned through permitted transactions. (2) Minimum ownership thresholds — requiring guarantee release only if the borrower sells its ENTIRE interest, not just dilutes below 100%. (3) Value caps on collateral release — limiting the aggregate value of assets that can be removed from the credit group. (4) Consent requirements — requiring lender approval for guarantee release above a dollar threshold. These join J.Crew blockers (IP transfer), Envision blockers (dropdown), and Serta blockers (uptier) as the four pillars of modern LME protection." },
+          { label: "Out-of-Court Restructuring — No Ch.11 Needed", color: T_.blue, summary: "PetSmart resolved $8.6B of distressed debt without ever filing bankruptcy — a pure out-of-court story.", detail: "Unlike Windstream, Envision, Serta, J.Crew, and Diebold (all Ch.11 filers), PetSmart's restructuring was entirely out-of-court: (1) 2018 LME stripped collateral, (2) 2019 settlement with 90% lender consent, (3) Chewy IPO raised $1B for debt paydown, (4) COVID pet boom improved fundamentals, (5) 2021 comprehensive refinancing retired all legacy debt at par. No DIP financing, no plan of reorganization, no court confirmation. This demonstrates that aggressive LMEs can succeed without bankruptcy if the underlying asset (Chewy) appreciates enough to cover the damage." },
+          { label: "PE Dividend Recap + Value Extraction Playbook", color: T_.purple, summary: "BC Partners extracted $800M in dividends, then engineered a $10B+ paper gain on Chewy — while creditors temporarily bore the risk.", detail: "The sequence: (1) LBO with $6.2B debt (Mar 2015), (2) $800M dividend recap within 10 months (late 2015), (3) acquire Chewy for $3.35B funded with $2B more debt (May 2017), (4) strip Chewy from collateral pool (Jun 2018), (5) IPO Chewy at $15B market cap (Jun 2019), (6) distribute all Chewy shares to HoldCo (2021). The sponsors recouped their equity investment via the dividend, then captured the entire upside from Chewy while creditors' collateral was temporarily impaired. When the unsecured notes traded at $0.48 in 2018, the capital structure looked broken — but the sponsors held the option on Chewy's value and it paid off spectacularly." },
+          { label: "COVID as Tailwind — The Pet Adoption Boom", color: T_.emerald, summary: "Unlike most PE-backed retailers, COVID saved PetSmart — pet stores were essential, and adoption surged.", detail: "Pet stores were classified as essential businesses during COVID lockdowns. PetSmart saw +36% sales in March 2020 and +18% revenue growth through FY2020/21 as pandemic pet adoption surged (an estimated 23M US households adopted pets in 2020-2021). This was the opposite of the retail apocalypse hitting other PE-backed chains. The improved fundamentals — combined with Chewy's stock price appreciation — gave PetSmart the operating performance and asset backing to execute the 2021 refinancing at favorable terms. Without COVID's pet boom, PetSmart might have eventually filed Ch.11." },
+          { label: "Chewy Stock as Collateral — HoldCo Supporting OpCo", color: T_.amber, summary: "In the 2021 refi, an Argos affiliate pledged $4B of Chewy stock as collateral for PetSmart debt — an unusual structural support.", detail: "After distributing all Chewy shares from PetSmart to Argos Holdings, an Argos affiliate pledged ~$4B of Chewy Class B stock as collateral for PetSmart's new first lien debt and guaranteed both secured and unsecured notes. This inverted the typical HoldCo/OpCo dynamic: the parent was now supporting the operating company, not the other way around. Lenders got credit for the Chewy collateral even though PetSmart itself no longer owned the shares. This creative structure — parent guarantee + external stock pledge — became a key feature of the refinancing that won over lenders who had been burned by the 2018 phantom guarantee." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "Jul 2014", event: "Longview/JANA activist pressure on PetSmart. Unaffected share price baseline set.", color: T_.textMid },
+          { date: "Dec 14, 2014", event: "BC Partners consortium announces $83/share take-private ($8.7B TEV, ~9.1x EBITDA).", color: T_.purple },
+          { date: "Mar 11, 2015", event: "LBO closes. ~$6.2B debt raised ($4.3B TLB + $1.9B unsecured notes + $750M ABL). Pre-LBO debt was only $560M.", color: T_.purple },
+          { date: "Late 2015", event: "$800M DIVIDEND RECAP to sponsors within ~10 months of closing. ~38% of equity recouped.", color: T_.red },
+          { date: "May 2017", event: "CHEWY ACQUIRED for $3.35B (largest e-commerce acquisition ever). Funded with $1.35B 1L notes + $650M unsecured + $1B equity. Total PetSmart debt: ~$8.6B.", color: T_.cyan },
+          { date: "Jun 1, 2018", event: "CHEWY EQUITY TRANSFER: 20% to sponsors ($908.5M), 16.5% to unrestricted sub ($749.5M). PetSmart now owns 63.5% → Chewy guarantee AUTOMATICALLY RELEASED. ~$4.3B of secured debt loses Chewy collateral.", color: T_.red },
+          { date: "Jun 26, 2018", event: "Wilmington Trust (admin agent) files lawsuit challenging the transfer. Citibank refuses to deliver guarantee release docs. Ad hoc lender group forms.", color: T_.amber },
+          { date: "May 2018", event: "Moody's downgrades to Caa1. 7.125% unsecured notes trade at $0.48 — yield ~24.6%. S&P downgrades to CCC.", color: T_.red },
+          { date: "Apr 17, 2019", event: "SETTLEMENT: 90% of TL lenders consent. 50bps fee, tighter covenants, $250M paydown. PetSmart commits to Chewy IPO.", color: T_.amber },
+          { date: "Jun 14, 2019", event: "CHEWY IPO at $22/share. Raises ~$1.02B. Stock surges 59% on day one. Market cap: ~$15B. PetSmart paper gain: ~$10B.", color: T_.green },
+          { date: "Mar 2020", event: "COVID: Pet stores deemed essential. Sales surge +36%. Pandemic pet adoption wave begins.", color: T_.green },
+          { date: "Oct 2020", event: "Initial refinancing attempt withdrawn due to lender opposition on terms.", color: T_.amber },
+          { date: "Feb 2021", event: "REFINANCING CLOSES: $2.3B new TL + $1.2B 1L notes (4.75%) + $1.15B unsecured (7.75%). All legacy debt retired at par. Chewy fully distributed to Argos. Argos pledges ~$4B Chewy stock as collateral.", color: T_.green },
+          { date: "Jul 2023", event: "Apollo acquires minority equity stake from BC Partners (Kirkland & Ellis advised).", color: T_.textMid },
+          { date: "Aug 2025", event: "New $4.7B refinancing: $2.0B TL + $1.95B secured notes (7.5%, 2032) + $750M unsecured (10%, 2033). Chewy Class B shares (~$1.4B) remain as collateral.", color: T_.green },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -2071,6 +2622,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "serta" && <SertaCase />}
       {activeCase === "diebold" && <DieboldNixdorfCase />}
       {activeCase === "jcrew" && <JCrewCase />}
+      {activeCase === "petsmart" && <PetSmartCase />}
     </div>
   );
 }
