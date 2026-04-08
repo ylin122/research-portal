@@ -33,7 +33,7 @@ const SOURCE_COLORS = {
   "Notes / Ideas": { bg: "#8B5CF622", color: "#8B5CF6", border: "#8B5CF644" },
   "Business Models": { bg: "#F59E0B22", color: "#F59E0B", border: "#F59E0B44" },
   "Financial Instruments": { bg: "#EF444422", color: "#EF4444", border: "#EF444444" },
-  "YL Research Wiki": { bg: "#14B8A622", color: "#14B8A6", border: "#14B8A644" },
+  "Research Wiki": { bg: "#14B8A622", color: "#14B8A6", border: "#14B8A644" },
   "Idea Tracker": { bg: "#A78BFA22", color: "#A78BFA", border: "#A78BFA44" },
   "Knowledge Base": { bg: "#FB923C22", color: "#FB923C", border: "#FB923C44" },
   "Portal": { bg: "#6EE7B722", color: "#6EE7B7", border: "#6EE7B744" },

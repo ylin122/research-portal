@@ -368,7 +368,7 @@ export default function KnowledgeBase() {
   return (
     <div style={{ padding: 0 }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4, fontFamily: FONT }}>
-        YL Research Wiki
+        Research Wiki
       </h1>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Articles, notes, and research pulled from Gmail. Email links to <span style={{ color: T_.accent }}>ylresearchwiki@gmail.com</span>, run ingest, then compile.

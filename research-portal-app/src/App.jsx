@@ -504,9 +504,9 @@ function AppContent() {
             <span>Knowledge / Interests</span>
           </div>
 
-          {/* YL Research Wiki */}
+          {/* Research Wiki */}
           <div style={{ ...s.sectorHdr, color: view.type === "researchWiki" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "researchWiki" }); setEditingField(null); }}>
-            <span>YL Research Wiki</span>
+            <span>Research Wiki</span>
           </div>
 
           {/* Restructuring */}
@@ -737,7 +737,7 @@ function AppContent() {
                 })),
                 { type: null, label: "— Reference —", icon: "" },
                 { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
-                { type: "researchWiki", label: "YL Research Wiki", icon: "\u{1F4DA}" },
+                { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
                 { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
                 { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
                 { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
