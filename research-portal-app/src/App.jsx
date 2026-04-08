@@ -100,7 +100,55 @@ async function fetchNews(name) {
 }
 
 // ─── App ──────────────────────────────────────────────
+const APP_PASS = "Ylin6274!";
+
 export default function App() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem("rp_auth") === "1");
+  const [passInput, setPassInput] = useState("");
+  const [passError, setPassError] = useState(false);
+
+  if (!authed) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: T_.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
+        <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 12, padding: 40, width: 320, textAlign: "center" }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: T_.text, marginBottom: 6 }}>Research Portal</div>
+          <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 24 }}>Enter password to continue</div>
+          <input
+            type="password"
+            value={passInput}
+            onChange={e => { setPassInput(e.target.value); setPassError(false); }}
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                if (passInput === APP_PASS) { sessionStorage.setItem("rp_auth", "1"); setAuthed(true); }
+                else setPassError(true);
+              }
+            }}
+            placeholder="Password"
+            autoFocus
+            style={{
+              width: "100%", background: T_.bgInput, border: `1px solid ${passError ? T_.red : T_.border}`, borderRadius: 6,
+              padding: "10px 14px", color: T_.text, fontSize: 14, outline: "none", boxSizing: "border-box",
+              fontFamily: "inherit",
+            }}
+          />
+          {passError && <div style={{ color: T_.red, fontSize: 12, marginTop: 8 }}>Incorrect password</div>}
+          <button
+            onClick={() => {
+              if (passInput === APP_PASS) { sessionStorage.setItem("rp_auth", "1"); setAuthed(true); }
+              else setPassError(true);
+            }}
+            style={{
+              marginTop: 16, width: "100%", background: T_.accent, color: "#000", border: "none", borderRadius: 6,
+              padding: "10px", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+            }}
+          >
+            Enter
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   const [ready, setReady] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [sectorNotes, setSectorNotes] = useState({});
