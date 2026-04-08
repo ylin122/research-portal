@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa", red: "#f87171", amber: "#f5a623",
-};
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+import { T_, FONT } from "./lib/theme";
 
 function Section({ title, subtitle, color, children }) {
   return (
@@ -14,15 +7,6 @@ function Section({ title, subtitle, color, children }) {
       <div style={{ fontSize: 17, fontWeight: 600, color: color || T_.text, marginBottom: subtitle ? 6 : 14 }}>{title}</div>
       {subtitle && <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 16 }}>{subtitle}</div>}
       {children}
-    </div>
-  );
-}
-
-function ConceptBlock({ label, text, color }) {
-  return (
-    <div style={{ marginBottom: 14 }}>
-      <div style={{ fontSize: 11, color: color || T_.textGhost, textTransform: "uppercase", fontWeight: 600, letterSpacing: "0.5px", marginBottom: 6 }}>{label}</div>
-      <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{text}</div>
     </div>
   );
 }

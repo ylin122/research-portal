@@ -1,16 +1,5 @@
 import { useState } from "react";
-
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif';
-
-const T_ = {
-  bg: "#0a0e17", bgSidebar: "#0d1220", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", greenBg: "#0d3520", greenBorder: "#1a7a3d",
-  amber: "#f5a623", amberBg: "#332508", amberBorder: "#8a5e16",
-  grayBadge: "#3d4d60", grayBadgeText: "#b0bcc9",
-  blue: "#70b0fa", red: "#f87171", redDim: "#7f1d1d",
-};
+import { T_, FONT } from "./lib/theme";
 
 const PROMPTS_KEY = "research_portal_verify_prompts";
 const FLAGGED_KEY = "research_portal_verify_flagged";
@@ -255,6 +244,15 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             tools: "Read, Bash, Grep, Glob",
             mode: "Read + Write (git operations). Never force pushes or commits secrets.",
           },
+          {
+            name: "@consistency",
+            file: "commands/consistency.md",
+            color: "#c084fc",
+            desc: "Scans research content across tabs for missing fields, stale data, depth mismatches, and format/style inconsistencies. Reports issues by severity with specific fix suggestions.",
+            usage: "@consistency check credit research",
+            tools: "Read, Bash, Grep, Glob",
+            mode: "Read-only. Never modifies files or data.",
+          },
         ].map(agent => (
           <div key={agent.name} style={{
             background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 8,
@@ -285,7 +283,8 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             <strong>1.</strong> After code changes → <span style={{ fontFamily: "monospace", color: T_.green }}>@verifier</span><br/>
             <strong>2.</strong> After writing research content → run <span style={{ fontFamily: "monospace", color: T_.blue }}>@fact-checker</span> and <span style={{ fontFamily: "monospace", color: T_.red }}>@fact-disputer</span> in parallel<br/>
             <strong>3.</strong> After both return → <span style={{ fontFamily: "monospace", color: T_.amber }}>@fact-check-reconciler</span> to get final verdicts<br/>
-            <strong>4.</strong> Fix any CONFLICT / LIKELY WRONG items, then re-verify
+            <strong>4.</strong> Fix any CONFLICT / LIKELY WRONG items, then re-verify<br/>
+            <strong>5.</strong> Periodically → <span style={{ fontFamily: "monospace", color: "#c084fc" }}>@consistency</span> to catch format/depth/staleness drift across tabs
           </div>
         </div>
       </div>

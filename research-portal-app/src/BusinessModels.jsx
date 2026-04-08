@@ -1,12 +1,5 @@
 import { useState, useEffect } from "react";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa", red: "#f87171", amber: "#f5a623",
-};
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+import { T_, FONT } from "./lib/theme";
 
 // ─── Helper: Section Card ───
 function Section({ title, subtitle, children }) {
@@ -184,7 +177,7 @@ const MODELS = {
       { label: "Leverage", value: "2-4x", sub: "Debt / equity" },
     ],
     valuation: "Price-to-book: 0.8-1.5x depending on asset quality and earnings growth. P/E: 8-14x. EV/EBITDA: 7-11x. Railcar lessors trade at premium (long-lived assets). Truck/trailer lessors trade at modest multiples (shorter lives, cyclical). Dividend yield is important — many lessors return 30-50% of earnings. NAV-based analysis common: sum of asset values minus debt.",
-    goodVsBad: "GOOD: diversified asset pool, long-lived assets, essential/non-discretionary use, high re-lease rates, conservative leverage. BAD: concentrated in one asset type, short-lived or rapidly depreciating assets, cyclical end markets, high customer concentration, aggressive leverage.",
+    goodVsBad: "A GOOD equipment leasing business has: diversified asset pool, long-lived assets, essential/non-discretionary use, high re-lease rates, conservative leverage. A BAD one has: concentrated in one asset type, short-lived or rapidly depreciating assets, cyclical end markets, high customer concentration, aggressive leverage.",
     examples: [
       { name: "GATX", detail: "North America's largest railcar lessor. ~156,000 railcars. 125+ year operating history. 99%+ utilization.", metric: "~1.3x P/B" },
       { name: "Triton (Brookfield)", detail: "World's largest intermodal container lessor. ~7M+ TEUs. Acquired by Brookfield Infrastructure for $13.3B.", metric: "Acquired" },
@@ -300,12 +293,12 @@ const MODELS = {
     howItWorks: "Marketplace platforms match supply (sellers, service providers, hosts) with demand (buyers, consumers, guests) and charge a take rate on each transaction. Revenue = Gross Merchandise Value (GMV) \u00D7 take rate. The platform doesn't hold inventory or deliver the service — it facilitates the connection and handles trust, payment, and discovery. Network effects are the key: more buyers attract more sellers, which attracts more buyers. Once a marketplace achieves liquidity, it becomes very hard to displace. Monetization expands through advertising, fintech (payments, lending), and premium tools for sellers.",
     economics: "Take rates: 5-30% depending on category. Airbnb: ~13.5% (host + guest fees). Uber: ~25-30% (driver + rider). DoorDash: ~15-20%. Etsy: ~22% (fees + ads + payments). Booking.com: ~14.5%. Gross margins: 50-75%. The 'holy grail' is a marketplace with high take rate, high frequency, and strong network effects. Contribution margin per transaction increases over time as CAC amortizes and repeat usage grows. At scale, marketplaces can achieve 25-40% EBITDA margins.",
     keyMetrics: [
-      { label: "GMV", value: "varies", sub: "Gross merchandise/booking value" },
+      { label: "GMV", value: "$10B-200B+", sub: "Gross merchandise/booking value" },
       { label: "Take Rate", value: "5-30%", sub: "Revenue / GMV" },
       { label: "Gross Margin", value: "50-75%", sub: "After payment processing" },
-      { label: "Frequency", value: "key driver", sub: "Transactions per user/year" },
-      { label: "Liquidity", value: "supply fills", sub: "% demand matched quickly" },
-      { label: "CAC/LTV", value: "varies", sub: "Acquisition cost vs lifetime value" },
+      { label: "Frequency", value: "4-50x/yr", sub: "Transactions per user/year" },
+      { label: "Liquidity", value: ">80%", sub: "% demand matched quickly" },
+      { label: "CAC/LTV", value: "3-5x+", sub: "Target LTV/CAC ratio" },
     ],
     valuation: "EV/GMV: 0.5-3x (efficient way to compare across take rates). EV/Revenue: 5-20x for growth marketplaces. Premium for: high take rate, strong network effects, demonstrated liquidity, expanding into adjacencies (fintech, ads). Discount for: low take rate, subsidy-driven growth, no clear path to profitability, regulatory risk (gig economy classification).",
     goodVsBad: "GOOD: genuine two-sided network effects, high frequency, expanding take rate over time, multiple revenue streams (ads, fintech), high seller/buyer retention. BAD: subsidy-dependent (growth collapses when discounts end), single-sided (no real network effect), commoditized supply (easy to multi-home), regulatory risk.",
@@ -512,7 +505,7 @@ const MODELS = {
     keyMetrics: [
       { label: "Op Margin", value: "70-90%", sub: "Nearly zero costs" },
       { label: "Royalty Rate", value: "1-25%", sub: "Varies by asset type" },
-      { label: "Production Growth", value: "varies", sub: "Volume drives revenue" },
+      { label: "Production Growth", value: "0-10%/yr", sub: "Volume drives revenue" },
       { label: "Reserve Life", value: "10-30+ yr", sub: "Mineral assets" },
       { label: "FCF Conversion", value: "~100%", sub: "No capex required" },
       { label: "Dividend Yield", value: "1-8%", sub: "Varies by growth profile" },

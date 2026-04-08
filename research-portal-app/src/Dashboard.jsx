@@ -1,13 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa", red: "#f87171", amber: "#f5a623",
-};
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+import { T_, FONT } from "./lib/theme";
 
 function fmtDate(d) { return d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""; }
 

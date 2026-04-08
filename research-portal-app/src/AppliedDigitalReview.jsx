@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa",
-};
-const FONT = "'Inter', 'DM Sans', 'Segoe UI', sans-serif";
+import { T_, FONT } from "./lib/theme";
 const s = {
   card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 16 },
   section: { marginBottom: 36 },

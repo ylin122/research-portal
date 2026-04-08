@@ -29,6 +29,7 @@ import {
   loadSectorNotes, upsertSectorNote,
   loadResearchResults,
 } from "./lib/db";
+import { T_, FONT } from "./lib/theme";
 
 // ─── Helpers ──────────────────────────────────────────
 function useAutoSave(fn, ms = 700) {
@@ -67,17 +68,6 @@ const SOURCE_FIELDS = [
 ];
 
 const PRIORITIES = ["High", "Medium", "Low"];
-
-// ─── Theme ────────────────────────────────────────────
-const T_ = {
-  bg: "#0a0e17", bgSidebar: "#0d1220", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", greenBg: "#0d3520", greenBorder: "#1a7a3d",
-  amber: "#f5a623", amberBg: "#332508", amberBorder: "#8a5e16",
-  grayBadge: "#3d4d60", grayBadgeText: "#b0bcc9",
-  blue: "#70b0fa", red: "#f87171", redDim: "#7f1d1d",
-};
 
 // ─── News API ─────────────────────────────────────────
 async function fetchNews(name) {
@@ -632,6 +622,7 @@ function AppContent() {
         {/* DATA VERIFICATION AGENT */}
         {view.type === "dataVerificationAgent" && <DataVerificationAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
+
         {/* EQUITY RESEARCH */}
         {view.type === "equityResearch" && (
           <div style={s.page}>
@@ -1100,7 +1091,6 @@ function NoteInput({ onAdd }) {
 }
 
 // ─── Styles ───────────────────────────────────────────
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
 const s = {
   wrap: { display: "flex", minHeight: "100vh", background: T_.bg, fontFamily: FONT, fontSize: 14, color: T_.text },
   sidebar: { width: 230, background: T_.bgSidebar, borderRight: `1px solid ${T_.border}`, display: "flex", flexDirection: "column", flexShrink: 0, height: "100vh", position: "sticky", top: 0, overflowY: "auto" },

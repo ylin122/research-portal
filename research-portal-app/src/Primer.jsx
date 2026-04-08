@@ -1,14 +1,7 @@
 import { useState, useEffect } from "react";
 import PrimerNewTabs1 from "./PrimerNewTabs";
 import PrimerNewTabs2 from "./PrimerNewTabs2";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa", red: "#f87171", amber: "#f5a623",
-};
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+import { T_, FONT } from "./lib/theme";
 
 // ─── SOFTWARE ECOSYSTEM DATA ──────────────────────────
 const SW_SUBSECTORS = {
@@ -1842,14 +1835,14 @@ export default function Primer({ initialTab }) {
           { model: "Government-Funded / Grant-Dependent", desc: "Significant portion of education spending is government-funded (E-Rate, ESSER, Title I, Pell Grants). Budget cycles and policy changes create demand volatility. ESSER cliff in 2024-2025 is a near-term headwind.", color: "#EF4444" },
         ];
         const ED_KEYCONCEPTS = [
-          { term: "ESSER Funding Cliff", def: "Elementary and Secondary School Emergency Relief funds (~$190B total) from COVID stimulus. Must be obligated by Sep 2024. As funds expire, districts face significant budget pressure, directly impacting edtech procurement." },
-          { term: "Enrollment Cliff (Higher Ed)", def: "Projected ~15% decline in traditional college-age students starting ~2025 due to post-2008 birth rate decline. Hits regional/less-selective schools hardest. Drives demand for enrollment management tech and online programs." },
-          { term: "E-Rate Program", def: "FCC program providing $2-4B annually in discounts for school/library broadband and networking. The primary funding mechanism for K-12 IT infrastructure. Stable but subject to political appropriations." },
-          { term: "OPM (Online Program Management)", def: "Third-party companies that partner with universities to recruit students, build/run online degree programs, and provide platform infrastructure in exchange for tuition revenue share (typically 40-60%). DOE investigating whether this constitutes improper incentive compensation." },
-          { term: "1:1 Device Programs", def: "Policy of providing every student with a personal computing device (typically Chromebook). Now standard in most US K-12 districts post-COVID. Creates captive ecosystem for software and management tools." },
-          { term: "LMS vs LXP", def: "LMS (Learning Management System) = structured, admin-driven, compliance-focused (Canvas, Blackboard, Cornerstone). LXP (Learning Experience Platform) = learner-driven, Netflix-style discovery, skills-focused (Degreed, EdCast). Market trending toward convergence." },
-          { term: "Adaptive Learning", def: "AI/algorithm-driven instruction that adjusts content difficulty and pacing based on individual student performance. IXL, DreamBox, ALEKS (McGraw-Hill). Evidence of efficacy is mixed but adoption growing." },
-          { term: "Micro-Credentials / Stackable Certificates", def: "Short-form credentials (Google Career Certificates, Coursera Professional Certificates, university micro-masters) that can be stacked toward a degree. Growing alternative to traditional 4-year programs. Employer recognition still nascent." },
+          { title: "ESSER Funding Cliff", desc: "Elementary and Secondary School Emergency Relief funds (~$190B total) from COVID stimulus. Must be obligated by Sep 2024. As funds expire, districts face significant budget pressure, directly impacting edtech procurement." },
+          { title: "Enrollment Cliff (Higher Ed)", desc: "Projected ~15% decline in traditional college-age students starting ~2025 due to post-2008 birth rate decline. Hits regional/less-selective schools hardest. Drives demand for enrollment management tech and online programs." },
+          { title: "E-Rate Program", desc: "FCC program providing $2-4B annually in discounts for school/library broadband and networking. The primary funding mechanism for K-12 IT infrastructure. Stable but subject to political appropriations." },
+          { title: "OPM (Online Program Management)", desc: "Third-party companies that partner with universities to recruit students, build/run online degree programs, and provide platform infrastructure in exchange for tuition revenue share (typically 40-60%). DOE investigating whether this constitutes improper incentive compensation." },
+          { title: "1:1 Device Programs", desc: "Policy of providing every student with a personal computing device (typically Chromebook). Now standard in most US K-12 districts post-COVID. Creates captive ecosystem for software and management tools." },
+          { title: "LMS vs LXP", desc: "LMS (Learning Management System) = structured, admin-driven, compliance-focused (Canvas, Blackboard, Cornerstone). LXP (Learning Experience Platform) = learner-driven, Netflix-style discovery, skills-focused (Degreed, EdCast). Market trending toward convergence." },
+          { title: "Adaptive Learning", desc: "AI/algorithm-driven instruction that adjusts content difficulty and pacing based on individual student performance. IXL, DreamBox, ALEKS (McGraw-Hill). Evidence of efficacy is mixed but adoption growing." },
+          { title: "Micro-Credentials / Stackable Certificates", desc: "Short-form credentials (Google Career Certificates, Coursera Professional Certificates, university micro-masters) that can be stacked toward a degree. Growing alternative to traditional 4-year programs. Employer recognition still nascent." },
         ];
         return (
         <div>
@@ -2005,9 +1998,9 @@ export default function Primer({ initialTab }) {
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 16 }}>Key Concepts</div>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(320px, 1fr))", gap: 10 }}>
               {ED_KEYCONCEPTS.map(kc => (
-                <div key={kc.term} style={{ background: T_.bg, borderRadius: 8, padding: "14px 16px", border: `1px solid ${T_.border}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>{kc.term}</div>
-                  <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.5 }}>{kc.def}</div>
+                <div key={kc.title} style={{ background: T_.bg, borderRadius: 8, padding: "14px 16px", border: `1px solid ${T_.border}` }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>{kc.title}</div>
+                  <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.5 }}>{kc.desc}</div>
                 </div>
               ))}
             </div>
