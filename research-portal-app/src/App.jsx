@@ -314,7 +314,7 @@ export default function App() {
         <div style={s.navTree}>
           {/* Principles */}
           <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "principles" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "principles" }); setEditingField(null); }}>
-            <span>Principles</span>
+            <span>Principles & Epiphanies</span>
           </div>
 
           {/* Agents */}
