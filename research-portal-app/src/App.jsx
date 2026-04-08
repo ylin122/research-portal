@@ -149,6 +149,10 @@ export default function App() {
     );
   }
 
+  return <AppContent />;
+}
+
+function AppContent() {
   const [ready, setReady] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [sectorNotes, setSectorNotes] = useState({});
