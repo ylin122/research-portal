@@ -26,3 +26,7 @@ _seed_extract.cjs
 *.sw?
 
 .vercel
+
+# Gmail API secrets
+scripts/credentials.json
+scripts/token.json
