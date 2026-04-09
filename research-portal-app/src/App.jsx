@@ -14,6 +14,7 @@ import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
 import Restructuring from "./Restructuring";
 import Principles from "./Principles";
+import ApiDirectory from "./ApiDirectory";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
 import WatchlistAgent from "./WatchlistAgent";
@@ -529,6 +530,11 @@ function AppContent() {
             <span>Sources</span>
           </div>
 
+          {/* APIs */}
+          <div style={{ ...s.sectorHdr, color: view.type === "apis" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "apis" }); setEditingField(null); }}>
+            <span>APIs</span>
+          </div>
+
           {/* Audit & Change Log */}
           <div style={{ ...s.sectorHdr, color: view.type === "auditLog" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "auditLog" }); setEditingField(null); }}>
             <span>Audit Log</span>
@@ -760,6 +766,13 @@ function AppContent() {
 
         {/* SOURCES */}
         {view.type === "sources" && <Sources />}
+
+        {/* APIs */}
+        {view.type === "apis" && (
+          <div style={{ ...s.page, maxWidth: "none" }}>
+            <ApiDirectory />
+          </div>
+        )}
 
         {/* AUDIT LOG */}
         {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
