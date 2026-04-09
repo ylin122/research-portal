@@ -245,6 +245,15 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             mode: "Read + Write (git operations). Never force pushes or commits secrets.",
           },
           {
+            name: "@refresh",
+            file: "refresh.md",
+            color: "#14B8A6",
+            desc: "Updates any tab with the latest information from the web. Searches for current news, data, market developments, and regulatory changes. Fact-checks existing content and corrects outdated claims.",
+            usage: "@refresh update the AI Research tab",
+            tools: "Read, Bash, Grep, Glob, Edit, Write, WebSearch, WebFetch",
+            mode: "Read + Write. Edits hardcoded JSX directly; reports changes needed for DB-backed tabs.",
+          },
+          {
             name: "@consistency",
             file: "commands/consistency.md",
             color: "#c084fc",
@@ -280,11 +289,12 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
         <div style={{ background: T_.bgInput, border: `1px dashed ${T_.accent}30`, borderRadius: 8, padding: "12px 14px", marginTop: 4 }}>
           <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, marginBottom: 6 }}>Recommended Workflow</div>
           <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.8 }}>
-            <strong>1.</strong> After code changes → <span style={{ fontFamily: "monospace", color: T_.green }}>@verifier</span><br/>
-            <strong>2.</strong> After writing research content → run <span style={{ fontFamily: "monospace", color: T_.blue }}>@fact-checker</span> and <span style={{ fontFamily: "monospace", color: T_.red }}>@fact-disputer</span> in parallel<br/>
-            <strong>3.</strong> After both return → <span style={{ fontFamily: "monospace", color: T_.amber }}>@fact-check-reconciler</span> to get final verdicts<br/>
-            <strong>4.</strong> Fix any CONFLICT / LIKELY WRONG items, then re-verify<br/>
-            <strong>5.</strong> Periodically → <span style={{ fontFamily: "monospace", color: "#c084fc" }}>@consistency</span> to catch format/depth/staleness drift across tabs
+            <strong>1.</strong> To update a tab with latest info → <span style={{ fontFamily: "monospace", color: "#14B8A6" }}>@refresh</span> (searches web, updates content, checks accuracy)<br/>
+            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: T_.green }}>@verifier</span><br/>
+            <strong>3.</strong> After writing research content → run <span style={{ fontFamily: "monospace", color: T_.blue }}>@fact-checker</span> and <span style={{ fontFamily: "monospace", color: T_.red }}>@fact-disputer</span> in parallel<br/>
+            <strong>4.</strong> After both return → <span style={{ fontFamily: "monospace", color: T_.amber }}>@fact-check-reconciler</span> to get final verdicts<br/>
+            <strong>5.</strong> Fix any CONFLICT / LIKELY WRONG items, then re-verify<br/>
+            <strong>6.</strong> Periodically → <span style={{ fontFamily: "monospace", color: "#c084fc" }}>@consistency</span> to catch format/depth/staleness drift across tabs
           </div>
         </div>
       </div>
