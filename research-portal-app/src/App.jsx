@@ -436,7 +436,7 @@ function AppContent() {
             </div>
             {equityOpen && (
               <>
-                {equities.map(eq => {
+                {[...equities].sort((a, b) => a.name.localeCompare(b.name)).map(eq => {
                   const active = view.type === "equityDetail" && view.id === eq.id;
                   return (
                     <div key={eq.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 38 }} onClick={() => { setView({ type: "equityDetail", id: eq.id }); setEditingField(null); }}>
