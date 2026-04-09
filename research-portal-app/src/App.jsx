@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import Primer from "./Primer";
 import AIDisruption from "./AIDisruption";
-import ResearchAgentPage from "./ResearchAgentPage";
 import ThesisAgent from "./ThesisAgent";
 import NotesIdeasAgent from "./NotesIdeasAgent";
 import DataVerificationAgent from "./DataVerificationAgent";
@@ -17,8 +16,6 @@ import Principles from "./Principles";
 import ApiDirectory from "./ApiDirectory";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
-import WatchlistAgent from "./WatchlistAgent";
-import QAAgent from "./QAAgent";
 // import IdeaTracker from "./IdeaTracker";
 import TractCapitalReview from "./TractCapitalReview";
 import IndustryResearch from "./IndustryResearch";
@@ -369,9 +366,6 @@ function AppContent() {
               </div>
             </div>
             {agentsOpen && [
-              { key: "watchlist", label: "Alerts" },
-              { key: "qa", label: "Q&A" },
-              { key: "research", label: "Research" },
               { key: "thesis", label: "Thesis Tracker" },
               { key: "notesIdeas", label: "Ideas" },
               { key: "dataVerification", label: "Agent Commands" },
@@ -610,17 +604,8 @@ function AppContent() {
         {/* INDUSTRY RESEARCH */}
         {view.type === "industryResearch" && <IndustryResearch initialTab={view.sub} />}
 
-        {/* RESEARCH AGENT */}
-        {view.type === "researchAgent" && <ResearchAgentPage companies={companies} onSetPriority={setPriority} researchResults={researchResults} />}
-
         {/* THESIS AGENT */}
         {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
-
-        {/* WATCHLIST AGENT */}
-        {view.type === "watchlistAgent" && <WatchlistAgent />}
-
-        {/* Q&A AGENT */}
-        {view.type === "qaAgent" && <QAAgent />}
 
         {/* NOTES / IDEAS AGENT */}
         {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
@@ -716,9 +701,6 @@ function AppContent() {
               {[
                 { type: "home", label: "Dashboard", icon: "\u{2302}" },
                 { type: null, label: "— Agents —", icon: "" },
-                { type: "watchlistAgent", label: "Alerts", icon: "\u{1F514}" },
-                { type: "qaAgent", label: "Q&A", icon: "\u{2753}" },
-                { type: "researchAgent", label: "Research Agent", icon: "\u{1F50D}" },
                 { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
                 { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
                 { type: "dataVerificationAgent", label: "Agent Commands", icon: "\u{2705}" },
