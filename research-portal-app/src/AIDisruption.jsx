@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { T_, FONT } from "./lib/theme";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 
 const SECTORS = [
   {
@@ -388,64 +389,7 @@ const SECTORS = [
   },
 ]
 
-const JEVONS_ELASTIC = [
-  { area: "Software Development", icon: "S", color: "#3B82F6",
-    before: "Code costs $150-300/hr to write. Only projects with clear ROI get funded. Internal tools, niche apps, and custom workflows are perpetually backlogged",
-    after: "AI drops marginal cost of code toward zero. Every company becomes a software company. Internal tools that were never worth building at $500K get built for $5K. Total volume of software created explodes",
-    beneficiaries: "Infrastructure and platform companies monetizing per-workload, per-compute, per-API call -AWS, Datadog, Cloudflare, Vercel, MongoDB. More software = more infrastructure. Also: dev tools, testing, security scanning (SonarSource, GitHub) -more code means more of everything downstream",
-    metric: "Total global software output (lines of code, apps deployed, API calls), cloud compute consumption, dev tool seat growth",
-  },
-  { area: "Content & Creative", icon: "C", color: "#8B5CF6",
-    before: "A blog post costs $500, a video $5,000, an ad creative $2,000. Content production is bottlenecked by human creative labor. Only high-value content gets produced",
-    after: "AI drops creation cost 10-50x. Companies produce 10-100x more marketing material, personalized to every segment, every channel, every language. A/B testing goes from 3 variants to 300",
-    beneficiaries: "Distribution and measurement become the bottleneck. Content management (Adobe), analytics (Amplitude, Mixpanel), personalization engines, ad platforms (Meta, Google -more creatives to test = more ad spend). Also: storage and CDN (Cloudflare, Fastly) from content volume explosion",
-    metric: "Total content pieces produced per company, ad creative variants tested per campaign, personalization depth, CDN traffic volumes",
-  },
-  { area: "Customer Interactions", icon: "CI", color: "#10B981",
-    before: "Each support ticket costs $5-15 with human agents. Companies minimize interactions -deflect with FAQs, make phone numbers hard to find, limit support hours. Only reactive, not proactive",
-    after: "AI drops per-interaction cost to pennies. Companies can now afford to support every user proactively -onboarding, check-ins, upsell, retention. Support becomes a growth driver, not a cost center",
-    beneficiaries: "Customer engagement platforms monetizing per-interaction or per-user -Intercom, Braze, Twilio/Segment. Total interaction volume goes way up even as unit cost collapses. CRM systems (Salesforce, HubSpot) processing more touchpoints per customer",
-    metric: "Total customer interactions per user, support coverage hours, proactive vs reactive contact ratio, engagement platform message volumes",
-  },
-  { area: "Security Analysis", icon: "S", color: "#EF4444",
-    before: "SOC analyst costs $120K/yr and can investigate ~20 alerts/day. Organizations only monitor the most critical systems. Many alerts are ignored or auto-closed. Entire classes of threats go unmonitored",
-    after: "AI triages thousands of alerts, investigates anomalies, correlates signals. Organizations turn on monitoring they couldn't afford -every endpoint, API, data flow, user behavior pattern gets scrutinized",
-    beneficiaries: "Security data platforms charging on ingestion volume -Splunk, CrowdStrike (Charlotte AI), Palo Alto (XSIAM), Wiz. More analysis = more data ingestion = more spend. Also: SIEM/XDR vendors, identity analytics",
-    metric: "Total security telemetry ingested (GB/day), alert investigation coverage rate, mean time to detect, endpoints under active monitoring",
-  },
-  { area: "Legal & Compliance Work", icon: "L", color: "#F59E0B",
-    before: "Document review costs $50-100/hr per contract attorney. Companies review only what litigation mandates. Proactive compliance reviews, contract audits, and risk assessments are deferred due to cost",
-    after: "AI drops review cost 90%+. Companies review everything -every contract for risk clauses, every communication for compliance, every vendor agreement for exposure. Scope of legal oversight expands dramatically",
-    beneficiaries: "E-discovery and legal data platforms charging per-GiB (Relativity, Everlaw) -volume processed explodes. Contract analysis platforms (Ironclad, Icertis). Compliance monitoring tools. Data volumes grow even as unit cost falls",
-    metric: "Total documents reviewed per matter, contract audit coverage rates, compliance monitoring scope, legal tech platform data volumes",
-  },
-  { area: "Personalized Education", icon: "E", color: "#0EA5E9",
-    before: "1:1 tutoring costs $50-100/hr. Only affluent families can afford it. Most students get one-size-fits-all instruction. Adaptive learning is limited by content creation costs",
-    after: "AI tutoring approaches zero marginal cost. Every student gets a personal tutor that adapts in real-time. Total \u201ctutoring hours\u201d consumed could increase 100x+. Education shifts from batch delivery to individualized",
-    beneficiaries: "Platforms monetizing engagement and outcomes -Khan Academy (Khanmigo), Duolingo, adaptive learning companies. Assessment/credentialing companies that verify learning (more learning = more need to measure). Infrastructure serving education (LMS platforms processing more interactions)",
-    metric: "AI tutoring session hours per student, learning outcome improvements, platform engagement time, credential/assessment volume",
-  },
-  { area: "Data Analysis & Business Intelligence", icon: "D", color: "#34d673",
-    before: "Data analysis requires skilled analysts ($100K-150K/yr each). Only strategic questions get answered. Most employees can't query data directly. Dashboards are static and pre-built by a small data team",
-    after: "AI lets any employee ask questions of data in natural language. The number of analytical queries per organization could increase 100x. Every decision becomes data-informed, not just the big ones",
-    beneficiaries: "Data platforms billing on query volume or compute -Snowflake, Databricks, BigQuery. BI tools with AI interfaces (Tableau, ThoughtSpot, Power BI). Data quality/governance tools (more queries = more need for clean, governed data)",
-    metric: "Analytical queries per employee per day, data platform compute consumption, BI tool daily active users, self-service analytics adoption",
-  },
-  { area: "Radiology & Medical Imaging", icon: "R", color: "#EC4899",
-    before: "A radiologist reads ~50-100 studies/day at $300-500K/yr salary. Each read costs $20-100+. Imaging is rationed by payer authorization, radiologist availability, and cost. Many scans that could catch disease early are never ordered because they aren't 'indicated' under current guidelines. Rural and developing regions face acute radiologist shortages (US: ~30K radiologists for 330M people). Screening programs (lung CT, breast MRI) are limited by throughput",
-    after: "AI reads imaging in seconds at near-zero marginal cost with performance matching or exceeding radiologists on specific tasks (FDA-cleared for mammography, chest X-ray, brain hemorrhage, lung nodule). When reads become essentially free: (1) screening expands dramatically — every chest X-ray gets AI triage, every mammogram gets a second AI read, (2) new screening modalities emerge that were never cost-effective — whole-body MRI screening, low-dose CT for broader populations, AI-guided ultrasound by non-specialists, (3) longitudinal monitoring becomes viable — serial imaging to track disease progression where one-time snapshots were all that was affordable, (4) point-of-care imaging explodes — portable ultrasound + AI interpretation at every clinic, ER, and ambulance. Total imaging volume could increase 3-10x as the bottleneck shifts from 'can we afford to read it?' to 'can we afford NOT to look?'",
-    beneficiaries: "Imaging equipment manufacturers (GE HealthCare, Siemens Healthineers, Philips) — more scans = more machines sold and more service contracts. AI radiology platforms billing per-read (Aidoc, Viz.ai, RadNet's DeepHealth, Annalise.ai) — volume is the business model. Cloud/PACS vendors processing more studies (Nuance/MSFT, Google Health, Amazon HealthLake). Screening program operators (RadNet — largest US outpatient imaging). Contrast agent makers (Bracco, Bayer Radiology) — more CT/MRI = more contrast. NVIDIA Clara for medical imaging compute",
-    metric: "Total imaging studies per capita per year (US: ~1.1 currently, could reach 2-3x), AI-assisted reads as % of total, screening program enrollment rates, point-of-care ultrasound adoption, imaging revenue per facility",
-  },
-];
 
-const JEVONS_INELASTIC = [
-  { area: "Payroll Processing", reason: "You don't run payroll more often because it's cheaper. Volume fixed by headcount. AI is a cost-out, not a demand driver" },
-  { area: "ERP / Core Transactions", reason: "Companies don't process more invoices because the software is smarter. Transaction volume is a function of business activity, not software cost" },
-  { area: "Regulatory Filings", reason: "You file what regulators require, not more. Tax returns, SEC filings, compliance reports are non-discretionary and fixed in scope" },
-  { area: "Infrastructure Maintenance", reason: "A mainframe or server needs maintaining whether the tooling costs $X or $X/2. AI improves efficiency but doesn't create new maintenance demand" },
-  { area: "HR Administration", reason: "Onboarding, benefits enrollment, terminations are driven by headcount events, not by how cheap the software is. AI streamlines but doesn't expand volume" },
-];
 
 const TOP_DISRUPTED = [
   { name: "IT Staffing & Staff Augmentation", sector: "IT Services", risk: "Very High" },
@@ -733,7 +677,7 @@ export default function AIDisruption({ companies, initialTab }) {
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
       {/* Sub-tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
-        {[{ key: "disruption", label: "Disruption Map" }, { key: "moats", label: "Moat vs AI" }, { key: "jevons", label: "Jevons' Paradox" }].map(t => (
+        {[{ key: "disruption", label: "Disruption Map" }, { key: "moats", label: "Moat vs AI" }, { key: "diffusion", label: "AI Diffusion" }, { key: "jevons", label: "Jevons' Paradox" }].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
             padding: "10px 24px", fontSize: 14, fontWeight: 500, cursor: "pointer",
             border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
@@ -903,30 +847,37 @@ export default function AIDisruption({ companies, initialTab }) {
                   { tech: "Cloud Computing (2006-present)", period: "2006-present",
                     expected: "Cloud would reduce total IT infrastructure spending by eliminating on-prem waste",
                     actual: "Global IT infrastructure spending increased from ~$300B (2006) to $800B+ (2025). Cloud made compute so cheap and accessible that startups, experiments, and use cases that were never viable on-prem became possible. Total compute consumption grew 10-100x",
+                    displaced: "On-prem server vendors (Sun Microsystems — acquired by Oracle), traditional hosting providers, hardware resellers, and the in-house data center operations model. Companies like Rackable Systems and smaller hosting firms were squeezed. IT procurement cycles and capital budgets shifted from hardware capex to cloud opex",
                     parallel: "Directly analogous to AI - cheaper compute didn't reduce spend, it expanded the addressable market for compute-dependent applications" },
                   { tech: "GPS & Navigation (2000s)", period: "2000-present",
                     expected: "Free GPS navigation would destroy the map and navigation industry ($3B market)",
                     actual: "Free turn-by-turn navigation enabled ride-sharing (Uber/Lyft, $100B+ market), delivery platforms (DoorDash, Instacart, $200B+ GMV), fleet optimization, and location-based services. The 'navigation' market went from $3B to powering $500B+ in location-dependent commerce",
+                    displaced: "Dedicated GPS device makers (Garmin consumer nav, TomTom), paper map publishers (Rand McNally), MapQuest, and the entire standalone navigation hardware category. TomTom's consumer revenue collapsed ~80%. Garmin survived by pivoting to fitness/aviation/marine",
                     parallel: "When AI makes a capability free, the industries built on top of that capability can be orders of magnitude larger than the original market it disrupted" },
                   { tech: "E-Commerce & Retail (1995-present)", period: "1995-present",
                     expected: "Online shopping would reduce total retail spending and destroy physical retail",
                     actual: "Total US retail spending grew from $2.7T (2000) to $7.1T (2024). E-commerce didn't just shift spending online - it expanded total consumption by reducing friction, enabling long-tail products, and creating entirely new categories (subscription boxes, DTC brands, marketplace commerce). Physical retail revenue also grew in absolute terms",
+                    displaced: "Mail-order catalogs (Sears catalog, JCPenney), department stores (Sears, Macy's, JCPenney — all shrank dramatically), shopping mall traffic, Borders/bookstores, Tower Records, and brick-and-mortar retailers that couldn't adapt. Retail employment per dollar of sales declined even as total retail grew",
                     parallel: "AI reduces friction in discovery and purchasing - total commerce volume increases as personalization, recommendations, and AI shopping assistants make buying easier" },
                   { tech: "Internet & Information (1990s-2000s)", period: "1993-present",
                     expected: "Free information online would destroy publishing, media, and information services",
                     actual: "Total information consumption exploded. More content was created in 2010 than in all of prior human history. Newspapers declined but total spending on digital content, streaming, social media, and information services dwarfs the old media economy. The 'paper' economy was $300B; the digital information economy is $3T+",
+                    displaced: "Print newspapers (US daily circulation fell from 62M to 21M), Yellow Pages (revenue collapsed from $14B to ~$2B), encyclopedias (Britannica stopped printing), video rental stores (Blockbuster), record stores, classified ad businesses, and traditional print advertising revenue",
                     parallel: "AI makes content creation nearly free - total content produced and consumed explodes, benefiting distribution, analytics, and infrastructure" },
                   { tech: "Spreadsheets & Accounting (1980s)", period: "1979-present",
                     expected: "VisiCalc and Lotus 1-2-3 would eliminate accounting and bookkeeping jobs",
                     actual: "The number of accounting and financial analyst jobs in the US grew from ~340K (1980) to ~1.4M (2020). Spreadsheets made analysis so fast and cheap that every department started doing it - finance, marketing, operations, HR. Total demand for quantitative analysis exploded across the economy",
+                    displaced: "Mechanical adding machines and calculators (Monroe, Friden, Marchant), ledger book manufacturers, rooms of human 'computers' doing manual calculations, and typing pools. The specific role of manual bookkeeping clerk declined even as the broader finance profession grew",
                     parallel: "AI analytics tools let any employee query data - total analytical queries and data-informed decisions increase 100x" },
                   { tech: "ATMs & Bank Tellers (1970s-2010s)", period: "1970-present",
                     expected: "ATMs would replace bank tellers and reduce branch employment",
                     actual: "ATM deployment reduced the cost of operating a bank branch by ~50%, making it economical to open far more branches. Total number of bank teller jobs in the US actually increased from ~300K (1970) to ~600K (2010) before declining. The cheaper branch model expanded total banking access",
+                    displaced: "Nothing was fully killed — but the teller role shifted from cash handling to sales/advisory. The narrow task of 'dispensing cash' was displaced, while the branch became a sales channel. Post-2010, mobile banking finally started reducing both branch count and teller headcount",
                     parallel: "AI agents reduce cost of customer interactions - companies expand service coverage, touchpoints, and engagement rather than just cutting headcount" },
                   { tech: "Steam Engine & Coal (1865)", period: "1760s-1900s",
                     expected: "More efficient engines would reduce coal consumption",
                     actual: "Coal consumption increased 10x. Efficiency made coal economically viable for factories, railways, ships, and mines that previously couldn't justify the cost. New industries were created entirely around cheap steam power",
+                    displaced: "Water mills (location-constrained), wind-powered mills, animal power (horses, oxen for heavy transport), manual labor in factories, canal transport (replaced by railways), and sailing ships for freight. Entire geographic patterns of industry shifted — factories no longer needed to be near rivers",
                     parallel: "AI makes cognitive labor cheaper - total demand for cognitive output (code, analysis, content, decisions) increases, not decreases" },
                 ].map((item, idx) => (
                   <div key={idx} onClick={() => toggle("hist_" + idx)} style={{
@@ -952,6 +903,10 @@ export default function AIDisruption({ companies, initialTab }) {
                             <div style={{ fontSize: 11, color: T_.green, textTransform: "uppercase", fontWeight: 600, marginBottom: 4 }}>What Actually Happened</div>
                             <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{item.actual}</div>
                           </div>
+                        </div>
+                        <div>
+                          <div style={{ fontSize: 11, color: T_.purple, textTransform: "uppercase", fontWeight: 600, marginBottom: 4 }}>What Was Displaced</div>
+                          <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{item.displaced}</div>
                         </div>
                         <div>
                           <div style={{ fontSize: 11, color: T_.amber, textTransform: "uppercase", fontWeight: 600, marginBottom: 4 }}>AI Parallel</div>
@@ -1031,81 +986,6 @@ export default function AIDisruption({ companies, initialTab }) {
             </div>
           </div>
 
-          {/* Elastic Demand Areas */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.green, marginBottom: 6 }}>Where Demand Is Elastic -Jevons' Beneficiaries</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>These areas had latent demand suppressed by cost. AI unlocks it. Total consumption increases even as unit cost falls</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {JEVONS_ELASTIC.map((item, idx) => (
-                <div key={idx}>
-                  <div onClick={() => toggle("jev_" + idx)} style={{
-                    display: "flex", alignItems: "center", gap: 12, padding: "14px 18px",
-                    background: isExp("jev_" + idx) ? item.color + "15" : T_.bg,
-                    borderRadius: 8, cursor: "pointer",
-                    border: `1px solid ${isExp("jev_" + idx) ? item.color + "44" : T_.borderLight}`,
-                  }}>
-                    <div style={{ width: 32, height: 32, borderRadius: 8, background: item.color + "22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: item.color }}>{item.icon}</div>
-                    <div style={{ flex: 1, fontSize: 15, fontWeight: 600, color: T_.text }}>{item.area}</div>
-                    <span style={{ fontSize: 12, color: T_.textGhost, transition: "transform 0.2s", transform: isExp("jev_" + idx) ? "rotate(90deg)" : "rotate(0deg)" }}>&#9654;</span>
-                  </div>
-                  {isExp("jev_" + idx) && (
-                    <div style={{ marginLeft: 44, marginTop: 8, padding: "18px 22px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, display: "flex", flexDirection: "column", gap: 14 }}>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-                        <div>
-                          <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Before AI (Constrained)</div>
-                          <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{item.before}</div>
-                        </div>
-                        <div>
-                          <div style={{ fontSize: 11, color: T_.green, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>After AI (Jevons' Effect)</div>
-                          <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{item.after}</div>
-                        </div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 11, color: T_.blue, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>Who Benefits (Picks & Shovels)</div>
-                        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{item.beneficiaries}</div>
-                      </div>
-                      <div>
-                        <div style={{ fontSize: 11, color: T_.amber, textTransform: "uppercase", fontWeight: 600, marginBottom: 6 }}>What to Measure</div>
-                        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{item.metric}</div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Inelastic Areas */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.textDim, marginBottom: 6 }}>Where Demand Is Inelastic -AI = Cost-Out Only</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 16 }}>These areas have fixed demand driven by business activity or regulation. AI reduces cost but doesn't create new volume</div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 10 }}>
-              {JEVONS_INELASTIC.map((item, idx) => (
-                <div key={idx} style={{ background: T_.bg, borderRadius: 8, padding: "14px 16px", border: `1px solid ${T_.borderLight}` }}>
-                  <div style={{ fontSize: 14, fontWeight: 700, color: T_.textDim, marginBottom: 6 }}>{item.area}</div>
-                  <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.5 }}>{item.reason}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Investment Implications */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.accent}33`, padding: 24, marginBottom: 24 }}>
-            <div style={{ fontSize: 18, fontWeight: 600, color: T_.accent, marginBottom: 16 }}>Investment Implications</div>
-            <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.8, marginBottom: 16 }}>
-              The biggest Jevons' beneficiaries are companies that: (1) charge per-unit-of-consumption (API calls, GiB processed, endpoints, interactions, compute hours), (2) sit in the infrastructure layer below the AI application, and (3) benefit from volume regardless of who builds the AI app on top.
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
-              <div style={{ background: T_.bg, borderRadius: 8, padding: 16, border: `1px solid ${T_.green}33` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: T_.green, marginBottom: 8 }}>Strongest Jevons' Beneficiaries</div>
-                <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.6 }}>Cloud/compute (AWS, Azure, GCP), observability (Datadog, Dynatrace), security platforms (CrowdStrike, Palo Alto), data platforms (Snowflake, Databricks, MongoDB), edge/CDN (Cloudflare), developer platforms (GitHub, Vercel), communication platforms (Twilio)</div>
-              </div>
-              <div style={{ background: T_.bg, borderRadius: 8, padding: 16, border: `1px solid ${T_.red}33` }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: T_.red, marginBottom: 8 }}>Most Exposed to Volume Compression</div>
-                <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.6 }}>IT staffing (headcount-based), BPO/outsourcing (labor arbitrage), content mills (commodity creation), manual QA testing (hours-based), basic data entry services, contact center outsourcers (per-agent), offshore body shops (per-FTE)</div>
-              </div>
-            </div>
-          </div>
         </div>
       )}
 
@@ -1281,6 +1161,365 @@ export default function AIDisruption({ companies, initialTab }) {
       ))}
         </div>
       )}
+
+      {/* ─── AI DIFFUSION TIMELINE ─── */}
+      {subTab === "diffusion" && <AIDiffusionTab />}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════
+// AI DIFFUSION TIMELINE
+// ═══════════════════════════════════════════════════════
+
+const DIFFUSION_LAYERS = [
+  { key: "research", label: "Research & Models", color: "#a78bfa" },
+  { key: "consumer", label: "Consumer Adoption", color: "#3B82F6" },
+  { key: "enterprise", label: "Enterprise Production", color: "#f5a623" },
+  { key: "infrastructure", label: "Infrastructure", color: "#34d673" },
+  { key: "regulation", label: "Regulation & Policy", color: "#f87171" },
+];
+
+// confidence: "sourced" = hard data from public source, "estimated" = synthesized from multiple sources, "projected" = future speculation
+const DIFFUSION_MILESTONES = [
+  // Research & Models
+  { year: 2012, layer: "research", label: "AlexNet wins ImageNet", detail: "Deep learning proves viable for computer vision. AlexNet achieves 15.3% top-5 error vs. runner-up's 26.2% — nearly halving the error rate. Kicks off the neural network renaissance.", pct: 5,
+    confidence: "sourced", source: "Krizhevsky et al., ImageNet Classification with Deep Convolutional Neural Networks (NeurIPS 2012)", sourceUrl: "https://papers.nips.cc/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html" },
+  { year: 2014, layer: "research", label: "GANs introduced", detail: "Ian Goodfellow publishes Generative Adversarial Networks. Foundation for all generative AI image/video models.", pct: 8,
+    confidence: "sourced", source: "Goodfellow et al., Generative Adversarial Nets (NeurIPS 2014)", sourceUrl: "https://arxiv.org/abs/1406.2661" },
+  { year: 2017, layer: "research", label: "\"Attention Is All You Need\"", detail: "Google publishes the Transformer paper. Architecture that powers GPT, BERT, and every modern LLM. The single most consequential AI paper.", pct: 15,
+    confidence: "sourced", source: "Vaswani et al., Attention Is All You Need (NeurIPS 2017)", sourceUrl: "https://arxiv.org/abs/1706.03762" },
+  { year: 2018, layer: "research", label: "BERT & GPT-1", detail: "Google's BERT and OpenAI's GPT-1 demonstrate transfer learning at scale. Pre-training + fine-tuning paradigm established.", pct: 20,
+    confidence: "sourced", source: "OpenAI (GPT-1), Google AI Blog (BERT)", sourceUrl: "https://arxiv.org/abs/1810.04805" },
+  { year: 2020, layer: "research", label: "GPT-3 (175B params)", detail: "Scaling laws validated. Few-shot learning emerges. First model that feels 'intelligent' in conversation. API access only.", pct: 35,
+    confidence: "sourced", source: "Brown et al., Language Models are Few-Shot Learners (OpenAI, 2020)", sourceUrl: "https://arxiv.org/abs/2005.14165" },
+  { year: 2023, layer: "research", label: "GPT-4 + open-source explosion", detail: "GPT-4 achieves human-level on professional exams. Llama 2 open-sourced. Mistral, Claude 2 launch. Model capability commoditizing rapidly.", pct: 60,
+    confidence: "sourced", source: "OpenAI GPT-4 Technical Report; Meta Llama 2 announcement", sourceUrl: "https://arxiv.org/abs/2303.08774" },
+  { year: 2024, layer: "research", label: "Llama 3, Claude 3.5, multimodal", detail: "Open-source closes gap with frontier. Vision, audio, video understanding. Reasoning models (o1). Cost per token drops 10-100x from GPT-3 era.", pct: 75,
+    confidence: "estimated", source: "Synthesis of model announcements and benchmark comparisons (Meta, Anthropic, OpenAI)" },
+  { year: 2025, layer: "research", label: "Claude 4, agentic reasoning", detail: "Extended thinking, tool use, multi-step agents. Models can write, debug, and deploy code autonomously. Open-weight models approach frontier.", pct: 85,
+    confidence: "estimated", source: "Anthropic, OpenAI, Meta model releases and capability demonstrations" },
+  { year: 2027, layer: "research", label: "Projected: autonomous research agents", detail: "Models capable of sustained multi-day research tasks. Self-improving code generation. Science automation begins.", pct: 92,
+    confidence: "projected" },
+
+  // Consumer Adoption
+  { year: 2011, layer: "consumer", label: "Siri launches", detail: "Apple ships first mainstream voice assistant. Limited NLU but introduces millions to AI interaction.", pct: 3,
+    confidence: "sourced", source: "Apple iPhone 4S launch (Oct 2011)" },
+  { year: 2014, layer: "consumer", label: "Alexa launches", detail: "Amazon Echo brings always-on AI to homes. 600M+ Alexa-enabled endpoints by 2025.", pct: 5,
+    confidence: "sourced", source: "Amazon device announcements; Jassy 2025 shareholder letter (600M endpoints)", sourceUrl: "https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders" },
+  { year: 2018, layer: "consumer", label: "Smart speakers mainstream", detail: "~100M smart speakers sold globally (~64M in the U.S.). AI assistants become normal but capabilities plateau.", pct: 10,
+    confidence: "sourced", source: "Canalys: 100M global installed base by end 2018; Voicebot.ai: ~66M US adults by Jan 2019", sourceUrl: "https://www.canalys.com/newsroom/smart-speaker-installed-base-to-hit-100-million-by-end-of-2018" },
+  { year: 2022.9, layer: "consumer", label: "ChatGPT launches (Nov)", detail: "100M users in ~2 months. Fastest consumer app adoption ever recorded at the time. Consumer tipping point.", pct: 25,
+    confidence: "sourced", source: "UBS / Similarweb analysis (Feb 2023); confirmed in Jassy 2025 letter", sourceUrl: "https://www.reuters.com/technology/chatgpt-sets-record-fastest-growing-user-base-analyst-note-2023-02-01/" },
+  { year: 2023, layer: "consumer", label: "AI tools go mainstream", detail: "Midjourney, Copilot, Claude, Perplexity reach millions. AI image generation normalized. Students, writers, developers adopt daily.", pct: 40,
+    confidence: "estimated", source: "Synthesis of user reports: Midjourney ~16M users (Discord), GitHub Copilot ~1.8M paid subscribers (Microsoft FY24 Q2)" },
+  { year: 2024, layer: "consumer", label: "AI coding tools gain traction", detail: "GitHub Copilot exceeds 1.8M paid subscribers. Stack Overflow 2024 survey: 76% of developers use or plan to use AI tools. Adoption accelerating but depth varies.", pct: 50,
+    confidence: "sourced", source: "Stack Overflow 2024 Developer Survey; GitHub/Microsoft earnings reports", sourceUrl: "https://survey.stackoverflow.co/2024/ai" },
+  { year: 2025, layer: "consumer", label: "AI assistants in every OS", detail: "Apple Intelligence, Windows Copilot, Google Gemini embedded in OS layer. 1B+ devices with on-device AI. Usage still shallow for most.", pct: 58,
+    confidence: "estimated", source: "Apple WWDC 2024 (Apple Intelligence announcement), Microsoft Build, Google I/O device projections" },
+  { year: 2027, layer: "consumer", label: "Projected: AI-first interfaces", detail: "Conversational interfaces replace traditional UI for many tasks. Search, email, scheduling primarily AI-mediated.", pct: 72,
+    confidence: "projected" },
+  { year: 2030, layer: "consumer", label: "Projected: ubiquitous AI", detail: "AI interaction as natural as using electricity. Embedded in every product, service, and workflow.", pct: 85,
+    confidence: "projected" },
+
+  // Enterprise Production
+  { year: 2015, layer: "enterprise", label: "ML in ad targeting & fraud", detail: "Google, Meta, financial institutions deploy ML at scale for narrow, high-value use cases. Not 'AI' in public consciousness yet.", pct: 3,
+    confidence: "estimated", source: "Industry knowledge — Google/Meta ML ad systems, JPMorgan fraud detection widely reported" },
+  { year: 2019, layer: "enterprise", label: "AutoML & managed ML services", detail: "AWS SageMaker, Google AutoML lower barrier. Most enterprises still in 'data science team builds custom models' phase. Few production deployments.", pct: 6,
+    confidence: "estimated", source: "McKinsey Global AI Survey 2019: 58% of orgs adopted AI in at least one function, but most were pilots", sourceUrl: "https://www.mckinsey.com/capabilities/quantumblack/our-insights/global-survey-the-state-of-ai-in-2019" },
+  { year: 2023, layer: "enterprise", label: "Enterprise pilot explosion", detail: "McKinsey 2023: 55% of orgs adopted AI (up from 50% in 2022), but only 27% of revenue from AI-enabled products. Most deployments still narrow.", pct: 12,
+    confidence: "sourced", source: "McKinsey Global Survey on AI 2023", sourceUrl: "https://www.mckinsey.com/capabilities/quantumblack/our-insights/the-state-of-ai-in-2023-generative-ais-breakout-year" },
+  { year: 2024, layer: "enterprise", label: "Copilots ship in enterprise SaaS", detail: "ServiceNow Now Assist ($600M ACV, doubling YoY), Salesforce Agentforce, Microsoft 365 Copilot. AI embedded in existing workflows.", pct: 18,
+    confidence: "sourced", source: "ServiceNow Q4 FY25 earnings ($600M AI ACV); Microsoft/Salesforce earnings calls", sourceUrl: "https://www.servicenow.com/company/media/press-room/servicenow-q4-fy2025-earnings.html" },
+  { year: 2025, layer: "enterprise", label: "First production agentic workflows", detail: "Companies deploying AI agents for L1 support, code review, data analysis. AWS AI revenue >$15B run rate. Still early innings of enterprise deployment.", pct: 25,
+    confidence: "estimated", source: "AWS AI run rate from Jassy 2025 letter; adoption % is synthesis of McKinsey, Gartner, Bain surveys" },
+  { year: 2027, layer: "enterprise", label: "Projected: early majority adoption", detail: "30-40% of enterprise workflows AI-augmented. AI-native companies outperform peers by measurable margin. Laggards face competitive pressure.", pct: 40,
+    confidence: "projected" },
+  { year: 2030, layer: "enterprise", label: "Projected: AI-native operations", detail: "60%+ of knowledge work augmented. Autonomous agents handle routine operations. Human role shifts to oversight, judgment, creativity.", pct: 65,
+    confidence: "projected" },
+
+  // Infrastructure
+  { year: 2012, layer: "infrastructure", label: "GPUs repurposed for ML", detail: "Researchers discover NVIDIA GPUs dramatically accelerate neural network training. CUDA ecosystem begins.", pct: 3,
+    confidence: "sourced", source: "AlexNet trained on 2x NVIDIA GTX 580 GPUs — catalyzed GPU-for-ML movement" },
+  { year: 2016, layer: "infrastructure", label: "Google TPU v1", detail: "First custom AI chip. Signals that general-purpose GPUs may not be the endgame for AI compute.", pct: 6,
+    confidence: "sourced", source: "Google blog announcement (May 2016)", sourceUrl: "https://cloud.google.com/blog/products/ai-machine-learning/an-in-depth-look-at-googles-first-tensor-processing-unit-tpu" },
+  { year: 2020, layer: "infrastructure", label: "A100 GPU era begins", detail: "NVIDIA A100 becomes the standard AI training chip. Cloud providers begin building dedicated AI clusters.", pct: 12,
+    confidence: "sourced", source: "NVIDIA A100 launch (GTC 2020)" },
+  { year: 2023, layer: "infrastructure", label: "GPU shortage peaks", detail: "H100 demand far exceeds supply. Wait times stretch to 8-11 months. AI compute becomes a strategic bottleneck. Shortage eases by early 2024.", pct: 20,
+    confidence: "estimated", source: "Tom's Hardware, GPU Utils — H100 lead times 8-11 months in 2023, dropped to 8-12 weeks by early 2024", sourceUrl: "https://www.tomshardware.com/pc-components/gpus/nvidias-h100-ai-gpu-shortages-ease-as-lead-times-drop-from-up-to-four-months-to-8-12-weeks" },
+  { year: 2023.5, layer: "infrastructure", label: "Hyperscaler capex surge", detail: "Combined hyperscaler total capex ~$155B in 2023 (MSFT+GOOG+AMZN+META). AI is a growing but not yet dominant share of total capex.", pct: 30,
+    confidence: "estimated", source: "Hyperscaler 10-K filings (combined total capex ~$155B); AI-specific share was a subset. By 2025-26, AI becomes ~75% of total", sourceUrl: "https://epoch.ai/data-insights/hyperscaler-capex-trend" },
+  { year: 2024, layer: "infrastructure", label: "Custom silicon race", detail: "Amazon Trainium2 (~30% better price-performance vs GPUs), Google TPU v5, Microsoft Maia. Hyperscalers reducing NVIDIA dependence.", pct: 42,
+    confidence: "sourced", source: "Jassy 2025 shareholder letter (Trainium2 price-performance); Google Cloud Next (TPU v5)", sourceUrl: "https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders" },
+  { year: 2025, layer: "infrastructure", label: "Power becomes the bottleneck", detail: "AWS adds 3.8 GW capacity in trailing 12 months, plans to double total by 2027. Amazon custom chips biz (Graviton + Trainium + Nitro) >$20B run rate. Power, not chips, is the new constraint.", pct: 55,
+    confidence: "sourced", source: "Jassy 2025 shareholder letter ($20B chips run rate); AWS Q3 2025 earnings (3.8 GW)", sourceUrl: "https://www.aboutamazon.com/news/company-news/amazon-ceo-andy-jassy-2025-letter-to-shareholders" },
+  { year: 2027, layer: "infrastructure", label: "Projected: distributed AI compute", detail: "Edge inference, on-device models, satellite-connected AI. Compute moves from centralized clouds toward the edge.", pct: 68,
+    confidence: "projected" },
+  { year: 2030, layer: "infrastructure", label: "Projected: mature AI infrastructure", detail: "AI compute as utility. Custom silicon dominant. Power infrastructure caught up. Cost per inference drops 100x from 2024.", pct: 80,
+    confidence: "projected" },
+
+  // Regulation
+  { year: 2016, layer: "regulation", label: "EU GDPR adopted (effective 2018)", detail: "Not AI-specific but establishes data rights framework that constrains AI training data. Sets precedent for tech regulation.", pct: 5,
+    confidence: "sourced", source: "EU GDPR — adopted April 2016, enforced May 2018", sourceUrl: "https://gdpr.eu/tag/gdpr/" },
+  { year: 2021, layer: "regulation", label: "EU AI Act proposed", detail: "First comprehensive AI regulation framework. Risk-based approach: unacceptable, high, limited, minimal risk categories.", pct: 10,
+    confidence: "sourced", source: "European Commission AI Act proposal (April 2021)", sourceUrl: "https://digital-strategy.ec.europa.eu/en/policies/european-approach-artificial-intelligence" },
+  { year: 2023, layer: "regulation", label: "Biden AI Executive Order", detail: "EO 14110 (Oct 2023): reporting requirements for frontier models, safety testing mandates. Fully revoked by Trump EO on Jan 20, 2025, replaced with 'Removing Barriers to American Leadership in AI'.", pct: 18,
+    confidence: "sourced", source: "White House EO 14110 (Oct 30, 2023); Trump EO revoking portions (Jan 2025)", sourceUrl: "https://www.whitehouse.gov/briefing-room/presidential-actions/2023/10/30/executive-order-on-the-safe-secure-and-trustworthy-development-and-use-of-artificial-intelligence/" },
+  { year: 2024, layer: "regulation", label: "EU AI Act enters force", detail: "World's first comprehensive AI law. Entered force Aug 1, 2024. Phased enforcement: banned practices Feb 2025, high-risk obligations Aug 2026.", pct: 28,
+    confidence: "sourced", source: "EU AI Act — entered force Aug 1, 2024", sourceUrl: "https://artificialintelligenceact.eu/ai-act-implementation-timeline/" },
+  { year: 2025, layer: "regulation", label: "AI licensing & liability debates", detail: "Multiple jurisdictions debating AI liability frameworks. Copyright lawsuits ongoing (NYT v. OpenAI). No global consensus.", pct: 35,
+    confidence: "estimated", source: "Synthesis of ongoing regulatory developments — no single definitive source" },
+  { year: 2027, layer: "regulation", label: "Projected: compliance frameworks mature", detail: "Industry standards for AI safety, testing, and audit. Compliance becomes a cost of doing business, not a barrier.", pct: 48,
+    confidence: "projected" },
+];
+
+// Generate S-curve data points for chart — split into historical (solid) and projected (dashed)
+function generateSCurveData(currentYear) {
+  const years = [];
+  for (let y = 2010; y <= 2031; y++) years.push(y);
+
+  return years.map(year => {
+    const point = { year };
+    DIFFUSION_LAYERS.forEach(layer => {
+      const milestones = DIFFUSION_MILESTONES.filter(m => m.layer === layer.key).sort((a, b) => a.year - b.year);
+      const before = milestones.filter(m => m.year <= year);
+      const after = milestones.filter(m => m.year > year);
+      let val = 0;
+      if (before.length === 0) { val = 0; }
+      else if (after.length === 0) { val = before[before.length - 1].pct; }
+      else {
+        const prev = before[before.length - 1];
+        const next = after[0];
+        const t = (year - prev.year) / (next.year - prev.year);
+        const smooth = t * t * (3 - 2 * t);
+        val = Math.round(prev.pct + (next.pct - prev.pct) * smooth);
+      }
+      // Split into two series: historical and projected
+      if (year <= currentYear) {
+        point[layer.key] = val;
+        point[layer.key + "_proj"] = val; // overlap point for continuity
+      } else {
+        point[layer.key] = null;
+        point[layer.key + "_proj"] = val;
+      }
+    });
+    return point;
+  });
+}
+
+const CONFIDENCE_STYLES = {
+  sourced:   { label: "Sourced",   bg: "#34d67318", border: "#34d67340", color: "#34d673" },
+  estimated: { label: "Estimated", bg: "#f5a62318", border: "#f5a62340", color: "#f5a623" },
+  projected: { label: "Projected", bg: "#f8717118", border: "#f8717140", color: "#f87171" },
+};
+
+function AIDiffusionTab() {
+  const [selectedLayer, setSelectedLayer] = useState(null);
+  const [hoveredMilestone, setHoveredMilestone] = useState(null);
+  const currentYear = 2026;
+  const chartData = useMemo(() => generateSCurveData(currentYear), [currentYear]);
+
+  const visibleLayers = selectedLayer ? DIFFUSION_LAYERS.filter(l => l.key === selectedLayer) : DIFFUSION_LAYERS;
+  const timelineMilestones = selectedLayer
+    ? DIFFUSION_MILESTONES.filter(m => m.layer === selectedLayer)
+    : DIFFUSION_MILESTONES;
+
+  // Group milestones by year for the timeline
+  const milestonesByYear = {};
+  timelineMilestones.forEach(m => {
+    const yr = Math.floor(m.year);
+    if (!milestonesByYear[yr]) milestonesByYear[yr] = [];
+    milestonesByYear[yr].push(m);
+  });
+  const sortedYears = Object.keys(milestonesByYear).map(Number).sort((a, b) => a - b);
+
+  const layerColor = (key) => DIFFUSION_LAYERS.find(l => l.key === key)?.color || T_.textDim;
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    // Dedupe — show each layer once, preferring the historical value
+    const seen = {};
+    const items = [];
+    payload.forEach(p => {
+      const baseKey = p.dataKey.replace("_proj", "");
+      if (p.value == null || seen[baseKey]) return;
+      seen[baseKey] = true;
+      const isProj = p.dataKey.endsWith("_proj") && label > currentYear;
+      items.push({ baseKey, value: p.value, color: p.color, isProj });
+    });
+    return (
+      <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "12px 16px", fontSize: 12, fontFamily: FONT }}>
+        <div style={{ fontWeight: 600, color: T_.text, marginBottom: 6 }}>{label}{label > currentYear ? " (projected)" : ""}</div>
+        {items.map(p => (
+          <div key={p.baseKey} style={{ color: p.color, marginBottom: 2 }}>
+            {DIFFUSION_LAYERS.find(l => l.key === p.baseKey)?.label}: {p.value}%{p.isProj ? " *" : ""}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      {/* Header */}
+      <div style={{ marginBottom: 28 }}>
+        <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>AI Diffusion Timeline</div>
+        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, lineHeight: 1.6 }}>
+          How AI adoption is spreading across research, consumer, enterprise, infrastructure, and regulation — tracked on S-curves over time.
+        </div>
+      </div>
+
+      {/* Legend */}
+      <div style={{ display: "flex", gap: 16, marginBottom: 12, fontSize: 11, color: T_.textGhost }}>
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ width: 20, height: 2, background: T_.textMid, display: "inline-block" }} /> Sourced data
+        </span>
+        <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
+          <span style={{ width: 20, height: 2, background: T_.textMid, display: "inline-block", borderTop: "2px dashed " + T_.textGhost, height: 0 }} /> Projected
+        </span>
+        {Object.entries(CONFIDENCE_STYLES).map(([k, v]) => (
+          <span key={k} style={{ display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ width: 7, height: 7, borderRadius: 3, background: v.color, display: "inline-block" }} /> {v.label}
+          </span>
+        ))}
+      </div>
+
+      {/* Layer filter chips */}
+      <div style={{ display: "flex", gap: 8, marginBottom: 24, flexWrap: "wrap" }}>
+        <button onClick={() => setSelectedLayer(null)} style={{
+          padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT,
+          background: !selectedLayer ? T_.accent + "22" : "transparent",
+          border: `1px solid ${!selectedLayer ? T_.accent : T_.border}`,
+          color: !selectedLayer ? T_.accent : T_.textGhost, transition: "all 0.15s",
+        }}>All Layers</button>
+        {DIFFUSION_LAYERS.map(l => (
+          <button key={l.key} onClick={() => setSelectedLayer(selectedLayer === l.key ? null : l.key)} style={{
+            padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: "pointer", fontFamily: FONT,
+            background: selectedLayer === l.key ? l.color + "22" : "transparent",
+            border: `1px solid ${selectedLayer === l.key ? l.color : T_.border}`,
+            color: selectedLayer === l.key ? l.color : T_.textGhost, transition: "all 0.15s",
+          }}>
+            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: 4, background: l.color, marginRight: 6 }} />
+            {l.label}
+          </button>
+        ))}
+      </div>
+
+      {/* S-Curve Chart — solid lines for historical, dashed for projected */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "24px 24px 12px", marginBottom: 28 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: T_.text }}>Adoption S-Curves</div>
+          <div style={{ fontSize: 11, color: T_.textGhost }}>Dashed lines = projected beyond {currentYear}</div>
+        </div>
+        <ResponsiveContainer width="100%" height={380}>
+          <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
+            <defs>
+              {DIFFUSION_LAYERS.map(l => (
+                <linearGradient key={l.key} id={`grad-${l.key}`} x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor={l.color} stopOpacity={0.25} />
+                  <stop offset="95%" stopColor={l.color} stopOpacity={0.02} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" stroke={T_.border} />
+            <XAxis dataKey="year" tick={{ fill: T_.textGhost, fontSize: 11 }} tickLine={false} axisLine={{ stroke: T_.border }} />
+            <YAxis tick={{ fill: T_.textGhost, fontSize: 11 }} tickLine={false} axisLine={{ stroke: T_.border }} domain={[0, 100]}
+              tickFormatter={v => `${v}%`} />
+            <Tooltip content={<CustomTooltip />} />
+            <ReferenceLine x={currentYear} stroke={T_.textGhost} strokeDasharray="4 4" label={{ value: "Now", fill: T_.textGhost, fontSize: 11, position: "top" }} />
+            {/* Historical lines (solid) */}
+            {visibleLayers.map(l => (
+              <Area key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={2}
+                fill={`url(#grad-${l.key})`} dot={false} activeDot={{ r: 4, fill: l.color }} connectNulls={false} />
+            ))}
+            {/* Projected lines (dashed) */}
+            {visibleLayers.map(l => (
+              <Area key={l.key + "_proj"} type="monotone" dataKey={l.key + "_proj"} stroke={l.color} strokeWidth={2}
+                strokeDasharray="6 4" fill="none" dot={false} activeDot={{ r: 4, fill: l.color, strokeDasharray: "" }} connectNulls={false} />
+            ))}
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Current state summary cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 28 }}>
+        {DIFFUSION_LAYERS.map(l => {
+          const latest = DIFFUSION_MILESTONES.filter(m => m.layer === l.key && m.year <= currentYear).sort((a, b) => b.year - a.year)[0];
+          const phase = latest?.pct < 16 ? "Innovators / Early Adopters" : latest?.pct < 50 ? "Crossing the Chasm" : latest?.pct < 84 ? "Early → Late Majority" : "Saturation";
+          const conf = latest?.confidence || "estimated";
+          const cs = CONFIDENCE_STYLES[conf];
+          return (
+            <div key={l.key} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 18, cursor: "pointer", transition: "border-color 0.15s",
+              borderColor: selectedLayer === l.key ? l.color : T_.border }}
+              onClick={() => setSelectedLayer(selectedLayer === l.key ? null : l.key)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
+                <span style={{ width: 10, height: 10, borderRadius: 5, background: l.color }} />
+                <span style={{ fontSize: 12, fontWeight: 600, color: T_.text }}>{l.label}</span>
+              </div>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                <div style={{ fontSize: 28, fontWeight: 700, color: l.color }}>{latest?.pct || 0}%</div>
+                <span style={{ fontSize: 9, padding: "2px 6px", borderRadius: 4, background: cs.bg, border: `1px solid ${cs.border}`, color: cs.color }}>{cs.label}</span>
+              </div>
+              <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4, marginTop: 4 }}>{phase}</div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Timeline */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.text, marginBottom: 20 }}>Milestone Timeline</div>
+        <div style={{ position: "relative" }}>
+          {sortedYears.map((yr, yi) => {
+            const isFuture = yr > currentYear;
+            return (
+              <div key={yr} style={{ display: "flex", gap: 20 }}>
+                {/* Year marker */}
+                <div style={{ width: 52, flexShrink: 0, textAlign: "right", paddingTop: 2 }}>
+                  <span style={{ fontSize: 13, fontWeight: 600, color: isFuture ? T_.textGhost : T_.text, fontStyle: isFuture ? "italic" : "normal" }}>{yr}</span>
+                </div>
+                {/* Vertical line */}
+                <div style={{ width: 20, display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 5, background: yr === currentYear ? T_.accent : isFuture ? T_.border : T_.textGhost, flexShrink: 0, marginTop: 4 }} />
+                  {yi < sortedYears.length - 1 && <div style={{ width: 1, flex: 1, background: isFuture ? `${T_.border}80` : T_.border, minHeight: 10, borderLeft: isFuture ? `1px dashed ${T_.border}` : "none" }} />}
+                </div>
+                {/* Milestones for this year */}
+                <div style={{ flex: 1, paddingBottom: 20 }}>
+                  {milestonesByYear[yr].map((m, mi) => {
+                    const cs = CONFIDENCE_STYLES[m.confidence || "estimated"];
+                    const isOpen = hoveredMilestone === `${yr}-${mi}`;
+                    return (
+                      <div key={mi} style={{ marginBottom: mi < milestonesByYear[yr].length - 1 ? 12 : 0, cursor: "pointer" }}
+                        onClick={() => setHoveredMilestone(isOpen ? null : `${yr}-${mi}`)}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                          <span style={{ width: 8, height: 8, borderRadius: 4, background: layerColor(m.layer), flexShrink: 0 }} />
+                          <span style={{ fontSize: 13, fontWeight: 500, color: isFuture ? T_.textDim : T_.text }}>{m.label}</span>
+                          <span style={{ fontSize: 9, padding: "1px 6px", borderRadius: 3, background: cs.bg, border: `1px solid ${cs.border}`, color: cs.color, flexShrink: 0 }}>{cs.label}</span>
+                          <span style={{ fontSize: 10, color: T_.textGhost, marginLeft: "auto", flexShrink: 0 }}>{m.pct}%</span>
+                        </div>
+                        {isOpen && (
+                          <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.7, marginTop: 6, marginLeft: 16, padding: "10px 14px",
+                            background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}` }}>
+                            <div style={{ marginBottom: m.source ? 8 : 0 }}>{m.detail}</div>
+                            {m.source && (
+                              <div style={{ fontSize: 11, color: T_.textGhost, borderTop: `1px solid ${T_.borderLight}`, paddingTop: 8, marginTop: 4 }}>
+                                <span style={{ color: cs.color, fontWeight: 600 }}>{cs.label}:</span>{" "}
+                                {m.sourceUrl
+                                  ? <a href={m.sourceUrl} target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>{m.source}</a>
+                                  : m.source}
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
     </div>
   );
 }

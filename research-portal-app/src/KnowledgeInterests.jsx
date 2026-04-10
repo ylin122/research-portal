@@ -5,7 +5,6 @@ import { T_, FONT } from "./lib/theme";
 const TABS = [
   { key: "concepts", label: "Concepts" },
   { key: "deepDives", label: "Deep Dives" },
-  { key: "bookmarks", label: "Bookmarks" },
 ];
 
 const TOPIC_FILTERS = [
@@ -382,102 +381,6 @@ function DeepDivesTab() {
 // BOOKMARKS TAB
 // ═══════════════════════════════════════════════════════
 
-function BookmarksTab() {
-  const [bookmarks, setBookmarks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [showAdd, setShowAdd] = useState(false);
-  const [search, setSearch] = useState("");
-  const [form, setForm] = useState({ title: "", content: "", source: "", source_url: "", topic: "other", tags: [] });
-  const [tagInput, setTagInput] = useState("");
-
-  useEffect(() => {
-    supabase.from("bookmarks").select("*").order("created_at", { ascending: false }).then(({ data }) => { setBookmarks(data || []); setLoading(false); });
-  }, []);
-
-  const handleAdd = async () => {
-    if (!form.title.trim()) return;
-    const b = { id: uid(), ...form, title: form.title.trim(), content: form.content.trim() };
-    await supabase.from("bookmarks").upsert(b);
-    setBookmarks(prev => [b, ...prev]);
-    setForm({ title: "", content: "", source: "", source_url: "", topic: "other", tags: [] });
-    setShowAdd(false);
-  };
-
-  const handleDelete = async (id) => {
-    await supabase.from("bookmarks").delete().eq("id", id);
-    setBookmarks(prev => prev.filter(b => b.id !== id));
-  };
-
-  const filtered = bookmarks.filter(b => {
-    if (!search) return true;
-    const q = search.toLowerCase();
-    return (b.title || "").toLowerCase().includes(q) || (b.content || "").toLowerCase().includes(q) || (b.tags || []).some(t => t.toLowerCase().includes(q));
-  });
-
-  const inputStyle = { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
-
-  return (
-    <div>
-      <div style={{ display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap" }}>
-        <input style={{ flex: 1, minWidth: 200, ...inputStyle, fontSize: 13, padding: "9px 14px" }} placeholder="Search bookmarks..." value={search} onChange={e => setSearch(e.target.value)} />
-        <button onClick={() => setShowAdd(true)} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>+ Save</button>
-      </div>
-
-      {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
-        : filtered.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>{bookmarks.length === 0 ? "No bookmarks yet. Save quotes, stats, insights, or anything interesting." : "No match."}</div>
-        : filtered.map(b => (
-        <div key={b.id} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 10 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-            <span style={{ fontSize: 14, fontWeight: 600, color: T_.text }}>{b.title}</span>
-            <button onClick={() => handleDelete(b.id)} style={{ background: "none", border: "none", color: T_.textGhost, cursor: "pointer", fontSize: 11, padding: "2px 6px" }}
-              onMouseEnter={e => e.target.style.color = T_.red} onMouseLeave={e => e.target.style.color = T_.textGhost}>Remove</button>
-          </div>
-          {b.content && <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7, whiteSpace: "pre-wrap", marginBottom: 10 }}>{b.content}</div>}
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {(b.tags || []).map((tag, i) => (
-                <span key={i} style={{ fontSize: 10, color: T_.accent, background: `${T_.accent}12`, padding: "2px 8px", borderRadius: 4, border: `1px solid ${T_.accent}30` }}>{tag}</span>
-              ))}
-            </div>
-            {b.source_url ? <a href={b.source_url} target="_blank" rel="noopener noreferrer" style={{ fontSize: 11, color: T_.blue, textDecoration: "none" }}>{b.source || "Source"} ↗</a>
-              : b.source ? <span style={{ fontSize: 11, color: T_.textGhost }}>{b.source}</span> : null}
-          </div>
-        </div>
-      ))}
-
-      {showAdd && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setShowAdd(false)}>
-          <div style={{ background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, padding: 28, width: 500, maxHeight: "80vh", overflow: "auto" }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.accent, marginBottom: 20 }}>Save Bookmark</div>
-            <div style={{ marginBottom: 14 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Title</div>
-              <input style={inputStyle} placeholder="What is this about?" value={form.title} onChange={e => setForm(p => ({ ...p, title: e.target.value }))} /></div>
-            <div style={{ marginBottom: 14 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Content / Note</div>
-              <textarea style={{ ...inputStyle, minHeight: 100, resize: "vertical", lineHeight: 1.7 }} placeholder="Paste a quote, stat, insight, or your own note..." value={form.content} onChange={e => setForm(p => ({ ...p, content: e.target.value }))} /></div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
-              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Source</div>
-                <input style={inputStyle} placeholder="e.g. SemiAnalysis" value={form.source} onChange={e => setForm(p => ({ ...p, source: e.target.value }))} /></div>
-              <div><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>URL</div>
-                <input style={inputStyle} placeholder="https://..." value={form.source_url} onChange={e => setForm(p => ({ ...p, source_url: e.target.value }))} /></div>
-            </div>
-            <div style={{ marginBottom: 20 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Tags</div>
-              <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 8 }}>
-                {form.tags.map((t, i) => (
-                  <span key={i} onClick={() => setForm(p => ({ ...p, tags: p.tags.filter((_, j) => j !== i) }))} style={{ fontSize: 11, color: T_.accent, background: `${T_.accent}15`, padding: "3px 10px", borderRadius: 6, cursor: "pointer", border: `1px solid ${T_.accent}30` }}>{t} ×</span>
-                ))}
-              </div>
-              <input style={inputStyle} placeholder="Type a tag and press Enter..." value={tagInput} onChange={e => setTagInput(e.target.value)}
-                onKeyDown={e => { if (e.key === "Enter" && tagInput.trim()) { setForm(p => ({ ...p, tags: [...p.tags, tagInput.trim()] })); setTagInput(""); } }} />
-            </div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textMid, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: FONT }}>Cancel</button>
-              <button onClick={handleAdd} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>Save</button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
 
 // ═══════════════════════════════════════════════════════
 // MAIN
@@ -503,7 +406,6 @@ export default function KnowledgeInterests() {
       </div>
       {activeTab === "concepts" && <ConceptsTab />}
       {activeTab === "deepDives" && <DeepDivesTab />}
-      {activeTab === "bookmarks" && <BookmarksTab />}
     </div>
   );
 }
