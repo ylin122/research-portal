@@ -29,9 +29,16 @@ async function callClaude(messages, maxTokens = 8000) {
   return d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
 }
 
+function loadEquities() {
+  try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
+}
+function loadEquityNotes() {
+  try { return JSON.parse(localStorage.getItem("research_portal_equity_notes") || "{}"); } catch { return {}; }
+}
+
 function buildCompanyContext(companies, fieldsMap) {
   const active = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts");
-  return active.map(c => {
+  const sections = active.map(c => {
     const f = fieldsMap[c.id] || {};
     const parts = [`## ${c.name} (${c.sector}/${c.sub || "other"})${c.priority ? " [Priority: " + c.priority + "]" : ""}`];
     for (const key of ["overview", "products", "customers", "industry", "competitive"]) {
@@ -48,7 +55,21 @@ function buildCompanyContext(companies, fieldsMap) {
       if (scores.length) parts.push(`**Moats:** ${scores.join(", ")}`);
     }
     return parts.join("\n");
-  }).join("\n\n---\n\n");
+  });
+
+  // Include localStorage equities
+  const equities = loadEquities();
+  const equityNotes = loadEquityNotes();
+  const dbIds = new Set(active.map(c => c.id));
+  for (const eq of equities) {
+    if (dbIds.has(eq.id)) continue; // skip if already in DB companies
+    const parts = [`## ${eq.name} (equity${eq.sub ? "/" + eq.sub : ""})`];
+    const notes = equityNotes[eq.id];
+    if (notes) parts.push(`**notes:** ${typeof notes === "string" ? notes.slice(0, 600) : ""}`);
+    sections.push(parts.join("\n"));
+  }
+
+  return sections.join("\n\n---\n\n");
 }
 
 function parseImpacts(text) {
@@ -192,7 +213,10 @@ export default function WhatIfAgent({ companies, fieldsMap, sectorNotes }) {
   const abortRef = useRef(false);
 
   const hasKey = !!import.meta.env.VITE_ANTHROPIC_API_KEY;
-  const activeCount = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length;
+  const dbActive = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts");
+  const dbIds = new Set(dbActive.map(c => c.id));
+  const extraEquities = loadEquities().filter(e => !dbIds.has(e.id));
+  const activeCount = dbActive.length + extraEquities.length;
 
   async function runScenario() {
     if (!input.trim() || running) return;
