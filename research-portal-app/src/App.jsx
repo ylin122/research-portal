@@ -19,6 +19,7 @@ import QuickNotes from "./QuickNotes";
 // import IdeaTracker from "./IdeaTracker";
 import TractCapitalReview from "./TractCapitalReview";
 import IndustryResearch from "./IndustryResearch";
+import WhatIfAgent from "./WhatIfAgent";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -367,6 +368,7 @@ function AppContent() {
             </div>
             {agentsOpen && [
               { key: "thesis", label: "Thesis Tracker" },
+              { key: "whatIf", label: "What If" },
               { key: "notesIdeas", label: "Ideas" },
               { key: "dataVerification", label: "Agent Commands" },
             ].map(t => (
@@ -607,6 +609,9 @@ function AppContent() {
         {/* THESIS AGENT */}
         {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
+        {/* WHAT IF AGENT */}
+        {view.type === "whatIfAgent" && <WhatIfAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
         {/* NOTES / IDEAS AGENT */}
         {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
@@ -702,6 +707,7 @@ function AppContent() {
                 { type: "home", label: "Dashboard", icon: "\u{2302}" },
                 { type: null, label: "— Agents —", icon: "" },
                 { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
+                { type: "whatIfAgent", label: "What If", icon: "\u{1F4A5}" },
                 { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
                 { type: "dataVerificationAgent", label: "Agent Commands", icon: "\u{2705}" },
                 { type: null, label: "— Trackers —", icon: "" },
