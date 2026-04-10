@@ -245,6 +245,15 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             mode: "Read + Write (git operations). Never force pushes or commits secrets.",
           },
           {
+            name: "@whatif",
+            file: "whatif.md",
+            color: "#F97316",
+            desc: "Scenario screener. Input a thesis or what-if (e.g., \"R100 delays from supply chain shocks\") and it screens every company in your coverage for impact — positive, negative, or mixed. Shows transmission mechanism, severity, and order of impact.",
+            usage: "@whatif massive delays in R100 launch date driven by supply chain shocks",
+            tools: "Read, Bash, Grep, Glob, WebSearch, WebFetch",
+            mode: "Read-only. Pulls company data from Supabase, researches scenario via web, outputs impact report.",
+          },
+          {
             name: "@refresh",
             file: "refresh.md",
             color: "#14B8A6",
@@ -294,7 +303,8 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             <strong>3.</strong> After writing research content → run <span style={{ fontFamily: "monospace", color: T_.blue }}>@fact-checker</span> and <span style={{ fontFamily: "monospace", color: T_.red }}>@fact-disputer</span> in parallel<br/>
             <strong>4.</strong> After both return → <span style={{ fontFamily: "monospace", color: T_.amber }}>@fact-check-reconciler</span> to get final verdicts<br/>
             <strong>5.</strong> Fix any CONFLICT / LIKELY WRONG items, then re-verify<br/>
-            <strong>6.</strong> Periodically → <span style={{ fontFamily: "monospace", color: "#c084fc" }}>@consistency</span> to catch format/depth/staleness drift across tabs
+            <strong>6.</strong> Periodically → <span style={{ fontFamily: "monospace", color: "#c084fc" }}>@consistency</span> to catch format/depth/staleness drift across tabs<br/>
+            <strong>7.</strong> To test a scenario → <span style={{ fontFamily: "monospace", color: "#F97316" }}>@whatif</span> screens all companies for impact from a thesis or event
           </div>
         </div>
       </div>
