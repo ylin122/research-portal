@@ -11,7 +11,7 @@ const DIRECTION_COLOR = { Negative: T_.red, Positive: T_.green, Mixed: "#F97316"
 
 async function callClaude(messages, maxTokens = 8000) {
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) return null;
+  if (!apiKey) throw new Error("NO_KEY");
   const r = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
     headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
@@ -21,6 +21,10 @@ async function callClaude(messages, maxTokens = 8000) {
       messages,
     }),
   });
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({}));
+    throw new Error(err.error?.message || `API error ${r.status}`);
+  }
   const d = await r.json();
   return d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
 }
@@ -49,14 +53,12 @@ function buildCompanyContext(companies, fieldsMap) {
 
 function parseImpacts(text) {
   const impacts = [];
-  // Match company impact blocks: look for company names with severity/direction markers
   const pattern = /[▼•\-]\s*\*?\*?(.+?)\*?\*?\s*[—–-]\s*\*?\*?(NEGATIVE|POSITIVE|MIXED)\*?\*?\s*\|?\s*Severity:\s*\*?\*?(HIGH|MEDIUM|LOW)\*?\*?/gi;
   let m;
   while ((m = pattern.exec(text)) !== null) {
     const name = m[1].trim().replace(/\*+/g, "");
     const direction = m[2].charAt(0).toUpperCase() + m[2].slice(1).toLowerCase();
     const severity = m[3].toUpperCase();
-    // Extract transmission — the text after the match until the next marker or double newline
     const after = text.slice(m.index + m[0].length, m.index + m[0].length + 500);
     const transMatch = after.match(/Transmission:\s*(.+?)(?:\n\s*(?:Revenue|Moat|Timeframe|Confidence|Sources|\n))/si);
     const transmission = transMatch ? transMatch[1].trim() : "";
@@ -69,30 +71,13 @@ function parseImpacts(text) {
   return impacts;
 }
 
-export default function WhatIfAgent({ companies, fieldsMap, sectorNotes }) {
-  const [scenarios, setScenarios] = useState(() => load());
-  const [input, setInput] = useState("");
-  const [running, setRunning] = useState(false);
-  const [verifying, setVerifying] = useState(null); // scenario id being verified
-  const [expanded, setExpanded] = useState(null);
-  const [phase, setPhase] = useState(""); // status text during run
-  const abortRef = useRef(false);
-
-  async function runScenario() {
-    if (!input.trim() || running) return;
-    abortRef.current = false;
-    setRunning(true);
-    setPhase("Loading company data...");
-
-    const companyContext = buildCompanyContext(companies, fieldsMap);
-    const sectorContext = Object.entries(sectorNotes || {})
-      .filter(([, v]) => v.text)
-      .map(([k, v]) => `**${k}:** ${v.text.slice(0, 300)}`)
-      .join("\n");
-
-    // Phase 1: Run scenario screen
-    setPhase("Researching scenario & screening companies...");
-    const screenPrompt = `You are a scenario analysis agent for a financial research portfolio. You must screen EVERY company below for impact from this scenario.
+function buildScreenPrompt(input, companies, fieldsMap, sectorNotes) {
+  const companyContext = buildCompanyContext(companies, fieldsMap);
+  const sectorContext = Object.entries(sectorNotes || {})
+    .filter(([, v]) => v.text)
+    .map(([k, v]) => `**${k}:** ${v.text.slice(0, 300)}`)
+    .join("\n");
+  return `You are a scenario analysis agent for a financial research portfolio. You must screen EVERY company below for impact from this scenario.
 
 ## SCENARIO
 ${input.trim()}
@@ -147,13 +132,11 @@ Transmission: [one line]
 
 === KEY INSIGHT ===
 [2-3 sentences — the single most important takeaway for portfolio positioning]`;
+}
 
-    const screenResult = await callClaude([{ role: "user", content: screenPrompt }]);
-    if (abortRef.current || !screenResult) { setRunning(false); setPhase(""); return; }
-
-    // Phase 2: Verification pass
-    setPhase("Verifying impact assessments...");
-    const verifyPrompt = `You are a verification agent. Below is a scenario analysis that screened companies for impact. Your job is to CHALLENGE every impact assessment and check for errors.
+function buildVerifyPrompt(input, screenResult, companies, fieldsMap) {
+  const companyContext = buildCompanyContext(companies, fieldsMap);
+  return `You are a verification agent. Below is a scenario analysis that screened companies for impact. Your job is to CHALLENGE every impact assessment and check for errors.
 
 ## ORIGINAL SCENARIO
 ${input.trim()}
@@ -193,30 +176,89 @@ For each company checked:
 Provide a corrected final impact count:
 HIGH: [N] | MEDIUM: [N] | LOW: [N] | Not impacted: [N]
 [Note any changes from the original assessment]`;
+}
 
-    const verifyResult = await callClaude([{ role: "user", content: verifyPrompt }]);
-    if (abortRef.current) { setRunning(false); setPhase(""); return; }
+export default function WhatIfAgent({ companies, fieldsMap, sectorNotes }) {
+  const [scenarios, setScenarios] = useState(() => load());
+  const [input, setInput] = useState("");
+  const [running, setRunning] = useState(false);
+  const [error, setError] = useState("");
+  const [verifying, setVerifying] = useState(null);
+  const [expanded, setExpanded] = useState(null);
+  const [phase, setPhase] = useState("");
+  const [pasteMode, setPasteMode] = useState(false);
+  const [pasteAnalysis, setPasteAnalysis] = useState("");
+  const [pasteVerification, setPasteVerification] = useState("");
+  const abortRef = useRef(false);
 
+  const hasKey = !!import.meta.env.VITE_ANTHROPIC_API_KEY;
+  const activeCount = companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length;
+
+  async function runScenario() {
+    if (!input.trim() || running) return;
+    abortRef.current = false;
+    setRunning(true);
+    setError("");
+    setPhase("Researching scenario & screening companies...");
+
+    try {
+      const screenPrompt = buildScreenPrompt(input, companies, fieldsMap, sectorNotes);
+      const screenResult = await callClaude([{ role: "user", content: screenPrompt }]);
+      if (abortRef.current) { setRunning(false); setPhase(""); return; }
+
+      setPhase("Verifying impact assessments...");
+      const verifyPrompt = buildVerifyPrompt(input, screenResult, companies, fieldsMap);
+      let verifyResult = "";
+      try {
+        verifyResult = await callClaude([{ role: "user", content: verifyPrompt }]);
+      } catch { /* verification is optional — don't block on it */ }
+      if (abortRef.current) { setRunning(false); setPhase(""); return; }
+
+      saveScenario(input, screenResult, verifyResult);
+    } catch (e) {
+      if (e.message === "NO_KEY") {
+        setError("No API key configured. Use the paste workflow below, or run @whatif from Claude Code CLI.");
+      } else {
+        setError(`API error: ${e.message}`);
+      }
+    }
+    setRunning(false);
     setPhase("");
-    const impacts = parseImpacts(screenResult);
+  }
+
+  function saveScenario(scenarioInput, analysis, verification) {
+    const impacts = parseImpacts(analysis);
     const scenario = {
       id: uid(),
-      input: input.trim(),
+      input: scenarioInput.trim(),
       date: new Date().toISOString(),
-      analysis: screenResult,
-      verification: verifyResult || "",
+      analysis,
+      verification: verification || "",
       impacts,
       highCount: impacts.filter(i => i.severity === "HIGH").length,
       medCount: impacts.filter(i => i.severity === "MEDIUM").length,
       lowCount: impacts.filter(i => i.severity === "LOW").length,
     };
-
     const updated = [scenario, ...scenarios];
     setScenarios(updated);
     save(updated);
     setInput("");
     setExpanded(scenario.id);
-    setRunning(false);
+  }
+
+  function savePastedResult() {
+    if (!input.trim() || !pasteAnalysis.trim()) return;
+    saveScenario(input, pasteAnalysis, pasteVerification);
+    setPasteMode(false);
+    setPasteAnalysis("");
+    setPasteVerification("");
+  }
+
+  function copyPromptToClipboard() {
+    if (!input.trim()) return;
+    const prompt = buildScreenPrompt(input, companies, fieldsMap, sectorNotes);
+    navigator.clipboard.writeText(prompt);
+    setError("");
   }
 
   async function recheck(scenarioId) {
@@ -224,8 +266,9 @@ HIGH: [N] | MEDIUM: [N] | LOW: [N] | Not impacted: [N]
     if (!sc || verifying) return;
     setVerifying(scenarioId);
 
-    const companyContext = buildCompanyContext(companies, fieldsMap);
-    const recheckPrompt = `You are a fact-checking agent. Re-verify this scenario analysis against CURRENT information.
+    try {
+      const companyContext = buildCompanyContext(companies, fieldsMap);
+      const recheckPrompt = `You are a fact-checking agent. Re-verify this scenario analysis against CURRENT information.
 
 ## SCENARIO: ${sc.input}
 ## DATE OF ORIGINAL ANALYSIS: ${new Date(sc.date).toLocaleDateString()}
@@ -259,15 +302,16 @@ UPDATED IMPACT ASSESSMENTS:
 
 KEY UPDATE: [1-2 sentences on what's different now]`;
 
-    const result = await callClaude([{ role: "user", content: recheckPrompt }]);
-    if (result) {
-      const updated = scenarios.map(s => s.id === scenarioId
-        ? { ...s, lastRecheck: new Date().toISOString(), recheckResult: result }
-        : s
-      );
-      setScenarios(updated);
-      save(updated);
-    }
+      const result = await callClaude([{ role: "user", content: recheckPrompt }]);
+      if (result) {
+        const updated = scenarios.map(s => s.id === scenarioId
+          ? { ...s, lastRecheck: new Date().toISOString(), recheckResult: result }
+          : s
+        );
+        setScenarios(updated);
+        save(updated);
+      }
+    } catch { /* silent */ }
     setVerifying(null);
   }
 
@@ -289,42 +333,69 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
     padding: "4px 12px", fontSize: 11, fontWeight: 500, borderRadius: 5, cursor: "pointer",
     background: bg, color, border: `1px solid ${border}`, fontFamily: FONT,
   });
+  const textareaStyle = {
+    width: "100%", padding: 14, fontSize: 13, fontFamily: FONT,
+    background: T_.bgInput, color: T_.text, border: `1px solid ${T_.borderLight}`,
+    borderRadius: 8, resize: "vertical", lineHeight: 1.6,
+    outline: "none", boxSizing: "border-box",
+  };
 
   return (
     <div style={{ padding: "36px 44px", maxWidth: 1000, fontFamily: FONT }}>
       <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 4 }}>What If</h1>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
-        Test a scenario or thesis against your entire coverage universe. Each run screens every company, identifies impacts, and auto-verifies the results.
+        Test a scenario or thesis against your entire coverage universe. Screens every company for impact with auto-verification.
       </p>
 
       {/* Input */}
       <div style={panel}>
         <div style={hdr}>Scenario Input</div>
         <p style={{ fontSize: 11, color: T_.textGhost, marginTop: 4, marginBottom: 12 }}>
-          Describe a market event, policy change, supply chain shock, or thesis. Be specific — the more detail, the better the screen.
+          Describe a market event, policy change, supply chain shock, or thesis. Be specific.
         </p>
         <textarea
           value={input}
           onChange={e => setInput(e.target.value)}
-          placeholder='e.g., "Massive delays in NVIDIA R100 launch date driven by supply chain shocks — TSMC yield issues push delivery to Q2 2027"'
+          placeholder='e.g., "Massive delays in NVIDIA R100 launch — TSMC yield issues push delivery to Q2 2027, impacting all hyperscaler GPU refresh cycles"'
           disabled={running}
-          style={{
-            width: "100%", minHeight: 100, padding: 14, fontSize: 13, fontFamily: FONT,
-            background: T_.bgInput, color: T_.text, border: `1px solid ${T_.borderLight}`,
-            borderRadius: 8, resize: "vertical", lineHeight: 1.6,
-            outline: "none", boxSizing: "border-box",
-          }}
+          style={{ ...textareaStyle, minHeight: 100 }}
         />
-        <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 12 }}>
+
+        {/* Error display */}
+        {error && (
+          <div style={{ marginTop: 10, padding: "10px 14px", borderRadius: 7, background: T_.red + "10", border: `1px solid ${T_.red}25`, fontSize: 12, color: T_.red }}>
+            {error}
+          </div>
+        )}
+
+        {/* Action buttons */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 12, flexWrap: "wrap" }}>
+          {hasKey ? (
+            <button
+              onClick={runScenario}
+              disabled={running || !input.trim()}
+              style={{
+                ...btn(running ? T_.bgInput : "#F97316", running ? T_.textGhost : "#fff", running ? T_.borderLight : "#F97316"),
+                opacity: running || !input.trim() ? 0.5 : 1,
+              }}
+            >
+              {running ? "Running..." : "Run Scenario Screen"}
+            </button>
+          ) : (
+            <button
+              onClick={() => { copyPromptToClipboard(); setError("Prompt copied! Paste into Claude to run, then paste results back below."); }}
+              disabled={!input.trim()}
+              style={{ ...btn("#F97316", "#fff", "#F97316"), opacity: !input.trim() ? 0.5 : 1 }}
+            >
+              Copy Prompt to Clipboard
+            </button>
+          )}
           <button
-            onClick={runScenario}
-            disabled={running || !input.trim()}
-            style={{
-              ...btn(running ? T_.bgInput : "#F97316", running ? T_.textGhost : "#fff", running ? T_.borderLight : "#F97316"),
-              opacity: running || !input.trim() ? 0.5 : 1,
-            }}
+            onClick={() => setPasteMode(!pasteMode)}
+            disabled={running}
+            style={btnSm(pasteMode ? "#F97316" + "15" : T_.bgInput, pasteMode ? "#F97316" : T_.textDim, pasteMode ? "#F97316" + "30" : T_.borderLight)}
           >
-            {running ? "Running..." : "Run Scenario Screen"}
+            {pasteMode ? "Cancel Paste" : "Paste Results"}
           </button>
           {running && (
             <>
@@ -333,14 +404,55 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
             </>
           )}
         </div>
+
+        {/* CLI hint */}
+        {!hasKey && (
+          <div style={{ marginTop: 10, padding: "8px 12px", borderRadius: 6, background: "#F97316" + "08", border: `1px dashed #F9731630`, fontSize: 11, color: T_.textMid, lineHeight: 1.6 }}>
+            <strong style={{ color: "#F97316" }}>No API key configured.</strong> Two options:<br/>
+            1. Run <span style={{ fontFamily: "monospace", color: "#F97316" }}>@whatif {input.trim().slice(0, 60) || "your scenario"}</span> in Claude Code CLI<br/>
+            2. Click "Copy Prompt" above, paste into Claude, then paste the results back with "Paste Results"
+          </div>
+        )}
+
         <div style={{ marginTop: 10, display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
-          <span>Screens {companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length} companies</span>
+          <span>Screens {activeCount} companies</span>
           <span>|</span>
-          <span>Uses web search for real-time validation</span>
+          <span>Web search for real-time data</span>
           <span>|</span>
-          <span>Auto-verifies all HIGH/MEDIUM calls</span>
+          <span>Auto-verifies HIGH/MEDIUM calls</span>
         </div>
       </div>
+
+      {/* Paste Mode */}
+      {pasteMode && (
+        <div style={{ ...panel, borderColor: "#F97316" + "40" }}>
+          <div style={{ ...hdr, color: "#F97316" }}>Paste Results</div>
+          <p style={{ fontSize: 11, color: T_.textGhost, marginTop: 4, marginBottom: 12 }}>
+            Paste the scenario analysis output from Claude Code or Claude.ai. Optionally paste verification results separately.
+          </p>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.textDim, marginBottom: 4 }}>Analysis Output</div>
+          <textarea
+            value={pasteAnalysis}
+            onChange={e => setPasteAnalysis(e.target.value)}
+            placeholder="Paste the scenario screen results here..."
+            style={{ ...textareaStyle, minHeight: 150, marginBottom: 12 }}
+          />
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.textDim, marginBottom: 4 }}>Verification Output (optional)</div>
+          <textarea
+            value={pasteVerification}
+            onChange={e => setPasteVerification(e.target.value)}
+            placeholder="Paste verification results here if available..."
+            style={{ ...textareaStyle, minHeight: 80, marginBottom: 12 }}
+          />
+          <button
+            onClick={savePastedResult}
+            disabled={!input.trim() || !pasteAnalysis.trim()}
+            style={{ ...btn("#F97316", "#fff", "#F97316"), opacity: !input.trim() || !pasteAnalysis.trim() ? 0.5 : 1 }}
+          >
+            Save Scenario
+          </button>
+        </div>
+      )}
 
       {/* Past Scenarios */}
       {scenarios.length > 0 && (
@@ -356,10 +468,7 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
                 {/* Header row */}
                 <div
                   onClick={() => setExpanded(isExpanded ? null : sc.id)}
-                  style={{
-                    padding: "12px 14px", cursor: "pointer",
-                    display: "flex", alignItems: "center", gap: 10,
-                  }}
+                  style={{ padding: "12px 14px", cursor: "pointer", display: "flex", alignItems: "center", gap: 10 }}
                 >
                   <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: isExpanded ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                   <span style={{ fontSize: 13, fontWeight: 600, color: T_.text, flex: 1 }}>
@@ -375,10 +484,10 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
                   </span>
                 </div>
 
-                {/* Expanded content */}
+                {/* Expanded */}
                 {isExpanded && (
                   <div style={{ padding: "0 14px 14px", borderTop: `1px solid ${T_.borderLight}` }}>
-                    {/* Impact summary pills */}
+                    {/* Impact pills */}
                     {sc.impacts.length > 0 && (
                       <div style={{ marginTop: 12, marginBottom: 14 }}>
                         <div style={{ fontSize: 11, fontWeight: 600, color: T_.textDim, marginBottom: 8 }}>Impact Map</div>
@@ -442,15 +551,17 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
 
                     {/* Actions */}
                     <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+                      {hasKey && (
+                        <button
+                          onClick={() => recheck(sc.id)}
+                          disabled={verifying === sc.id}
+                          style={{ ...btnSm(T_.blue + "15", T_.blue, T_.blue + "30"), opacity: verifying === sc.id ? 0.5 : 1 }}
+                        >
+                          {verifying === sc.id ? "Rechecking..." : "Recheck with Latest Data"}
+                        </button>
+                      )}
                       <button
-                        onClick={() => recheck(sc.id)}
-                        disabled={verifying === sc.id}
-                        style={{ ...btnSm(T_.blue + "15", T_.blue, T_.blue + "30"), opacity: verifying === sc.id ? 0.5 : 1 }}
-                      >
-                        {verifying === sc.id ? "Rechecking..." : "Recheck with Latest Data"}
-                      </button>
-                      <button
-                        onClick={() => navigator.clipboard.writeText(`SCENARIO: ${sc.input}\n\n${sc.analysis}\n\nVERIFICATION:\n${sc.verification}`)}
+                        onClick={() => navigator.clipboard.writeText(`SCENARIO: ${sc.input}\n\n${sc.analysis}${sc.verification ? `\n\nVERIFICATION:\n${sc.verification}` : ""}`)}
                         style={btnSm(T_.bgPanel, T_.textDim, T_.borderLight)}
                       >
                         Copy
