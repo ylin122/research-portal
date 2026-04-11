@@ -1,5 +1,14 @@
 import React, { useState } from "react";
 import { T_, FONT } from "./lib/theme";
+const FIELDS = [
+  { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
+  { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
+  { key: "customers", label: "Customer focus", ph: "Target segments, key accounts, verticals, GTM motion, deal sizes, retention, expansion, geographic focus..." },
+  { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends, regulatory environment, tailwinds/headwinds, secular shifts..." },
+  { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
+  { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
+  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
+];
 const s = {
   card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 16 },
   section: { marginBottom: 36 },
@@ -8,18 +17,20 @@ const s = {
   newsScroll: { maxHeight: 400, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
   newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
   btnSmall: { padding: "4px 12px", fontSize: 12, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textDim, borderRadius: 5, cursor: "pointer", fontFamily: FONT },
+  proseBody: { fontSize: 14, lineHeight: 1.9, color: T_.text, cursor: "pointer", whiteSpace: "pre-wrap", padding: "6px 0", fontFamily: FONT },
+  textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
 };
 
 function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
 
-export default function CoreweaveReview({ curNews, newsLoading, refreshNews, companyId, companyName }) {
+export default function CoreweaveReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
   const [crwvTab, setCrwvTab] = useState("recent");
 
   return (
     <>
       {/* CoreWeave Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Recent Updates" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Contracts" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setCrwvTab(tab.key)}
@@ -39,38 +50,35 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
       {/* ===== RECENT UPDATES TAB ===== */}
       {crwvTab === "recent" && (
         <div style={s.section}>
-          <div style={s.sectionHdr}>
-            <span>Recent updates</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {curNews?.date && <span style={s.sectionDate}>Fetched {fmtShort(curNews.date)}</span>}
-              <button style={s.btnSmall} onClick={() => refreshNews(companyId)} disabled={newsLoading}>
-                {newsLoading ? "Fetching..." : "Refresh news"}
-              </button>
-            </div>
-          </div>
-          <div style={s.newsScroll}>
-            {newsLoading && !curNews && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "20px 0", fontStyle: "italic", lineHeight: 1.7 }}>Searching for recent news about {companyName}...</div>
-            )}
-            {curNews && curNews.items.length === 0 && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No recent news found. Click "Refresh news" to search again.</div>
-            )}
-            {curNews && [...curNews.items].sort((a, b) => {
-              try { return new Date(b.date) - new Date(a.date); } catch { return 0; }
-            }).map((item, i) => (
-              <div key={i} style={s.newsItem}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
-                  <div style={{ fontSize: 14, color: T_.text, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{item.headline}</div>
-                  <span style={{ fontSize: 12, color: T_.textGhost, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 2 }}>{item.date}</span>
+          {/* Structured Fields */}
+          {FIELDS.map(f => {
+            const fd = curFields?.[f.key];
+            const isEditing = editingField === f.key;
+            const hasContent = fd?.text?.trim();
+            return (
+              <div key={f.key} style={s.section}>
+                <div style={s.sectionHdr}>
+                  <span>{f.label}</span>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
+                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                  </div>
                 </div>
-                {item.summary && <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7, marginTop: 6 }}>{item.summary}</div>}
-                {item.source && <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 4 }}>{item.source}</div>}
+                {(isEditing || !hasContent) ? (
+                  <div>
+                    <textarea style={s.textarea} rows={6}
+                      value={fd?.text || ""}
+                      onChange={e => updateField(companyId, f.key, e.target.value)}
+                      placeholder={f.ph}
+                      autoFocus={isEditing} />
+                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                  </div>
+                ) : (
+                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                )}
               </div>
-            ))}
-            {!curNews && !newsLoading && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>Click "Refresh news" to pull the latest updates about {companyName}.</div>
-            )}
-          </div>
+            );
+          })}
         </div>
       )}
 
@@ -96,12 +104,13 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
           {[
             { date: "Mar 31", event: "$8.5B Meta-backed DDTL 4.0 closed", type: "Financing", detail: "First-ever IG-rated GPU-backed deal. A3 (Moody's) / A-low (DBRS). SOFR+225 / ~5.9% fixed. Maturity Mar 2032. Anchored by Blackstone. CRWV +8%." },
-            { date: "May 20", event: "Q1 2026 earnings", type: "Earnings", detail: "Guided $1.9-2.0B rev (consensus $2.24B). First report with Meta infra ramp. Key test post-Q4 miss." },
+            { date: "Apr 9", event: "$21B Meta expansion signed", type: "Contract", detail: "Expanded AI infrastructure agreement through 2032. Total Meta commitment now ~$35B. Stock surged on announcement. Underpins additional financing capacity." },
+            { date: "Apr 9-10", event: "$4.7B new debt offering", type: "Financing", detail: "$3B convertible senior notes due 2032 (+ $450M greenshoe). $1.25B senior unsecured notes due 2031. Total debt now exceeds $21B." },
+            { date: "Apr 10", event: "Anthropic multi-year deal", type: "Contract", detail: "Multi-year agreement to power Claude AI models at production scale. Financial terms undisclosed. Phased rollout using NVIDIA architectures incl. Vera Rubin starting late 2026. CRWV +11%." },
+            { date: "May 20", event: "Q1 2026 earnings", type: "Earnings", detail: "Guided $1.9-2.0B rev. First report with Meta infra ramp. Key test post-Q4 miss. Adj. operating income $0-40M (margin trough)." },
             { date: "Mid-2026", event: "Ellendale ND Phase 2 (150 MW)", type: "Capacity", detail: "Applied Digital Polaris campus, Building 2. Proves execution on phased delivery. (Source: Applied Digital IR, Aug 2025)" },
-            { date: "2026", event: "Muskogee, OK (100 MW total / ~70 MW IT)", type: "Capacity", detail: "Core Scientific facility. Part of $8.7B / 590 MW hosting deal. No specific month disclosed. (Source: Core Scientific IR, Nov 2024)" },
-            { date: "H2 2026", event: "Vera Rubin (R100) first deployments", type: "GPU", detail: "CoreWeave among first cloud providers. ~10x inference cost reduction vs Blackwell. Next-gen contracts depend on this." },
-            { date: "Aug 2026", event: "Q2 2026 earnings", type: "Earnings", detail: "Revenue trajectory confirmation. Market watching for delivery execution and Meta revenue ramp." },
-            { date: "2026", event: "Meta GB300 contract ramp", type: "Capacity", detail: "~$19B+ total Meta commitment ($14.2B announced + >$5B undisclosed). CoreWeave deployed GB300 NVL72 from Jul 2025 for general customers. Specific Meta delivery start date not publicly disclosed." },
+            { date: "H2 2026", event: "Vera Rubin (R100) first deployments", type: "GPU", detail: "CoreWeave among first cloud providers. HGX B300 now generally available. Vera Rubin NVL72 and Vera CPU rack expected H2 2026." },
+            { date: "Aug 2026", event: "Q2 2026 earnings", type: "Earnings", detail: "Revenue trajectory confirmation. Market watching for delivery execution and Meta revenue ramp. Full-year guide: $12-13B rev." },
           ].map((c, i) => (
             <div key={i} style={{ display: "flex", gap: 10, padding: "8px 10px", background: "#0B0F19", borderRadius: 6, border: "1px solid #1E293B" }}>
               <div style={{ width: 75, minWidth: 75 }}>
@@ -178,8 +187,9 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
       <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 24 }}>
         {[
           { label: "Customers", items: [
-            { name: "Microsoft / OpenAI", sub: "Largest customer — $22.4B multi-year GPU lease (thru 2029)", color: "#F59E0B" },
-            { name: "Meta", sub: "~$19B+ total contract — expanding neocloud GPU procurement", color: "#F59E0B" },
+            { name: "Microsoft / OpenAI", sub: "OpenAI $22.4B multi-year GPU lease (thru 2029). Microsoft ~$10B (thru ~2030).", color: "#F59E0B" },
+            { name: "Meta", sub: "~$35B total ($14.2B + $21B expansion Apr 2026) — largest customer by backlog", color: "#F59E0B" },
+            { name: "Anthropic", sub: "Multi-year deal (Apr 2026) — powering Claude AI at production scale. Vera Rubin deployment.", color: "#F59E0B" },
             { name: "Poolside", sub: "$12B val · 40K+ GB300 GPUs · Anchor tenant, 2GW Project Horizon TX", color: "#F59E0B" },
             { name: "Perplexity", sub: "$20B val · Multi-year inference deal (Mar 2026) · GB200 NVL72", color: "#F59E0B" },
             { name: "Runway", sub: "$5.3B val · Next-gen world models on GB300 NVL72 (Dec 2025)", color: "#F59E0B" },
@@ -228,7 +238,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
       {/* Major Contracts */}
       <div style={s.card}>
         <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 4, letterSpacing: "-0.3px" }}>Major Contracts</div>
-        <div style={{ fontSize: 12, color: "#94A3B8", marginBottom: 16 }}>Customer concentration: Microsoft = 67% of FY2025 revenue. Top 2 customers = ~85%+. Backlog more diversified: no single customer &gt;35%. Total backlog: $66.8B. RPO: $60.7B (YE2025, up from $15.1B YE2024; 3.6yr weighted avg may need updating).</div>
+        <div style={{ fontSize: 12, color: "#94A3B8", marginBottom: 16 }}>Customer concentration: Microsoft = 67% of FY2025 revenue. Backlog diversifying rapidly — Meta now largest at ~$35B. Total backlog: ~$87B+ (post-Meta expansion + Anthropic). RPO: $60.7B (YE2025). CoreWeave now serves 9 of the top 10 AI model providers.</div>
 
         {/* Customer Contracts */}
         <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 12 }}>Customer Contracts</div>
@@ -267,14 +277,14 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
                 },
                 {
                   cust: "Meta",
-                  value: "~$19.2B+",
-                  term: "6 years (through 2031, option to 2032)",
-                  arr: "~$3.2B implied",
+                  value: "~$35B+",
+                  term: "Through 2032",
+                  arr: "~$5B+ implied",
                   delivery: "Starting 2026 — GB300 Blackwell Ultra",
                   gpu: "NVIDIA GB300 Blackwell Ultra",
-                  pricing: "Committed capacity. CoreWeave used this contract as collateral for $8.5B in debt financing (Feb 2026).",
+                  pricing: "Committed capacity. $21B expansion signed Apr 9, 2026. Original contract ($14.2B) used as collateral for $8.5B financing.",
                   exit: "\"Up to\" language — ceiling, not guaranteed floor. Exit provisions tied to delivery milestones.",
-                  source: "S-1/A, Bloomberg, Reuters",
+                  source: "CoreWeave IR, CNBC, Bloomberg",
                 },
               ].map((row, i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(15,23,42,0.3)" }}>
@@ -389,7 +399,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px" }}>As of</div>
-            <div style={{ fontSize: 16, fontWeight: 700, color: "#3B82F6" }}>Mar 2026</div>
+            <div style={{ fontSize: 16, fontWeight: 700, color: "#3B82F6" }}>Apr 2026</div>
           </div>
         </div>
       </div>
@@ -494,12 +504,23 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
             issuer: "CoreWeave, Inc.", guarantor: "Same guarantor pool as 2030 Notes — jointly & severally, fully & unconditionally", trustee: "Not disclosed",
             offering: "Rule 144A / Reg S · Issued Jul 2025", redemption: "Standard high-yield call schedule", ranking: "Senior unsecured — pari passu with 2030 Notes and Convertible Notes",
             covenants: "Substantially identical to 2030 Notes indenture. Incurrence-based covenants.", crossDefault: "Yes — cross-acceleration to other indebtedness >$150M", changeOfControl: "101% repurchase offer upon change of control" },
+          { name: "1.25B Senior Notes (2031)", tag: "UNSECURED", tagBg: "rgba(245,158,11,0.12)", tagColor: "#F59E0B", color: "#F59E0B",
+            outstanding: "$1.25B", rate: "TBD", rateType: "fixed", maturity: "2031",
+            issuer: "CoreWeave, Inc.", guarantor: "Same guarantor pool", trustee: "TBD",
+            offering: "Issued Apr 2026 alongside $3B convertible", redemption: "Standard high-yield call schedule", ranking: "Senior unsecured — pari passu with existing notes",
+            covenants: "Expected substantially identical to existing indentures.", crossDefault: "Yes — cross-acceleration to other indebtedness >$150M", changeOfControl: "101% repurchase offer" },
           { name: "1.75% Convertible Notes", tag: "CONVERTIBLE", tagBg: "rgba(139,92,246,0.12)", tagColor: "#A78BFA", color: "#A78BFA",
             outstanding: "$2.588B", rate: "1.75%", rateType: "fixed", maturity: "Dec 1, 2031",
             issuer: "CoreWeave, Inc.", guarantor: "Same guarantor pool — jointly & severally, fully & unconditionally", trustee: "U.S. Bank Trust Co., N.A.",
             offering: "Issued Dec 2025", redemption: "Redeemable after Dec 2028 if stock >130% of conversion price for 20/30 days", ranking: "Senior unsecured — pari passu with 2030 and 2031 Notes",
             covenants: "Lighter than high-yield notes. Standard convertible indenture restrictions.", crossDefault: "Yes — cross-acceleration to other indebtedness >$150M", changeOfControl: "Investor put at 100% + make-whole fundamental change adjustment",
             conversion: "9.2764 shares/$1K (~$107.80 conversion price)", cappedCall: "Strike $107.80, cap $215.60 ($340M cost)" },
+          { name: "$3B Convertible Notes (2032)", tag: "CONVERTIBLE", tagBg: "rgba(139,92,246,0.12)", tagColor: "#A78BFA", color: "#A78BFA",
+            outstanding: "$3.0B", rate: "TBD", rateType: "fixed", maturity: "2032",
+            issuer: "CoreWeave, Inc.", guarantor: "Same guarantor pool", trustee: "TBD",
+            offering: "Issued Apr 2026. $450M greenshoe option.", redemption: "TBD", ranking: "Senior unsecured — pari passu with existing notes",
+            covenants: "Standard convertible indenture.", crossDefault: "Yes — cross-acceleration to other indebtedness >$150M", changeOfControl: "TBD",
+            conversion: "Terms TBD — issued alongside $21B Meta expansion", cappedCall: "TBD" },
         ].map((e, i) => (
           <div key={i} style={{ background: "#111827", border: "1px solid #1E293B", borderRadius: 8, padding: "12px 12px 10px" }}>
             <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 6 }}>
@@ -568,13 +589,13 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         </div>
       </div>
 
-      <div style={{ fontSize: 11, color: "#64748B", fontStyle: "italic", marginBottom: 24 }}>Sources: CoreWeave S-1/A (Mar 2025), 10-K FY2025 (filed Mar 2, 2026), EX-21.1 subsidiary lists, 8-K filings (DDTL 3.0 Jul 2025, Fifth Amendment Sep 2025, Convertible Notes Dec 2025), Bloomberg (Meta facility Feb 2026). All entity names and terms per SEC filings.</div>
+      <div style={{ fontSize: 11, color: "#64748B", fontStyle: "italic", marginBottom: 24 }}>Sources: CoreWeave S-1/A (Mar 2025), 10-K FY2025 (filed Mar 2, 2026), EX-21.1 subsidiary lists, 8-K filings (DDTL 3.0 Jul 2025, Fifth Amendment Sep 2025, Convertible Notes Dec 2025), Bloomberg (Meta facility Feb 2026), $4.7B debt offering (Apr 2026). All entity names and terms per SEC filings.</div>
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
     {crwvTab === "contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Side &amp; Customer Contracts</div>
-      <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Granular terms on CoreWeave's three anchor contracts. Total backlog: $66.8B (YE2025). RPO: $60.7B. 96% take-or-pay. Key commercial terms are redacted in SEC filings under confidential treatment.</div>
+      <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Granular terms on CoreWeave's anchor contracts. Total backlog: ~$87B+ (post-Apr 2026 Meta expansion + Anthropic deal). RPO: $60.7B (YE2025). 96% take-or-pay. CoreWeave now serves 9 of top 10 AI model providers. Key commercial terms redacted in SEC filings.</div>
 
       {/* Contract Comparison */}
       <div style={s.card}>
@@ -590,15 +611,15 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
             </thead>
             <tbody>
               {[
-                { metric: "Contract Value", oai: "$22.4B", meta: "~$19.2B+", msft: "~$10B" },
-                { metric: "Term", oai: "Through Oct 2030", meta: "Through Dec 2031 (opt. 2032)", msft: "Through ~2030" },
-                { metric: "% of Backlog", oai: "~34%", meta: "~29% (~$19.2B+ total)", msft: "~15%" },
+                { metric: "Contract Value", oai: "$22.4B", meta: "~$35B+", msft: "~$10B" },
+                { metric: "Term", oai: "Through Oct 2030", meta: "Through 2032", msft: "Through ~2030" },
+                { metric: "% of Backlog", oai: "~26%", meta: "~40% (~$35B total)", msft: "~11%" },
                 { metric: "% of FY25 Revenue", oai: "Ramping (signed Mar 2025)", meta: "Minimal (signed Sep 2025)", msft: "67% ($3.4B)" },
                 { metric: "Counterparty Credit", oai: "Unrated (pre-profit)", meta: "A+ (IG)", msft: "AA+ (IG)" },
                 { metric: "GPU Generation", oai: "GB200 → GB300", meta: "GB300 (Blackwell Ultra)", msft: "H100 / H200" },
                 { metric: "Financing Rate", oai: "SOFR+4.00% (SPV)", meta: "SOFR+2.25% (DDTL)", msft: "Not separately financed" },
                 { metric: "Equity Cross-Investment", oai: "$350M at $40/share", meta: "None", msft: "None" },
-                { metric: "Strategic Importance", oai: "CoreWeave is <4% of OAI's $610B infra", meta: "Supplemental to 4+ GW internal buildout", msft: "Bridge/supplement to Azure" },
+                { metric: "Strategic Importance", oai: "CoreWeave is <4% of OAI's $610B infra", meta: "Now largest customer by backlog. $21B expansion Apr 2026.", msft: "Bridge/supplement to Azure" },
               ].map((row, i) => (
                 <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(15,23,42,0.3)" }}>
                   <td style={{ padding: "10px 12px", borderBottom: "1px solid #1E293B10", fontWeight: 700, color: "#F8FAFC", whiteSpace: "nowrap" }}>{row.metric}</td>
@@ -632,6 +653,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
             </thead>
             <tbody>
               {[
+                { co: "Anthropic", sector: "AI Foundation Model", val: "$61B", gpu: "NVIDIA (incl. Vera Rubin)", deal: "Multi-year deal (Apr 10, 2026). Powering Claude at production scale." },
                 { co: "Poolside", sector: "AI Coding", val: "$12B", gpu: "40K+ GB300", deal: "~$5B backlog (Evercore). Anchor tenant, Project Horizon 2GW TX campus" },
                 { co: "Perplexity", sector: "AI Search", val: "$20B", gpu: "GB200 NVL72", deal: "Multi-year inference deal (Mar 2026)" },
                 { co: "Runway", sector: "AI Video / World Models", val: "$5.3B", gpu: "GB300 NVL72", deal: "Training + inference (Dec 2025)" },
@@ -768,7 +790,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 12 }}>Contract Risk Factors</div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {[
-            { title: "Customer Concentration", desc: "Microsoft = 67% of FY2025 revenue ($3.4B of $5.1B). Declined ~$12B expansion, redirected to OpenAI. Backlog more diversified (no single customer >35%).", color: "#EF4444" },
+            { title: "Customer Concentration", desc: "Microsoft = 67% of FY2025 revenue ($3.4B of $5.1B). Backlog rapidly diversifying — Meta now ~40% of ~$87B+ backlog. Anthropic + Poolside + Perplexity add breadth. Serves 9 of top 10 AI model providers.", color: "#F59E0B" },
             { title: "\"Up To\" Contract Language", desc: "Meta (~$19.2B+) and other contracts use \"up to\" ceilings, not guaranteed minimums. Delivery shortfall = revenue shortfall.", color: "#EF4444" },
             { title: "Milestone-Contingent Exits", desc: "If CoreWeave misses construction milestones, take-or-pay protections may be voided. Kerrisdale's walk-away analysis references Applied Digital lease terms, not CoreWeave customer contracts directly.", color: "#EF4444" },
             { title: "Counterparty Credit Risk", desc: "OpenAI ($22.4B) is unprofitable and pre-IPO. Circular: NVIDIA supplies GPUs + invests + backstops. OpenAI is customer + equity investor ($350M).", color: "#F59E0B" },
@@ -872,20 +894,20 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
           <div>
             <div style={{ fontSize: 20, fontWeight: 700, color: "#F59E0B" }}>Meta</div>
-            <div style={{ fontSize: 12, color: "#94A3B8" }}>Investment-grade counterparty &middot; ~$19.2B+ total contract &middot; Contract used as collateral for $8.5B financing &middot; ~29% of backlog</div>
+            <div style={{ fontSize: 12, color: "#94A3B8" }}>Investment-grade counterparty &middot; ~$35B+ total contract &middot; Largest customer by backlog &middot; ~40% of backlog</div>
           </div>
           <div style={{ textAlign: "right" }}>
             <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase" }}>Total Contract</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#F8FAFC" }}>~$19.2B+</div>
-            <div style={{ fontSize: 11, color: "#64748B" }}>$14.2B announced + &gt;$5B (Bloomberg)</div>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#F8FAFC" }}>~$35B+</div>
+            <div style={{ fontSize: 11, color: "#64748B" }}>$14.2B initial + $21B expansion (Apr 2026)</div>
           </div>
         </div>
 
         <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
           {[
-            { label: "Announced", value: "Sep 30, 2025", sub: "Stock surged ~12%" },
-            { label: "Duration", value: "~6 years", sub: "Through Dec 14, 2031" },
-            { label: "Extension", value: "To 2032", sub: "Option" },
+            { label: "Initial", value: "Sep 30, 2025", sub: "$14.2B announced" },
+            { label: "Expansion", value: "Apr 9, 2026", sub: "$21B additional" },
+            { label: "Duration", value: "Through 2032", sub: "Extended commitment" },
             { label: "GPU Type", value: "GB300 NVL72", sub: "Blackwell Ultra" },
             { label: "Financing Rate", value: "SOFR+2.25%", sub: "IG-like pricing" },
             { label: "Meta Credit", value: "Investment Grade", sub: "$201B rev, $62B NI" },
@@ -902,7 +924,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 12, marginBottom: 16 }}>
           <tbody>
             {[
-              { term: "Total Value", detail: "$14.2B publicly announced (Sep 2025). Bloomberg reported an additional >$5B Meta contract (early 2026, previously unreported) — total ~$19.2B+. Both used as collateral for the $8.5B financing." },
+              { term: "Total Value", detail: "~$35B+ total. $14.2B initial (Sep 2025) + $21B expanded agreement (Apr 9, 2026). Original contract used as collateral for $8.5B IG-rated financing. Meta is now CoreWeave's largest customer by backlog." },
               { term: "Collateral Financing", detail: "$8.5B DDTL 4.0 closed Mar 31, 2026. Rated A3 (Moody's) / A-low (DBRS) — first-ever IG-rated GPU-backed financing. SOFR+225 / ~5.9% fixed. Maturity Mar 2032. MUFG + Morgan Stanley (co-structuring), Goldman + JPM (CLAs). Anchored by Blackstone Credit. Meaningfully oversubscribed." },
               { term: "IG Backstop Logic", detail: "The lenders are effectively lending against Meta's committed payment obligations. Meta ($201B revenue, $62B net income, IG-rated) is the economic backstop. If CoreWeave delivers capacity, Meta pays, and the debt is serviced. The secured lenders are double-collateralized: GPU hardware + contracted IG cash flows." },
               { term: "Pricing Model", detail: "Committed capacity, take-or-pay. \"Up to\" ceiling language on individual order forms. Total ~$19.2B+ across two agreements. Actual revenue depends on delivery execution." },
@@ -1013,15 +1035,15 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
     {/* ===== SENTIMENT SUB-TAB ===== */}
     {crwvTab === "sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
-      <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>29 analysts. 19 Buy / 11 Hold / 2 Sell. Avg PT ~$121. $8.5B IG financing closed Mar 31 — stock +8%. Short interest ~12%.</div>
+      <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>32-37 analysts. Consensus: Buy. Avg PT ~$115-122. Stock ~$102 after back-to-back $21B Meta expansion + Anthropic deal. Short interest ~15-16.5%. S&P outlook upgraded to Positive.</div>
 
       {/* Consensus Snapshot */}
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
         {[
-          { label: "Consensus Rating", value: "Buy", sub: "19 Buy / 11 Hold / 2 Sell", color: "#10B981" },
-          { label: "Avg Price Target", value: "~$121", sub: "Range: $56 – $200", color: "#3B82F6" },
-          { label: "Current Price", value: "~$77", sub: "Down ~59% from ATH $187 (Aug 2025)", color: "#F8FAFC" },
-          { label: "Credit Ratings", value: "B+ / Ba3 / BB-", sub: "S&P / Moody's / Fitch — All spec grade", color: "#F59E0B" },
+          { label: "Consensus Rating", value: "Buy", sub: "32-37 analysts covering", color: "#10B981" },
+          { label: "Avg Price Target", value: "~$115-122", sub: "Range: $32 – $200", color: "#3B82F6" },
+          { label: "Current Price", value: "~$102", sub: "+11% on Anthropic deal (Apr 10). ATH $187.", color: "#F8FAFC" },
+          { label: "Credit Ratings", value: "B+(↑) / Ba3 / BB-", sub: "S&P outlook → Positive. Moody's/Fitch stable.", color: "#F59E0B" },
         ].map((m, i) => (
           <div key={i} style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: "14px 18px", flex: "1 1 180px", minWidth: 180 }}>
             <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>{m.label}</div>
@@ -1036,7 +1058,8 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Sentiment Arc: IPO to Present</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { phase: "Current (Mar 31, 2026)", sentiment: "Inflection", color: "#8B5CF6", desc: "Stock ~$77. $8.5B Meta-backed IG financing closed — first-ever IG-rated GPU-backed deal (A3/Moody's). PT range: $56 (Bernstein) to $200 (Wells Fargo). 19 Buy / 11 Hold / 2 Sell. Avg PT ~$121. Short interest ~12%. Oppenheimer initiated Outperform ($140). Evercore cut PT $150→$120. Citi cut $135→$126." },
+            { phase: "Current (Apr 10, 2026)", sentiment: "Bullish Momentum", color: "#10B981", desc: "Stock ~$102 (+11% on Apr 10). Back-to-back catalysts: $21B Meta expansion (Apr 9) + Anthropic multi-year deal (Apr 10). $4.7B new debt offering ($3B convertible + $1.25B unsecured). S&P outlook upgraded to Positive. Short interest ~15-16.5%. Now serves 9 of top 10 AI model providers. Total backlog ~$87B+." },
+            { phase: "Mar 2026", sentiment: "Inflection", color: "#8B5CF6", desc: "Stock ~$77→$85. $8.5B Meta-backed IG financing closed — first-ever IG-rated GPU-backed deal (A3/Moody's). BofA upgraded to Buy ($100). Oppenheimer initiated Outperform ($140). Deutsche Bank raised PT to $140." },
             { phase: "Q4 Earnings Shock (Feb 27, 2026)", sentiment: "Bearish Reset", color: "#EF4444", desc: "EPS miss: -$0.89 vs -$0.50 est. Q1 2026 guidance miss. $30-35B capex guide for 2026 spooked market. Stock crashed 18-28% in 2 days. 10+ firms cut PTs: JPM $98→$80, Evercore $115→$85, Citi $97→$75, Macquarie $75→$57." },
             { phase: "Fall Correction (Oct-Dec 2025)", sentiment: "Mixed", color: "#F59E0B", desc: "Core Scientific deal rejected by shareholders. Kerrisdale short report ($6-13 PT). Stock pulled back to ~$120. Some PTs trimmed. Debate intensified on capex sustainability. CDS spreads doubled." },
             { phase: "Summer Peak (Jul-Sep 2025)", sentiment: "Euphoric", color: "#3B82F6", desc: "Stock hit ATH $187. Core Scientific acquisition announced ($9B). OpenAI deal expanded to $22.4B. Meta signed ~$19B+. NVIDIA backstop disclosed ($6.3B). PTs surged: Wells Fargo $200, Bernstein $185, Oppenheimer $175. Bears were silenced." },
@@ -1117,7 +1140,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
             </thead>
             <tbody>
               {[
-                { agency: "S&P Global", rating: "B+ (Issuer)", outlook: "Stable", points: "Speculative grade. Revenue growth offsets high leverage. Watching FCF trajectory and customer concentration." },
+                { agency: "S&P Global", rating: "B+ (Issuer)", outlook: "Positive", points: "Outlook upgraded to Positive (from Stable). Upgrade possible if material weaknesses in internal controls remediated by year-end and FFO/debt exceeds 12%." },
                 { agency: "Moody's", rating: "Ba3 (CFR)", outlook: "Stable", points: "Revenue visibility from backlog is strong. Debt/EBITDA elevated but declining. NVIDIA backstop is credit positive." },
                 { agency: "Fitch", rating: "BB-", outlook: "Positive", points: "Most favorable view. Positive outlook reflects rapidly scaling revenue and improving credit metrics. Could upgrade if FCF turns positive." },
                 { agency: "CreditSights", rating: "Market Perform", outlook: "—", points: "9.25% 2030 notes at ~595 bps Z-spread. 5Y CDS widened from 371 to 773 bps (Sep-Dec 2025). $8.5B Meta DDTL rated A3/A-low — multi-notch above corporate rating." },
@@ -1145,14 +1168,14 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
         <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 10 }}>Convertible Arbitrage &amp; Impact on Short Interest</div>
         <div style={{ background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: 16, marginBottom: 20 }}>
           <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.7 }}>
-            CoreWeave issued $2.25B in 1.75% convertible senior notes (Dec 2031 maturity) with $340M in capped call transactions. Convertible arbitrage funds typically go <span style={{ fontWeight: 700, color: "#F8FAFC" }}>long the convert + short the equity</span> to capture embedded optionality. This mechanical short activity <span style={{ fontWeight: 700, color: "#F59E0B" }}>inflates reported short interest without representing a directional bearish view</span>.
+            CoreWeave has $5.25B+ in convertible notes: $2.25B (Dec 2031, 1.75% coupon, $340M capped call) + $3B new convertible (2032, issued Apr 2026 with $450M greenshoe). Convertible arbitrage funds typically go <span style={{ fontWeight: 700, color: "#F8FAFC" }}>long the convert + short the equity</span> to capture embedded optionality. This mechanical short activity <span style={{ fontWeight: 700, color: "#F59E0B" }}>inflates reported short interest without representing a directional bearish view</span>.
           </div>
           <div style={{ display: "flex", gap: 12, marginTop: 12, flexWrap: "wrap" }}>
             {[
-              { label: "Convert Size", value: "$2.25B", sub: "Upsized from $2.0B" },
-              { label: "Coupon", value: "1.75%", sub: "Very low — implies high conversion premium" },
-              { label: "Capped Call", value: "$340M", sub: "Limits dilution, raises effective strike" },
-              { label: "Est. Arb Short", value: "~3-5% of SI", sub: "Assumption: not all SI is directional" },
+              { label: "Total Converts", value: "$5.25B+", sub: "$2.25B (Dec 2031) + $3B (2032)" },
+              { label: "Coupon", value: "1.75%", sub: "Dec 2031 notes. Apr 2026 terms TBD." },
+              { label: "Capped Call", value: "$340M", sub: "On Dec 2031 notes. Limits dilution." },
+              { label: "Est. Arb Short", value: "~5-8% of SI", sub: "Larger convert base = more arb shorts" },
             ].map((m, i) => (
               <div key={i} style={{ flex: "1 1 140px", minWidth: 140 }}>
                 <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3 }}>{m.label}</div>
@@ -1162,7 +1185,7 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
             ))}
           </div>
           <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 12, lineHeight: 1.6 }}>
-            <span style={{ fontWeight: 700, color: "#F8FAFC" }}>Implication:</span> Of the 12-16.5% reported short interest, an estimated ~3-5 percentage points may be convertible arb (non-directional). The remaining ~8-12% is likely directional short sellers who believe the equity is overvalued. This distinction matters — the "true" bearish short interest is lower than the headline number suggests.
+            <span style={{ fontWeight: 700, color: "#F8FAFC" }}>Implication:</span> Of the ~15-16.5% reported short interest, an estimated ~5-8 percentage points may be convertible arb (non-directional) given the larger $5.25B+ convert base. The remaining ~8-11% is likely directional short sellers. May 20 earnings is shaping up as a key battleground between bulls (backlog/growth) and bears (leverage/concentration risk).
           </div>
         </div>
 
@@ -1178,9 +1201,10 @@ export default function CoreweaveReview({ curNews, newsLoading, refreshNews, com
           </thead>
           <tbody>
             {[
-              { insider: "Michael Intrator (CEO)", date: "Mar 25, 2026", action: "Sell", shares: "82,456", price: "$85.60-$88.25", value: "~$7.2M", notes: "Via Omnadora Capital LLC. 50K Class B→A conversion + 32K direct sale. 10b5-1 plan (adopted May 2025)." },
-              { insider: "Brannin McBee (CDO)", date: "Mar 23, 2026", action: "Sell", shares: "Multiple lots", price: "$81.06-$84.73", value: "~$11.8M", notes: "Pre-arranged 10b5-1 plan. Multiple transactions." },
-              { insider: "Insiders (aggregate)", date: "Last 3 months", action: "Sell only", shares: "—", price: "—", value: "—", notes: "Zero insider buying in 3 months. Insiders own ~25.5% of total shares. Consistent selling pattern since lock-up expiry." },
+              { insider: "Michael Intrator (CEO)", date: "Apr 8, 2026", action: "Sell", shares: "62,399", price: "$88-$93", value: "~$5.6M", notes: "10b5-1 plan. Also sold 82,456 shares on Mar 25." },
+              { insider: "Brian Venturo (CSO)", date: "Apr 6, 2026", action: "Sell", shares: "1,125,000", price: "~$80-$82", value: "~$91M", notes: "Entities sold via 10b5-1 plan. Largest single insider sale." },
+              { insider: "Brannin McBee (CDO)", date: "Apr 6, 2026", action: "Sell", shares: "166,665", price: "$80-$82", value: "~$13.5M", notes: "Class B→A conversion + sale. Pre-arranged 10b5-1." },
+              { insider: "Insiders (aggregate)", date: "Last 3 months", action: "Sell only", shares: "—", price: "—", value: "—", notes: "Zero insider buying. All sales under pre-set 10b5-1 plans. Insiders own ~25.5% of total shares." },
             ].map((row, i) => (
               <tr key={i} style={{ background: i % 2 === 0 ? "transparent" : "rgba(15,23,42,0.3)" }}>
                 <td style={{ padding: "10px 10px", borderBottom: "1px solid #1E293B10", fontWeight: 700, color: "#F8FAFC", fontSize: 11 }}>{row.insider}</td>

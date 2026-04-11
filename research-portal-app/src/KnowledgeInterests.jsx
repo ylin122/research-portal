@@ -184,38 +184,24 @@ function DeepDiveDetail({ dive, onBack, onDelete }) {
       <h1 style={{ fontSize: 24, fontWeight: 700, color: T_.text, marginBottom: 8, lineHeight: 1.3 }}>{dive.title}</h1>
       {dive.summary && <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.6 }}>{dive.summary}</p>}
 
-      {/* Table of Contents */}
-      {sections.length > 1 && (
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 24 }}>
-          <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Contents</div>
-          {sections.map((sec, i) => (
-            <div key={i} style={{ fontSize: 13, color: T_.blue, marginBottom: 6, cursor: "pointer" }} onClick={() => { document.getElementById(`section-${i}`)?.scrollIntoView({ behavior: "smooth" }); }}>
-              {i + 1}. {sec.title}
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Sections */}
-      {sections.map((sec, i) => (
-        <div key={i} id={`section-${i}`} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 16 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16 }}>
-            <span style={{ fontSize: 20, fontWeight: 700, color: T_.accent, opacity: 0.4 }}>{String(i + 1).padStart(2, '0')}</span>
-            <span style={{ fontSize: 17, fontWeight: 600, color: T_.text }}>{sec.title}</span>
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
+        {sections.map((sec, i) => (
+          <div key={i} style={{ marginBottom: i < sections.length - 1 ? 24 : 0, paddingBottom: i < sections.length - 1 ? 24 : 0, borderBottom: i < sections.length - 1 ? `1px solid ${T_.border}` : "none" }}>
+            <div style={{ fontSize: 15, fontWeight: 600, color: T_.accent, marginBottom: 10 }}>{sec.title}</div>
+            {sec.content && <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.8, whiteSpace: "pre-wrap", marginBottom: sec.key_numbers?.length ? 12 : 0 }}>{sec.content}</div>}
+            {sec.key_numbers?.length > 0 && (
+              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                {sec.key_numbers.map((kn, j) => (
+                  <div key={j} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "8px 14px", textAlign: "center" }}>
+                    <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 2 }}>{kn.label}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: T_.blue }}>{kn.value}</div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-          {sec.content && <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.8, whiteSpace: "pre-wrap", marginBottom: sec.key_numbers?.length ? 16 : 0 }}>{sec.content}</div>}
-          {sec.key_numbers?.length > 0 && (
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: 10, marginTop: 12 }}>
-              {sec.key_numbers.map((kn, j) => (
-                <div key={j} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "10px 12px", textAlign: "center" }}>
-                  <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 4 }}>{kn.label}</div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: T_.blue }}>{kn.value}</div>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+        ))}
+      </div>
 
       {!dive._static && <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
         <button onClick={() => onDelete(dive.id)} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textGhost, padding: "4px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: FONT }}
@@ -297,20 +283,9 @@ function DeepDivesTab() {
   const [dives, setDives] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
-  const [showAdd, setShowAdd] = useState(false);
-  const [addTitle, setAddTitle] = useState("");
-  const [addTopic, setAddTopic] = useState("ai");
   useEffect(() => {
     supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data }) => { setDives(data || []); setLoading(false); });
   }, []);
-
-  const handleAdd = async () => {
-    if (!addTitle.trim()) return;
-    const d = { id: uid(), title: addTitle.trim(), topic: addTopic, summary: "", sections: [] };
-    await supabase.from("deep_dives").upsert(d);
-    setDives(prev => [...prev, d].sort((a, b) => a.title.localeCompare(b.title)));
-    setAddTitle(""); setShowAdd(false);
-  };
 
   const handleDelete = async (id) => {
     if (id.startsWith("strat_")) return;
@@ -319,24 +294,18 @@ function DeepDivesTab() {
     setSelected(null);
   };
 
-  const allDives = [...STRATEGY_DIVES, ...dives];
-
-  const inputStyle = { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
+  const allDives = [...STRATEGY_DIVES, ...dives].sort((a, b) => a.title.localeCompare(b.title));
 
   if (selected) return <DeepDiveDetail dive={selected} onBack={() => setSelected(null)} onDelete={handleDelete} />;
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-        <button onClick={() => setShowAdd(true)} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>+ Request Deep Dive</button>
-      </div>
-
       <p style={{ fontSize: 12, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Multi-section breakdowns of big topics. Add a topic, then run <span style={{ color: T_.accent }}>"compile my wiki"</span> to generate the full deep dive.
+        Multi-section breakdowns of big topics — A-Z.
       </p>
 
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
-        : allDives.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>No deep dives yet. Click "+ Request Deep Dive" to start.</div>
+        : allDives.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>No deep dives yet.</div>
         : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {allDives.map(d => (
@@ -358,21 +327,6 @@ function DeepDivesTab() {
         </div>
       )}
 
-      {showAdd && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setShowAdd(false)}>
-          <div style={{ background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, padding: 28, width: 440 }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.accent, marginBottom: 20 }}>Request Deep Dive</div>
-            <div style={{ marginBottom: 14 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Topic</div>
-              <input style={inputStyle} placeholder='e.g. "How LLM Training Works", "Data Center Economics"...' value={addTitle} onChange={e => setAddTitle(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleAdd(); }} /></div>
-            <div style={{ marginBottom: 20 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Category</div>
-              <select style={{ ...inputStyle, cursor: "pointer" }} value={addTopic} onChange={e => setAddTopic(e.target.value)}>{TOPIC_FILTERS.filter(t => t.key !== "all").map(t => <option key={t.key} value={t.key}>{t.label}</option>)}</select></div>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textMid, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: FONT }}>Cancel</button>
-              <button onClick={handleAdd} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>Add</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

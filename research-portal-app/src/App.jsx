@@ -18,6 +18,11 @@ import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
 // import IdeaTracker from "./IdeaTracker";
 import TractCapitalReview from "./TractCapitalReview";
+import CoreweaveReview from "./CoreweaveReview";
+import AppliedDigitalReview from "./AppliedDigitalReview";
+import CipherDigitalReview from "./CipherDigitalReview";
+import TerawulfReview from "./TerawulfReview";
+import GenericReview from "./GenericReview";
 import IndustryResearch from "./IndustryResearch";
 import WhatIfAgent from "./WhatIfAgent";
 import {
@@ -206,6 +211,7 @@ function AppContent() {
       { id: "eq_amzn", name: "Amazon", sub: "" },
       { id: "eq_msft", name: "Microsoft", sub: "" },
       { id: "eq_tsm", name: "TSMC", sub: "" },
+      { id: "eq_orcl", name: "Oracle", sub: "" },
     ];
     if (equities.length === 0) {
       setEquities(SEED);
@@ -408,7 +414,7 @@ function AppContent() {
                   { key: "semicapex", label: "Semi Capex" },
                   { key: "compute", label: "Compute" },
                   { key: "chiproadmap", label: "GPU/ASIC" },
-                  { key: "aiinfra", label: "AI Infra" },
+                  { key: "aiinfra", label: "AI Infrastructure" },
                 ].map(tab => {
                   const active = view.type === "industryResearch" && view.sub === tab.key;
                   return (
@@ -648,15 +654,6 @@ function AppContent() {
                 <h1 style={s.pageTitle}>{eq.name}</h1>
                 <button style={s.btnGhost} onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>&#8592; Back</button>
               </div>
-              <div style={s.section}>
-                <div style={s.sectionHdr}>Notes</div>
-                <textarea
-                  style={{ width: "100%", minHeight: 200, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: 14, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif', resize: "vertical", outline: "none", boxSizing: "border-box", lineHeight: 1.7 }}
-                  placeholder="Research notes, investment thesis, key metrics..."
-                  value={notes}
-                  onChange={e => { const updated = { ...equityNotes, [eq.id]: e.target.value }; saveEquityNotes(updated); }}
-                />
-              </div>
             </div>
           );
         })()}
@@ -847,71 +844,25 @@ function AppContent() {
             )}
 
             {/* Tract Capital Review */}
-            {cur.id === "tractcapital_seed" && <TractCapitalReview curNews={curNews} newsLoading={!!newsLoading[cur.id]} refreshNews={() => refreshNews(cur.id)} companyId={cur.id} companyName={cur.name} />}
+            {cur.id === "tractcapital_seed" && <TractCapitalReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Recent Updates */}
-            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (
-              <div style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>Recent updates</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                    {curNews?.date && <span style={s.sectionDate}>Fetched {fmtShort(curNews.date)}</span>}
-                    <button style={s.btnSmall} onClick={() => refreshNews(cur.id)} disabled={newsLoading[cur.id]}>
-                      {newsLoading[cur.id] ? "Fetching..." : "Refresh news"}
-                    </button>
-                  </div>
-                </div>
-                <div style={s.newsScroll}>
-                  {newsLoading[cur.id] && !curNews && (
-                    <div style={{ color: T_.textDim, fontSize: 14, padding: "20px 0", fontStyle: "italic", lineHeight: 1.7 }}>Searching for recent news about {cur.name}...</div>
-                  )}
-                  {curNews && curNews.items.length === 0 && (
-                    <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No recent news found. Click "Refresh news" to search again.</div>
-                  )}
-                  {curNews && [...curNews.items].sort((a, b) => {
-                    try { return new Date(b.date) - new Date(a.date); } catch { return 0; }
-                  }).map((item, i) => (
-                    <div key={i} style={s.newsItem}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
-                        <div style={{ fontSize: 14, color: T_.text, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{item.headline}</div>
-                        <span style={{ fontSize: 12, color: T_.textGhost, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 2 }}>{item.date}</span>
-                      </div>
-                      {item.summary && <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7, marginTop: 6 }}>{item.summary}</div>}
-                      {item.source && <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 4 }}>{item.source}</div>}
-                    </div>
-                  ))}
-                  {!curNews && !newsLoading[cur.id] && (
-                    <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>Click "Refresh news" to pull the latest updates about {cur.name}.</div>
-                  )}
-                </div>
-              </div>
-            )}
+            {/* CoreWeave Review */}
+            {cur.id === "coreweave_seed" && <CoreweaveReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Research Notes — hidden for companies with dedicated review tabs */}
-            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (
-              <div style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>Research notes</span>
-                  <span style={s.sectionDate}>{(curNotes || []).length} entries</span>
-                </div>
-                <NoteInput onAdd={t => addNote(cur.id, t)} />
-                {(curNotes || []).length === 0 && (
-                  <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No notes yet. Add your first research note above.</div>
-                )}
-                {(curNotes || []).map(n => (
-                  <div key={n.id} style={s.noteEntry}>
-                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14 }}>
-                      <div style={{ fontSize: 14, color: T_.text, lineHeight: 1.8, flex: 1, whiteSpace: "pre-wrap" }}>{n.text}</div>
-                      <span style={{ fontSize: 14, color: T_.textGhost, cursor: "pointer", padding: "0 6px", flexShrink: 0, lineHeight: 1 }} onClick={() => delNote(cur.id, n.id)}>&times;</span>
-                    </div>
-                    <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 8 }}>{fmt(n.date)}</div>
-                  </div>
-                ))}
-              </div>
-            )}
+            {/* Applied Digital Review */}
+            {cur.id === "apld_seed" && <AppliedDigitalReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Moat vs AI Scoring — hidden for companies with dedicated review tabs */}
-            {cur.sector !== "sources" && !["tractcapital_seed"].includes(cur.id) && (() => {
+            {/* Cipher Digital Review */}
+            {cur.id === "cipher_seed" && <CipherDigitalReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+            {/* TeraWulf Review */}
+            {cur.id === "terawulf_seed" && <TerawulfReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+            {/* Generic Review — for all Credit Research companies without dedicated reviews */}
+            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+            {/* Moat vs AI Scoring — only for equity or sources sector */}
+            {(cur.sector === "equity") && (() => {
               const MOAT_TIERS = [
                 { label: "T1 — Structural (3x)", weight: 3, color: "#34d673", moats: [
                   { key: "data", name: "Proprietary Data" },
@@ -1008,8 +959,8 @@ function AppContent() {
               );
             })()}
 
-            {/* Structured Fields — hidden for companies with dedicated review tabs */}
-            {!["tractcapital_seed"].includes(cur.id) && (cur.sector === "sources" ? SOURCE_FIELDS : FIELDS).map(f => {
+            {/* Structured Fields — only for sources sector */}
+            {cur.sector === "sources" && SOURCE_FIELDS.map(f => {
               const fd = curFields?.[f.key];
               const isEditing = editingField === f.key;
               const hasContent = fd?.text?.trim();

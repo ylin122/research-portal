@@ -1,25 +1,34 @@
 import React, { useState } from "react";
 import { T_, FONT } from "./lib/theme";
+const FIELDS = [
+  { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
+  { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
+  { key: "customers", label: "Customer focus", ph: "Target segments, key accounts, verticals, GTM motion, deal sizes, retention, expansion, geographic focus..." },
+  { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends, regulatory environment, tailwinds/headwinds, secular shifts..." },
+  { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
+  { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
+  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
+];
 const s = {
   card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 16 },
   section: { marginBottom: 36 },
   sectionHdr: { fontSize: 14, fontWeight: 500, color: T_.textDim, marginBottom: 14, paddingBottom: 10, borderBottom: `1px solid ${T_.borderLight}`, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT },
   sectionDate: { fontSize: 12, fontWeight: 400, color: T_.textGhost, fontFamily: FONT },
-  newsScroll: { maxHeight: 400, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
-  newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
   btnSmall: { padding: "4px 12px", fontSize: 12, border: `1px solid ${T_.border}`, background: "transparent", color: T_.textDim, borderRadius: 5, cursor: "pointer", fontFamily: FONT },
+  proseBody: { fontSize: 14, lineHeight: 1.9, color: T_.text, cursor: "pointer", whiteSpace: "pre-wrap", padding: "6px 0", fontFamily: FONT },
+  textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
 };
 
 function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
 
-export default function TractCapitalReview({ curNews, newsLoading, refreshNews, companyId, companyName }) {
+export default function TractCapitalReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
   const [tractTab, setTractTab] = useState("recent");
 
   return (
     <>
       {/* Tract Capital Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Recent Updates" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Contracts" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setTractTab(tab.key)}
@@ -36,41 +45,37 @@ export default function TractCapitalReview({ curNews, newsLoading, refreshNews, 
         ))}
       </div>
 
-      {/* ===== RECENT UPDATES TAB ===== */}
+      {/* ===== RESEARCH TAB ===== */}
       {tractTab === "recent" && (
         <div style={s.section}>
-          <div style={s.sectionHdr}>
-            <span>Recent updates</span>
-            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-              {curNews?.date && <span style={s.sectionDate}>Fetched {fmtShort(curNews.date)}</span>}
-              <button style={s.btnSmall} onClick={() => refreshNews(companyId)} disabled={newsLoading}>
-                {newsLoading ? "Fetching..." : "Refresh news"}
-              </button>
-            </div>
-          </div>
-          <div style={s.newsScroll}>
-            {newsLoading && !curNews && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "20px 0", fontStyle: "italic", lineHeight: 1.7 }}>Searching for recent news about {companyName}...</div>
-            )}
-            {curNews && curNews.items.length === 0 && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>No recent news found. Click "Refresh news" to search again.</div>
-            )}
-            {curNews && [...curNews.items].sort((a, b) => {
-              try { return new Date(b.date) - new Date(a.date); } catch { return 0; }
-            }).map((item, i) => (
-              <div key={i} style={s.newsItem}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 16 }}>
-                  <div style={{ fontSize: 14, color: T_.text, fontWeight: 500, lineHeight: 1.6, flex: 1 }}>{item.headline}</div>
-                  <span style={{ fontSize: 12, color: T_.textGhost, flexShrink: 0, whiteSpace: "nowrap", paddingTop: 2 }}>{item.date}</span>
+          {FIELDS.map(f => {
+            const fd = curFields?.[f.key];
+            const isEditing = editingField === f.key;
+            const hasContent = fd?.text?.trim();
+            return (
+              <div key={f.key} style={s.section}>
+                <div style={s.sectionHdr}>
+                  <span>{f.label}</span>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
+                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                  </div>
                 </div>
-                {item.summary && <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7, marginTop: 6 }}>{item.summary}</div>}
-                {item.source && <div style={{ fontSize: 12, color: T_.textGhost, marginTop: 4 }}>{item.source}</div>}
+                {(isEditing || !hasContent) ? (
+                  <div>
+                    <textarea style={s.textarea} rows={6}
+                      value={fd?.text || ""}
+                      onChange={e => updateField(companyId, f.key, e.target.value)}
+                      placeholder={f.ph}
+                      autoFocus={isEditing} />
+                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                  </div>
+                ) : (
+                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                )}
               </div>
-            ))}
-            {!curNews && !newsLoading && (
-              <div style={{ color: T_.textDim, fontSize: 14, padding: "16px 0", lineHeight: 1.7 }}>Click "Refresh news" to pull the latest updates about {companyName}.</div>
-            )}
-          </div>
+            );
+          })}
         </div>
       )}
 

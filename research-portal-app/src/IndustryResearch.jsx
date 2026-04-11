@@ -1241,7 +1241,7 @@ export default function IndustryResearch({ initialTab }) {
     { key: "semicapex", label: "Semi Capex" },
     { key: "compute", label: "Compute" },
     { key: "chiproadmap", label: "GPU/ASIC" },
-    { key: "aiinfra", label: "AI Infra" },
+    { key: "aiinfra", label: "AI Infrastructure" },
   ];
 
   return (
