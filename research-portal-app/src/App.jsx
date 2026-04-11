@@ -22,6 +22,8 @@ import CoreweaveReview from "./CoreweaveReview";
 import AppliedDigitalReview from "./AppliedDigitalReview";
 import CipherDigitalReview from "./CipherDigitalReview";
 import TerawulfReview from "./TerawulfReview";
+import MicronReview from "./MicronReview";
+import OracleReview from "./OracleReview";
 import GenericReview from "./GenericReview";
 import IndustryResearch from "./IndustryResearch";
 import WhatIfAgent from "./WhatIfAgent";
@@ -858,8 +860,14 @@ function AppContent() {
             {/* TeraWulf Review */}
             {cur.id === "terawulf_seed" && <TerawulfReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
+            {/* Micron Review */}
+            {cur.id === "eq_micron" && <MicronReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+            {/* Oracle Review */}
+            {cur.id === "eq_orcl" && <OracleReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
             {/* Generic Review — for all Credit Research companies without dedicated reviews */}
-            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed", "eq_micron", "eq_orcl"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
             {/* Moat vs AI Scoring — only for equity or sources sector */}
             {(cur.sector === "equity") && (() => {
