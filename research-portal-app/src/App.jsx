@@ -647,6 +647,7 @@ function AppContent() {
           const eq = equities.find(e => e.id === view.id);
           if (!eq) return null;
           const notes = equityNotes[eq.id] || "";
+          const eqFields = fieldsMap[eq.id] || {};
           return (
             <div style={s.page}>
               <div style={s.breadcrumb}>
@@ -656,6 +657,12 @@ function AppContent() {
                 <h1 style={s.pageTitle}>{eq.name}</h1>
                 <button style={s.btnGhost} onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>&#8592; Back</button>
               </div>
+
+              {/* Micron Review */}
+              {eq.id === "eq_micron" && <MicronReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+              {/* Oracle Review */}
+              {eq.id === "eq_orcl" && <OracleReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
             </div>
           );
         })()}
@@ -860,14 +867,8 @@ function AppContent() {
             {/* TeraWulf Review */}
             {cur.id === "terawulf_seed" && <TerawulfReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Micron Review */}
-            {cur.id === "eq_micron" && <MicronReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
-
-            {/* Oracle Review */}
-            {cur.id === "eq_orcl" && <OracleReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
-
             {/* Generic Review — for all Credit Research companies without dedicated reviews */}
-            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed", "eq_micron", "eq_orcl"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
             {/* Moat vs AI Scoring — only for equity or sources sector */}
             {(cur.sector === "equity") && (() => {
