@@ -130,14 +130,12 @@ export default async function handler(req, res) {
       cash: ltmCash,
     };
 
-    // --- Forward estimates (next fiscal year) ---
+    // --- Forward estimates (next 2 fiscal years) ---
     const estList = estimates.estimates || [];
     const fyEstimates = estList.filter(e => e.horizon === 'fiscal year');
-    // Sort by date ascending, pick the nearest future FY
     fyEstimates.sort((a, b) => a.date.localeCompare(b.date));
-    // Find the first FY that is after the latest annual report
     const latestAnnualDate = annualIncome[0]?.fiscalDateEnding || '';
-    const fwdFY = fyEstimates.find(e => e.date > latestAnnualDate) || fyEstimates[0];
+    const futureFYs = fyEstimates.filter(e => e.date > latestAnnualDate).slice(0, 2);
 
     const sharesOut = num(overview.SharesOutstanding);
     const price = num(overview.MarketCapitalization) && sharesOut
@@ -145,34 +143,37 @@ export default async function handler(req, res) {
       : null;
     const fwdPE = num(overview.ForwardPE);
 
-    let forward = null;
-    if (fwdFY) {
-      const fwdRevenue = num(fwdFY.revenue_estimate_average);
-      const fwdEpsAvg = num(fwdFY.eps_estimate_average);
+    const forwards = futureFYs.map((fy, idx) => {
+      const fwdRevenue = num(fy.revenue_estimate_average);
+      const fwdEpsAvg = num(fy.eps_estimate_average);
       const fwdNetIncome = fwdEpsAvg != null && sharesOut ? fwdEpsAvg * sharesOut : null;
+      // For revenue growth: first forward vs latest actual, second forward vs first forward
+      const prevRev = idx === 0
+        ? num(annualIncome[0]?.totalRevenue)
+        : num(futureFYs[0]?.revenue_estimate_average);
 
-      forward = {
-        period: `FY${fwdFY.date.slice(0, 4)}E`,
-        fiscalDate: fwdFY.date,
+      return {
+        period: `FY${fy.date.slice(0, 4)}E`,
+        fiscalDate: fy.date,
         revenue: fwdRevenue,
-        revenueGrowth: pctChg(fwdRevenue, num(annualIncome[0]?.totalRevenue)),
-        grossProfit: null, // not available in estimates
+        revenueGrowth: pctChg(fwdRevenue, prevRev),
+        grossProfit: null,
         grossMargin: null,
         ebit: null,
         ebitMargin: null,
         netIncome: fwdNetIncome,
-        pe: fwdPE,
+        pe: idx === 0 ? fwdPE : (fwdEpsAvg && price ? price / fwdEpsAvg : null),
         capex: null,
         fcf: null,
         cash: null,
         epsEstimate: fwdEpsAvg,
-        epsHigh: num(fwdFY.eps_estimate_high),
-        epsLow: num(fwdFY.eps_estimate_low),
-        analystCount: num(fwdFY.eps_estimate_analyst_count),
-        revenueHigh: num(fwdFY.revenue_estimate_high),
-        revenueLow: num(fwdFY.revenue_estimate_low),
+        epsHigh: num(fy.eps_estimate_high),
+        epsLow: num(fy.eps_estimate_low),
+        analystCount: num(fy.eps_estimate_analyst_count),
+        revenueHigh: num(fy.revenue_estimate_high),
+        revenueLow: num(fy.revenue_estimate_low),
       };
-    }
+    });
 
     // --- Company info ---
     const meta = {
@@ -190,7 +191,7 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       meta,
-      periods: [...annualPeriods, ltm, ...(forward ? [forward] : [])],
+      periods: [...annualPeriods, ltm, ...forwards],
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
