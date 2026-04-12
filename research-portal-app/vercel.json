@@ -1,0 +1,7 @@
+{
+  "functions": {
+    "api/financials.mjs": {
+      "maxDuration": 60
+    }
+  }
+}

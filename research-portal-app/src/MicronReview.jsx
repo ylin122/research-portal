@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 
 const FIELDS = [
@@ -26,12 +26,26 @@ function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "
 
 export default function MicronReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
   const [muTab, setMuTab] = useState("recent");
+  const [finData, setFinData] = useState(null);
+  const [finLoading, setFinLoading] = useState(false);
+  const [finTicker, setFinTicker] = useState("MU");
+
+  useEffect(() => {
+    if (muTab === "financials" && finTicker) {
+      setFinLoading(true);
+      setFinData(null);
+      fetch(`/api/financials?symbol=${encodeURIComponent(finTicker)}`)
+        .then(r => r.json())
+        .then(d => { setFinData(d); setFinLoading(false); })
+        .catch(() => setFinLoading(false));
+    }
+  }, [muTab, finTicker]);
 
   return (
     <>
       {/* Micron Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setMuTab(tab.key)}
@@ -925,6 +939,108 @@ export default function MicronReview({ companyId, companyName, curFields, update
         <div style={{ fontSize: 11, color: "#64748B", fontStyle: "italic", marginTop: 12 }}>Sources: Yahoo Finance, StockAnalysis, MarketBeat, Benzinga, Capital.com, Public.com, Cantor Fitzgerald, UBS, Citigroup, JP Morgan research notes.</div>
       </div>
     </>)}
+
+    {/* ===== FINANCIALS TAB ===== */}
+    {muTab === "financials" && (() => {
+      const fmtB = (v) => v == null ? '\u2014' : (Math.abs(v) >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : `$${(v / 1e6).toFixed(0)}M`);
+      const fmtPct = (v) => v == null ? '\u2014' : `${v.toFixed(1)}%`;
+      const fmtPe = (v) => v == null ? '\u2014' : `${v.toFixed(1)}x`;
+
+      const periods = finData?.periods || [];
+      const meta = finData?.meta || {};
+      const sharesOut = meta.sharesOutstanding;
+      const currentPrice = meta.price;
+
+      const rows = [
+        { label: 'Revenue', key: 'revenue', fmt: fmtB },
+        { label: 'Y/Y Growth', key: 'revenueGrowth', fmt: fmtPct, indent: true },
+        { label: 'Gross Profit', key: 'grossProfit', fmt: fmtB },
+        { label: 'Gross Margin', key: 'grossMargin', fmt: fmtPct, indent: true },
+        { label: 'EBIT', key: 'ebit', fmt: fmtB },
+        { label: 'EBIT Margin', key: 'ebitMargin', fmt: fmtPct, indent: true },
+        { label: 'Net Income', key: 'netIncome', fmt: fmtB },
+        { label: 'P/E', key: 'pe', fmt: fmtPe, compute: (p) => {
+          if (p.pe != null) return p.pe;
+          if (p.netIncome && sharesOut && currentPrice) {
+            const eps = p.netIncome / sharesOut;
+            return eps > 0 ? currentPrice / eps : null;
+          }
+          return null;
+        }},
+        { label: 'Capex', key: 'capex', fmt: fmtB },
+        { label: 'GAAP FCF', key: 'fcf', fmt: fmtB },
+        { label: 'Cash on B/S', key: 'cash', fmt: fmtB },
+      ];
+
+      const cellSt = { padding: '10px 16px', textAlign: 'right', fontSize: 13, borderBottom: '1px solid #1E293B', fontFamily: FONT };
+      const hdrSt = { ...cellSt, color: '#94A3B8', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' };
+      const lblSt = { ...cellSt, textAlign: 'left', color: '#E2E8F0', fontWeight: 500 };
+      const isEst = (p) => p.period?.endsWith('E');
+
+      return (
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+          <label style={{ fontSize: 13, color: '#94A3B8', fontWeight: 600, fontFamily: FONT }}>Ticker:</label>
+          <input
+            type="text"
+            value={finTicker}
+            onChange={e => setFinTicker(e.target.value.toUpperCase())}
+            onKeyDown={e => { if (e.key === 'Enter') { setFinData(null); setFinLoading(true); fetch(`/api/financials?symbol=${encodeURIComponent(finTicker)}`).then(r => r.json()).then(d => { setFinData(d); setFinLoading(false); }).catch(() => setFinLoading(false)); }}}
+            style={{ background: '#0B0F19', border: '1px solid #1E293B', borderRadius: 6, padding: '6px 12px', color: '#E2E8F0', fontSize: 14, fontWeight: 600, width: 90, textAlign: 'center', fontFamily: FONT }}
+          />
+          {meta.name && <span style={{ fontSize: 14, color: '#E2E8F0', fontWeight: 500, fontFamily: FONT }}>{meta.name}</span>}
+          {meta.price && <span style={{ fontSize: 13, color: '#94A3B8', fontFamily: FONT }}>@ ${meta.price.toFixed(2)}</span>}
+          {meta.marketCap && <span style={{ fontSize: 13, color: '#64748B', fontFamily: FONT }}>Mkt Cap: {fmtB(meta.marketCap)}</span>}
+          {meta.fiscalYearEnd && <span style={{ fontSize: 12, color: '#64748B', fontFamily: FONT }}>FY ends: {meta.fiscalYearEnd}</span>}
+        </div>
+
+        {finLoading && <div style={{ color: '#94A3B8', fontSize: 14, padding: 40, textAlign: 'center', fontFamily: FONT }}>Loading financials...</div>}
+        {finData?.error && <div style={{ color: '#EF4444', fontSize: 14, padding: 20, fontFamily: FONT }}>Error: {finData.error}</div>}
+
+        {periods.length > 0 && (
+        <div style={{ ...s.card, padding: 0, overflow: 'hidden' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <thead>
+              <tr>
+                <th style={{ ...hdrSt, textAlign: 'left', width: 140 }}>Metric</th>
+                {periods.map(p => (
+                  <th key={p.period} style={{ ...hdrSt, ...(isEst(p) ? { color: '#60A5FA', fontStyle: 'italic' } : {}) }}>
+                    {p.period}
+                    {p.period === 'LTM' && p.quartersCovered && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>{p.quartersCovered.split(' to ').map(d => d.slice(5)).join('\u2013')}</div>}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map(row => {
+                const isIndent = row.indent;
+                return (
+                <tr key={row.label} style={isIndent ? { background: 'rgba(30,41,59,0.3)' } : {}}>
+                  <td style={{ ...lblSt, ...(isIndent ? { color: '#94A3B8', fontSize: 12, paddingLeft: 28 } : {}) }}>{row.label}</td>
+                  {periods.map(p => {
+                    const val = row.compute ? row.compute(p) : p[row.key];
+                    const display = row.fmt(val);
+                    const isNeg = val != null && val < 0;
+                    return (
+                      <td key={p.period} style={{ ...cellSt, color: isNeg ? '#EF4444' : (isEst(p) ? '#93C5FD' : '#E2E8F0'), ...(isIndent ? { fontSize: 12 } : {}) }}>
+                        {display}
+                      </td>
+                    );
+                  })}
+                </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div style={{ padding: '10px 16px', fontSize: 11, color: '#64748B', borderTop: '1px solid #1E293B', fontFamily: FONT }}>
+            Source: Alpha Vantage | Forward estimates are analyst consensus avg | GAAP FCF = CFFO - Capex | P/E uses current price (${currentPrice?.toFixed(2) || '\u2014'})
+            {finData?.timestamp && ` | Fetched: ${new Date(finData.timestamp).toLocaleString()}`}
+          </div>
+        </div>
+        )}
+      </div>
+      );
+    })()}
 
     </>
   );
