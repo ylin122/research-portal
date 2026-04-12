@@ -30,3 +30,4 @@ _seed_extract.cjs
 # Gmail API secrets
 scripts/credentials.json
 scripts/token.json
+.env*.local
