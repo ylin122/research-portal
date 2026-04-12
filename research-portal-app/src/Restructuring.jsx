@@ -239,7 +239,7 @@ function WindstreamCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Click any entity for details. Case 19-22312, S.D.N.Y., Judge Robert Drain.</div>
@@ -607,7 +607,7 @@ function EnvisionCase() {
          ORG CHART — Pre-Filing (Post-LME) Structure
          Shows the dual-silo structure after the 2022 transactions
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure (Post-LME, at Filing)</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>After the Apr–Aug 2022 dropdown + uptier. Two separately capitalized silos. Click any box for details.</div>
@@ -989,7 +989,7 @@ function SertaCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-2020 uptier, at filing. Click any box for details. Case 23-90020, S.D. Tex., Judge David Jones.</div>
@@ -1410,7 +1410,7 @@ function JCrewCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-2017 IP transfer, at filing. Click any entity or tranche for details. Case 20-32181, E.D. Va., Judge Phillips.</div>
@@ -1859,7 +1859,7 @@ function DieboldNixdorfCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
@@ -2270,7 +2270,7 @@ function PetSmartCase() {
       {/* ════════════════════════════════════════════════════
          ORG CHART
          ════════════════════════════════════════════════════ */}
-      <div style={{ maxWidth: 1000, margin: "0 auto" }}>
+      <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Chewy acquisition, pre-2018 transfer. Click any entity or debt tranche for details.</div>

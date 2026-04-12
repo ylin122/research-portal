@@ -637,7 +637,7 @@ export default function BusinessModels({ initialTab }) {
   const model = activeModel ? MODELS[activeModel] : MODELS[MODEL_ORDER[0]];
 
   return (
-    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
+    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Tab bar */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}`, flexWrap: "wrap" }}>
         {MODEL_ORDER.map(key => (

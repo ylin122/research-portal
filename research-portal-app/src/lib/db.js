@@ -37,12 +37,18 @@ export async function updateCompanyMoats(id, moats) {
 
 // ─── Company Fields ────────────────────────────────────
 export async function loadAllFields() {
-  const { data, error } = await supabase.from('company_fields').select('*');
-  if (error) { console.error('loadAllFields:', error); return {}; }
   const map = {};
-  for (const row of data || []) {
-    if (!map[row.company_id]) map[row.company_id] = {};
-    map[row.company_id][row.field_key] = { text: row.text || '', date: row.date || '' };
+  let from = 0;
+  const pageSize = 1000;
+  while (true) {
+    const { data, error } = await supabase.from('company_fields').select('*').range(from, from + pageSize - 1);
+    if (error) { console.error('loadAllFields:', error); break; }
+    for (const row of data || []) {
+      if (!map[row.company_id]) map[row.company_id] = {};
+      map[row.company_id][row.field_key] = { text: row.text || '', date: row.date || '' };
+    }
+    if (!data || data.length < pageSize) break;
+    from += pageSize;
   }
   return map;
 }

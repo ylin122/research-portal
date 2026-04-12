@@ -109,7 +109,7 @@ Respond ONLY with a JSON object, no markdown backticks:
   const typeLabels = { note: "Note", idea_macro: "Macro", idea_micro: "Micro", question: "Question" };
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: 900, fontFamily: FONT }}>
+    <div style={{ padding: "36px 44px", fontFamily: FONT }}>
       <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Notes / Ideas Agent</h1>
       <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.6 }}>
         Capture notes, questions, and investment ideas. The agent will organize, tag, and expand your thinking.

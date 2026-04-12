@@ -185,7 +185,7 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
   });
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: 960, fontFamily: FONT }}>
+    <div style={{ padding: "36px 44px", fontFamily: FONT }}>
       <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Agent Commands</h1>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
         Claude Code agents for verification, fact-checking, and quality control. Run these from the CLI with <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span>.

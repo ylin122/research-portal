@@ -254,7 +254,7 @@ export default function Primer({ initialTab }) {
   const isExp = (key) => !!expanded[key];
 
   return (
-    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
+    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Sub-tabs — Row 1 */}
       <div style={{ display: "flex", gap: 0, flexWrap: "wrap", borderBottom: `1px solid ${T_.borderLight}` }}>
         {[

@@ -162,6 +162,8 @@ function AppContent() {
   const [companiesOpen, setCompaniesOpen] = useState(false);
   const [agentsOpen, setAgentsOpen] = useState(false);
   const [equityOpen, setEquityOpen] = useState(false);
+  const [publicCosOpen, setPublicCosOpen] = useState(false);
+  const [publicSidebarOpen, setPublicSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [industryOpen, setIndustryOpen] = useState(false);
   const [equities, setEquities] = useState(() => {
     try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
@@ -309,6 +311,9 @@ function AppContent() {
   }
 
   const getCos = (sector) => companies.filter(c => c.sector === sector).sort((a, b) => a.name.localeCompare(b.name));
+  const isPublicCo = (c) => (fieldsMap[c.id]?.public_private?.text || "").startsWith("Public");
+  const getPublicCos = (sector) => getCos(sector).filter(c => isPublicCo(c));
+  const getPrivateCos = (sector) => getCos(sector).filter(c => !isPublicCo(c));
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
 
   const FIELD_LABELS = Object.fromEntries([...FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
@@ -357,8 +362,34 @@ function AppContent() {
       {/* SIDEBAR */}
       <div className="desktop-sidebar" style={s.sidebar}>
         <div style={s.sidebarTitle} onClick={() => { setView({ type: "home" }); setEditingField(null); }}>Research Portal</div>
-        <div style={{ padding: "0 16px 14px" }}>
-          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
+        <div style={{ padding: "0 16px 14px", position: "relative" }}>
+          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} onFocus={() => {}} />
+          {search.trim().length > 0 && (() => {
+            const q = search.toLowerCase();
+            const matches = [
+              ...companies.filter(c => c.sector !== "sources" && c.name.toLowerCase().includes(q)),
+              ...equities.filter(eq => eq.name.toLowerCase().includes(q)).map(eq => ({ ...eq, _isEquity: true })),
+            ].slice(0, 12);
+            if (matches.length === 0) return null;
+            return (
+              <div style={{ position: "absolute", top: "100%", left: 16, right: 16, background: T_.bgSidebar, border: `1px solid ${T_.border}`, borderRadius: 8, zIndex: 200, maxHeight: 320, overflowY: "auto", boxShadow: "0 8px 24px rgba(0,0,0,0.4)" }}>
+                {matches.map(c => (
+                  <div key={c.id} style={{ padding: "10px 14px", cursor: "pointer", borderBottom: `1px solid ${T_.borderLight}`, fontSize: 13, color: T_.text, display: "flex", justifyContent: "space-between", alignItems: "center" }}
+                    onMouseEnter={e => e.currentTarget.style.background = T_.bgInput}
+                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
+                    onClick={() => {
+                      if (c._isEquity) { setView({ type: "equityDetail", id: c.id }); }
+                      else { setView({ type: "company", id: c.id }); }
+                      setSearch("");
+                      setEditingField(null);
+                    }}>
+                    <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</span>
+                    <span style={{ fontSize: 10, color: T_.textGhost, flexShrink: 0, marginLeft: 8 }}>{c._isEquity ? "Primary" : (SECTORS[c.sector]?.label || c.sector)}</span>
+                  </div>
+                ))}
+              </div>
+            );
+          })()}
         </div>
         <div style={s.navTree}>
           {/* Principles */}
@@ -429,12 +460,12 @@ function AppContent() {
             )}
           </div>
 
-          {/* Equity Research */}
+          {/* Primary Research */}
           <div>
             <div style={s.sectorHdr} onClick={() => setEquityOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: equityOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span onClick={e => { e.stopPropagation(); setView({ type: "equityResearch" }); setEditingField(null); }}>Equity Research</span>
+                <span onClick={e => { e.stopPropagation(); setView({ type: "equityResearch" }); setEditingField(null); }}>Primary Research</span>
               </div>
               {equities.length > 0 && <span style={s.badge}>{equities.length}</span>}
             </div>
@@ -452,19 +483,58 @@ function AppContent() {
             )}
           </div>
 
-          {/* Credit Research */}
+          {/* Public Company Research */}
+          <div>
+            <div style={s.sectorHdr} onClick={() => setPublicCosOpen(p => !p)}>
+              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: publicCosOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                <span>Public Company Research</span>
+              </div>
+              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && c.sector !== "equity" && isPublicCo(c)).length}</span>
+            </div>
+            {publicCosOpen && Object.entries(SECTORS).filter(([sk]) => sk !== "sources" && sk !== "equity").map(([sk, sec]) => {
+              const pubCos = filteredCos(getPublicCos(sk));
+              const open = publicSidebarOpen[sk];
+              const total = getPublicCos(sk).length;
+              if (total === 0) return null;
+              return (
+                <div key={sk}>
+                  <div style={{ ...s.sectorHdr, paddingLeft: 34 }} onClick={() => setPublicSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                      <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
+                      <span onClick={e => { e.stopPropagation(); setView({ type: "sector", sector: sk }); setEditingField(null); }}>{sec.label}</span>
+                    </div>
+                    <span style={s.badge}>{total}</span>
+                  </div>
+                  {(open || search) && pubCos.length > 0 && pubCos.map(c => {
+                    const active = view.type === "company" && view.id === c.id;
+                    const pr = c.priority || "";
+                    return (
+                      <div key={c.id} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 52 }} onClick={() => { setView({ type: "company", id: c.id }); setEditingField(null); }}>
+                        <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{c.name}</span>
+                        {pr && <span style={{ ...s.prDot, background: pr === "High" ? T_.green : pr === "Medium" ? T_.amber : T_.textGhost }} />}
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Private Company Research */}
           <div>
             <div style={s.sectorHdr} onClick={() => setCompaniesOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: companiesOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span>Credit Research</span>
+                <span>Private Company Research</span>
               </div>
-              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts").length}</span>
+              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && c.sector !== "equity" && !isPublicCo(c)).length}</span>
             </div>
             {companiesOpen && Object.entries(SECTORS).map(([sk, sec]) => {
-              const cos = filteredCos(getCos(sk));
+              const privCos = filteredCos(getPrivateCos(sk));
               const open = sidebarOpen[sk];
-              const total = getCos(sk).length;
+              const total = getPrivateCos(sk).length;
+              if (sk === "equity") return null;
               return (
                 <div key={sk}>
                   <div style={{ ...s.sectorHdr, paddingLeft: 34 }} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
@@ -474,9 +544,9 @@ function AppContent() {
                     </div>
                     {total > 0 && sk !== "sources" && <span style={s.badge}>{total}</span>}
                   </div>
-                  {(open || search) && sk !== "sources" && cos.length > 0 && (
+                  {(open || search) && sk !== "sources" && privCos.length > 0 && (
                     <>
-                      {cos.map(c => {
+                      {privCos.map(c => {
                         const active = view.type === "company" && view.id === c.id;
                         const pr = c.priority || "";
                         return (
@@ -569,7 +639,7 @@ function AppContent() {
 
         {/* HOME / DASHBOARD */}
         {view.type === "home" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <Dashboard companies={companies} setView={setView} />
           </div>
         )}
@@ -630,7 +700,7 @@ function AppContent() {
         {/* EQUITY RESEARCH */}
         {view.type === "equityResearch" && (
           <div style={s.page}>
-            <h1 style={s.pageTitle}>Equity Research</h1>
+            <h1 style={s.pageTitle}>Primary Research</h1>
             <p style={s.pageSub}>Tracking {equities.length} companies.</p>
             {equities.map(eq => (
               <div key={eq.id} style={s.listRow} onClick={() => { setView({ type: "equityDetail", id: eq.id }); setEditingField(null); }}>
@@ -651,7 +721,7 @@ function AppContent() {
           return (
             <div style={s.page}>
               <div style={s.breadcrumb}>
-                <span onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>Equity Research</span>
+                <span onClick={() => { setView({ type: "equityResearch" }); setEditingField(null); }}>Primary Research</span>
               </div>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 6 }}>
                 <h1 style={s.pageTitle}>{eq.name}</h1>
@@ -663,34 +733,37 @@ function AppContent() {
 
               {/* Oracle Review */}
               {eq.id === "eq_orcl" && <OracleReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
+              {/* Generic Review — for all equity names without dedicated reviews */}
+              {!["eq_micron", "eq_orcl"].includes(eq.id) && <GenericReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
             </div>
           );
         })()}
 
         {/* YL RESEARCH WIKI */}
         {view.type === "researchWiki" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <KnowledgeBase />
           </div>
         )}
 
         {/* PRINCIPLES */}
         {view.type === "principles" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <Principles />
           </div>
         )}
 
         {/* PROMPTS */}
         {view.type === "prompts" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <Prompts />
           </div>
         )}
 
         {/* KNOWLEDGE / INTERESTS */}
         {view.type === "knowledge" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <KnowledgeInterests />
           </div>
         )}
@@ -706,7 +779,7 @@ function AppContent() {
 
         {/* MOBILE MORE MENU */}
         {view.type === "mobileMore" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
@@ -721,7 +794,7 @@ function AppContent() {
                 { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },
                 { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
                 { type: null, label: "— Research —", icon: "" },
-                { type: "equityResearch", label: "Equity Research", icon: "\u{1F4C8}" },
+                { type: "equityResearch", label: "Primary Research", icon: "\u{1F4C8}" },
                 { type: null, label: "— Credit Research —", icon: "" },
                 ...Object.entries(SECTORS).filter(([sk]) => sk !== "sources").map(([sk, sec]) => ({
                   type: "sector", sector: sk, label: sec.label, icon: "\u{1F4C1}"
@@ -763,7 +836,7 @@ function AppContent() {
 
         {/* APIs */}
         {view.type === "apis" && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <ApiDirectory />
           </div>
         )}
@@ -775,7 +848,7 @@ function AppContent() {
 
         {/* COMPANY */}
         {view.type === "company" && cur && (
-          <div style={{ ...s.page, maxWidth: "none" }}>
+          <div style={s.page}>
             <div style={s.breadcrumb}>
               <span onClick={() => { setView((cur.sector === "sources") ? { type: "home" } : { type: "sector", sector: cur.sector }); setEditingField(null); }}>{SECTORS[cur.sector]?.label}</span>
               {cur.sector !== "sources" && <>
@@ -867,8 +940,8 @@ function AppContent() {
             {/* TeraWulf Review */}
             {cur.id === "terawulf_seed" && <TerawulfReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Generic Review — for all Credit Research companies without dedicated reviews */}
-            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && cur.sector !== "equity" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+            {/* Generic Review — for all Credit Research + Equity companies without dedicated reviews */}
+            {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
             {/* Moat vs AI Scoring — only for equity or sources sector */}
             {(cur.sector === "equity") && (() => {
@@ -1065,7 +1138,7 @@ const s = {
   prDot: { width: 7, height: 7, borderRadius: "50%", flexShrink: 0 },
   navAdd: { padding: "6px 18px 6px 38px", fontSize: 12, color: T_.textGhost, cursor: "pointer", fontFamily: FONT },
   main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative", background: T_.bg },
-  page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1020 },
+  page: { flex: 1, padding: "36px 52px", overflowY: "auto" },
   pageTitle: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
   pageSub: { fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.7, fontFamily: FONT },
   breadcrumb: { fontSize: 13, color: T_.textGhost, marginBottom: 12, display: "flex", gap: 8, alignItems: "center", cursor: "pointer", fontFamily: FONT },

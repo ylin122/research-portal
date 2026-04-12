@@ -277,7 +277,7 @@ export default function ResearchAgentPage({ companies, onSetPriority, researchRe
 }
 
 const s = {
-  page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1020 },
+  page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: "none" },
   title: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
   sub: { fontSize: 14, color: T_.textDim, marginBottom: 24, lineHeight: 1.7, fontFamily: FONT },
   tabBar: { display: "flex", gap: 0, borderBottom: `1px solid ${T_.borderLight}`, marginBottom: 28 },

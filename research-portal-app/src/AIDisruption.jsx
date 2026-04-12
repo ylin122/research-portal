@@ -674,7 +674,7 @@ export default function AIDisruption({ companies, initialTab }) {
   };
 
   return (
-    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
+    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Sub-tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
         {[{ key: "disruption", label: "Disruption Map" }, { key: "moats", label: "Moat vs AI" }, { key: "diffusion", label: "AI Diffusion" }, { key: "jevons", label: "Jevons' Paradox" }].map(t => (

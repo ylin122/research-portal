@@ -52,7 +52,7 @@ export default function Sources() {
   const inputStyle = { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: 900, fontFamily: FONT }}>
+    <div style={{ padding: "36px 44px", fontFamily: FONT }}>
       <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Sources</h1>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Trusted sources used across the portal for research, data, and analysis.

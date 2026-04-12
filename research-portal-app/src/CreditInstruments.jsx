@@ -301,7 +301,7 @@ export default function CreditInstruments({ initialTab }) {
   const activeCat = inst ? CATEGORIES.find(c => c.key === inst.category) : null;
 
   return (
-    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: 1750, fontFamily: FONT }}>
+    <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Category headers + tabs */}
       <div style={{ marginBottom: 20 }}>
         {CATEGORIES.map(cat => {
