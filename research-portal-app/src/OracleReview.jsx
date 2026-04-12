@@ -1102,7 +1102,8 @@ export default function OracleReview({ companyId, companyName, curFields, update
 
     {/* ===== FINANCIALS TAB ===== */}
     {orclTab === "financials" && (
-      <FinancialsTab ticker="ORCL" />
+      <FinancialsTab ticker="ORCL" companyId={companyId} companyName={companyName}
+        curFields={curFields} updateField={updateField} />
     )}
 
     </>

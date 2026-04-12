@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { T_, FONT } from "./lib/theme";
+import FinancialsTab from "./FinancialsTab";
 const FIELDS = [
   { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
   { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
@@ -30,7 +31,7 @@ export default function CoreweaveReview({ companyId, companyName, curFields, upd
     <>
       {/* CoreWeave Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setCrwvTab(tab.key)}
@@ -1251,6 +1252,11 @@ export default function CoreweaveReview({ companyId, companyName, curFields, upd
         <div style={{ fontSize: 11, color: "#64748B", fontStyle: "italic" }}>Sources: MarketBeat, Fintel, SEC 13F filings (Q4 2025), Investing.com insider transactions, FINRA short interest reports, CoreWeave SEC Form 4 filings, CBOE convertible note data.</div>
       </div>
     </>)}
+
+    {crwvTab === "financials" && (
+      <FinancialsTab ticker="CRWV" companyId={companyId} companyName={companyName}
+        curFields={curFields} updateField={updateField} />
+    )}
 
     </>
   );

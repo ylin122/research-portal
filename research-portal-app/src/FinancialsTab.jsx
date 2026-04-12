@@ -1,142 +1,296 @@
 import React, { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 
+// ── Number formatting — negatives as (parentheses), matching portal style ──
+const fmtB = (v) => {
+  if (v == null) return '\u2014';
+  const abs = Math.abs(v);
+  const str = abs >= 1e9 ? `$${(abs / 1e9).toFixed(1)}B` : abs >= 1e6 ? `$${(abs / 1e6).toFixed(0)}M` : `$${(abs / 1e3).toFixed(0)}K`;
+  return v < 0 ? `(${str})` : str;
+};
+const fmtPct = (v) => v == null ? '\u2014' : v < 0 ? `(${Math.abs(v).toFixed(1)}%)` : `${v.toFixed(1)}%`;
+const fmtX = (v) => v == null ? '\u2014' : `${v.toFixed(1)}x`;
+const fmtNum = (v) => v == null ? '\u2014' : v < 0 ? `(${Math.abs(v).toFixed(2)})` : v.toFixed(2);
+
 const s = {
-  card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 0, overflow: "hidden" },
+  card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 16 },
+  sectionHdr: { fontSize: 14, fontWeight: 600, color: T_.textDim, marginBottom: 14, paddingBottom: 10, borderBottom: `1px solid ${T_.borderLight}`, fontFamily: FONT },
+  prose: { fontSize: 14, lineHeight: 1.9, color: T_.text, whiteSpace: "pre-wrap", fontFamily: FONT },
+  metricCard: { flex: "1 1 130px", minWidth: 130, background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: "10px 14px" },
+  metricLabel: { fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3, fontFamily: FONT },
+  metricValue: { fontSize: 16, fontWeight: 700, color: "#F8FAFC", fontFamily: FONT },
+  inputRow: { display: "flex", alignItems: "center", gap: 10, marginBottom: 10 },
+  inputLabel: { fontSize: 13, color: T_.textDim, fontWeight: 500, minWidth: 120, fontFamily: FONT },
+  input: { background: "#0B0F19", border: "1px solid #1E293B", borderRadius: 6, padding: "6px 10px", color: "#E2E8F0", fontSize: 13, fontFamily: FONT, width: 140, textAlign: "right" },
+  textarea: { width: "100%", background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
+  btnRefresh: { padding: "6px 14px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "1px solid #3B82F6", background: "transparent", color: "#3B82F6", borderRadius: 6, fontFamily: FONT },
 };
 
-const fmtB = (v) => v == null ? '\u2014' : (Math.abs(v) >= 1e9 ? `$${(v / 1e9).toFixed(1)}B` : `$${(v / 1e6).toFixed(0)}M`);
-const fmtPct = (v) => v == null ? '\u2014' : `${v.toFixed(1)}%`;
-const fmtPe = (v) => v == null ? '\u2014' : `${v.toFixed(1)}x`;
+// Generate prose paragraph for a fiscal year
+function fyProse(p) {
+  if (!p) return '';
+  const parts = [];
+  const fy = p.period;
+  const dateStr = p.fiscalDate ? ` (ended ${p.fiscalDate.slice(5).replace('-', '/')})` : '';
 
-const ROWS = [
-  { label: 'Revenue', key: 'revenue', fmt: fmtB },
-  { label: 'Y/Y Growth', key: 'revenueGrowth', fmt: fmtPct, indent: true },
-  { label: 'Gross Profit', key: 'grossProfit', fmt: fmtB },
-  { label: 'Gross Margin', key: 'grossMargin', fmt: fmtPct, indent: true },
-  { label: 'EBIT', key: 'ebit', fmt: fmtB },
-  { label: 'EBIT Margin', key: 'ebitMargin', fmt: fmtPct, indent: true },
-  { label: 'Net Income', key: 'netIncome', fmt: fmtB },
-  { label: 'P/E', key: 'pe', fmt: fmtPe, computePe: true },
-  { label: 'Capex', key: 'capex', fmt: fmtB },
-  { label: 'GAAP FCF', key: 'fcf', fmt: fmtB },
-  { label: 'Cash on B/S', key: 'cash', fmt: fmtB },
+  if (p.revenue != null) {
+    let revStr = `${fy}${dateStr}: Revenue of ${fmtB(p.revenue)}`;
+    if (p.revenueGrowth != null) revStr += `, ${p.revenueGrowth > 0 ? 'up' : 'down'} ${fmtPct(Math.abs(p.revenueGrowth))} Y/Y`;
+    parts.push(revStr + '.');
+  }
+  if (p.grossMargin != null) parts.push(`Gross margin ${fmtPct(p.grossMargin)}.`);
+  if (p.ebit != null) {
+    let ebitStr = `EBIT ${fmtB(p.ebit)}`;
+    if (p.ebitMargin != null) ebitStr += ` (${fmtPct(p.ebitMargin)} margin)`;
+    parts.push(ebitStr + '.');
+  }
+  if (p.netIncome != null) parts.push(`Net income ${fmtB(p.netIncome)}.`);
+  if (p.fcf != null) {
+    let fcfStr = `FCF ${fmtB(p.fcf)}`;
+    if (p.cffo != null && p.capex != null) fcfStr += ` (CFFO ${fmtB(p.cffo)} less capex ${fmtB(p.capex)})`;
+    parts.push(fcfStr + '.');
+  } else if (p.capex != null) {
+    parts.push(`Capex ${fmtB(p.capex)}.`);
+  }
+  if (p.cash != null) parts.push(`Cash on B/S: ${fmtB(p.cash)}.`);
+
+  return parts.join(' ');
+}
+
+// Forward estimate field keys
+const FWD_FIELDS = [
+  { key: 'revenue', label: 'Revenue ($M)', parse: (v) => v * 1e6 },
+  { key: 'grossProfit', label: 'Gross Profit ($M)', parse: (v) => v * 1e6 },
+  { key: 'ebit', label: 'EBIT ($M)', parse: (v) => v * 1e6 },
+  { key: 'netIncome', label: 'Net Income ($M)', parse: (v) => v * 1e6 },
+  { key: 'eps', label: 'EPS ($)', parse: (v) => v },
+  { key: 'capex', label: 'Capex ($M)', parse: (v) => v * 1e6 },
 ];
 
-export default function FinancialsTab({ ticker }) {
-  const [finData, setFinData] = useState(null);
+export default function FinancialsTab({ ticker, companyId, companyName, curFields, updateField }) {
+  const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
 
-  // Load from cache on mount (no refresh)
+  // Load cached data on mount (only for companies with a ticker)
   useEffect(() => {
     if (!ticker) return;
     setLoading(true);
     fetch(`/api/financials?symbol=${encodeURIComponent(ticker)}`)
       .then(r => r.json())
-      .then(d => { setFinData(d); setLoading(false); })
+      .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
   }, [ticker]);
 
   const handleRefresh = () => {
+    if (!ticker) return;
     setRefreshing(true);
     fetch(`/api/financials?symbol=${encodeURIComponent(ticker)}&refresh=true`)
       .then(r => r.json())
-      .then(d => { setFinData(d); setRefreshing(false); })
+      .then(d => { setData(d); setRefreshing(false); })
       .catch(() => setRefreshing(false));
   };
 
-  const periods = finData?.periods || [];
-  const meta = finData?.meta || {};
-  const sharesOut = meta.sharesOutstanding;
-  const currentPrice = meta.price;
+  const meta = data?.meta || {};
+  const ttm = data?.ttm || {};
+  const historical = data?.historical || [];
 
-  const cellSt = { padding: '10px 16px', textAlign: 'right', fontSize: 13, borderBottom: '1px solid #1E293B', fontFamily: FONT };
-  const hdrSt = { ...cellSt, color: '#94A3B8', fontWeight: 600, fontSize: 11, textTransform: 'uppercase', letterSpacing: '0.5px' };
-  const lblSt = { ...cellSt, textAlign: 'left', color: '#E2E8F0', fontWeight: 500 };
-  const isEst = (p) => p.period?.endsWith('E');
-  const fmtDate = (d) => { const [y, m, dd] = d.split('-'); return `${m}/${dd}/${y.slice(2)}`; };
+  // Read forward estimates from curFields
+  const getFwd = (year, field) => {
+    const key = `fin_fwd_${year}_${field}`;
+    return curFields?.[key]?.text || '';
+  };
+  const setFwd = (year, field, val) => {
+    const key = `fin_fwd_${year}_${field}`;
+    updateField(companyId, key, val);
+  };
+
+  // Manual financials prose for private companies
+  const manualProse = curFields?.fin_manual_prose?.text || '';
+
+  // Compute forward ratios
+  const computeFwdPE = (year) => {
+    const eps = parseFloat(getFwd(year, 'eps'));
+    if (!eps || !meta.price) return null;
+    return meta.price / eps;
+  };
+
+  // Determine forward year labels from the latest historical period
+  const latestFY = historical.length ? historical[historical.length - 1] : null;
+  const latestYear = latestFY ? parseInt(latestFY.fiscalDate?.slice(0, 4)) : new Date().getFullYear();
+  const fwdYear1 = `FY${latestYear + 1}`;
+  const fwdYear2 = `FY${latestYear + 2}`;
+
+  const isPublic = !!ticker;
+  const negColor = (v) => v != null && v < 0 ? T_.red : "#F8FAFC";
 
   return (
     <div>
-      {/* Header row */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-        {meta.name && <span style={{ fontSize: 15, color: '#E2E8F0', fontWeight: 600, fontFamily: FONT }}>{meta.name} ({ticker})</span>}
-        {meta.price != null && <span style={{ fontSize: 13, color: '#94A3B8', fontFamily: FONT }}>@ ${meta.price.toFixed(2)}</span>}
-        {meta.marketCap != null && <span style={{ fontSize: 13, color: '#64748B', fontFamily: FONT }}>Mkt Cap: {fmtB(meta.marketCap)}</span>}
-        {meta.fiscalYearEnd && <span style={{ fontSize: 12, color: '#64748B', fontFamily: FONT }}>FY ends: {meta.fiscalYearEnd}</span>}
-        <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 10 }}>
-          {finData?.cached && finData?.cachedAt && (
-            <span style={{ fontSize: 11, color: '#64748B', fontFamily: FONT }}>
-              Cached: {new Date(finData.cachedAt).toLocaleDateString()}
+      {/* ── Header ── */}
+      <div style={{ display: "flex", alignItems: "center", gap: 14, marginBottom: 20, flexWrap: "wrap" }}>
+        <span style={{ fontSize: 15, fontWeight: 600, color: "#F8FAFC", fontFamily: FONT }}>
+          {meta.name || companyName || 'Financials'}
+          {ticker && <span style={{ color: T_.textDim, fontWeight: 400 }}> ({ticker})</span>}
+        </span>
+        {meta.price != null && (
+          <span style={{ fontSize: 14, color: T_.textMid, fontFamily: FONT }}>
+            ${meta.price.toFixed(2)}
+            {meta.change1d != null && (
+              <span style={{ color: meta.change1d >= 0 ? T_.green : T_.red, marginLeft: 6 }}>
+                {meta.change1d >= 0 ? '+' : ''}{meta.change1d.toFixed(2)}%
+              </span>
+            )}
+          </span>
+        )}
+        {meta.marketCap != null && <span style={{ fontSize: 13, color: T_.textGhost, fontFamily: FONT }}>Mkt Cap: {fmtB(meta.marketCap)}</span>}
+        <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 10 }}>
+          {data?.cached && data?.cachedAt && (
+            <span style={{ fontSize: 11, color: T_.textGhost, fontFamily: FONT }}>
+              Cached: {new Date(data.cachedAt).toLocaleDateString()}
             </span>
           )}
-          <button
-            onClick={handleRefresh}
-            disabled={refreshing}
-            style={{
-              padding: '6px 14px', fontSize: 12, fontWeight: 600, cursor: refreshing ? 'wait' : 'pointer',
-              border: '1px solid #3B82F6', background: refreshing ? '#1E293B' : 'transparent',
-              color: '#3B82F6', borderRadius: 6, fontFamily: FONT,
-              opacity: refreshing ? 0.6 : 1,
-            }}
-          >
-            {refreshing ? 'Refreshing...' : 'Refresh Financials'}
-          </button>
+          {isPublic && (
+            <button onClick={handleRefresh} disabled={refreshing}
+              style={{ ...s.btnRefresh, opacity: refreshing ? 0.5 : 1, cursor: refreshing ? 'wait' : 'pointer' }}>
+              {refreshing ? 'Refreshing...' : 'Refresh Financials'}
+            </button>
+          )}
         </div>
       </div>
 
-      {loading && <div style={{ color: '#94A3B8', fontSize: 14, padding: 40, textAlign: 'center', fontFamily: FONT }}>Loading financials...</div>}
-      {finData?.error && <div style={{ color: '#EF4444', fontSize: 14, padding: 20, fontFamily: FONT }}>Error: {finData.error}</div>}
+      {loading && <div style={{ color: T_.textDim, fontSize: 14, padding: 40, textAlign: "center", fontFamily: FONT }}>Loading financials...</div>}
+      {data?.error && <div style={{ color: T_.red, fontSize: 14, padding: 20, fontFamily: FONT }}>Error: {data.error}</div>}
 
-      {!loading && periods.length === 0 && !finData?.error && (
-        <div style={{ color: '#94A3B8', fontSize: 14, padding: 40, textAlign: 'center', fontFamily: FONT }}>
-          No cached financials. Click "Refresh Financials" to pull from Alpha Vantage.
+      {/* ── Key Ratios ── */}
+      {(meta.price || ttm.revenue) && (
+        <div style={s.card}>
+          <div style={s.sectionHdr}>Key Metrics</div>
+          <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+            {[
+              { label: "Trailing P/E", value: meta.trailingPE, fmt: fmtX },
+              { label: "Forward P/E", value: meta.forwardPE, fmt: fmtX },
+              { label: "PEG Ratio", value: meta.pegRatio, fmt: fmtX },
+              { label: "LTM EPS", value: meta.ltmEps, fmt: fmtNum },
+              { label: "Fwd EPS", value: meta.fwdEps, fmt: fmtNum },
+              { label: "Gross Margin", value: ttm.grossMargin, fmt: fmtPct },
+              { label: "Op Margin", value: ttm.operatingMargin, fmt: fmtPct },
+              { label: "Rev Growth", value: ttm.revenueGrowth, fmt: fmtPct },
+              { label: "TTM FCF", value: ttm.fcf, fmt: fmtB },
+              { label: "Beta", value: meta.beta, fmt: (v) => v == null ? '\u2014' : v.toFixed(2) },
+            ].filter(m => m.value != null).map(m => (
+              <div key={m.label} style={s.metricCard}>
+                <div style={s.metricLabel}>{m.label}</div>
+                <div style={{ ...s.metricValue, color: negColor(m.value) }}>{m.fmt(m.value)}</div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
-      {periods.length > 0 && (
+      {/* ── Historical Financials (Prose) — public companies ── */}
+      {isPublic && historical.length > 0 && (
         <div style={s.card}>
-          <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-            <thead>
-              <tr>
-                <th style={{ ...hdrSt, textAlign: 'left', width: 140 }}>Metric</th>
-                {periods.map(p => (
-                  <th key={p.period} style={{ ...hdrSt, ...(isEst(p) ? { color: '#60A5FA', fontStyle: 'italic' } : {}) }}>
-                    {(() => {
-                      const fd = p.fiscalDate;
-                      if (p.period === 'LTM') return <>LTM{fd && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>({fmtDate(fd)})</div>}</>;
-                      const shortPeriod = p.period.replace(/^FY20/, 'FY').replace(/^FY(\d{2})/, 'FY$1');
-                      return <>{shortPeriod}{fd && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>({fmtDate(fd)})</div>}</>;
-                    })()}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {ROWS.map(row => (
-                <tr key={row.label} style={row.indent ? { background: 'rgba(30,41,59,0.3)' } : {}}>
-                  <td style={{ ...lblSt, ...(row.indent ? { color: '#94A3B8', fontSize: 12, paddingLeft: 28 } : {}) }}>{row.label}</td>
-                  {periods.map(p => {
-                    let val = p[row.key];
-                    if (row.computePe) {
-                      val = p.pe != null ? p.pe : (p.netIncome && sharesOut && currentPrice && p.netIncome > 0 ? currentPrice / (p.netIncome / sharesOut) : null);
-                    }
-                    const display = row.fmt(val);
-                    const isNeg = val != null && val < 0;
-                    return (
-                      <td key={p.period} style={{ ...cellSt, color: isNeg ? '#EF4444' : (isEst(p) ? '#93C5FD' : '#E2E8F0'), ...(row.indent ? { fontSize: 12 } : {}) }}>
-                        {display}
-                      </td>
-                    );
-                  })}
-                </tr>
+          <div style={s.sectionHdr}>Historical Financials (SEC EDGAR)</div>
+          {historical.map(p => (
+            <div key={p.period} style={{ marginBottom: 14 }}>
+              <div style={s.prose}>{fyProse(p)}</div>
+            </div>
+          ))}
+          {data?.timestamp && (
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 8, fontFamily: FONT }}>
+              Source: SEC EDGAR (10-K filings) + Yahoo Finance | Data as of {new Date(data.timestamp).toLocaleDateString()}
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* ── TTM Summary — public companies ── */}
+      {isPublic && ttm.revenue && (
+        <div style={s.card}>
+          <div style={s.sectionHdr}>Trailing Twelve Months (Yahoo Finance)</div>
+          <div style={s.prose}>
+            {[
+              ttm.revenue ? `TTM Revenue: ${fmtB(ttm.revenue)}` : null,
+              ttm.revenueGrowth != null ? `(${ttm.revenueGrowth > 0 ? '+' : ''}${fmtPct(ttm.revenueGrowth)} Y/Y)` : null,
+            ].filter(Boolean).join(' ')}
+            {'. '}
+            {[
+              ttm.grossMargin != null ? `Gross margin ${fmtPct(ttm.grossMargin)}` : null,
+              ttm.operatingMargin != null ? `Operating margin ${fmtPct(ttm.operatingMargin)}` : null,
+              ttm.fcf != null ? `FCF ${fmtB(ttm.fcf)}` : null,
+              meta.ltmEps != null ? `EPS $${meta.ltmEps.toFixed(2)}` : null,
+            ].filter(Boolean).join('. ')}.
+          </div>
+        </div>
+      )}
+
+      {/* ── Manual Financials (Private companies) ── */}
+      {!isPublic && (
+        <div style={s.card}>
+          <div style={s.sectionHdr}>Financials & Metrics</div>
+          <textarea
+            style={s.textarea}
+            rows={8}
+            value={manualProse}
+            onChange={e => updateField(companyId, 'fin_manual_prose', e.target.value)}
+            placeholder="Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn rate, profitability, funding, debt profile..."
+          />
+        </div>
+      )}
+
+      {/* ── Forward Estimates (Editable) ── */}
+      <div style={s.card}>
+        <div style={s.sectionHdr}>Forward Estimates {isPublic ? '(Editable)' : ''}</div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+          {[fwdYear1, fwdYear2].map(year => (
+            <div key={year}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: "#60A5FA", marginBottom: 12, fontFamily: FONT }}>{year}E</div>
+              {FWD_FIELDS.map(f => (
+                <div key={f.key} style={s.inputRow}>
+                  <span style={s.inputLabel}>{f.label}</span>
+                  <input
+                    style={s.input}
+                    type="text"
+                    value={getFwd(year, f.key)}
+                    onChange={e => setFwd(year, f.key, e.target.value)}
+                    placeholder="\u2014"
+                  />
+                </div>
               ))}
-            </tbody>
-          </table>
-          <div style={{ padding: '10px 16px', fontSize: 11, color: '#64748B', borderTop: '1px solid #1E293B', fontFamily: FONT }}>
-            Source: Alpha Vantage | Forward estimates are analyst consensus avg | GAAP FCF = CFFO - Capex | P/E uses current price (${currentPrice?.toFixed(2) || '\u2014'})
-            {finData?.timestamp && ` | Data: ${new Date(finData.timestamp).toLocaleDateString()}`}
+              {/* Auto-calculated forward P/E */}
+              {meta.price && getFwd(year, 'eps') && (
+                <div style={s.inputRow}>
+                  <span style={s.inputLabel}>Implied P/E</span>
+                  <span style={{ ...s.input, background: "transparent", border: "none", color: "#60A5FA" }}>
+                    {fmtX(computeFwdPE(year))}
+                  </span>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        {isPublic && meta.fwdEps && (
+          <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, fontFamily: FONT }}>
+            Yahoo consensus: Fwd EPS ${meta.fwdEps?.toFixed(2)} (current year){meta.fwdEpsNextYear ? `, $${meta.fwdEpsNextYear.toFixed(2)} (next year)` : ''}
+          </div>
+        )}
+      </div>
+
+      {/* ── 52-Week Range ── */}
+      {meta.fiftyTwoWeekLow != null && meta.fiftyTwoWeekHigh != null && meta.price != null && (
+        <div style={{ ...s.card, padding: "14px 20px" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+            <span style={{ fontSize: 11, color: T_.textGhost, fontFamily: FONT }}>52-Week Range</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+            <span style={{ fontSize: 13, color: T_.textDim, fontFamily: FONT }}>${meta.fiftyTwoWeekLow.toFixed(2)}</span>
+            <div style={{ flex: 1, height: 4, background: "#1E293B", borderRadius: 2, position: "relative" }}>
+              <div style={{
+                position: "absolute", left: `${((meta.price - meta.fiftyTwoWeekLow) / (meta.fiftyTwoWeekHigh - meta.fiftyTwoWeekLow)) * 100}%`,
+                top: -4, width: 12, height: 12, background: "#3B82F6", borderRadius: "50%", transform: "translateX(-50%)",
+              }} />
+            </div>
+            <span style={{ fontSize: 13, color: T_.textDim, fontFamily: FONT }}>${meta.fiftyTwoWeekHigh.toFixed(2)}</span>
           </div>
         </div>
       )}

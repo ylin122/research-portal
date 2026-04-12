@@ -1,22 +1,21 @@
 import { createClient } from '@supabase/supabase-js';
+import YahooFinance from 'yahoo-finance2';
 
-const AV_KEY = process.env.ALPHA_VANTAGE_API_KEY;
-const BASE = 'https://www.alphavantage.co/query';
+const yahooFinance = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
 const supabase = createClient(
   process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
 
-async function avFetch(fn, symbol) {
-  const url = `${BASE}?function=${fn}&symbol=${symbol}&apikey=${AV_KEY}`;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`AV ${fn} failed: ${res.status}`);
-  const data = await res.json();
-  if (data.Note || data.Information) throw new Error(`AV rate limited on ${fn}: ${data.Note || data.Information}`);
-  return data;
-}
+// CIK map for SEC EDGAR lookups
+const CIK = {
+  MU: '0000723125', ORCL: '0001341439', NVDA: '0001045810', AMZN: '0001018724',
+  MSFT: '0000789019', GOOGL: '0001652044', TSLA: '0001318605', LITE: '0001404057',
+  COHR: '0000820318', APLD: '0001144879', CIFR: '0001819989', WULF: '0001619762',
+  CRWV: '0001840574',
+};
 
-const delay = (ms) => new Promise(r => setTimeout(r, ms));
+const EDGAR_UA = 'research-portal/1.0 (ylresearchwiki@gmail.com)';
 
 function num(v) {
   if (v === undefined || v === null || v === 'None' || v === '') return null;
@@ -24,118 +23,150 @@ function num(v) {
   return isNaN(n) ? null : n;
 }
 
-function sumQ(quarters, field) {
-  const vals = quarters.map(q => num(q[field]));
-  if (vals.some(v => v === null)) return null;
-  return vals.reduce((a, b) => a + b, 0);
-}
-
 function pctChg(curr, prev) {
   if (curr == null || prev == null || prev === 0) return null;
   return ((curr - prev) / Math.abs(prev)) * 100;
 }
 
-async function fetchFromAlphaVantage(symbol) {
-  const income = await avFetch('INCOME_STATEMENT', symbol);
-  await delay(1500);
-  const cashflow = await avFetch('CASH_FLOW', symbol);
-  await delay(1500);
-  const balance = await avFetch('BALANCE_SHEET', symbol);
-  await delay(1500);
-  const overview = await avFetch('OVERVIEW', symbol);
-  await delay(1500);
-  const estimates = await avFetch('EARNINGS_ESTIMATES', symbol);
+// ── SEC EDGAR: fetch XBRL company facts ──
+async function fetchEdgar(cik) {
+  const url = `https://data.sec.gov/api/xbrl/companyfacts/CIK${cik}.json`;
+  const res = await fetch(url, { headers: { 'User-Agent': EDGAR_UA } });
+  if (!res.ok) throw new Error(`EDGAR failed: ${res.status}`);
+  return res.json();
+}
 
-  // --- Annual data ---
-  const annualIncome = (income.annualReports || []).slice(0, 4);
-  const annualCF = (cashflow.annualReports || []).slice(0, 4);
-  const annualBS = (balance.annualReports || []).slice(0, 4);
-  const cfByDate = Object.fromEntries(annualCF.map(r => [r.fiscalDateEnding, r]));
-  const bsByDate = Object.fromEntries(annualBS.map(r => [r.fiscalDateEnding, r]));
+// Extract annual (10-K) values for a given XBRL tag, deduplicated by end date
+function getAnnual(facts, tags) {
+  for (const tag of tags) {
+    const entries = facts?.['us-gaap']?.[tag]?.units?.USD;
+    if (!entries) continue;
+    const annual = entries.filter(e => e.form === '10-K' && e.fp === 'FY');
+    // Deduplicate by end date (take the latest filing)
+    const byEnd = {};
+    for (const e of annual) byEnd[e.end] = e;
+    const sorted = Object.values(byEnd).sort((a, b) => a.end.localeCompare(b.end));
+    if (sorted.length) return sorted;
+  }
+  return [];
+}
 
-  const annualPeriods = annualIncome.slice(0, 3).map((inc, i) => {
-    const fy = inc.fiscalDateEnding;
-    const cf = cfByDate[fy] || {};
-    const bs = bsByDate[fy] || {};
-    const prevInc = annualIncome[i + 1];
-    const revenue = num(inc.totalRevenue);
-    const grossProfit = num(inc.grossProfit);
-    const ebit = num(inc.ebit) ?? num(inc.operatingIncome);
-    const netIncome = num(inc.netIncome);
-    const capex = num(cf.capitalExpenditures);
-    const cffo = num(cf.operatingCashflow);
-    const cash = num(bs.cashAndCashEquivalentsAtCarryingValue) ?? num(bs.cashAndShortTermInvestments);
-    const prevRevenue = prevInc ? num(prevInc.totalRevenue) : null;
+// Extract quarterly data - EDGAR reports cumulative YTD figures for Q2/Q3
+// We need to convert to standalone quarters
+function getQuarterly(facts, tags) {
+  for (const tag of tags) {
+    const entries = facts?.['us-gaap']?.[tag]?.units?.USD;
+    if (!entries) continue;
+    const quarterly = entries.filter(e => e.form === '10-Q');
+    const byEndFp = {};
+    for (const e of quarterly) {
+      const key = `${e.end}_${e.fp}`;
+      byEndFp[key] = e;
+    }
+    const sorted = Object.values(byEndFp).sort((a, b) => a.end.localeCompare(b.end));
+    if (sorted.length) return sorted;
+  }
+  return [];
+}
+
+// Build annual periods from EDGAR data
+function buildAnnualPeriods(edgarData) {
+  const f = edgarData.facts || {};
+  const revEntries = getAnnual(f, ['RevenueFromContractWithCustomerExcludingAssessedTax', 'Revenues', 'SalesRevenueNet']);
+  const gpEntries = getAnnual(f, ['GrossProfit']);
+  const ebitEntries = getAnnual(f, ['OperatingIncomeLoss']);
+  const niEntries = getAnnual(f, ['NetIncomeLoss']);
+  const cashEntries = getAnnual(f, ['CashAndCashEquivalentsAtCarryingValue', 'CashCashEquivalentsAndShortTermInvestments']);
+  const capexEntries = getAnnual(f, ['PaymentsToAcquirePropertyPlantAndEquipment']);
+  const cffoEntries = getAnnual(f, ['NetCashProvidedByUsedInOperatingActivities', 'NetCashProvidedByOperatingActivities']);
+
+  const byDate = (arr) => Object.fromEntries(arr.map(e => [e.end, e.val]));
+  const revMap = byDate(revEntries);
+  const gpMap = byDate(gpEntries);
+  const ebitMap = byDate(ebitEntries);
+  const niMap = byDate(niEntries);
+  const cashMap = byDate(cashEntries);
+  const capexMap = byDate(capexEntries);
+  const cffoMap = byDate(cffoEntries);
+
+  // Use revenue dates as the master list, take last 4 (3 display + 1 for growth)
+  const dates = revEntries.map(e => e.end).slice(-4);
+
+  const periods = dates.map((d, i) => {
+    const revenue = num(revMap[d]);
+    const grossProfit = num(gpMap[d]);
+    const ebit = num(ebitMap[d]);
+    const netIncome = num(niMap[d]);
+    const cash = num(cashMap[d]);
+    const capex = num(capexMap[d]);
+    const cffo = num(cffoMap[d]);
+    const prevD = dates[i - 1];
+    const prevRev = prevD ? num(revMap[prevD]) : null;
+
     return {
-      period: `FY${fy.slice(0, 4)}`, fiscalDate: fy, revenue,
-      revenueGrowth: pctChg(revenue, prevRevenue), grossProfit,
+      period: `FY${d.slice(0, 4)}`,
+      fiscalDate: d,
+      revenue, grossProfit, ebit, netIncome, cash, capex, cffo,
+      revenueGrowth: pctChg(revenue, prevRev),
       grossMargin: revenue ? (grossProfit / revenue) * 100 : null,
-      ebit, ebitMargin: revenue ? (ebit / revenue) * 100 : null,
-      netIncome, pe: null, capex,
-      fcf: cffo != null && capex != null ? cffo - capex : null, cash,
-    };
-  }).reverse();
-
-  // --- LTM ---
-  const qIncome = (income.quarterlyReports || []).slice(0, 4);
-  const qCF = (cashflow.quarterlyReports || []).slice(0, 4);
-  const qBS = (balance.quarterlyReports || []).slice(0, 1);
-  const prevQIncome = (income.quarterlyReports || []).slice(4, 8);
-  const ltmRevenue = sumQ(qIncome, 'totalRevenue');
-  const ltmGrossProfit = sumQ(qIncome, 'grossProfit');
-  const ltmEbit = sumQ(qIncome, 'ebit') ?? sumQ(qIncome, 'operatingIncome');
-  const ltmNetIncome = sumQ(qIncome, 'netIncome');
-  const ltmCffo = sumQ(qCF, 'operatingCashflow');
-  const ltmCapex = sumQ(qCF, 'capitalExpenditures');
-  const ltmCash = qBS[0] ? (num(qBS[0].cashAndCashEquivalentsAtCarryingValue) ?? num(qBS[0].cashAndShortTermInvestments)) : null;
-  const ltm = {
-    period: 'LTM', fiscalDate: qIncome[0]?.fiscalDateEnding || '',
-    quartersCovered: `${qIncome[3]?.fiscalDateEnding || ''} to ${qIncome[0]?.fiscalDateEnding || ''}`,
-    revenue: ltmRevenue,
-    revenueGrowth: pctChg(ltmRevenue, prevQIncome.length === 4 ? sumQ(prevQIncome, 'totalRevenue') : null),
-    grossProfit: ltmGrossProfit,
-    grossMargin: ltmRevenue ? (ltmGrossProfit / ltmRevenue) * 100 : null,
-    ebit: ltmEbit, ebitMargin: ltmRevenue ? (ltmEbit / ltmRevenue) * 100 : null,
-    netIncome: ltmNetIncome, pe: null, capex: ltmCapex,
-    fcf: ltmCffo != null && ltmCapex != null ? ltmCffo - ltmCapex : null, cash: ltmCash,
-  };
-
-  // --- Forward estimates (next 2 FYs) ---
-  const fyEstimates = (estimates.estimates || []).filter(e => e.horizon === 'fiscal year');
-  fyEstimates.sort((a, b) => a.date.localeCompare(b.date));
-  const latestAnnualDate = annualIncome[0]?.fiscalDateEnding || '';
-  const futureFYs = fyEstimates.filter(e => e.date > latestAnnualDate).slice(0, 2);
-  const sharesOut = num(overview.SharesOutstanding);
-  const price = num(overview.MarketCapitalization) && sharesOut
-    ? num(overview.MarketCapitalization) / sharesOut : null;
-  const fwdPE = num(overview.ForwardPE);
-
-  const forwards = futureFYs.map((fy, idx) => {
-    const fwdRevenue = num(fy.revenue_estimate_average);
-    const fwdEpsAvg = num(fy.eps_estimate_average);
-    const fwdNetIncome = fwdEpsAvg != null && sharesOut ? fwdEpsAvg * sharesOut : null;
-    const prevRev = idx === 0 ? num(annualIncome[0]?.totalRevenue) : num(futureFYs[0]?.revenue_estimate_average);
-    return {
-      period: `FY${fy.date.slice(0, 4)}E`, fiscalDate: fy.date,
-      revenue: fwdRevenue, revenueGrowth: pctChg(fwdRevenue, prevRev),
-      grossProfit: null, grossMargin: null, ebit: null, ebitMargin: null,
-      netIncome: fwdNetIncome,
-      pe: idx === 0 ? fwdPE : (fwdEpsAvg && price ? price / fwdEpsAvg : null),
-      capex: null, fcf: null, cash: null,
-      epsEstimate: fwdEpsAvg, epsHigh: num(fy.eps_estimate_high),
-      epsLow: num(fy.eps_estimate_low), analystCount: num(fy.eps_estimate_analyst_count),
-      revenueHigh: num(fy.revenue_estimate_high), revenueLow: num(fy.revenue_estimate_low),
+      ebitMargin: revenue ? (ebit / revenue) * 100 : null,
+      fcf: cffo != null && capex != null ? cffo - capex : null,
     };
   });
 
-  const meta = {
-    symbol, name: overview.Name || symbol, currency: overview.Currency || 'USD',
-    fiscalYearEnd: overview.FiscalYearEnd || '', marketCap: num(overview.MarketCapitalization),
-    sharesOutstanding: sharesOut, price, trailingPE: num(overview.TrailingPE),
-    forwardPE: fwdPE, eps: num(overview.EPS),
-  };
+  // Drop the oldest (used only for growth calc) if we have 4
+  return periods.length > 3 ? periods.slice(1) : periods;
+}
 
-  return { meta, periods: [...annualPeriods, ltm, ...forwards], timestamp: new Date().toISOString() };
+// Build LTM from the most recent quarterly data
+function buildLTM(edgarData, annualPeriods) {
+  const f = edgarData.facts || {};
+
+  // For LTM, we use the latest annual + the delta from the latest quarterly filing
+  // EDGAR quarterly data is cumulative YTD, so:
+  // LTM = Latest FY + Latest Cumulative QTD - Prior Year Same Cumulative QTD
+  // But this is complex. Simpler: use the latest 10-K data as a base and note it.
+  // For now, skip LTM from EDGAR and let Yahoo provide TTM data in the meta.
+
+  return null; // LTM will come from Yahoo Finance TTM fields
+}
+
+// ── Yahoo Finance: fetch market data and estimates ──
+async function fetchYahoo(ticker) {
+  const quote = await yahooFinance.quote(ticker);
+  let estimates = null;
+  try {
+    const summary = await yahooFinance.quoteSummary(ticker, {
+      modules: ['defaultKeyStatistics', 'financialData', 'earningsTrend'],
+    });
+    estimates = summary;
+  } catch { /* earningsTrend may not be available for all tickers */ }
+
+  return {
+    price: quote.regularMarketPrice ?? null,
+    marketCap: quote.marketCap ?? null,
+    sharesOutstanding: quote.sharesOutstanding ?? null,
+    trailingPE: quote.trailingPE ? +quote.trailingPE.toFixed(2) : null,
+    forwardPE: quote.forwardPE ? +quote.forwardPE.toFixed(2) : null,
+    ltmEps: quote.epsTrailingTwelveMonths ? +quote.epsTrailingTwelveMonths.toFixed(2) : null,
+    fwdEps: quote.epsCurrentYear ? +quote.epsCurrentYear.toFixed(2) : null,
+    fwdEpsNextYear: quote.epsForward ? +quote.epsForward.toFixed(2) : null,
+    name: quote.shortName || quote.longName || ticker,
+    change1d: quote.regularMarketChangePercent ? +quote.regularMarketChangePercent.toFixed(2) : null,
+    fiftyTwoWeekHigh: quote.fiftyTwoWeekHigh ?? null,
+    fiftyTwoWeekLow: quote.fiftyTwoWeekLow ?? null,
+    // TTM data from financialData
+    ttmRevenue: estimates?.financialData?.totalRevenue ?? null,
+    ttmEbitda: estimates?.financialData?.ebitda ?? null,
+    ttmFcf: estimates?.financialData?.freeCashflow ?? null,
+    ttmGrossMargin: estimates?.financialData?.grossMargins ? +(estimates.financialData.grossMargins * 100).toFixed(1) : null,
+    ttmEbitdaMargin: estimates?.financialData?.ebitdaMargins ? +(estimates.financialData.ebitdaMargins * 100).toFixed(1) : null,
+    ttmOperatingMargin: estimates?.financialData?.operatingMargins ? +(estimates.financialData.operatingMargins * 100).toFixed(1) : null,
+    revenueGrowth: estimates?.financialData?.revenueGrowth ? +(estimates.financialData.revenueGrowth * 100).toFixed(1) : null,
+    pegRatio: estimates?.defaultKeyStatistics?.pegRatio ?? null,
+    beta: estimates?.defaultKeyStatistics?.betaRaw ?? estimates?.defaultKeyStatistics?.beta ?? null,
+    dividendYield: quote.dividendYield ? +(quote.dividendYield * 100).toFixed(2) : null,
+  };
 }
 
 export default async function handler(req, res) {
@@ -144,31 +175,75 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const symbol = (req.query?.symbol || 'MU').toUpperCase();
+  const symbol = (req.query?.symbol || '').toUpperCase();
+  if (!symbol) return res.status(400).json({ error: 'Missing symbol param' });
+
   const refresh = req.query?.refresh === 'true';
 
   try {
-    // If not refreshing, try cache first
+    // Check cache first
     if (!refresh) {
       const { data: cached } = await supabase
         .from('financials_cache')
         .select('data, updated_at')
         .eq('ticker', symbol)
         .single();
-
       if (cached?.data) {
-        return res.status(200).json({
-          ...cached.data,
-          cached: true,
-          cachedAt: cached.updated_at,
-        });
+        return res.status(200).json({ ...cached.data, cached: true, cachedAt: cached.updated_at });
       }
     }
 
-    // Fresh pull from Alpha Vantage
-    const result = await fetchFromAlphaVantage(symbol);
+    // Fresh pull
+    const cik = CIK[symbol];
+    let historical = [];
 
-    // Save to cache
+    // SEC EDGAR for historical (US companies only)
+    if (cik) {
+      try {
+        const edgarData = await fetchEdgar(cik);
+        historical = buildAnnualPeriods(edgarData);
+      } catch (e) {
+        console.error('EDGAR error:', e.message);
+      }
+    }
+
+    // Yahoo Finance for market data
+    const yahoo = await fetchYahoo(symbol);
+
+    const result = {
+      meta: {
+        symbol,
+        name: yahoo.name,
+        price: yahoo.price,
+        marketCap: yahoo.marketCap,
+        sharesOutstanding: yahoo.sharesOutstanding,
+        trailingPE: yahoo.trailingPE,
+        forwardPE: yahoo.forwardPE,
+        ltmEps: yahoo.ltmEps,
+        fwdEps: yahoo.fwdEps,
+        fwdEpsNextYear: yahoo.fwdEpsNextYear,
+        pegRatio: yahoo.pegRatio,
+        beta: yahoo.beta,
+        dividendYield: yahoo.dividendYield,
+        change1d: yahoo.change1d,
+        fiftyTwoWeekHigh: yahoo.fiftyTwoWeekHigh,
+        fiftyTwoWeekLow: yahoo.fiftyTwoWeekLow,
+      },
+      ttm: {
+        revenue: yahoo.ttmRevenue,
+        ebitda: yahoo.ttmEbitda,
+        fcf: yahoo.ttmFcf,
+        grossMargin: yahoo.ttmGrossMargin,
+        ebitdaMargin: yahoo.ttmEbitdaMargin,
+        operatingMargin: yahoo.ttmOperatingMargin,
+        revenueGrowth: yahoo.revenueGrowth,
+        eps: yahoo.ltmEps,
+      },
+      historical,
+      timestamp: new Date().toISOString(),
+    };
+
+    // Cache
     await supabase.from('financials_cache').upsert({
       ticker: symbol,
       data: result,

@@ -194,9 +194,14 @@ export default function GenericReview({ companyId, companyName, curFields, updat
   const ownershipTable = tryJSON(curFields?.sentiment_ownership_json?.text);
 
   const ticker = TICKER_MAP[companyId];
-  const baseTabs = [{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }];
-  if (ticker) baseTabs.push({ key: "financials", label: "Financials" });
-  baseTabs.push({ key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" });
+  const baseTabs = [
+    { key: "recent", label: "Research" },
+    { key: "overview", label: "Overview" },
+    { key: "financials", label: "Financials" },
+    { key: "orgchart", label: "Org Chart" },
+    { key: "contracts", label: "Supply Chain & Customers" },
+    { key: "sentiment", label: "Sentiment" },
+  ];
 
   return (
     <>
@@ -447,8 +452,9 @@ export default function GenericReview({ companyId, companyName, curFields, updat
       </>)}
 
       {/* ===== FINANCIALS TAB ===== */}
-      {tab === "financials" && ticker && (
-        <FinancialsTab ticker={ticker} />
+      {tab === "financials" && (
+        <FinancialsTab ticker={ticker} companyId={companyId} companyName={companyName}
+          curFields={curFields} updateField={updateField} />
       )}
     </>
   );

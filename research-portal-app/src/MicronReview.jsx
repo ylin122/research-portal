@@ -929,7 +929,8 @@ export default function MicronReview({ companyId, companyName, curFields, update
 
     {/* ===== FINANCIALS TAB ===== */}
     {muTab === "financials" && (
-      <FinancialsTab ticker="MU" />
+      <FinancialsTab ticker="MU" companyId={companyId} companyName={companyName}
+        curFields={curFields} updateField={updateField} />
     )}
 
 
