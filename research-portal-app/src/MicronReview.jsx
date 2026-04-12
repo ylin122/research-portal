@@ -1005,8 +1005,13 @@ export default function MicronReview({ companyId, companyName, curFields, update
                 <th style={{ ...hdrSt, textAlign: 'left', width: 140 }}>Metric</th>
                 {periods.map(p => (
                   <th key={p.period} style={{ ...hdrSt, ...(isEst(p) ? { color: '#60A5FA', fontStyle: 'italic' } : {}) }}>
-                    {p.period}
-                    {p.period === 'LTM' && p.quartersCovered && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>{p.quartersCovered.split(' to ').map(d => d.slice(5)).join('\u2013')}</div>}
+                    {(() => {
+                      const fd = p.fiscalDate;
+                      const fmtDate = (d) => { const [y,m,dd] = d.split('-'); return `${m}/${dd}/${y.slice(2)}`; };
+                      if (p.period === 'LTM') return <>LTM{fd && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>({fmtDate(fd)})</div>}</>;
+                      const shortPeriod = p.period.replace(/^FY20/, 'FY').replace(/^FY(\d{2})/, 'FY$1');
+                      return <>{shortPeriod}{fd && <div style={{ fontSize: 10, color: '#64748B', fontWeight: 400, marginTop: 2 }}>({fmtDate(fd)})</div>}</>;
+                    })()}
                   </th>
                 ))}
               </tr>
