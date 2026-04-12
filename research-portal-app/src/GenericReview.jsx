@@ -1,5 +1,13 @@
 import React, { useState } from "react";
 import { T_, FONT } from "./lib/theme";
+import FinancialsTab from "./FinancialsTab";
+
+// Map company IDs to tickers for public equity companies
+const TICKER_MAP = {
+  eq_micron: "MU", eq_orcl: "ORCL", eq_lumentum: "LITE", eq_coherent: "COHR",
+  eq_nvda: "NVDA", eq_amzn: "AMZN", eq_msft: "MSFT", eq_tsm: "TSM",
+  google_eq: "GOOGL", tesla_eq: "TSLA", eq_alibaba: "BABA", eq_tencent: "TCEHY",
+};
 
 const RESEARCH_FIELDS = [
   { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
@@ -185,10 +193,15 @@ export default function GenericReview({ companyId, companyName, curFields, updat
   const creditTable = tryJSON(curFields?.sentiment_credit_json?.text);
   const ownershipTable = tryJSON(curFields?.sentiment_ownership_json?.text);
 
+  const ticker = TICKER_MAP[companyId];
+  const baseTabs = [{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }];
+  if (ticker) baseTabs.push({ key: "financials", label: "Financials" });
+  baseTabs.push({ key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" });
+
   return (
     <>
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((t) => (
+        {baseTabs.map((t) => (
           <button key={t.key} onClick={() => setTab(t.key)} style={{
             padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
             background: "transparent", color: tab === t.key ? "#F8FAFC" : "#64748B",
@@ -432,6 +445,11 @@ export default function GenericReview({ companyId, companyName, curFields, updat
           </div>
         )}
       </>)}
+
+      {/* ===== FINANCIALS TAB ===== */}
+      {tab === "financials" && ticker && (
+        <FinancialsTab ticker={ticker} />
+      )}
     </>
   );
 }

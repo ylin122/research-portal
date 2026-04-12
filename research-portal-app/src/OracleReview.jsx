@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FinancialsTab from "./FinancialsTab";
 import { T_, FONT } from "./lib/theme";
 
 const FIELDS = [
@@ -31,7 +32,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
     <>
       {/* Oracle Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setOrclTab(tab.key)}
@@ -1098,6 +1099,11 @@ export default function OracleReview({ companyId, companyName, curFields, update
         <div style={{ fontSize: 11, color: "#64748B", fontStyle: "italic" }}>Sources: Oracle IR, SEC filings (10-K, 10-Q), analyst reports (Guggenheim, RBC, Oppenheimer, Goldman, JPM, Citi, BofA, Wells Fargo, Deutsche Bank, Evercore, Barclays, Morgan Stanley), S&P, Moody's, Fitch, CreditSights, Bloomberg, TipRanks, StockAnalysis, MarketBeat.</div>
       </div>
     </>)}
+
+    {/* ===== FINANCIALS TAB ===== */}
+    {orclTab === "financials" && (
+      <FinancialsTab ticker="ORCL" />
+    )}
 
     </>
   );
