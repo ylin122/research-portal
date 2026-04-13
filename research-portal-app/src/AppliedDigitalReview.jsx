@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { T_, FONT } from "./lib/theme";
-import FinancialsTab from "./FinancialsTab";
 const FIELDS = [
   { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
   { key: "products", label: "Key business / products", ph: "Start with how the company makes money. Core products, services, revenue streams, business model, pricing, value proposition..." },
@@ -29,7 +28,7 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
     <>
       {/* Applied Digital Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
+        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
           <button
             key={tab.key}
             onClick={() => setApldTab(tab.key)}
@@ -820,10 +819,6 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
       </div>
     </>)}
 
-    {apldTab === "financials" && (
-      <FinancialsTab ticker="APLD" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
 
     </>
   );
