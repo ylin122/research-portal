@@ -114,6 +114,7 @@ const CASES = [
   { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: "#F59E0B" },
   { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
   { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
+  { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
 ];
 
 function WindstreamCase() {
@@ -493,7 +494,15 @@ function EnvisionCase() {
       <DetailPanel title="KKR & The 2018 LBO" onClose={() => setDetail(null)}>
         <p>In Oct 2018, <strong>KKR's Americas Fund XII</strong> took Envision private for ~$9.9B, funding ~$7B with debt (~71% of deal value). Envision had formed in Dec 2016 from the merger of <strong>Envision Healthcare Holdings</strong> (parent of EmCare, physician staffing) and <strong>AmSurg Corp.</strong> (ambulatory surgery centers).</p>
         <p>Original debt: <strong>$5.3B 1st Lien Term Loan</strong> (due 2025) + unsecured notes + ABL facility. Admin agent: Credit Suisse (later Deutsche Bank). The thesis was that combining physician staffing with ASC ownership would create a healthcare platform with negotiating leverage against payors.</p>
-        <p style={{ color: T_.red }}>The thesis collapsed: the No Surprises Act (Jan 2022) gutted out-of-network billing, one major payor cut reimbursements ~60%, and post-COVID labor inflation added ~$330M/yr in costs. KKR ultimately lost its entire ~$3.5B equity investment.</p>
+        <p style={{ color: T_.red }}>The thesis collapsed: the No Surprises Act (Jan 2022) gutted out-of-network billing, one major payor cut reimbursements ~60%, and post-COVID labor inflation added ~$330M/yr in costs.</p>
+        <p><strong>KKR's full position at petition date (per Keglevic First Day Declaration):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>99.67% of Envision equity</strong> (remaining ~0.33% held by management)</li>
+          <li><strong>$253.3M of EVPS unsecured notes</strong> (27% of the unsecured notes class)</li>
+          <li><strong>$146M of EVPS second-out and third-out term loans</strong> (acquired via participation in the 2022 uptier)</li>
+        </ul>
+        <p style={{ color: T_.amber }}>KKR was not just a passive equity holder — it actively participated in the 2022 uptier as a lender, acquiring second-out/third-out exposure in the process of preserving optionality. As part of the global settlement with the UCC, <strong>KKR assigned its EVPS unsecured note recoveries to unaffiliated holders</strong>, waiving its own 27% class share to grease the settlement. KKR also waived recovery on any EVPS general unsecured claims it held.</p>
+        <p style={{ color: T_.red }}>Net outcome: KKR's ~$3.5B equity investment was cancelled for zero. The assigned note recoveries went to non-sponsor holders, lifting their recovery from effectively zero to ~5.8% at plan value. KKR lost control of both EVPS and AmSurg at emergence.</p>
       </DetailPanel>
     ),
     envisionParent: (
@@ -505,30 +514,31 @@ function EnvisionCase() {
     evps: (
       <DetailPanel title="EVPS Silo — Envision Physician Services" onClose={() => setDetail(null)}>
         <p>The physician staffing platform: 25,000+ clinicians across emergency departments, surgical suites, ICUs, birthing suites. One of the largest EM staffing operations in the US.</p>
-        <p><strong>EVPS funded debt at filing: ~$6.4B</strong></p>
+        <p><strong>EVPS funded debt at filing (per plan treatment tables):</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>ABL Facility: up to $550M borrowing capacity</li>
-          <li>First-out TL: $300M (new money, backstopped by ad hoc group)</li>
-          <li>Second-out TL: ~$2.2B (exchanged at 17% discount)</li>
-          <li>Third-out TL: ~$1.0B (exchanged at par)</li>
-          <li>Fourth-out TL: ~$153M (non-participating lenders — subordinated)</li>
-          <li>Senior Unsecured Notes: $938.9M (8.75%)</li>
+          <li>ABL Facility: <strong>$440M drawn</strong> (reduced to ~$370M pre-effective date by forecasted paydown)</li>
+          <li>First-out TL: <strong>$392M claim</strong> (includes $300M new money from 2022 uptier + pro rata backstop)</li>
+          <li>Second-out TL: <strong>$1.959B claim</strong> (exchanged at 17% discount in 2022 uptier)</li>
+          <li>Third-out TL: ~$1.0B (exchanged at par in 2022 uptier)</li>
+          <li>Fourth-out TL: <strong>~$153M</strong> (non-participating lenders — subordinated)</li>
+          <li>Senior Unsecured Notes: <strong>$938.9M principal / $986.8M allowed claim</strong> (8.75%) — KKR held $253.3M (27%)</li>
         </ul>
-        <p style={{ color: T_.red }}>96% of original TL holders participated in the uptier. The 4% who didn't were pushed to "fourth-out" — effectively subordinated without their consent. This is creditor-on-creditor violence.</p>
+        <p style={{ color: T_.amber }}>At confirmation, Class 7 was restructured: <strong>third-out and fourth-out term loan claims were combined into a single "EVPS unsecured term loan claims" class</strong> that received no recovery (except the separate fourth-out adversary settlement). Only second-out was treated as the fulcrum security.</p>
+        <p style={{ color: T_.red }}>96% of original TL holders participated in the 2022 uptier (91% among the non-ad-hoc group). The ~4% who didn't were pushed to "fourth-out" — effectively subordinated without their consent. This is creditor-on-creditor violence.</p>
       </DetailPanel>
     ),
     amsurg: (
       <DetailPanel title="AmSurg Silo — The Dropdown" onClose={() => setDetail(null)}>
-        <p>In April 2022, Envision designated <strong>AmSurg Holdco and subsidiaries as Unrestricted Subsidiaries</strong> under the Envision credit facilities. This was the foundational move — it removed ~$2.5B of AmSurg assets (250+ ambulatory surgery centers, ~83% of AmSurg EBITDA) from the existing lenders' collateral pool.</p>
-        <p><strong>AmSurg then raised its own debt:</strong></p>
+        <p>In April 2022, Envision designated <strong>AmSurg Holdco and subsidiaries as Unrestricted Subsidiaries</strong> under the Envision credit facilities. This was the foundational move — it removed <strong>83% of AmSurg's equity</strong> (250+ ambulatory surgery centers, representing ~83% of AmSurg EBITDA) from the existing lenders' collateral pool. Per Octus's retrospective analysis, this moved ~61% of Envision's total enterprise value out of the restricted group.</p>
+        <p><strong>AmSurg then raised its own debt (per plan claim amounts):</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>RCF: $301M (maturity Jul 2026)</li>
-          <li>1st Lien TL: $1,358M (maturity Apr 2027)</li>
-          <li>2nd Lien TL: $1,494M (maturity Apr 2028)</li>
+          <li>RCF: <strong>$300M</strong> (maturity Jul 2026)</li>
+          <li>1st Lien TL: <strong>$1.35B principal + $233.9M prepayment premium = $1.584B allowed claim</strong> (maturity Apr 2027)</li>
+          <li>2nd Lien TL: <strong>$1.494B</strong> (maturity Apr 2028)</li>
         </ul>
-        <p>AmSurg distributed ~$1.1B to Envision (upstream cash). Then raised ~$1.3B more in 2L debt, loaning proceeds to Envision for debt buybacks. Envision repurchased ~$1.9B of existing TL at a discount, generating ~$582M in discount gains.</p>
-        <p style={{ color: T_.amber }}>New lenders <strong>Angelo Gordon and Centerbridge</strong> (joined by PIMCO, HPS, Sculptor, King Street) provided the AmSurg financing — they got security over the most profitable assets that original Envision lenders had just lost. Davis Polk advised the administrative/collateral agent on the $600M new credit facilities.</p>
-        <p>Intercompany loans from AmSurg to Envision: ~$1.8B (including accrued interest). These were cancelled for zero recovery in Ch.11.</p>
+        <p>AmSurg raised <strong>$1.1B of new-money 1L term loans</strong> — funded by Centerbridge and Angelo Gordon as new lenders, with PIMCO, HPS, Sculptor and King Street participating as existing Envision term lenders. AmSurg distributed proceeds upstream to Envision Remainco, which used them for discounted debt repurchases generating ~$582M in discount gains. AmSurg also raised ~$1.35B in second lien debt via an exchange that let participating Envision TL lenders (and Partners Group as new money) trade into a new 2L secured tranche.</p>
+        <p style={{ color: T_.amber }}>New lenders <strong>Centerbridge and Angelo Gordon</strong>, joined by PIMCO, HPS, Sculptor and King Street (existing Envision TL holders), provided the AmSurg financing — they got security over the most profitable assets that original Envision lenders had just lost.</p>
+        <p style={{ color: T_.red }}>Intercompany loans from AmSurg to Envision: <strong>$1.833B</strong> (per plan). These were cancelled for zero recovery in Ch.11 as part of the EVPS/AmSurg separation under the plan. The intercompany loans had been the mechanism by which value was moved back from the dropdown to EVPS; collapsing them at Ch.11 isolated the two silos from each other.</p>
       </DetailPanel>
     ),
     uptier: (
@@ -541,40 +551,105 @@ function EnvisionCase() {
           <li>Convert remainder at <strong>par</strong> → "Third-out" tranche</li>
           <li>All maturities extended through March 2027</li>
         </ul>
-        <p><strong>~96% participated.</strong> The ~4% who didn't were left holding "Fourth-out" (~$153M) — same original loan, now structurally and contractually junior to $3.5B+ of participating debt.</p>
-        <p style={{ color: T_.red }}>This is the "creditor-on-creditor violence" — majority lenders voted to subordinate the minority. The non-participating lenders (including <strong>Vibrant Capital, Saratoga Investment, Crescent Capital</strong>) sued, alleging breach of "Sacred Rights" (Section 13.1) requiring unanimous consent for principal reduction, maturity extension, or collateral release. Case was voluntarily dismissed post-emergence.</p>
-        <p>KKR itself held term loans in the newly created uptier tranches.</p>
+        <p><strong>~96% participated overall</strong> (91% among the non-ad-hoc group). The ~4% who didn't were left holding "Fourth-out" (~$153M) — same original loan, now structurally and contractually junior to $3.5B+ of participating debt.</p>
+        <p style={{ color: T_.red }}>This is the "creditor-on-creditor violence" — majority lenders voted to subordinate the minority. A $47.8M subset of the fourth-out lenders filed an adversary proceeding challenging the "improper and unlawful" amendment to the original credit agreement and the Class 6 classification scheme. The claim was ultimately settled as part of the plan — fourth-out lenders received a pro rata share of <strong>0.25% of reorganized equity + six-year warrants convertible into up to 5% of reorganized equity</strong> at a strike price set at the second-out full-recovery value.</p>
+        <p>KKR itself participated in the uptier as a lender, acquiring $146M of second-out and third-out term loans.</p>
+      </DetailPanel>
+    ),
+    adhocGroup: (
+      <DetailPanel title="The 21-Member Ad Hoc Lender Group" onClose={() => setDetail(null)}>
+        <p>Per the Amended Rule 2019 Statement filed by Gibson Dunn & Munsch (co-counsel) on August 2, 2023, the Envision ad hoc group comprised <strong>21 institutional lenders holding $2.627 billion of debt across the capital structure</strong> as of July 28, 2023.</p>
+        <p><strong>Top 10 by total holdings:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>King Street Capital Management — $548.2M</strong> (largest)</li>
+          <li>Strategic Value Partners — $313.8M</li>
+          <li>Brigade Capital Management — $288.2M</li>
+          <li>Corre Partners Management — $221.5M</li>
+          <li>Eaton Vance Management — $158.7M</li>
+          <li>Blackstone Alternative Credit Advisors — $152.0M</li>
+          <li>CastleKnight Management — $129.7M</li>
+          <li>Columbus Hill Capital — $128.0M (new member)</li>
+          <li>Black Diamond Capital Management — $91.5M</li>
+          <li>Neuberger Berman — $88.7M</li>
+        </ul>
+        <p>Other members: Bank of America, Redding Ridge, Sculptor Capital, Voya, Carlyle CLO, Barings, BlackRock, Sound Point, MJX, CIFC, and Sixth Street Partners (new member). Polen Capital left the group prior to the amended statement.</p>
+        <p><strong>Group holdings as a percentage of each EVPS class:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>First-out TL: <strong>89.9%</strong> of class</li>
+          <li>Second-out TL: <strong>81.2%</strong> of class</li>
+          <li>Third-out TL: 24.4% of combined unsecured debt</li>
+          <li>EVPS Unsecured Notes: 24.4%</li>
+        </ul>
+        <p>The group collectively held <strong>51.1% of total EVPS debt</strong> (excluding intercompany loans) and <strong>10.3% of AmSurg debt</strong>. King Street was also the most active in AmSurg, holding $39M RCF, $175.5M 1L TL and $91.7M 2L TL alongside its EVPS positions.</p>
+        <p style={{ color: T_.amber }}>This distribution — dominant control of the secured tranches, minority in unsecured — is why the ad hoc group was able to drive both the 2022 LMEs and the 2023 Ch.11 plan. The UCC's fight over unsecured recoveries was the mirror image: the ad hoc group's 24% stake in unsecured couldn't block the UCC's leverage to extract value for the rest of that class.</p>
+        <p style={{ color: T_.red }}>Note: despite being named in some retrospective coverage as a major participant, <strong>Blackstone Alternative Credit Advisors held only $152M</strong> — about 5.8% of the group, mid-pack by size. The narrative of "Blackstone-led" Envision restructuring is incorrect. King Street was the dominant holder throughout.</p>
       </DetailPanel>
     ),
     evpsPlan: (
       <DetailPanel title="EVPS Plan Treatment (Ch.11)" onClose={() => setDetail(null)}>
-        <p><strong>ABL Claims:</strong> Paid in full (cash or amended revolving commitments).</p>
-        <p><strong>First-out TL ($300M):</strong> Pro rata share of First-Out Cash Payment + exit term loans. Near-par recovery.</p>
-        <p><strong>Second-out TL (~$2.2B):</strong> Received <strong>100% reorganized equity</strong> in Reorganized Envision Parent. These holders became the new owners of the EVPS business. Fulcrum security.</p>
-        <p><strong>Third-out TL (~$1.0B):</strong> Impaired. Received residual value below second-out.</p>
-        <p><strong>Fourth-out TL (~$153M):</strong> Effectively wiped out — the non-participants from the uptier.</p>
-        <p><strong>Unsecured Notes ($938.9M):</strong> Originally offered 3-year warrants if class voted to accept. UCC negotiated final settlement: <strong>$35M cash + 1.5% reorganized equity</strong> for noteholders, additional $5M for general unsecured.</p>
-        <p><strong>General Unsecured:</strong> Pro rata share of $1M cash pool (if accepted). Eventually $5M via UCC settlement.</p>
-        <p><strong>KKR Equity:</strong> Cancelled — $0. KKR lost its entire ~$3.5B investment.</p>
+        <p><strong>Plan enterprise valuation (PJT):</strong> $750M–$850M (midpoint $800M). <strong>Equity value:</strong> $500M–$600M (midpoint $550M). These numbers are critical for understanding the recoveries below — the second-out class got all the equity, but the equity was worth far less than the claim amount.</p>
+        <p><strong>ABL Claims ($440M drawn at petition, reduced to ~$370M pre-effective):</strong> Paid in full in cash. <span style={{ color: T_.green }}>Recovery: 100%</span></p>
+        <p><strong>First-out TL ($392M claim):</strong> Pro rata share of $392M First-Out Cash Payment. <span style={{ color: T_.green }}>Recovery: 100%</span></p>
+        <p><strong>Second-out TL ($1.959B claim):</strong> <span style={{ color: T_.amber }}>Received 98.25% of reorganized EVPS equity</span>, subject to dilution by MIP and new six-year warrants. At midpoint plan equity value of $550M, this implies <strong>~29% recovery</strong> on the $1.959B claim — <em>not</em> a full-par recovery despite being described as "100% equity." The fulcrum security.</p>
+        <p><strong>Third-out TL + Fourth-out TL (Class 7):</strong> Originally treated separately, but the plan ultimately <strong>combined both tranches into a single "EVPS unsecured term loan claims" class that received no recovery</strong> (cancelled without distribution). <span style={{ color: T_.red }}>Recovery: 0%</span> — though fourth-out lenders negotiated a separate settlement (see uptier panel) worth 0.25% equity + 5% warrants.</p>
+        <p><strong>Unsecured Notes ($938.9M principal / $986.8M allowed claim):</strong> <strong>$35M cash + 1.5% reorganized EVPS equity</strong>, plus six-year warrants. <span style={{ color: T_.amber }}>Recovery: ~5.8% at plan value including KKR assignment (6.2% on non-sponsor portion)</span>. The recovery was materially boosted by KKR's decision to assign its $253M (27%) stake in the class to unaffiliated holders.</p>
+        <p><strong>General Unsecured Claims ($141.3M):</strong> Pro rata share of a $6M–$7.5M cash pool (scaling with total claims). <span style={{ color: T_.amber }}>Recovery: ~3.8%–4.2%</span>. Critically, this was up from the <strong>$110,000 total pool</strong> originally offered under the pre-settlement plan — a 55-68x increase won through UCC litigation pressure.</p>
+        <p><strong>Intercompany Loan Claims ($1.833B, AmSurg → Envision):</strong> Cancelled on effective date. <span style={{ color: T_.red }}>Recovery: 0%</span></p>
+        <p><strong>Equity (KKR / management):</strong> Cancelled. <span style={{ color: T_.red }}>Recovery: 0%</span> (though KKR had also converted some equity into debt positions prior — see KKR panel)</p>
       </DetailPanel>
     ),
     amsurgPlan: (
       <DetailPanel title="AmSurg Plan Treatment (Ch.11)" onClose={() => setDetail(null)}>
-        <p><strong>RCF ($301M):</strong> Paid in full, cash.</p>
-        <p><strong>1st Lien TL ($1,358M):</strong> Paid in full, cash (from ~$1.6B exit term loan proceeds + $300M exit RCF).</p>
-        <p><strong>2nd Lien TL ($1,494M):</strong> Received <strong>100% reorganized equity</strong> in Reorganized AmSurg Parent + subscription rights via backstop commitment + equity rights offering. Fulcrum security for this silo.</p>
-        <p><strong>Intercompany Claims (~$1.8B owed by Envision to AmSurg):</strong> Cancelled and extinguished — $0 distribution. This is key: the loans AmSurg made to Envision (funded from the dropdown proceeds) were worthless.</p>
-        <p><strong>General Unsecured:</strong> Pro rata share of $1.5M cash.</p>
-        <p><strong>AmSurg purchased</strong> certain ASC assets from the Envision estate for $300M + waiver of intercompany loans.</p>
+        <p><strong>Plan enterprise valuation (PJT):</strong> $3.45B–$3.65B (midpoint $3.55B). <strong>Equity value:</strong> $1.575B–$1.775B (midpoint $1.675B). AmSurg was worth ~4x EVPS at plan — reflecting the profitable surgery-center business the dropdown had extracted from EVPS.</p>
+        <p><strong>RCF ($300M):</strong> Paid in full from AmSurg first-out exit term loan proceeds. <span style={{ color: T_.green }}>Recovery: 100%</span></p>
+        <p><strong>1st Lien TL ($1.584B allowed claim = $1.35B principal + $233.9M prepayment premium + accrued):</strong> Paid in full in cash from $1.633B "last-out" AmSurg exit term loan proceeds. <span style={{ color: T_.green }}>Recovery: 100%</span></p>
+        <p><strong>2nd Lien TL ($1.494B claim):</strong> <span style={{ color: T_.amber }}>Received 100% of reorganized AmSurg equity</span> (subject to dilution by the rights offering, backstop premium equity, and MIP), plus the AmSurg subscription rights. At midpoint equity value of $1.675B, this implies <strong>~73% recovery</strong> on the $1.494B claim — the fulcrum security for this silo but at a meaningfully better recovery than EVPS second-out.</p>
+        <p><strong>Intercompany Claims ($1.833B owed by Envision to AmSurg):</strong> Cancelled and extinguished. <span style={{ color: T_.red }}>Recovery: 0%</span>. This is key: the loans AmSurg made to Envision (funded from the dropdown proceeds) were worthless on effective date — isolating the AmSurg silo from EVPS.</p>
+        <p><strong>General Unsecured:</strong> Pro rata share of $1.5M cash pool. Trade claims largely paid during the case.</p>
+        <p><strong>Exit Financing at AmSurg:</strong> $1.933B AmSurg exit TL (split: $300M first-out refinancing the RCF + $1.633B last-out refinancing the 1L) plus a fully backstopped <strong>$300M new money equity rights offering</strong> that funded the intercompany share purchase from EVPS.</p>
+        <p><strong>Under the plan, AmSurg purchased the remaining 17% of the ASC business</strong> that had stayed at EVPS after the 2022 dropdown, completing the full separation of the two silos. AmSurg emerged as an independent company.</p>
       </DetailPanel>
     ),
     litigation: (
       <DetailPanel title="Key Litigation & Disputes" onClose={() => setDetail(null)}>
-        <p><strong>UCC vs. LME Transactions:</strong> The Official Committee of Unsecured Creditors sought standing to void the 2022 dropdown + uptier as fraudulent transfers (Section 548). Challenged lien validity and secured party releases. Resolved through plan negotiations — UCC secured $35M + 1.5% equity for noteholders.</p>
-        <p><strong>Non-Participating Lender Suit:</strong> Vibrant Capital, Saratoga, Crescent Capital filed adversary proceeding alleging breach of "Sacred Rights" (unanimous consent required for principal reduction/maturity extension/collateral release). Voluntarily dismissed with prejudice post-emergence.</p>
-        <p><strong>Independent Director Review:</strong> Gary Begeman (counsel: Haynes and Boone) concluded the LME transactions generated ~$1.7B in quantified benefits and the board acted within fiduciary duties. No actual fraud.</p>
-        <p><strong>Securities Settlement:</strong> Pre-existing class action re: billing practices settled for $177.5M (fully insurance-funded), approved Mar 2024.</p>
+        <p><strong>Case caption:</strong> <em>In re Envision Healthcare Corp., et al.</em>, Case No. 23-90342, U.S. Bankruptcy Court, S.D. Texas, Houston Division, before <strong>Judge Christopher Lopez</strong>. 216 affiliated debtors across the EVPS and AmSurg silos. Debtor counsel: <strong>Kirkland & Ellis</strong> (Jack Luze argued at confirmation). UCC counsel: <strong>White & Case</strong> (Chris Shore). UCC financial advisor: <strong>Piper Sandler</strong>. Ad hoc group co-counsel: <strong>Gibson Dunn &amp; Munsch</strong>.</p>
+        <p><strong>UCC vs. LME Transactions — the core litigation:</strong></p>
+        <p>The Official Committee of Unsecured Creditors filed <strong>two separate derivative standing motions</strong> to challenge the 2022 LMEs:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Aug 12, 2023 — Lien Challenge Motion:</strong> Targeted "unperfected" prepetition liens on "unencumbered assets" and the debtors' going-concern value. UCC argued secured lenders' claims were overstated by "millions, if not billions" of dollars.</li>
+          <li><strong>Aug 17, 2023 — Fraudulent Transfer Motion:</strong> Sought standing to prosecute claims to avoid the 2022 drop-down and follow-on LMEs under Section 548 and NY state law. UCC characterized the LMEs as "the most coercive ever" and accused the company of <strong>"buying votes for a future chapter 11 plan"</strong> rather than "buying runway." Proposed cost: $9–16.25M to prosecute, potentially delivering "hundreds of millions" to the estates.</li>
+        </ul>
+        <p style={{ color: T_.green }}><strong>UCC result:</strong> Through the Sept 2023 global settlement, the UCC secured dramatic recovery improvements for unsecured creditors — <strong>EVPS general unsecured claims went from a $110,000 total pool under the pre-settlement plan to $6M–$7.5M (a 55–68x increase)</strong>, plus $35M cash + 1.5% reorganized equity for EVPS unsecured notes, plus KKR's assignment of its $253M note recoveries to unaffiliated holders. A hard-fought lower-case-letter victory that tracks what modern UCC activism can produce when a creditor committee has concrete litigation threats.</p>
+        <p><strong>Fourth-Out Lender Adversary:</strong> On Aug 1, 2023, holders of <strong>$47.8M of the $153M fourth-out tranche</strong> filed an adversary proceeding alleging the 2022 amendment to the original credit agreement was "improper and unlawful" and challenging the Class 6 classification scheme. The proceeding was <strong>settled separately</strong> as part of the plan — not voluntarily dismissed. Consenting fourth-out holders in the ad hoc group received <strong>0.25% of reorganized EVPS equity + six-year warrants convertible into up to 5% of reorganized equity</strong> at a strike price equal to second-out full recovery.</p>
+        <p><strong>Independent Director Review:</strong> Gary Begeman (counsel: Haynes and Boone) concluded the LME transactions generated ~$1.7B in quantified benefits and the board acted within fiduciary duties. The UCC heavily criticized this review as rushed — conducted over "less than eighteen days of an incomplete analysis."</p>
+        <p><strong>Securities Class Action:</strong> Pre-existing class action re: billing practices settled for $177.5M (fully insurance-funded), approved Mar 2024.</p>
         <p style={{ color: T_.amber }}>Post-Envision, the market coined <strong>"Envision blockers"</strong> — new covenant provisions in credit agreements that restrict a borrower's ability to transfer assets to unrestricted subsidiaries. This case literally changed how loan documents are written.</p>
+      </DetailPanel>
+    ),
+    postEmergence: (
+      <DetailPanel title="Post-Emergence — AmSurg to Ascension, Envision to $288M Debt" onClose={() => setDetail(null)}>
+        <p>The post-emergence story is almost as remarkable as the bankruptcy itself.</p>
+        <p><strong>AmSurg Acquired by Ascension — June 2025 for ~$3.9B:</strong></p>
+        <p>On June 17, 2025, Ascension Health announced an agreement to acquire AmSurg — 19 months after it emerged from Ch.11 as an independent company. Per Bloomberg, the deal valued AmSurg at <strong>approximately $3.9 billion</strong>, ~10% above the $3.55B midpoint plan valuation at emergence. The former AmSurg 2L holders (who had equitized into 100% of AmSurg equity at ~73% recovery) thus realized modest appreciation on top of their Ch.11 recovery.</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Ascension's advisors:</strong> Jefferies LLC (financial); Sheppard Mullin + Hall Render (legal)</li>
+          <li><strong>AmSurg's advisors:</strong> Goldman Sachs + Ducera Partners (financial); Bass Berry & Sims + Milbank (legal)</li>
+          <li>Ascension committed to continuing AmSurg's physician-led joint venture governance model</li>
+        </ul>
+        <p><strong>Envision Refinancing — June 2025:</strong></p>
+        <p>Same month as the AmSurg sale, Envision refinanced its post-emergence term loan, <strong>extending maturity to 2030</strong>, and entered into a new ABL revolving credit facility. Goldman Sachs Bank USA and Wells Fargo served as joint lead arrangers and bookrunners. Sidley Austin represented Envision; Latham & Watkins represented Goldman. Financial details were not disclosed.</p>
+        <p><strong>Envision Repricing — February 2026:</strong></p>
+        <p>In Feb 2026, Envision repriced its first lien term loan, paying down principal from $275M to $200M and reducing total debt from $363M to <strong>$288M</strong>. From the $7.4B of funded debt at petition date to $288M in roughly 2.5 years — a <strong>~96% debt reduction</strong>. The company is now a meaningfully smaller, de-leveraged physician services business.</p>
+        <p><strong>New Management Team (2024–2025):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Full board appointed January 2024</li>
+          <li><strong>Jason Owen</strong> named President &amp; CEO — April 15, 2024</li>
+          <li><strong>J. Michael Bruff</strong> named CFO — October 28, 2024</li>
+          <li><strong>Fredrik Eliasson</strong> appointed Board Chair — March 5, 2025</li>
+        </ul>
+        <p><strong>Regulatory &amp; Political Overhang:</strong></p>
+        <p>In April 2024, the Senate Homeland Security &amp; Governmental Affairs Committee (chaired by Sen. Gary Peters) launched an investigation into the role of private equity in hospital emergency departments, naming Envision, TeamHealth, Lifepoint Health, and US Acute Care Solutions alongside their sponsors KKR, Blackstone, and Apollo. Staff interviewed 40+ ER physicians citing concerns about patient safety, restrictive contracting, and billing practices. Separately, Fifth Circuit litigation over the No Surprises Act IDR methodology remains active through 2026 (en banc review heard September 2025) — the regulatory environment that drove Envision into Ch.11 is still being litigated.</p>
+        <p style={{ color: T_.green }}><strong>Net retrospective:</strong> The fulcrum creditors (the ad hoc group led by King Street) walked away with the physician services business. The AmSurg 2L holders took the surgery-center business and sold it at a modest premium to the plan valuation. KKR's equity was wiped. The minority holders and the UCC extracted meaningfully more than they would have without litigation pressure but still recovered pennies on the dollar. And the post-Envision doc market is now full of "Envision blockers."</p>
       </DetailPanel>
     ),
   };
@@ -584,16 +659,16 @@ function EnvisionCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          KKR took Envision private for $9.9B in 2018, combining EmCare (physician staffing) with AmSurg (surgery centers). The company was crushed by the <span style={{ color: T_.red }}>No Surprises Act</span>, <span style={{ color: T_.red }}>payor reimbursement cuts (~60%)</span>, and <span style={{ color: T_.red }}>post-COVID labor inflation (+$330M/yr)</span>. Before filing, KKR executed a <span style={{ color: T_.amber }}>dropdown + uptier</span> — moving the profitable AmSurg business to an unrestricted subsidiary and repricing the debt stack, creating winners and losers among creditors.
+          KKR took Envision private for $9.9B in 2018, combining EmCare (physician staffing) with AmSurg (surgery centers). The company was crushed by the <span style={{ color: T_.red }}>No Surprises Act</span>, <span style={{ color: T_.red }}>payor reimbursement cuts (~60%)</span>, and <span style={{ color: T_.red }}>post-COVID labor inflation (+$330M/yr)</span>. Before filing, KKR executed a <span style={{ color: T_.amber }}>dropdown + uptier</span> — moving 83% of AmSurg to an unrestricted subsidiary and repricing the debt stack. A <span style={{ color: T_.accent }}>21-member ad hoc lender group led by King Street ($548M)</span> with Strategic Value Partners, Brigade, Corre and Eaton Vance collectively held $2.63B (51% of EVPS debt) and drove the restructuring. <span style={{ color: T_.green }}>$7.4B of funded debt was restructured</span> — $3B equitized, EVPS silo debt reduced by more than 70%. The post-emergence story is equally remarkable: <span style={{ color: T_.green }}>AmSurg was sold to Ascension in June 2025 for ~$3.9B</span>, and Envision's total debt stood at just <span style={{ color: T_.green }}>$288M as of Feb 2026</span> — a ~96% reduction from filing.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
-            { l: "Total Debt", v: "~$8B+", c: T_.red },
+            { l: "Funded Debt", v: "$7.4B", c: T_.red },
             { l: "Filed", v: "May 15, 2023", c: T_.red },
             { l: "Emerged", v: "Nov 3, 2023", c: T_.green },
-            { l: "Debt Eliminated", v: "~$7B", c: T_.green },
+            { l: "Debt Equitized", v: "~$3B", c: T_.green },
             { l: "Time in Ch.11", v: "~6 months", c: T_.textMid },
-            { l: "Fulcrum", v: "2nd-out TL", c: T_.blue },
+            { l: "Fulcrum (EVPS)", v: "2nd-out TL", c: T_.blue },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -666,12 +741,12 @@ function EnvisionCase() {
                 badges={[
                   { text: "PHYSICIAN STAFFING", color: T_.blue },
                   { text: "RESTRICTED SUBS", color: T_.green },
-                  { text: "~$6.4B DEBT", color: T_.red },
+                  { text: "~$4.7B DEBT", color: T_.red },
                 ]}
                 debt={[
-                  { name: "ABL Facility", amount: "≤$550M", color: T_.green },
-                  { name: "1st-out TL (new money)", amount: "$300M", color: T_.green },
-                  { name: "2nd-out TL (17% discount)", amount: "~$2.2B", color: T_.blue },
+                  { name: "ABL Facility (drawn)", amount: "$440M", color: T_.green },
+                  { name: "1st-out TL", amount: "$392M", color: T_.green },
+                  { name: "2nd-out TL (17% discount)", amount: "$1.959B", color: T_.blue },
                   { name: "3rd-out TL (at par)", amount: "~$1.0B", color: T_.amber },
                   { name: "4th-out TL (non-participants)", amount: "~$153M", color: T_.red },
                   { name: "Sr Unsecured Notes (8.75%)", amount: "$938.9M", color: T_.red },
@@ -701,8 +776,8 @@ function EnvisionCase() {
                   { text: "~$3.2B DEBT", color: T_.red },
                 ]}
                 debt={[
-                  { name: "RCF", amount: "$301M", color: T_.green },
-                  { name: "1st Lien TL", amount: "$1,358M", color: T_.green },
+                  { name: "RCF", amount: "$300M", color: T_.green },
+                  { name: "1st Lien TL (allowed)", amount: "$1,584M", color: T_.green },
                   { name: "2nd Lien TL", amount: "$1,494M", color: T_.amber },
                 ]}
                 onClick={() => toggle("amsurg")} selected={detail === "amsurg"}
@@ -718,7 +793,7 @@ function EnvisionCase() {
         {/* Intercompany arrow */}
         <div style={{ display: "flex", justifyContent: "center", padding: "10px 0 4px" }}>
           <div style={{ fontSize: 10, color: T_.red, background: `${T_.red}10`, padding: "4px 14px", borderRadius: 6, border: `1px dashed ${T_.red}30` }}>
-            ↔ Intercompany loans: AmSurg → Envision ~$1.8B (cancelled for $0 in Ch.11)
+            ↔ Intercompany loans: AmSurg → Envision $1.833B (cancelled for $0 in Ch.11)
           </div>
         </div>
       </div>
@@ -731,7 +806,7 @@ function EnvisionCase() {
           border: `1px solid ${detail === "evpsPlan" ? T_.blue : T_.border}`, transition: "all .15s",
         }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>EVPS Plan Treatment</div>
-          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>2nd-out → 100% equity · Unsecured → $35M + 1.5% · KKR → $0</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>2nd-out → ~29% recovery · Unsecured → ~5.8% · 3rd/4th → 0% · KKR → $0</div>
         </div>
         <div onClick={() => toggle("amsurgPlan")} style={{
           padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
@@ -739,7 +814,7 @@ function EnvisionCase() {
           border: `1px solid ${detail === "amsurgPlan" ? T_.amber : T_.border}`, transition: "all .15s",
         }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>AmSurg Plan Treatment</div>
-          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>1L → paid in full · 2L → 100% equity · Intercompany → $0</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>1L → 100% paid · 2L → ~73% recovery (all equity) · Intercompany → $0</div>
         </div>
       </div>
 
@@ -759,7 +834,27 @@ function EnvisionCase() {
           border: `1px solid ${detail === "litigation" ? T_.accent : T_.border}`, transition: "all .15s",
         }}>
           <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Litigation & "Envision Blockers"</div>
-          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>UCC fraudulent transfer claims · Sacred Rights suit · market impact</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>UCC LME challenges · Fourth-out adversary · $110K→$7.5M UCC win</div>
+        </div>
+      </div>
+
+      {/* Additional detail buttons — row 3 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 4 }}>
+        <div onClick={() => toggle("adhocGroup")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "adhocGroup" ? `${T_.accent}12` : T_.bgInput,
+          border: `1px solid ${detail === "adhocGroup" ? T_.accent : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>The 21-Member Ad Hoc Group</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>King Street $548M largest · $2.63B total · 51% of EVPS debt</div>
+        </div>
+        <div onClick={() => toggle("postEmergence")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "postEmergence" ? `${T_.green}12` : T_.bgInput,
+          border: `1px solid ${detail === "postEmergence" ? T_.green : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.green }}>Post-Emergence — Where They Are Now</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>AmSurg→Ascension $3.9B · Envision debt now $288M · 96% reduction</div>
         </div>
       </div>
 
@@ -777,7 +872,7 @@ function EnvisionCase() {
           { label: "Uptier / Priming Transaction", color: T_.red, summary: "Majority lenders exchanged into super-priority tranches, subordinating the minority.", detail: "After the dropdown generated cash, Envision offered all 1L TL holders a refinancing: contribute new money → First-out, exchange at discount → Second-out, exchange at par → Third-out. 96% participated. Non-participants were left in Fourth-out — same loan, but now junior to $3.5B+ of new/exchanged debt. The majority lenders effectively voted to prime the minority. This was legal because the credit agreement's 'open market purchase' and amendment provisions didn't require unanimous consent for these changes." },
           { label: "Creditor-on-Creditor Violence", color: T_.purple, summary: "Lenders in the same tranche fighting each other — the defining distressed theme of 2020s.", detail: "Unlike Windstream (creditors vs company), Envision's battle was creditors vs creditors. The ad hoc group of larger holders (who could backstop new money) got priority treatment. Smaller holders who couldn't participate were subordinated. The company and sponsor facilitated this split. This dynamic — majority lenders using document flexibility to extract value at minority expense — is now the dominant pattern in distressed credit. Post-Envision, 'Envision blockers' are standard in new credit agreements." },
           { label: "Dual-Silo Structure", color: T_.blue, summary: "Two separately capitalized businesses with separate creditor groups, plans, and outcomes.", detail: "After the dropdown, Envision effectively had two mini-capital structures: the EVPS silo (~$6.4B debt) and the AmSurg silo (~$3.2B debt). Each had its own RSA (Restructuring Support Agreement), creditor constituencies, and Ch.11 plan. AmSurg 1L was paid in full while EVPS 2nd-out became equity. The intercompany loans connecting them ($1.8B) were cancelled for nothing. Two silos = two separate recovery stories within one bankruptcy." },
-          { label: "Sacred Rights & Unanimous Consent", color: T_.accent, summary: "Certain changes require 100% lender consent — but the boundaries are litigated.", detail: "Most credit agreements have 'sacred rights' that can't be amended without unanimous consent: principal reduction, maturity extension, lien release, payment waterfall changes. Non-participating Envision lenders (Vibrant, Saratoga, Crescent) argued the uptier violated these rights. The company argued the transaction was structured to avoid triggering sacred rights (open market purchases, not amendments). This gray zone is where modern LME battles are fought." },
+          { label: "Sacred Rights & Unanimous Consent", color: T_.accent, summary: "Certain changes require 100% lender consent — but the boundaries are litigated.", detail: "Most credit agreements have 'sacred rights' that can't be amended without unanimous consent: principal reduction, maturity extension, lien release, payment waterfall changes. The non-participating fourth-out lenders argued the uptier violated these rights and filed an adversary proceeding challenging the 2022 amendment as 'improper and unlawful.' The company argued the transaction was structured to avoid triggering sacred rights (open market purchases, not amendments). The fourth-out adversary was ultimately settled as part of the plan — holders received 0.25% of reorganized equity + six-year warrants convertible into up to 5% of reorganized equity. This gray zone between indenture text and substantive fairness is where modern LME battles are fought." },
           { label: "Liability Management Exercise (LME)", color: T_.emerald, summary: "Pre-bankruptcy transactions that restructure the debt stack outside of court.", detail: "LMEs encompass dropdowns, uptiers, distressed exchanges, and other out-of-court maneuvers. Envision executed two major LMEs in ~100 days (Apr–Aug 2022): (1) the AmSurg dropdown + new credit facilities, (2) the uptier exchange creating first/second/third/fourth-out tranches. These transactions reduced debt by ~$450M, extended maturities, and reshuffled priority — all without a bankruptcy filing. S&P upgraded Envision from SD to CCC after the LMEs. But the underlying business continued deteriorating, leading to Ch.11 nine months later." },
           { label: "PE Sponsor Dynamics in Distress", color: T_.purple, summary: "KKR participated in the uptier and held loans — but lost its equity.", detail: "Unlike a passive equity holder, KKR actively participated in the 2022 LME. KKR held term loans in the newly created uptier tranches (switching from pure equity to a lender position). This is common in PE distress — sponsors try to preserve optionality by becoming creditors. Despite this, KKR's equity was cancelled in Ch.11 and it lost ownership of both EVPS and AmSurg. The ad hoc lender group (not KKR) controlled both RSAs and the reorganization." },
         ]} />
@@ -799,7 +894,15 @@ function EnvisionCase() {
           { date: "May 15, 2023", event: "Envision + 216 affiliates file Chapter 11 (S.D. Tex., Case 23-90342, Judge Lopez). Dual RSAs filed. No DIP — cash collateral only.", color: T_.red },
           { date: "Aug 2023", event: "Disclosure statements approved. Bar date Aug 7.", color: T_.textMid },
           { date: "Oct 11, 2023", event: "Both plans confirmed (EVPS + AmSurg). UCC settles: $35M + 1.5% equity for noteholders.", color: T_.amber },
-          { date: "Nov 3, 2023", event: "Emergence. Two separate companies: Reorganized Envision (EVPS) + Reorganized AmSurg. ~$7B debt eliminated. KKR out.", color: T_.green },
+          { date: "Nov 3, 2023", event: "Emergence. Two separate companies: Reorganized Envision (EVPS) + Reorganized AmSurg. $7.4B funded debt restructured, ~$3B equitized, >70% EVPS debt reduction. KKR out. Henry Howe interim CEO; Steve Nelson Board Chair.", color: T_.green },
+          { date: "Jan 2024", event: "Full board appointed post-emergence.", color: T_.textMid },
+          { date: "Apr 2, 2024", event: "Senate Homeland Security & Governmental Affairs Committee launches PE-in-emergency-departments investigation naming Envision, TeamHealth, Lifepoint, US Acute Care + sponsors KKR, Blackstone, Apollo.", color: T_.amber },
+          { date: "Apr 15, 2024", event: "Jason Owen named President & CEO, replacing Henry Howe.", color: T_.textMid },
+          { date: "Oct 28, 2024", event: "J. Michael Bruff named CFO.", color: T_.textMid },
+          { date: "Mar 5, 2025", event: "Fredrik Eliasson appointed Board Chair.", color: T_.textMid },
+          { date: "Jun 17, 2025", event: "AmSurg acquired by Ascension for ~$3.9B (Bloomberg). ~10% above plan-valuation midpoint of $3.55B. AmSurg 2L holders who equitized realize modest premium on top of Ch.11 recovery.", color: T_.green },
+          { date: "Jun 25, 2025", event: "Envision refinances post-emergence term loan, extending maturity to 2030. New ABL facility with Goldman Sachs + Wells Fargo as joint lead arrangers. Sidley Austin / Latham & Watkins as counsel.", color: T_.green },
+          { date: "Feb 17, 2026", event: "Envision reprices first lien term loan, pays down principal from $275M to $200M. Total debt reduced from $363M to $288M — a ~96% reduction from petition-date $7.4B.", color: T_.green },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -2572,6 +2675,470 @@ function PetSmartCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   WESCO / INCORA CASE
+   ═══════════════════════════════════════════════════════ */
+
+function IncoraCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    lbo: (
+      <DetailPanel title="The 2020 LBO — Platinum Equity + Pattonair Merger" onClose={() => setDetail(null)}>
+        <p><strong>Jan 9, 2020:</strong> Platinum Equity closed its take-private of <strong>Wesco Aircraft Holdings</strong> (NYSE: WAIR) at <strong>$11.05/share cash</strong>, valuing the deal at approximately <strong>$1.9B</strong>. Wesco was a global distributor of aerospace fasteners and hardware (C-class consumables) to OEMs including Boeing, Airbus, Lockheed and Raytheon.</p>
+        <p><strong>Simultaneous merger:</strong> At closing, Wesco was combined with <strong>Pattonair</strong>, a UK-based aerospace supply-chain services company and existing Platinum portfolio asset. The combined enterprise value was approximately <strong>$2.4B</strong>, operating in 17 countries with 4,000+ employees.</p>
+        <p><strong>Mar 2020:</strong> The merged company rebranded as <strong>Incora</strong>.</p>
+        <p><strong>Acquisition financing:</strong> Willkie Farr arranged approximately <strong>$2.1B</strong> in debt financing. The funded notes stack consisted of three tranches: $650M of <strong>2024 Senior Secured Notes</strong>, $900M of <strong>2026 Senior Secured Notes</strong>, and $525M of <strong>2027 Senior Unsecured Notes</strong>, totaling ~$2.075B of notes debt.</p>
+        <p style={{ color: T_.red }}>Holdco chain: Platinum Equity → <strong>Wolverine Topco</strong> → <strong>Wolverine Intermediate</strong> → Wesco Aircraft Holdings LLC (d/b/a Incora). The timing was unfortunate: closing in January 2020 meant the full weight of the debt hit the capital structure weeks before COVID-19 collapsed global aerospace demand.</p>
+        <p>Source: Platinum Equity press release, Jan 9 2020; Willkie Farr transaction announcement; GlobeNewswire.</p>
+      </DetailPanel>
+    ),
+    preStructure: (
+      <DetailPanel title="Pre-Trade Capital Structure (March 2022)" onClose={() => setDetail(null)}>
+        <p>Going into March 2022, Incora's funded notes stack was:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>2024 Senior Secured Notes (1L):</strong> ~$650M outstanding. Pari passu with 2026 1L under shared collateral.</li>
+          <li><strong>2026 Senior Secured Notes (1L):</strong> ~$900M outstanding. The larger of the two 1L tranches — its indenture governed the key votes.</li>
+          <li><strong>2027 Senior Unsecured Notes:</strong> ~$525M outstanding. Structurally junior to both 1L tranches.</li>
+        </ul>
+        <p>Plus an <strong>ABL facility</strong> (undisclosed size, secured by receivables/inventory — typical of distributor capital structures). The ABL was not part of the 2022 trade and was paid in full through the DIP.</p>
+        <p style={{ color: T_.amber }}>The critical mechanic: under the <strong>2026 Indenture</strong>, a simple majority of holders could amend most terms — but a <strong>2/3 supermajority</strong> was required to make amendments that "<strong>have the effect of releasing</strong>" all or substantially all collateral. This broader-than-usual sacred right language would become the linchpin of Judge Isgur's 2024 ruling and the entire pro-minority legal theory.</p>
+      </DetailPanel>
+    ),
+    uptier: (
+      <DetailPanel title="The March 2022 Uptier — The 'Domino' Transaction" onClose={() => setDetail(null)}>
+        <p>The defining transaction of the case — a multi-step maneuver that became the template for aggressive liability management and the target of the first post-trial bankruptcy court invalidation.</p>
+        <p><strong>Step 1 — Manufacture a supermajority:</strong></p>
+        <p>Incora and the <strong>PSP Group (PIMCO + Silver Point)</strong> executed the <strong>3rd Supplemental Indenture</strong> to the 2026 notes, authorizing issuance of <strong>additional 2026 notes</strong> to the PSP Group. This required only a simple majority — which PSP already had. The newly-issued notes flipped the vote count: PSP Group now held a <strong>2/3 supermajority</strong> in the 2026 tranche.</p>
+        <p><strong>Step 2 — Use the manufactured supermajority to release collateral:</strong></p>
+        <p>With 2/3 votes in hand, PSP passed further amendments stripping liens and collateral protections from the original 2026 notes — clearing the path for a non-pro-rata exchange.</p>
+        <p><strong>Step 3 — Create a new super-priority tranche:</strong></p>
+        <p>PSP Group was issued a new <strong>priming tranche of 2026 notes</strong> at <strong>7.5% cash / 3.0% PIK</strong>, sitting ahead of the original 2024/2026 1L in the collateral waterfall. Approximately <strong>$1.0B of PSP's existing 2024/2026 1L notes were rolled</strong> into this new priming tranche. Non-participating 1L holders — BlackRock, JPMorgan, King Street, others — were left with stripped collateral and subordinated lien rank.</p>
+        <p><strong>Step 4 — New money:</strong></p>
+        <p>PSP Group backstopped <strong>$250M of new money</strong> into the priming tranche, providing liquidity for operations and fees.</p>
+        <p><strong>Step 5 — The 2027 side trade:</strong></p>
+        <p>Simultaneously, approximately <strong>$446M (reported as ~$497M face)</strong> of 2027 unsecured notes held by <strong>Carlyle and Platinum Equity itself</strong> were exchanged into new <strong>1.25-lien 2027 secured notes</strong>, jumping them ahead of non-participating 2027 unsecured holders. Platinum — the sponsor — participated on both sides of the transaction it controlled.</p>
+        <p style={{ color: T_.red }}>The cumulative effect: PSP promoted itself to super-senior, Carlyle/Platinum promoted themselves from unsecured to 1.25L, and everyone excluded — BlackRock, JPM, King Street, Langur Maize — was structurally subordinated. The minority holders' liens weren't technically cancelled but were rendered economically worthless by the new priming debt sitting on top.</p>
+        <p>Source: Cleary Gottlieb "Bankruptcy Court Finds Incora's Uptier Exchange is a Bust"; Harrison Huai Substack; Octus/Reorg Research; Bloomberg Apr 5 2022 "Silver Point, PIMCO Cook Up Credit Trade That Has Rivals Fuming."</p>
+      </DetailPanel>
+    ),
+    participants: (
+      <DetailPanel title="The PSP Group — Participating Holders" onClose={() => setDetail(null)}>
+        <p><strong>PSP Group</strong> (Participating Supporting Parties) — the coalition that executed the uptier:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>PIMCO</strong> — anchor participant on the 1L side. Previously the architect of the Serta uptier (2020). Deep experience in non-pro-rata LME.</li>
+          <li><strong>Silver Point Capital</strong> — co-lead on the 1L side. Distressed credit specialist.</li>
+          <li><strong>Carlyle Group</strong> — lead participant on the 2027 unsecured-to-1.25L exchange.</li>
+          <li><strong>Platinum Equity</strong> — the sponsor itself held 2027 unsecured notes and participated in the 1.25L exchange, giving itself secured status on its own bankruptcy-bound portfolio company.</li>
+        </ul>
+        <p style={{ color: T_.amber }}>This was the first widely-reported uptier where the <strong>sponsor itself participated as a creditor</strong> in a transaction that primed other creditors. That fact would become central to Langur Maize's breach-of-duty claims and to Judge Isgur's separate finding that Platinum's participation violated the 2027 indenture's pro rata treatment requirement.</p>
+        <p><strong>Legal counsel for PSP:</strong> Davis Polk &amp; Wardwell represented the ad hoc 2026 secured noteholder group through the Chapter 11 case.</p>
+        <p>Source: Bloomberg Apr 5 2022; Restructuring Interviews Substack; Davis Polk emergence announcement.</p>
+      </DetailPanel>
+    ),
+    minority: (
+      <DetailPanel title="Non-Participating Minority Holders" onClose={() => setDetail(null)}>
+        <p>The holders who were excluded from the 2022 trade and whose positions were structurally subordinated:</p>
+        <p><strong>On the 1L side:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>BlackRock</strong> — held meaningful positions across the 2024 and 2026 1L notes</li>
+          <li><strong>JPMorgan Chase</strong> (asset management)</li>
+          <li><strong>King Street Capital</strong></li>
+          <li>Various smaller institutional holders</li>
+        </ul>
+        <p><strong>On the 2027 unsecured side:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Langur Maize LLC</strong> — the lead plaintiff. A single holder of 2027 unsecured notes, advised by <strong>Jones Day</strong>. Langur Maize filed the initial NY Supreme Court action in January 2023 and became the driving force behind the adversary proceeding that produced Judge Isgur's ruling.</li>
+        </ul>
+        <p><strong>Legal counsel for the minority in the bankruptcy adversary:</strong> <strong>Kobre &amp; Kim</strong> — took depositions of Incora's CFO that became central to the LME adversary trial.</p>
+        <p style={{ color: T_.red }}>These holders went into the trade holding 1L secured notes backed by the issuer's collateral. They came out holding the same face amount of notes — but now sitting behind a new priming tranche backed by the same collateral. Their recovery in the eventual bankruptcy plan was approximately <strong>1.6% of new equity + $7.5M cash</strong>, versus PSP's ~98.4% of equity + $420M convertible takeback notes.</p>
+        <p>Source: Bloomberg Law Jul 2024; Schulte Roth &amp; Zabel alert; CreditSights coverage of trial depositions.</p>
+      </DetailPanel>
+    ),
+    langurLit: (
+      <DetailPanel title="Langur Maize Pre-Bankruptcy Litigation" onClose={() => setDetail(null)}>
+        <p><strong>Plaintiff:</strong> Langur Maize LLC, represented by <strong>Jones Day</strong>.</p>
+        <p><strong>Filed:</strong> January 2023 in New York Supreme Court (Commercial Division), Manhattan.</p>
+        <p><strong>Defendants:</strong> Wesco Aircraft Holdings / Incora, plus the participating 2027 unsecured noteholders (including Carlyle affiliates and Platinum Equity affiliates).</p>
+        <p><strong>Claims:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Breach of the 2027 Indenture</strong> — the exchange of selected 2027 unsecured notes into 1.25L secured notes violated the pro rata treatment requirement.</li>
+          <li><strong>Breach of the implied covenant of good faith and fair dealing</strong></li>
+          <li><strong>Preferential transfer</strong> / fraudulent conveyance theories aimed at the $250M new money and the uptier economics</li>
+          <li>Tortious interference and aiding-and-abetting claims against the participating holders</li>
+        </ul>
+        <p>Incora filed Ch.11 in <strong>June 2023</strong>, staying the NY action. The substantive claims were transferred into the bankruptcy as an <strong>adversary proceeding</strong>, which Judge Isgur tried in 2024. The minority holders substantially survived summary judgment — SRZ described the case as "largely survives summary judgment" — meaning the court found enough factual disputes to require a full trial.</p>
+        <p style={{ color: T_.amber }}>Langur Maize's decision to sue <strong>as a single holder</strong> rather than wait for a larger coalition was unusual and arguably decisive. Most minority holders in uptier situations settle rather than litigate. Langur's willingness to pursue the full trial produced the legal record that made Isgur's ruling possible.</p>
+        <p>Source: SRZ "Minority Holders' Challenge to Wesco's Multi-Step Uptiering Transaction Largely Survives Summary Judgment"; NY Supreme Court filings.</p>
+      </DetailPanel>
+    ),
+    filing: (
+      <DetailPanel title="Chapter 11 Filing — June 2023" onClose={() => setDetail(null)}>
+        <p><strong>Filing date:</strong> June 1, 2023.</p>
+        <p><strong>Court:</strong> U.S. Bankruptcy Court for the Southern District of Texas, <strong>Houston Division</strong>.</p>
+        <p><strong>Lead case:</strong> <em>In re Wesco Aircraft Holdings Inc., et al.</em>, Case No. <strong>23-90611</strong>.</p>
+        <p><strong>Debtor entities:</strong> <strong>44 affiliated debtors</strong> filed voluntary petitions.</p>
+        <p><strong>Initial judge:</strong> David R. Jones (DRJ). After Judge Jones's resignation in <strong>October 2023</strong> (unrelated scandal), the case and the critical LME adversary proceeding were reassigned. Judge <strong>Marvin Isgur</strong> ultimately tried and ruled on the adversary.</p>
+        <p><strong>Counsel:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Debtors:</strong> Milbank LLP</li>
+          <li><strong>Ad hoc 1L / PSP Group:</strong> Davis Polk &amp; Wardwell</li>
+          <li><strong>Minority holders (adversary plaintiffs):</strong> Kobre &amp; Kim</li>
+          <li><strong>Prepetition ABL agent:</strong> Cahill Gordon &amp; Reindel</li>
+        </ul>
+        <p><strong>DIP financing:</strong> Over <strong>$300M super-priority DIP</strong> provided by PIMCO and Silver Point (i.e., the same PSP Group that had executed the uptier). <strong>$110M available on an interim basis</strong>. The optics of the uptier participants also serving as DIP lenders were noted widely in restructuring press.</p>
+        <p><strong>Drivers of distress:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>COVID-era aerospace demand collapse (2020-2022)</li>
+          <li>Boeing 737 MAX grounding and subsequent production disruptions</li>
+          <li>Customer losses and inventory writedowns</li>
+          <li>High leverage from the January 2020 LBO financing — timing was particularly bad</li>
+          <li>The 2022 uptier bought <strong>14 months</strong> before the company filed anyway</li>
+        </ul>
+        <p>Source: Verita/Kroll docket at veritaglobal.net/incora; GlobeNewswire Jun 1 2023; Milbank, Davis Polk, Cahill press releases.</p>
+      </DetailPanel>
+    ),
+    isgurRuling: (
+      <DetailPanel title="Judge Isgur's July 2024 Ruling — The Landmark" onClose={() => setDetail(null)}>
+        <p><strong>July 10, 2024:</strong> Judge <strong>Marvin Isgur</strong> issued an oral bench ruling holding that the <strong>March 2022 uptier exchange breached both the 2026 and 2027 note indentures</strong>. This was described by the American Bankruptcy Institute as a "shocker" — the first post-trial bankruptcy court ruling to actually invalidate a major non-pro-rata uptier LME on indenture-breach grounds.</p>
+        <p><strong>The "integrated transaction" doctrine:</strong></p>
+        <p>Isgur adopted a <strong>domino theory</strong>: the initial simple-majority amendment authorizing issuance of additional 2026 notes to PSP was the "first domino," and all subsequent amendments (lien releases, priming) had to be tested <strong>as a single integrated transaction</strong>, not as independent steps. You couldn't engineer a supermajority by issuing to one side and then use that manufactured supermajority to strip the other side's collateral.</p>
+        <p><strong>The sacred rights holding:</strong></p>
+        <p>Because the 2026 indenture prohibited amendments that "<strong>have the effect of releasing</strong>" all or substantially all collateral without <strong>2/3 consent of each affected holder</strong>, and because the collateral release was effectively inevitable once the first amendment issued new notes to PSP, the entire amendment package violated the indenture's sacred rights — which required non-participating holders' consent. They never gave it.</p>
+        <p><strong>Remedy:</strong></p>
+        <p>Isgur <strong>restored the liens and interests of all 2026 secured noteholders</strong>, unwinding the priming effect of the uptier. PSP Group was left with an <strong>unsecured claim on the $250M of new money</strong> they had contributed (subject to further equitable relief).</p>
+        <p><strong>Separately on Platinum:</strong></p>
+        <p>Isgur held that Platinum Equity's own participation in the 2027 unsecured-to-1.25L exchange violated the 2027 indenture's pro rata treatment requirement — a separate finding that the sponsor had breached its obligations as a noteholder.</p>
+        <p style={{ color: T_.red }}>The ruling was widely read as the first major court decision to validate the "broad collateral-release sacred right" theory and the integrated-transaction doctrine. It predated the Fifth Circuit's December 2024 <em>Serta</em> reversal and was seen as evidence that courts were finally pushing back on aggressive LME.</p>
+        <p>Source: Cleary Gottlieb; Octus/Reorg Research "Voiding Wesco/Incora Uptier Exchange"; ABI "Special Feature: Incora Decision Shocker"; Rabinowitz Lubetkin commentary on integrated transaction doctrine.</p>
+      </DetailPanel>
+    ),
+    craneReversal: (
+      <DetailPanel title="January 2025 District Court Reversal — Judge Crane" onClose={() => setDetail(null)}>
+        <p><strong>January 2025:</strong> U.S. District Judge <strong>Randy Crane</strong> (S.D. Texas) reversed the core of Isgur's ruling on appeal.</p>
+        <p><strong>The reversal:</strong></p>
+        <p>Crane held that the 2026 indenture's sacred rights language, <strong>read textually</strong>, did not give minority noteholders the right to block the transaction. The indenture prohibited amendments that released <em>existing collateral</em>, but did not prohibit issuing new notes that diluted existing holders' voting power. "The minority noteholders didn't have that sacred right," Crane held — unlike the <em>Serta</em> plaintiffs whose loan agreement contained clearer protective language.</p>
+        <p>Crane described the uptier as "<strong>perfectly proper</strong>" under the 2026 indenture as written — a sharp rebuke to Isgur's integrated-transaction analysis.</p>
+        <p><strong>Implication:</strong></p>
+        <p>Incora flipped from being a minority-protection precedent to being a warning that textualist courts will construe indenture language <strong>strictly</strong> against minority holders. If you want protection against a vote-dilution-plus-uptier maneuver, you need <strong>explicit language</strong> — not implied covenants, not good faith theories, not sacred rights that have to be inferred. An appeal to the Fifth Circuit is expected.</p>
+        <p style={{ color: T_.amber }}>The practical state of the law as of 2025: <em>Serta</em> (5th Cir. Dec 2024) struck down that uptier on "open market purchase" grounds — a contract-definition win. <em>Incora</em> (Crane, Jan 2025) upheld a different uptier on sacred-rights grounds — a contract-textualist loss. Minority protection now depends almost entirely on the exact words in the indenture, not on equitable principles.</p>
+        <p>Source: Octus "District Court Surprises with Preview of Ruling Reversing Judge Isgur on Incora/Wesco Uptier Exchange"; Cleary "Texas District Court Finds in Favor of Wesco/Incora LME"; Chapman &amp; Cutler "Wesco/Incora District Court Construes Debtholder Sacred Rights Narrowly."</p>
+      </DetailPanel>
+    ),
+    planTreatment: (
+      <DetailPanel title="Chapter 11 Plan Treatment — Class Recoveries" onClose={() => setDetail(null)}>
+        <p><strong>Plan confirmed:</strong> December 27, 2024 (post-Isgur ruling, pre-Crane reversal). The plan incorporated a <strong>global settlement</strong> between the PSP Group and the minority holders resolving the adversary proceeding.</p>
+        <p><strong>Emerged:</strong> January 31, 2025 — approximately <strong>20 months</strong> in Chapter 11.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Treatment</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "ABL Claims", treat: "Paid in full", rec: "100%", c: T_.green },
+              { cls: "DIP Claims (>$300M)", treat: "Exchanged into new secured exit notes", rec: "100%", c: T_.green },
+              { cls: "First-Lien Secured Notes (PSP + others)", treat: "~98.4% new common equity + $420M convertible takeback notes", rec: "~98.4% equity", c: T_.blue },
+              { cls: "Unsecured Claims (Global Settlement)", treat: "~1.6% new common equity + $7.5M cash", rec: "~1.6%", c: T_.red },
+              { cls: "Old Platinum Equity", treat: "Cancelled", rec: "0%", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> <strong>$100M</strong> in new exit debt + the $420M convertible takeback notes issued to the 1L class.</p>
+        <p><strong>New Ownership:</strong> Majority owned by the former first-lien secured noteholders — principally the PSP Group (PIMCO, Silver Point) and the ad hoc 1L group advised by Davis Polk. Old Platinum sponsor equity cancelled.</p>
+        <p><strong>The settlement math:</strong> Even after Isgur's ruling went against them, PSP still ended up with ~98.4% of the reorganized equity. The minority holders got a token ~1.6% + $7.5M cash as part of a negotiated settlement that released the adversary claims and avoided further appeals (at the bankruptcy level). The judicial finding of breach did not translate into proportional economic recovery — a reminder that winning in court is different from winning in the claims waterfall.</p>
+        <p>Source: Milbank "Milbank Advises Incora Through Successful Chapter 11 Restructuring"; Davis Polk "Incora Emerges from Chapter 11"; Incora GlobeNewswire Jan 31 2025.</p>
+      </DetailPanel>
+    ),
+    blockers: (
+      <DetailPanel title="Market Impact & 'Incora Blockers'" onClose={() => setDetail(null)}>
+        <p><strong>The doctrinal gift and the doctrinal takeback:</strong></p>
+        <p>For ~6 months between Isgur's July 2024 ruling and Crane's January 2025 reversal, <em>Incora</em> was the single most important minority-lender precedent in modern LME. Credit agreements were being redrafted to invoke the "integrated transaction doctrine." Post-Crane, most of that enthusiasm evaporated — but the drafting changes remain.</p>
+        <p><strong>"Incora Blockers":</strong></p>
+        <p>New indentures and credit agreements post-2023 increasingly include covenant language preventing issuers from using majority-vote supplemental indentures to <strong>mint additional notes solely for the purpose of assembling a supermajority</strong> capable of releasing collateral or subordinating non-participants. This blocks the Step 1 of the Incora playbook.</p>
+        <p>Common provisions now include:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Anti-dilution sacred rights — newly issued notes cannot vote on amendments affecting existing holders</li>
+          <li>Explicit pro rata sharing requirements for any exchange or buyback</li>
+          <li>Cross-tranche voting restrictions preventing one series from voting amendments to another</li>
+          <li>"Sponsor debt" disenfranchisement — notes held by the sponsor or its affiliates cannot vote on LME-related amendments</li>
+        </ul>
+        <p><strong>Comparison table:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Serta (2020/2024):</strong> Minority holders won at the Fifth Circuit on the "open market purchase" definition in the term loan agreement. Won by contract terms.</li>
+          <li><strong>Mitel (NY 1st Dept, 2024):</strong> Upheld the uptier as permitted by loan documents — textualist approach, similar to Crane on Incora.</li>
+          <li><strong>TriMark (NY Supreme, 2021):</strong> Fraudulent-conveyance and good-faith claims survived motion to dismiss; settled.</li>
+          <li><strong>J.Crew (2017) / Envision (2022):</strong> "Trap door" drop-down transactions — different mechanic (moving assets out of the credit group) versus Incora's uptier (stripping seniority in place).</li>
+          <li><strong>Wesco/Incora (2022/2024/2025):</strong> Uptier with vote-manufacturing. Bankruptcy court invalidated, District Court reversed. Net legal outcome: <em>textualist reading wins</em>.</li>
+        </ul>
+        <p style={{ color: T_.red }}>The post-Incora / post-Crane market takeaway: <strong>minority lender protection cannot rely on good-faith theories or implied covenants.</strong> If you want protection against an uptier, you must negotiate an explicit pro rata sharing and/or voting-dilution sacred right up front. The era of "the court will find this unfair" is over.</p>
+        <p>Source: Creditor Rights Coalition "Liability Management Whack-a-Mole"; Norton Rose Fulbright; Greenberg Traurig "Serta, Mitel and Incora's Potential Impact on Uptiers"; National Law Review.</p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Global aerospace &amp; defense fastener distributor. <span style={{ color: T_.purple }}>Platinum Equity</span> took Wesco Aircraft private in Jan 2020 for ~$1.9B and merged it with Pattonair into Incora — weeks before COVID collapsed aerospace demand. In March 2022, <span style={{ color: T_.amber }}>PIMCO and Silver Point (the "PSP Group")</span> executed the defining <span style={{ color: T_.accent }}>"domino" uptier exchange</span> — first issuing new 2026 notes to themselves to manufacture a 2/3 supermajority, then using that vote to strip collateral from non-participating 1L holders and raise <span style={{ color: T_.red }}>$250M of priming new money</span>. Platinum itself participated on the 2027 side, exchanging unsecured notes it held into new 1.25-lien debt. The transaction bought ~14 months before Incora filed Ch.11 in June 2023. Judge <span style={{ color: T_.blue }}>Marvin Isgur</span> issued a <span style={{ color: T_.accent }}>landmark July 2024 ruling</span> — adopting the "integrated transaction doctrine" and holding the uptier violated the indenture's sacred rights — only for District Judge <span style={{ color: T_.red }}>Randy Crane</span> to reverse it in January 2025 on strict textualist grounds. The minority still won ~1.6% of new equity + $7.5M cash in the global settlement; PSP walked with ~98.4% of equity + $420M convertible takeback notes. The case redefined LME covenant drafting and spawned <span style={{ color: T_.accent }}>"Incora Blockers"</span>.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Total Notes Debt", v: "~$2.08B", c: T_.red },
+            { l: "Filed", v: "Jun 1, 2023", c: T_.red },
+            { l: "Emerged", v: "Jan 31, 2025", c: T_.green },
+            { l: "Time in Ch.11", v: "~20 months", c: T_.textMid },
+            { l: "DIP Size", v: ">$300M", c: T_.blue },
+            { l: "Fulcrum", v: "1L Secured Notes", c: T_.blue },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART
+         ════════════════════════════════════════════════════ */}
+      <div style={{ margin: "0 auto" }}>
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate &amp; Capital Structure</div>
+          <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>At filing, June 2023. Click any entity or tranche for details. Case 23-90611, S.D. Tex., initially Judge D.R. Jones → reassigned to Judge Marvin Isgur for the LME adversary.</div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group / Loan Parties</span></span>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.accent}50`, background: `${T_.accent}08`, display: "inline-block" }} /><span style={{ color: T_.accent }}>Post-Uptier Priming Tranche</span></span>
+          </div>
+        </div>
+
+        <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+          {/* ROW 1: Sponsor */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Platinum Equity"
+              sub="PE Sponsor · LBO closed Jan 9, 2020 · ~$1.9B take-private + Pattonair merger"
+              color={T_.purple}
+              badges={[
+                { text: "EQUITY CANCELLED — $0", color: T_.red },
+                { text: "ALSO A 2027 NOTEHOLDER", color: T_.amber },
+              ]}
+              onClick={() => toggle("lbo")} selected={detail === "lbo"}
+              width={440}
+            />
+          </div>
+
+          <VLineLabel label="100% equity (via merger sub)" color={T_.purple} />
+
+          {/* ROW 2: Wolverine Topco */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Wolverine Topco"
+              sub="HoldCo · Delaware · Not a borrower or guarantor"
+              color={T_.red}
+              badges={[{ text: "STRUCTURALLY SUBORDINATED", color: T_.red }]}
+              width={380}
+            />
+          </div>
+
+          <VLineLabel label="100% equity" />
+
+          {/* ROW 3: Wolverine Intermediate */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Wolverine Intermediate"
+              sub="Intermediate HoldCo · Delaware"
+              color={T_.textMid}
+              width={360}
+            />
+          </div>
+
+          <VLineLabel label="100% equity" />
+
+          {/* ROW 4: Wesco / Incora OpCo */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Wesco Aircraft Holdings LLC (d/b/a Incora)"
+              sub="Primary OpCo · Issuer of 2024, 2026, 2027 notes · 44 affiliated debtors"
+              color={T_.blue}
+              badges={[
+                { text: "ISSUER", color: T_.blue },
+                { text: "RESTRICTED GROUP", color: T_.green },
+              ]}
+              debt={[
+                { name: "$650M 2024 Senior Secured Notes (1L)", amount: "Pre-trade", color: T_.amber },
+                { name: "$900M 2026 Senior Secured Notes (1L)", amount: "Pre-trade", color: T_.amber },
+                { name: "$525M 2027 Senior Unsecured Notes", amount: "Pre-trade", color: T_.red },
+                { name: "ABL Facility", amount: "100% recovery", color: T_.green },
+              ]}
+              width={540}
+            />
+          </div>
+
+          {/* Subsidiary line */}
+          <VLineLabel label="44 debtor entities · Pattonair UK + Wesco US + international subs" />
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Operating Subsidiaries (43)"
+              sub="US + UK + international distribution entities · Guarantors of notes"
+              color={T_.textMid}
+              width={420}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         THE UPTIER — Before & After
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>The March 2022 Uptier — Before &amp; After</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 10 }}>Click any tranche for details.</div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 40px 1fr", gap: 12, alignItems: "start" }}>
+          {/* BEFORE */}
+          <div style={{ padding: "16px", background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}` }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: T_.textMid, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>Pre-Trade (Feb 2022)</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Box
+                label="$650M 2024 Senior Secured Notes"
+                sub="1L pari passu with 2026 notes"
+                color={T_.amber}
+                onClick={() => toggle("preStructure")} selected={detail === "preStructure"}
+              />
+              <Box
+                label="$900M 2026 Senior Secured Notes"
+                sub="1L pari passu · simple majority amends, 2/3 for collateral release"
+                color={T_.amber}
+                onClick={() => toggle("preStructure")} selected={detail === "preStructure"}
+              />
+              <Box
+                label="$525M 2027 Senior Unsecured Notes"
+                sub="Structurally junior · held in part by Platinum &amp; Carlyle"
+                color={T_.red}
+                onClick={() => toggle("preStructure")} selected={detail === "preStructure"}
+              />
+            </div>
+            <div style={{ marginTop: 10, fontSize: 10, color: T_.textGhost, textAlign: "right" }}>Total: ~$2.075B notes debt</div>
+          </div>
+
+          {/* Arrow */}
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", minHeight: 240 }}>
+            <div style={{ fontSize: 28, color: T_.accent }}>→</div>
+          </div>
+
+          {/* AFTER */}
+          <div style={{ padding: "16px", background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.accent}44` }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 12 }}>Post-Trade (March 2022)</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              <Box
+                label="NEW 2026 Priming Notes (Super-Senior)"
+                sub="7.5% cash + 3.0% PIK · ~$1B rolled from PSP's 1L + $250M new money"
+                color={T_.accent}
+                borderColor={T_.accent}
+                badges={[{ text: "PSP GROUP: PIMCO + SILVER POINT", color: T_.accent }]}
+                onClick={() => toggle("uptier")} selected={detail === "uptier"}
+              />
+              <Box
+                label="Remaining 2024 / 2026 Notes (Subordinated)"
+                sub="Held by BlackRock, JPM, King Street, others · Stripped of effective lien priority"
+                color={T_.red}
+                dashed
+                onClick={() => toggle("minority")} selected={detail === "minority"}
+              />
+              <Box
+                label="NEW 1.25-Lien 2027 Notes"
+                sub="~$446M face · Held by Carlyle + Platinum Equity"
+                color={T_.amber}
+                badges={[{ text: "SPONSOR PARTICIPATED", color: T_.red }]}
+                onClick={() => toggle("participants")} selected={detail === "participants"}
+              />
+              <Box
+                label="Remaining 2027 Unsecured Notes"
+                sub="Excluded minority · Langur Maize led NY litigation"
+                color={T_.red}
+                dashed
+                onClick={() => toggle("minority")} selected={detail === "minority"}
+              />
+            </div>
+          </div>
+        </div>
+
+        {/* Key mechanics callout */}
+        <div style={{ marginTop: 14, padding: "12px 16px", background: `${T_.accent}08`, borderRadius: 8, border: `1px solid ${T_.accent}33`, fontSize: 12, color: T_.textMid, lineHeight: 1.7 }}>
+          <strong style={{ color: T_.accent }}>The Domino:</strong> PSP used a simple-majority amendment to issue new 2026 notes to themselves, manufacturing a 2/3 supermajority. That supermajority then voted to release collateral and permit the priming exchange — all steps Judge Isgur later held had to be analyzed as a <strong>single integrated transaction</strong>.
+        </div>
+      </div>
+
+
+      {/* ════════════════════════════════════════════════════
+         DETAIL PANEL RENDER
+         ════════════════════════════════════════════════════ */}
+      {detail && panels[detail]}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "The 'Domino' Uptier — Manufacturing a Supermajority", color: T_.accent, summary: "Issue new notes to friendly holders first to flip the vote count, then use that vote to strip collateral from everyone else.", detail: "The 2026 indenture allowed simple-majority amendments for most terms but required 2/3 consent for amendments 'having the effect of releasing' collateral. PSP Group (PIMCO + Silver Point) had a simple majority but not 2/3. Step 1: use simple majority to issue additional 2026 notes to PSP — legal on its face. Step 2: PSP now holds 2/3. Step 3: use that manufactured supermajority to release collateral and permit the priming exchange. Step 4: raise $250M new money into the new super-priority tranche. Non-participating 1L holders (BlackRock, JPM, King Street) saw their liens rendered economically worthless by the new priming debt on top of the same collateral. This was the first major uptier to use a vote-manufacturing mechanic at the supplemental indenture level." },
+          { label: "Integrated Transaction Doctrine", color: T_.blue, summary: "Judge Isgur's July 2024 holding that multi-step LMEs must be analyzed as a single transaction, not as independent steps.", detail: "Isgur's core legal theory: the initial amendment issuing new notes to PSP was the 'first domino' and had to be tested together with everything that followed, because the collateral release was effectively inevitable once that first step went through. Under this view, the entire amendment package violated the 2026 indenture's sacred right against collateral release without 2/3 consent of each affected holder. It didn't matter that Step 1 was technically permissible in isolation — if Steps 2-4 were baked in from the start, the court would collapse them into a single integrated transaction. Judge Randy Crane reversed this in January 2025, holding that the indenture's sacred rights language, read textually, did not cover vote-dilution-by-new-issuance. The doctrine now depends on Fifth Circuit review for survival." },
+          { label: "Sacred Rights — The Indenture Holy Writ", color: T_.amber, summary: "Indenture provisions requiring supermajority or unanimous consent for the most protective terms — usually payment, maturity, and collateral.", detail: "Most indenture amendments require only simple majority. 'Sacred rights' are carve-outs requiring higher thresholds (typically 2/3 or unanimous) for changes to core economic protections: principal amount, interest rate, maturity date, currency, and — critically — collateral. The 2026 Incora indenture's sacred rights included amendments 'having the effect of releasing all or substantially all collateral,' which is broader than typical. That broader language was what let Isgur find a breach. Post-Crane, the lesson is that sacred rights must be drafted explicitly to cover vote-dilution-by-new-issuance — relying on 'effect-of-releasing' language is no longer sufficient after a textualist court can narrow it. New indentures now increasingly include anti-dilution sacred rights covering the manufactured-supermajority mechanic directly." },
+          { label: "Sponsor on Both Sides — Platinum's Participation", color: T_.purple, summary: "The PE sponsor itself held 2027 unsecured notes and participated in the exchange that primed other creditors of its own portfolio company.", detail: "Platinum Equity — Incora's sponsor — held 2027 unsecured notes alongside Carlyle. When the March 2022 uptier exchanged ~$446M of 2027 unsecured notes into new 1.25-lien secured notes, Platinum was among the participants. This meant the sponsor was promoting itself from unsecured to secured status in the debt stack of the portfolio company it controlled, ahead of other 2027 holders it hadn't invited. Judge Isgur separately held that Platinum's participation breached the 2027 indenture's pro rata treatment requirement. Judge Crane reversed this too on textualist grounds. One of the first widely reported uptiers where the sponsor itself was on both sides — a structural conflict that fueled the minority's breach-of-duty theories." },
+          { label: "DIP Lender = Prepetition LME Participant", color: T_.red, summary: "PIMCO and Silver Point executed the uptier in 2022 and then provided the >$300M DIP when the company filed in 2023.", detail: "The same parties that had stripped minority holders' collateral prepetition became the lenders of last resort in bankruptcy. This gave PSP enormous procedural leverage throughout the case: they controlled cash on hand, set milestones, and sat across the table from the minority in the adversary proceeding they were defending. DIP roll-up provisions can also insulate prepetition positions from challenge. This is one reason the minority's economic recovery (~1.6% equity + $7.5M cash) diverged so sharply from their legal win under Isgur's ruling. The process was not neutral — PSP's DIP control shaped every negotiation up to the global settlement." },
+          { label: "'Incora Blockers' — Market Response", color: T_.green, summary: "Post-2023 indentures include covenant language preventing issuers from minting new notes to manufacture supermajorities.", detail: "The market response to the Incora mechanic has been a new generation of LME blockers. Typical 'Incora Blocker' provisions include: (1) anti-dilution sacred rights — newly issued notes cannot vote on amendments affecting existing holders, (2) explicit pro rata sharing requirements for any exchange or buyback, (3) cross-tranche voting restrictions preventing one series from voting amendments to another, (4) 'sponsor debt' disenfranchisement — notes held by the sponsor or affiliates cannot vote on LME-related amendments. The drafting changes survived even Crane's January 2025 reversal, because post-Crane the legal environment makes explicit language even more important — you can't rely on equitable doctrines or broad sacred-rights readings to save you anymore. Incora Blockers joined J.Crew Blockers, Envision Blockers, and Serta Blockers in the standard LME protection suite." },
+          { label: "Winning the Ruling vs. Winning the Waterfall", color: T_.emerald, summary: "Isgur's July 2024 ruling in favor of the minority produced only ~1.6% equity + $7.5M cash in the December 2024 plan settlement.", detail: "Incora illustrates a hard truth about bankruptcy litigation: winning a landmark ruling and winning the plan recovery are different things. Langur Maize and the minority 1L holders got a full legal win from Judge Isgur in July 2024 — uptier invalidated, liens restored, sponsor participation held to breach. Five months later, the plan was confirmed with PSP taking ~98.4% of reorganized equity + $420M convertible takeback notes, while the minority got ~1.6% equity + $7.5M cash. The settlement discount reflected several factors: PSP's DIP control, appeal risk (ultimately validated by Crane's reversal), the cost and delay of further litigation, and the fact that 1L claims still outranked 2027 unsec in the waterfall regardless of who won the adversary. The broader lesson: courtroom wins in LME cases produce drafting precedents for the next deal, not proportional recovery in the current one." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "2012", event: "Wesco Aircraft IPOs on NYSE (WAIR) as a standalone aerospace fastener distributor.", color: T_.textMid },
+          { date: "Jan 9, 2020", event: "Platinum Equity closes take-private of Wesco Aircraft at $11.05/share (~$1.9B). Simultaneously merges with Pattonair (Platinum portfolio co) for ~$2.4B combined EV. ~$2.1B debt financing arranged.", color: T_.purple },
+          { date: "Mar 2020", event: "Merged company rebrands as INCORA. COVID collapses global aerospace demand weeks after LBO closes. Boeing 737 MAX disruptions continue.", color: T_.red },
+          { date: "Mar 2022", event: "THE UPTIER — PSP Group (PIMCO + Silver Point) executes the 'domino' transaction. New 2026 notes issued to themselves to manufacture a 2/3 supermajority, then used to strip collateral from non-participating 1L. ~$1B rolled into priming tranche, $250M new money raised. Simultaneously, Platinum + Carlyle exchange ~$446M of 2027 unsecured notes into new 1.25L secured.", color: T_.accent },
+          { date: "Jan 2023", event: "Langur Maize LLC (single 2027 unsecured holder, Jones Day) files suit in NY Supreme Court against Incora, PSP participants, Carlyle, and Platinum affiliates. Claims: breach of indenture, implied covenant, preferential transfer.", color: T_.amber },
+          { date: "Jun 1, 2023", event: "INCORA FILES CH.11 (S.D. Tex., Case 23-90611, Judge D.R. Jones). 44 debtor entities. >$300M DIP from PIMCO and Silver Point — the same PSP Group that executed the uptier. NY action stayed and transferred into bankruptcy as an adversary proceeding.", color: T_.red },
+          { date: "Oct 2023", event: "Judge David R. Jones resigns amid unrelated ethics scandal. LME adversary proceeding reassigned to Judge Marvin Isgur.", color: T_.textMid },
+          { date: "Early 2024", event: "Adversary trial. Kobre & Kim deposes Incora CFO on uptier mechanics. Minority substantially survives summary judgment. Evidence of sponsor coordination between Platinum and PSP participants surfaces in discovery.", color: T_.blue },
+          { date: "Jul 10, 2024", event: "★ ISGUR BENCH RULING: the March 2022 uptier breached both the 2026 and 2027 indentures. Adopts 'integrated transaction doctrine' — first post-trial bankruptcy court ruling to invalidate a major uptier. Restores 2026 lenders' liens. Separately holds Platinum's 2027 participation violated pro rata treatment.", color: T_.green },
+          { date: "Dec 27, 2024", event: "Plan confirmed. Global settlement resolves adversary. Despite Isgur's ruling, PSP takes ~98.4% of reorganized equity + $420M convertible takeback notes. Minority gets ~1.6% equity + $7.5M cash. Old Platinum equity cancelled 100%.", color: T_.amber },
+          { date: "Jan 2025", event: "★ CRANE REVERSAL: U.S. District Judge Randy Crane reverses core of Isgur's ruling. Holds the 2026 indenture's sacred rights, read textually, did not give minority the right to block the transaction. Uptier held 'perfectly proper' as written.", color: T_.red },
+          { date: "Jan 31, 2025", event: "EMERGENCE. ~20 months in Ch.11. Majority owned by former 1L secured noteholders (PSP Group). $100M exit debt. Incora continues as private aerospace distributor.", color: T_.green },
+          { date: "Pending", event: "Fifth Circuit appeal of Crane's reversal expected. Combined with the December 2024 Serta ruling, the final state of LME sacred-rights law for the 2020s will be set by whatever the Fifth Circuit does next.", color: T_.textGhost },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Sources footer */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Verita/Kroll docket (veritaglobal.net/incora) · Milbank &amp; Davis Polk emergence announcements · Cleary Gottlieb "Bankruptcy Court Finds Incora's Uptier Exchange is a Bust" · Octus/Reorg Research coverage · ABI "Incora Decision Shocker" · Chapman &amp; Cutler on District Court reversal · Bloomberg Apr 5 2022 · Harrison Huai Substack uptier analysis · Schulte Roth &amp; Zabel alert · Platinum Equity &amp; Willkie Farr 2020 deal announcements · GlobeNewswire. Some figures (revenue, EBITDA, precise debt at petition date) unverified in public sources.
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -2615,6 +3182,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "diebold" && <DieboldNixdorfCase />}
       {activeCase === "jcrew" && <JCrewCase />}
       {activeCase === "petsmart" && <PetSmartCase />}
+      {activeCase === "incora" && <IncoraCase />}
     </div>
   );
 }

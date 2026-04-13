@@ -1162,6 +1162,7 @@ export default function AIDisruption({ companies, initialTab }) {
         </div>
       )}
 
+
       {/* ─── AI DIFFUSION TIMELINE ─── */}
       {subTab === "diffusion" && <AIDiffusionTab />}
     </div>
