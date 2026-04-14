@@ -3626,6 +3626,49 @@ export default function IndustryResearch({ initialTab }) {
             </div>
           </div>
 
+          {/* ── Wafer Foundry Market Share ── */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Foundry Market Share (FY2025)</div>
+              {[
+                { name: "TSMC", share: 70, color: TSMC_COLOR, sub: "90%+ at advanced nodes (<7nm)" },
+                { name: "Samsung", share: 11, color: "#1428A0", sub: "GAA at 3nm; yields lagging TSMC" },
+                { name: "GlobalFoundries", share: 5, color: "#00A551", sub: "Mature/specialty (12nm+); no EUV" },
+                { name: "UMC", share: 5, color: "#005BAC", sub: "Mature nodes (22/28nm+)" },
+                { name: "SMIC", share: 5, color: "#CC0000", sub: "China domestic; DUV-based 7nm" },
+                { name: "Others", share: 4, color: "#64748B", sub: "Tower Semi, PSMC, etc." },
+              ].map(f => (
+                <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: "#E2E8F0", minWidth: 90, fontWeight: 600 }}>{f.name}</span>
+                  <div style={{ flex: 1, height: 14, background: "#1E293B", borderRadius: 4, overflow: "hidden" }}>
+                    <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
+                  </div>
+                  <span style={{ fontSize: 11, color: "#94A3B8", minWidth: 30, textAlign: "right" }}>{f.share}%</span>
+                </div>
+              ))}
+              <div style={{ fontSize: 10, color: "#64748B", marginTop: 8 }}>Source: TrendForce. TSMC peaked at 72% in Q3 2025; FY avg ~70%.</div>
+            </div>
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Advanced Node Share (&lt;7nm)</div>
+              {[
+                { name: "TSMC", share: 90, color: TSMC_COLOR, sub: "N3, N5, N7. Sole EUV leader at 3nm" },
+                { name: "Samsung", share: 8, color: "#1428A0", sub: "3nm GAA; Qualcomm, Google partial" },
+                { name: "Intel Foundry", share: 2, color: "#0071C5", sub: "Intel 18A; ramping 2025-2026" },
+              ].map(f => (
+                <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: "#E2E8F0", minWidth: 90, fontWeight: 600 }}>{f.name}</span>
+                  <div style={{ flex: 1, height: 14, background: "#1E293B", borderRadius: 4, overflow: "hidden" }}>
+                    <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
+                  </div>
+                  <span style={{ fontSize: 11, color: "#94A3B8", minWidth: 30, textAlign: "right" }}>{f.share}%</span>
+                </div>
+              ))}
+              <div style={{ fontSize: 10, color: "#64748B", marginTop: 8 }}>TSMC has near-monopoly at leading edge. Samsung competitive at 3nm GAA but volume lags significantly.</div>
+            </div>
+          </div>
+
           {/* ── CoWoS Capacity & Allocation ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
             <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24 }}>
@@ -3708,26 +3751,30 @@ export default function IndustryResearch({ initialTab }) {
             </div>
           </div>
 
-          {/* ── Global Fab Expansion ── */}
-          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Global Fab Expansion</div>
-            {fabExpansion.map(fab => (
-              <div key={fab.loc} style={{ marginBottom: 16 }}>
-                <div style={{ fontSize: 13, fontWeight: 700, color: TSMC_COLOR, marginBottom: 8 }}>{fab.loc}</div>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {fab.phases.map(p => (
-                    <div key={p.phase} style={{ flex: "1 1 200px", minWidth: 200, background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: "10px 14px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#E2E8F0" }}>{p.phase} — {p.node}</span>
-                        <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(p.status)}15`, color: statusColor(p.status) }}>{p.status}</span>
-                      </div>
-                      <div style={{ fontSize: 11, color: "#94A3B8" }}>Target: {p.date}</div>
-                      <div style={{ fontSize: 11, color: "#64748B" }}>{p.invest}</div>
-                    </div>
+          {/* ── Global Fab Expansion (compact table) ── */}
+          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: "16px 20px", marginBottom: 20 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#F8FAFC", marginBottom: 10 }}>Global Fab Expansion</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid #1E293B" }}>
+                  {["Location", "Phase", "Node", "Status", "Target", "Notes"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "5px 8px", color: "#64748B", fontWeight: 600, fontSize: 10, textTransform: "uppercase" }}>{h}</th>
                   ))}
-                </div>
-              </div>
-            ))}
+                </tr>
+              </thead>
+              <tbody>
+                {fabExpansion.flatMap(fab => fab.phases.map(p => (
+                  <tr key={`${fab.loc}-${p.phase}`} style={{ borderBottom: "1px solid #1E293B" }}>
+                    <td style={{ padding: "5px 8px", color: TSMC_COLOR, fontWeight: 600, whiteSpace: "nowrap" }}>{fab.loc.split('—')[0].split('(')[0].trim()}</td>
+                    <td style={{ padding: "5px 8px", color: "#E2E8F0" }}>{p.phase}</td>
+                    <td style={{ padding: "5px 8px", color: "#E2E8F0" }}>{p.node}</td>
+                    <td style={{ padding: "5px 8px" }}><span style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: `${statusColor(p.status)}15`, color: statusColor(p.status) }}>{p.status}</span></td>
+                    <td style={{ padding: "5px 8px", color: "#94A3B8" }}>{p.date}</td>
+                    <td style={{ padding: "5px 8px", color: "#64748B", fontSize: 11 }}>{p.invest}</td>
+                  </tr>
+                )))}
+              </tbody>
+            </table>
           </div>
 
           <div style={{ fontSize: 11, color: "#64748B", lineHeight: 1.6 }}>
