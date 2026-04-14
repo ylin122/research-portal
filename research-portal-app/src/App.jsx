@@ -767,8 +767,45 @@ function AppContent() {
               </table>
             </div>
 
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 6 }}>CreditSights / LevFin Insights / Covenant Review</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>Path: C:\Users\ylin1\creditsights-tools\</div>
+              <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 16, lineHeight: 1.7 }}>
+                Pulls research articles, company coverage, morning comments, and top-read content from CreditSights v2 (includes LevFin Insights + Covenant Review). Login via Fitch Group SSO. Session stored in state.json — re-run <code style={{ background: "#0B0F19", padding: "2px 6px", borderRadius: 4, fontSize: 12 }}>node login.js</code> if session expires.
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1E293B" }}>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Command</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Description</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Example prompt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { cmd: "lookup <name>", desc: "Search for a company tag ID, shows CS/CR/LFI coverage", ex: "\"Look up Perforce on CreditSights\"" },
+                    { cmd: "articles <tag_id>", desc: "List articles for a company (e.g. company/172568)", ex: "\"Pull CreditSights articles on Perforce\"" },
+                    { cmd: "article <id>", desc: "Pull full article text with analyst attribution", ex: "\"Pull that CreditSights article\"" },
+                    { cmd: "feed --list my_cs", desc: "Your personalized CS feed (default)", ex: "\"What's new on my CreditSights feed?\"" },
+                    { cmd: "feed --list top_read", desc: "Most-read articles in last 24 hours", ex: "\"What's trending on CreditSights?\"" },
+                    { cmd: "feed --list morning_comment", desc: "US morning comment / market wrap", ex: "\"Pull the CreditSights morning comment\"" },
+                    { cmd: "api GET|POST <path>", desc: "Raw API call to any v2 endpoint", ex: "\"Hit the CreditSights API at /api/...\"" },
+                  ].map(r => (
+                    <tr key={r.cmd} style={{ borderBottom: "1px solid #1E293B" }}>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0", fontFamily: "monospace", fontSize: 12 }}>{r.cmd}</td>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0" }}>{r.desc}</td>
+                      <td style={{ padding: "8px 12px", color: "#60A5FA", fontStyle: "italic" }}>{r.ex}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div style={{ fontSize: 11, color: "#64748B", marginTop: 12, lineHeight: 1.6 }}>
+                Note: Covenant Review loan reports may show as locked — that's an entitlement issue (US HY Bonds vs. Loans), not a login issue.
+              </div>
+            </div>
+
             <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.7, marginTop: 8 }}>
-              Sessions expire periodically. If you get auth errors, tell Claude to "re-login to Reorg" or "re-login to Third Bridge" and complete the login in the browser window that opens.
+              Sessions expire periodically. If you get auth errors, tell Claude to "re-login to Reorg", "re-login to Third Bridge", or "re-login to CreditSights" and complete the login in the browser window that opens.
             </div>
           </div>
         )}
