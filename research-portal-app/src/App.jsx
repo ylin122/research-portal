@@ -402,13 +402,12 @@ function AppContent() {
             <div style={{ ...s.sectorHdr, marginTop: 0 }} onClick={() => setAgentsOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: agentsOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span>Agents</span>
+                <span>Agents / Tools</span>
               </div>
             </div>
             {agentsOpen && [
               { key: "thesis", label: "Thesis Tracker" },
               { key: "whatIf", label: "What If" },
-              { key: "notesIdeas", label: "Ideas" },
               { key: "dataVerification", label: "Agent Commands" },
               { key: "tools", label: "Tools" },
             ].map(t => (
