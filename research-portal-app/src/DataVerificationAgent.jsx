@@ -271,6 +271,15 @@ export default function DataVerificationAgent({ companies, fieldsMap, sectorNote
             tools: "Read, Bash, Grep, Glob",
             mode: "Read-only. Never modifies files or data.",
           },
+          {
+            name: "@third-party-research",
+            file: "third-party-research.md",
+            color: "#38BDF8",
+            desc: "Queries Reorg (Octus), 9fin, CreditSights (incl. Covenant Review + LevFin Insights), and Third Bridge in parallel for a given company or topic. Pulls the most recent company-specific article from each, fetches full text, and synthesizes findings with source attribution. Flags coverage gaps honestly.",
+            usage: "@third-party-research pull everything on Perforce",
+            tools: "Read, Bash, Grep, Glob",
+            mode: "Read-only. Runs local Playwright-authenticated CLI tools in ~/reorg-tools, ~/9fin-tools, ~/creditsights-tools, ~/thirdbridge-tools.",
+          },
         ].map(agent => (
           <div key={agent.name} style={{
             background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 8,

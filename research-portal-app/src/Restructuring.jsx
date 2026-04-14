@@ -115,6 +115,7 @@ const CASES = [
   { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
   { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
   { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
+  { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
 ];
 
 function WindstreamCase() {
@@ -130,8 +131,9 @@ function WindstreamCase() {
     ),
     midwest: (
       <DetailPanel title="Windstream Holding of the Midwest, Inc." onClose={() => setDetail(null)}>
-        <p>Nebraska corp. Intermediate holding company between Holdings and Services. <strong>Guarantor</strong> of the credit facility.</p>
-        <p>Issued its own <strong>6.750% Secured Notes due 2028</strong> — an unusual structural wrinkle. This creates a mini capital structure between HoldCo and OpCo. Treatment in the restructuring depended on this entity's standalone value vs. obligations.</p>
+        <p>Nebraska corp. <strong>f/k/a Alltel Communications Holdings of the Midwest, Inc.</strong> — a legacy entity inherited from the pre-Windstream Alltel structure. Intermediate holding company between Holdings and Services. <strong>Guarantor</strong> of the credit facility.</p>
+        <p>Issued its own <strong>$100M of 6.75% Secured Notes due April 1, 2028</strong> — originally issued by ALLTEL long before the Windstream combination. The indenture contains its own sale-and-leaseback restriction, which is why these notes formed a <strong>separate treatment class</strong> in the plan. An unusual structural wrinkle that creates a mini capital structure between HoldCo and OpCo.</p>
+        <p>Under the plan, Midwest Notes Claims received replacement term loans under the New Exit Facility.</p>
       </DetailPanel>
     ),
     opco: (
@@ -172,17 +174,42 @@ function WindstreamCase() {
       </DetailPanel>
     ),
     uniti: (
-      <DetailPanel title="Uniti Group / Master Lease" onClose={() => setDetail(null)}>
-        <p><strong>April 2015:</strong> Windstream spun off fiber/copper network into Communications Sales & Leasing, Inc. (renamed Uniti Group Inc., NASDAQ: UNIT).</p>
+      <DetailPanel title="Uniti Group / Master Lease / 2020 Settlement" onClose={() => setDetail(null)}>
+        <p><strong>April 24, 2015:</strong> Windstream spun off fiber/copper network into Communications Sales &amp; Leasing, Inc. (renamed Uniti Group Inc., NASDAQ: UNIT). Transferred-asset value was <strong>$7.45B</strong>; Windstream received ~$1.035B cash + $2.45B of Uniti debt securities at spin.</p>
         <p><strong>Structure:</strong> Uniti Group Inc. → Uniti Group LP (f/k/a CSL Capital) → Uniti Leasing LLC (f/k/a CSL National, LP) [holds the assets].</p>
-        <p><strong>Master Lease:</strong> 15-year triple-net, ~$659M/yr rent with escalators, expiring ~2030. This became effectively super-senior — an operating cost that must be paid to keep the business running.</p>
-        <p style={{ color: T_.red }}>Aurelius argued this violated the 6.375% Notes indenture's sale-leaseback covenant. Judge Furman (SDNY) agreed Feb 15, 2019. ~$310M accelerated → cross-default → Ch.11 filed Feb 25, 2019.</p>
-        <p><strong>Settlement:</strong> Uniti committed ~$1.75B in FTTP network upgrades + modified lease terms. Windstream was ~65% of Uniti's revenue — massive leverage in negotiation.</p>
+        <p><strong>Master Lease:</strong> 15-year initial term (with four 5-year renewal options), triple-net, <strong>~$650M/yr base rent</strong> with escalators. This became effectively super-senior — an operating cost that must be paid to keep the business running.</p>
+        <p style={{ color: T_.red }}>Aurelius argued this violated the 6.375% Notes indenture's sale-leaseback covenant. Judge Furman (SDNY) agreed Feb 15, 2019, in <em>U.S. Bank v. Windstream Services</em>, 17-cv-07857, after a July 2018 bench trial. ~$310M accelerated → cross-default → Ch.11 filed Feb 25, 2019.</p>
+        <p><strong>The 2020 Settlement (Mar 2 announced, Apr 20 executed):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>$1.75B Growth Capital Improvements</strong> staged through 2029: $125M Y1 / $225M Y2-5 / $175M Y6-7 / $125M Y8-10. Base rent steps up 8.0% of new investment with 0.5% annual escalator.</li>
+          <li><strong>$400M cash</strong> from Uniti to Windstream, paid in 20 equal quarterly installments post-emergence at <strong>9% interest</strong>.</li>
+          <li>Uniti sold <strong>~38.6M shares of UNIT common at $6.33/share (~$244.5M)</strong> to certain Windstream 1L creditors; proceeds routed to Windstream as settlement consideration.</li>
+          <li>Uniti purchased <strong>~$40M of Windstream-owned fiber assets</strong> (4,100 route miles / 0.4M strand miles / $8M EBITDA of IRUs).</li>
+          <li>Modified Master Lease terms (bifurcation + extensions).</li>
+        </ul>
+        <p style={{ color: T_.amber }}>Windstream was ~65% of Uniti's revenue — massive leverage in the negotiation. Windstream also sued Uniti in an adversary proceeding (Jul 2019) seeking recharacterization of the Master Lease as a financing rather than a true lease, which would have converted Uniti's claims to unsecured — this leverage drove Uniti to settle.</p>
+      </DetailPanel>
+    ),
+    postEmergence: (
+      <DetailPanel title="Post-Emergence & The 2025 Uniti Merger — Full Narrative Closure" onClose={() => setDetail(null)}>
+        <p><strong>Sep 21, 2020:</strong> Windstream emerges as Windstream Holdings II, LLC (private). Elliott Management + other former 1L lenders own the reorganized company. Over $4B of pre-petition debt eliminated. Exit financing: $750M exit term loan + $500M exit revolver + $1.4B of new 7.750% first-lien notes due 2028 (issued by Windstream Escrow LLC / Windstream Escrow Finance Corp.).</p>
+        <p><strong>2020-2024 (private):</strong> Elliott operates Windstream, deploying the $1.75B Uniti FTTP investment commitment and executing a fiber-to-the-home build-out strategy (Kinetic Fiber). Windstream also benefited from a dramatically different rates/credit environment than at filing — summer 2020 exit financing was executed in the post-COVID-liquidity era, a tailwind to recoveries.</p>
+        <p style={{ color: T_.accent }}><strong>May 3, 2024 — Merger Announced.</strong> Uniti Group and Windstream announce an all-stock merger: "Uniti to Merge with Windstream Creating Premier Insurgent Fiber Provider." The REIT that spun off Windstream's network in 2015 agrees to buy Windstream itself back.</p>
+        <p><strong>Merger consideration to Windstream equityholders (Elliott et al.):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>~<strong>35.42%</strong> of new Uniti common stock</li>
+          <li><strong>$575M</strong> of newly issued <strong>11% cumulative preferred stock</strong></li>
+          <li>Warrants for ~<strong>6.9% fully-diluted</strong> common</li>
+          <li><strong>$370.7M cash</strong> (funded from Uniti revolver borrowings)</li>
+        </ul>
+        <p>Legacy Uniti holders retained ~<strong>62%</strong> of the combined company. Uniti stockholders approved <strong>Apr 2, 2025</strong>. Merger <strong>CLOSED Aug 1, 2025</strong>.</p>
+        <p style={{ color: T_.green }}><strong>Full narrative closure:</strong> Aurelius weaponized a sale-leaseback covenant in 2017 to force a Ch.11 over the 2015 Uniti spin. Elliott and other 1L holders took the company private at emergence in 2020. Five years later (2025), Elliott exited into a merger with the exact same REIT counterparty that had precipitated the bankruptcy. The spin-off was unwound. Windstream's fiber network and its operations are once again owned by a single corporate parent — this time as a combined fiber pure-play rather than an ILEC saddled with a super-senior lease obligation.</p>
       </DetailPanel>
     ),
     planTreatment: (
       <DetailPanel title="Chapter 11 Plan Treatment — Class Recoveries" onClose={() => setDetail(null)}>
-        <p>Plan confirmed <strong>Jun 2020</strong> by Judge Robert Drain (S.D.N.Y.). Emerged <strong>Sep 21, 2020</strong> as Windstream Holdings II, LLC (private). 205 debtor entities.</p>
+        <p>Plan confirmed <strong>Jun 26, 2020</strong> by Judge Robert Drain (S.D.N.Y.) via bench ruling. Emerged <strong>Sep 21, 2020</strong> as Windstream Holdings II, LLC (private). ~203 debtor entities (count varied as debtors were added to the consolidated case).</p>
+        <p style={{ color: T_.amber }}><strong>Contested confirmation:</strong> The 2L ad hoc group and the Official Committee of Unsecured Creditors actively <strong>contested the debtors' valuation at confirmation</strong>, arguing that value broke through the 1L and into the 2L/unsecured classes. Judge Drain overruled the objections at the Jun 26, 2020 bench ruling, finding valuation supported cramdown. The UCC/2L also unsuccessfully sought standing to pursue estate causes of action against the 1L holders.</p>
         <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
           <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
             <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
@@ -206,9 +233,11 @@ function WindstreamCase() {
             ))}
           </tbody>
         </table>
-        <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> $1.25B credit facilities + $1.4B new 7.750% Senior Secured Notes. Over <strong>$4B of pre-petition debt eliminated</strong> through equitization.</p>
+        <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> $750M exit term loan + $500M exit revolver + $1.4B new 7.750% Senior Secured Notes due 2028 (issued by Windstream Escrow LLC / Windstream Escrow Finance Corp.). Over <strong>$4B of pre-petition debt eliminated</strong> through equitization.</p>
         <p><strong>New Ownership:</strong> Elliott Management (largest holder), other former 1st lien lenders. Private company post-emergence.</p>
-        <p><strong>Uniti Settlement:</strong> Uniti committed ~$1.75B in FTTP network upgrades + modified lease terms. Windstream was ~65% of Uniti's revenue.</p>
+        <p><strong>Uniti Settlement:</strong> $1.75B FTTP network upgrade commitment staged through 2029 + $400M cash at 9% + $244.5M share sale + $40M fiber asset purchase + modified lease terms. See Uniti panel for full details.</p>
+        <p style={{ color: T_.blue }}><strong>State regulatory approvals:</strong> Required approvals from ~18 state PUCs plus FCC change-of-control at emergence — a significant gating factor on the 6-month gap between confirmation (Jun 26, 2020) and effective date (Sep 21, 2020).</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>COVID timing angle: The Uniti settlement and Plan Support Agreement were negotiated in Feb-Mar 2020 exactly as COVID lockdowns began. Exit financing executed in summer 2020 in a dramatically different rates/credit environment than at filing — a tailwind to recoveries.</em></p>
       </DetailPanel>
     ),
   };
@@ -218,7 +247,7 @@ function WindstreamCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Rural/regional telecom (18 states). Distress from <span style={{ color: T_.red }}>secular decline</span> + <span style={{ color: T_.red }}>overleveraged M&A</span> + <span style={{ color: T_.red }}>2015 Uniti REIT spin-off</span> that moved network assets outside the credit group. <span style={{ color: T_.amber }}>Aurelius</span> exploited a <span style={{ color: T_.accent }}>sale-leaseback covenant breach</span> to force Ch.11. The Uniti spin-off created a structural problem: the network assets that generated revenue were owned by a separate public REIT, while Windstream was obligated to pay ~$659M/yr in rent — effectively a super-senior claim ahead of all debt.
+          Rural/regional telecom (18 states). Distress from <span style={{ color: T_.red }}>secular decline</span> + <span style={{ color: T_.red }}>overleveraged M&A</span> + <span style={{ color: T_.red }}>2015 Uniti REIT spin-off</span> that moved network assets outside the credit group. <span style={{ color: T_.amber }}>Aurelius</span> exploited a <span style={{ color: T_.accent }}>sale-leaseback covenant breach</span> to force Ch.11. The Uniti spin-off created a structural problem: network assets that generated revenue were owned by a separate public REIT, while Windstream was obligated to pay <strong>~$650M/yr</strong> in rent — effectively a super-senior claim ahead of all debt. Elliott and other 1L holders took the company private at emergence (Sep 2020). In a <span style={{ color: T_.green }}>full narrative closure</span>, the same Uniti REIT <strong>merged with Windstream on Aug 1, 2025</strong> — unwinding the 2015 spin-off and reuniting the fiber network with operations under a single parent.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -401,7 +430,7 @@ function WindstreamCase() {
             sub="REIT · NASDAQ: UNIT · Spun off April 2015 · Owns fiber/copper network"
             color={T_.red}
             dashed
-            debt={[{ name: "Master Lease (triple-net)", amount: "~$659M/yr", color: T_.red }]}
+            debt={[{ name: "Master Lease (triple-net)", amount: "~$650M/yr", color: T_.red }]}
             badges={[
               { text: "OWNS THE NETWORK", color: T_.amber },
               { text: "SEPARATE PUBLIC CO", color: T_.red },
@@ -416,11 +445,12 @@ function WindstreamCase() {
       </div>
 
       {/* ── Detail buttons ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {[
-          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: ">$4B eliminated · Class recoveries" },
+          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: ">$4B eliminated · 2L contested" },
           { k: "subs", label: "Operating Subsidiaries", color: T_.emerald, sub: "155+ entities · 92 guarantors · 18 states" },
-          { k: "uniti", label: "Uniti / Master Lease", color: T_.red, sub: "Spin-off · ~$659M/yr · covenant breach" },
+          { k: "uniti", label: "Uniti / Settlement", color: T_.red, sub: "Spin · ~$650M/yr · $1.75B+$400M" },
+          { k: "postEmergence", label: "Post-Emergence & 2025 Merger", color: T_.green, sub: "Elliott exit · Uniti merger Aug 2025" },
         ].map(d => (
           <div key={d.k} onClick={() => toggle(d.k)} style={{
             padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
@@ -448,7 +478,7 @@ function WindstreamCase() {
           { label: "Contractual Subordination", color: T_.amber, summary: "2nd Lien junior to 1st Lien by contract — same entity, same collateral, different priority.", detail: "Intercreditor agreement: 1st Lien satisfied in full before 2nd Lien gets anything. Both had liens on the same assets, but 1L only recovered ~65% → 2L got essentially nothing ($0.00125 per $1.00)." },
           { label: "Recourse vs. Non-Recourse", color: T_.purple, summary: "OpCo debt: full recourse to 92+ guarantors. HoldCo: no recourse to any operating entity.", detail: "Recourse = lenders can pursue borrower + all guarantors. 1L had guarantees from 92 subs. HoldCo creditors had zero guarantee bridge — only source was upstream dividends, which stopped when OpCo couldn't cover its own debts." },
           { label: "Guarantees", color: T_.green, summary: "92 of 155+ subs guaranteed OpCo debt. No guarantee = no direct asset claim.", detail: "Guarantee = direct legal claim on that entity's assets. Many state ILECs were NOT guarantors (regulatory restrictions). In recovery analysis, you must map guarantor vs. non-guarantor assets for effective collateral coverage." },
-          { label: "Cash Flow Waterfall", color: T_.emerald, summary: "Revenue at subs → OpCo → debt service → only residual goes to HoldCo.", detail: "At OpCo level: (1) OpEx + CapEx, (2) Uniti lease ~$659M/yr (effectively super-senior), (3) 1L service, (4) 2L, (5) unsecured. Only after ALL that is satisfied does cash dividend up to HoldCo. When EBITDA declined, the waterfall broke." },
+          { label: "Cash Flow Waterfall", color: T_.emerald, summary: "Revenue at subs → OpCo → debt service → only residual goes to HoldCo.", detail: "At OpCo level: (1) OpEx + CapEx, (2) Uniti lease ~$650M/yr (effectively super-senior), (3) 1L service, (4) 2L, (5) unsecured. Only after ALL that is satisfied does cash dividend up to HoldCo. When EBITDA declined, the waterfall broke." },
           { label: "Covenants as Weapons", color: T_.accent, summary: "Aurelius weaponized the sale-leaseback covenant to force restructuring.", detail: "The 6.375% Notes indenture restricted sale-leasebacks. Aurelius argued the Uniti spin-off violated this. Default notice (Sep 2017) → acceleration (Dec 2017) → court agreed (Feb 2019) → $310M due → cross-default across $5.6B → Ch.11 in 10 days." },
           { label: "Fulcrum Security", color: T_.blue, summary: "1st Lien was the fulcrum — where value breaks. They became the new owners.", detail: "Fulcrum = tranche where recovery goes from partial to zero. 1L recovered 62-71% (mix of new debt + equity in Windstream Holdings II). Everything below — 2L, unsecured, HoldCo — was wiped out. Elliott and other 1L holders became private owners." },
         ]} />
@@ -461,14 +491,27 @@ function WindstreamCase() {
         <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
         {[
           { date: "Jan 2013", event: "6.375% Notes issued (~$700M). Indenture includes sale-leaseback restriction.", color: T_.textMid },
-          { date: "Apr 2015", event: "Windstream spins off network to Uniti Group (REIT) + enters ~$659M/yr master lease.", color: T_.amber },
-          { date: "2016–17", event: "Aurelius accumulates 25%+ of 6.375% Notes at a discount, identifies covenant breach.", color: T_.blue },
-          { date: "Sep 2017", event: "Aurelius delivers default notice — spin-off = prohibited sale-leaseback.", color: T_.red },
-          { date: "Dec 2017", event: "Acceleration notice — ~$310M immediately due.", color: T_.red },
-          { date: "Feb 15, 2019", event: "Judge Furman rules for Aurelius. Default confirmed. Cross-defaults cascade.", color: T_.red },
-          { date: "Feb 25, 2019", event: "Windstream files Chapter 11. $1B DIP from Citigroup. 205 debtor entities.", color: T_.red },
-          { date: "Jun 2020", event: "Plan confirmed. Unsecured crammed down. Uniti settlement (~$1.75B network investment).", color: T_.amber },
-          { date: "Sep 21, 2020", event: "Emerges as Holdings II (private). >$4B debt eliminated. 1L holders = new owners.", color: T_.green },
+          { date: "Apr 24, 2015", event: "Uniti spin-off closes. Network assets ($7.45B) transferred to Communications Sales & Leasing (later Uniti Group, NASDAQ: UNIT). Windstream receives ~$1.035B cash + $2.45B Uniti debt. New ~$650M/yr master lease (15-yr triple-net).", color: T_.amber },
+          { date: "2016–17", event: "Aurelius accumulates >25% of 6.375% Notes at a discount (reportedly high-50s to low-60s cents), identifies covenant breach.", color: T_.blue },
+          { date: "Sep 21, 2017", event: "Aurelius delivers default notice — spin-off = prohibited sale-leaseback under 6.375% Notes indenture.", color: T_.red },
+          { date: "Oct 12, 2017", event: "U.S. Bank (as Notes trustee) files U.S. Bank v. Windstream Services in SDNY (Case 17-cv-07857), Judge Jesse Furman presiding.", color: T_.red },
+          { date: "Dec 2017", event: "Acceleration notice — ~$310M immediately due on the 6.375% Notes.", color: T_.red },
+          { date: "Jul 23-25, 2018", event: "Furman bench trial.", color: T_.textMid },
+          { date: "Feb 15, 2019", event: "Judge Furman rules for Aurelius. Default confirmed. ~$310.46M judgment. Cross-defaults cascade across $5.6B of debt.", color: T_.red },
+          { date: "Feb 25, 2019", event: "Windstream files Chapter 11 (SDNY, Case 19-22312, Judge Robert Drain). ~203 debtor entities. Kirkland & Ellis debtors' counsel.", color: T_.red },
+          { date: "Feb 26, 2019", event: "Interim DIP order: $400M from Citigroup Global Markets.", color: T_.blue },
+          { date: "Apr 2019", event: "Final DIP order: full $1B facility ($500M RCF + $500M TL).", color: T_.blue },
+          { date: "Jul 2019", event: "Debtors commence adversary proceeding against Uniti seeking recharacterization of the Master Lease as a financing (not a true lease). Major leverage point.", color: T_.amber },
+          { date: "Mar 2, 2020", event: "Uniti settlement announced — agreement in principle. $1.75B FTTP capex commitment + $400M cash + share sale + fiber purchase. Negotiated as COVID lockdowns begin.", color: T_.green },
+          { date: "Apr 20, 2020", event: "Settlement Agreement executed.", color: T_.green },
+          { date: "Jun 26, 2020", event: "Plan CONFIRMED by Judge Drain via bench ruling. 2L ad hoc group and UCC objections to valuation overruled. Unsecured crammed down at $0. UCC/2L denied standing to pursue estate causes of action against 1L holders.", color: T_.amber },
+          { date: "Summer 2020", event: "Exit financing executed ($750M TL + $500M RCF + $1.4B 7.750% Notes due 2028). Post-COVID liquidity environment = tailwind to pricing.", color: T_.blue },
+          { date: "Sep 21, 2020", event: "EMERGENCE as Windstream Holdings II, LLC (private). >$4B debt eliminated. Elliott Management + former 1L holders = new owners. ~6 months between confirmation and effective date due to 18 state PUC + FCC change-of-control approvals.", color: T_.green },
+          { date: "Oct 23, 2020", event: "Main Ch.11 cases closed.", color: T_.textMid },
+          { date: "2020-2024", event: "Elliott operates Windstream privately, deploying the $1.75B Uniti FTTP investment commitment and building out Kinetic Fiber.", color: T_.textMid },
+          { date: "May 3, 2024", event: "Uniti-Windstream MERGER ANNOUNCED: 'Uniti to Merge with Windstream Creating Premier Insurgent Fiber Provider.' The REIT that spun off Windstream's network in 2015 agrees to buy Windstream back.", color: T_.accent },
+          { date: "Apr 2, 2025", event: "Uniti stockholder vote approves the merger.", color: T_.blue },
+          { date: "Aug 1, 2025", event: "MERGER CLOSES. Windstream equityholders receive ~35.42% of new Uniti common + $575M of 11% preferred + warrants for ~6.9% fully-diluted + $370.7M cash. Legacy Uniti holders = ~62% of combined co. Full narrative closure: spin-off unwound a decade later.", color: T_.green },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -582,7 +625,51 @@ function EnvisionCase() {
         </ul>
         <p>The group collectively held <strong>51.1% of total EVPS debt</strong> (excluding intercompany loans) and <strong>10.3% of AmSurg debt</strong>. King Street was also the most active in AmSurg, holding $39M RCF, $175.5M 1L TL and $91.7M 2L TL alongside its EVPS positions.</p>
         <p style={{ color: T_.amber }}>This distribution — dominant control of the secured tranches, minority in unsecured — is why the ad hoc group was able to drive both the 2022 LMEs and the 2023 Ch.11 plan. The UCC's fight over unsecured recoveries was the mirror image: the ad hoc group's 24% stake in unsecured couldn't block the UCC's leverage to extract value for the rest of that class.</p>
-        <p style={{ color: T_.red }}>Note: despite being named in some retrospective coverage as a major participant, <strong>Blackstone Alternative Credit Advisors held only $152M</strong> — about 5.8% of the group, mid-pack by size. The narrative of "Blackstone-led" Envision restructuring is incorrect. King Street was the dominant holder throughout.</p>
+        <p style={{ color: T_.amber }}><strong>Blackstone — two snapshots, two different stories:</strong> The ad hoc group composition shifted materially between the 2022 LME and the 2023 bankruptcy filing. Per Octus's Feb 2025 retrospective, at the <strong>Aug 2022 uptier</strong>, "parties including Blackstone" held roughly <strong>$2.1 billion (56%)</strong> of the remaining Envision term loans and <strong>backstopped the $300M new-money first-out tranche</strong>. At that moment, Blackstone was one of the dominant backstop parties. By the time of the <strong>Aug 2023 Rule 2019 filing</strong> (13 months later), Blackstone Alternative Credit Advisors was holding $152M as an individual member of the ad hoc group — 5.8% of the group, mid-pack. King Street had grown into the dominant single holder by bankruptcy filing. Both data points are accurate at their respective points in time — it's not that one narrative is wrong, it's that the group composition evolved.</p>
+      </DetailPanel>
+    ),
+    octusRetro: (
+      <DetailPanel title="Octus Feb 2025 Retrospective — Value Transfer Analysis" onClose={() => setDetail(null)}>
+        <p>In Feb 2025, Octus (formerly Reorg) published a retrospective analysis of 7 drop-down transactions since 2022 (AMC, Del Monte, Trinseo, Instant Brands, Rackspace, Envision, U.S. Renal Care). The report quantifies the economic value moved away from non-ad-hoc group secured creditors in each transaction. Envision features prominently.</p>
+        <p><strong>Pre-Dropdown Financial Collapse (2021 → 2022):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Envision consolidated Adj EBITDA: <strong>$516M (2021) → $60M (2022)</strong> — an <strong>88% collapse in one year</strong></li>
+          <li>Envision Remainco EBITDA (post-dropdown silo): declined <strong>$443M YoY</strong> to <strong>negative $146M in 2022</strong></li>
+          <li>Octus estimate: Envision Remainco <strong>cash burn could have approached $1 billion in 2022</strong> — driven by operating deterioration plus surging interest rates on a stacked debt structure</li>
+          <li>Context: No Surprises Act took effect Jan 2022; payor reimbursement cuts of ~60% at one major payor; post-COVID labor inflation of ~$330M/yr</li>
+        </ul>
+        <p><strong>AmSurg Valuation Progression (through the case):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>March 2022</strong> (company's own fair market appraisal): <strong>$3.0B EV</strong></li>
+          <li><strong>April 2022</strong> (Octus-implied at time of dropdown): <strong>~$2.64B</strong></li>
+          <li><strong>Nov 2023</strong> (PJT plan valuation midpoint): <strong>$3.55B</strong> ($3.45B–$3.65B range)</li>
+          <li><strong>June 2025</strong> (Ascension acquisition): <strong>~$3.9B</strong> — ~10% above plan midpoint, ~30% above Octus's Apr 2022 implied value</li>
+        </ul>
+        <p><strong>Value Transfer Analysis — The Core Finding:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Octus estimates <strong>61% of Envision's total value was transferred away from the credit group</strong> in the April 2022 dropdown (83% of AmSurg × AmSurg's share of total EV)</li>
+          <li><strong>Non-ad-hoc group participating term lenders lost ~53% of their pre-transaction value</strong> as a result of the dropdown</li>
+          <li>Non-participating lenders lost essentially all of their value from a waterfall recovery perspective</li>
+          <li>"The vast majority of this value was moved to the company through the $1.1B new-money AmSurg first lien term loan" — proceeds transferred up to Envision Remainco and <em>assumed fully spent</em> on operating cash burn</li>
+        </ul>
+        <p><strong>Ad Hoc Group Size — Pre-Dropdown vs At Filing:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>April 2022 (at dropdown)</strong>: Ad hoc group held 29% of original TLs due 2025, 73% of incremental TLs due 2025, 8.5% of unsecured notes due 2026</li>
+          <li><strong>August 2023 (at Ch.11 filing)</strong>: Ad hoc group held 89.9% of first-out, 81.2% of second-out, 51.1% of total EVPS debt</li>
+          <li>The group <strong>grew materially between the LME and the filing</strong>, consolidating control of the secured tranches as positions changed hands in the interim</li>
+        </ul>
+        <p><strong>Octus Aggressiveness Ranking (of 7 drop-downs):</strong></p>
+        <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.7, margin: "8px 0" }}>
+          <div>🔴 <strong>Del Monte</strong> — participating non-ad-hoc lenders lost <strong>64%</strong> of value (most aggressive)</div>
+          <div>🟠 <strong>Envision</strong> — participating non-ad-hoc lenders lost <strong>53%</strong> of value</div>
+          <div>🟡 <strong>Instant Brands</strong> — lost <strong>30%</strong> of value</div>
+          <div>🟡 <strong>U.S. Renal Care</strong> — lost <strong>20%</strong> of value</div>
+          <div>🟢 <strong>Rackspace</strong> — lost <strong>19%</strong> of value</div>
+          <div>🟢 <strong>AMC</strong> (first lien noteholders) — lost <strong>6-9%</strong> of value (least aggressive)</div>
+          <div style={{ marginTop: 4, fontStyle: "italic", color: T_.textDim }}>Trinseo measured separately (~50% value loss on the TLB-2 due 2028)</div>
+        </div>
+        <p style={{ color: T_.red }}><strong>Short-term solution that failed:</strong> Octus explicitly cites Envision as an example of a dropdown that proved to be "only a short-term solution" — <strong>Envision filed for Chapter 11 bankruptcy about one year after the April 2022 transaction</strong> (Ch.11 filed May 15, 2023). Only Instant Brands filed faster (6 months post-LME). Octus's conclusion: when new money from a dropdown is raised primarily to fund near-term cash burn rather than structural deleveraging, the transaction rarely prevents eventual bankruptcy — it just shifts who bears the loss.</p>
+        <p style={{ color: T_.amber }}><strong>Intercompany loan reconciliation:</strong> The case study cites $1.833B intercompany loans (AmSurg → Envision) cancelled in Ch.11 per plan. Octus's narrative traces $1.35B from the second-lien exchange plus the $1.1B from the new-money first-lien transfer upstream — roughly $2.45B pre-paydown, netting down to the $1.833B reported at petition as interim repayments reduced the outstanding balance.</p>
       </DetailPanel>
     ),
     evpsPlan: (
@@ -858,6 +945,18 @@ function EnvisionCase() {
         </div>
       </div>
 
+      {/* Additional detail buttons — row 4 */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginBottom: 4 }}>
+        <div onClick={() => toggle("octusRetro")} style={{
+          padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+          background: detail === "octusRetro" ? `${T_.amber}12` : T_.bgInput,
+          border: `1px solid ${detail === "octusRetro" ? T_.amber : T_.border}`, transition: "all .15s",
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Octus Feb 2025 Retrospective — Value Transfer Analysis</div>
+          <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>2021→22 EBITDA $516M→$60M · 61% value transferred · 53% non-ad-hoc loss · 7-deal ranking</div>
+        </div>
+      </div>
+
       {/* ── Detail Panel ── */}
       {detail && panels[detail] && panels[detail]}
       </div>{/* end org chart max-width wrapper */}
@@ -961,20 +1060,42 @@ function SertaCase() {
     uptier: (
       <DetailPanel title="The 2020 Uptier Transaction" onClose={() => setDetail(null)}>
         <p>In mid-2020, facing COVID-driven liquidity pressure, SSB and a <strong>majority group of lenders (PTL Lenders)</strong> executed the uptier:</p>
+        <p><strong>PTL Lender group identities:</strong> <strong>Barings</strong>, <strong>Credit Suisse Asset Management</strong>, <strong>Invesco</strong>, <strong>Eaton Vance</strong> (including its Boston Management &amp; Research affiliated funds).</p>
         <p><strong>What PTL Lenders got:</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
           <li>Provided <strong>$200M new money</strong> → received super-priority "First-Out" position</li>
           <li>Exchanged <strong>$875M of existing loans</strong> into new priority "Second-Out" tranche:
             <ul>
-              <li>1st lien loans exchanged at <strong>74% of par</strong></li>
-              <li>2nd lien loans exchanged at <strong>39% of par</strong></li>
+              <li>1st lien loans exchanged at <strong>~74% of par</strong></li>
+              <li>2nd lien loans exchanged at <strong>~39% of par</strong></li>
             </ul>
           </li>
           <li>Total new priority tranche: <strong>~$1.075B</strong> (First-Out + Second-Out)</li>
         </ul>
         <p><strong>What Excluded Lenders experienced:</strong></p>
         <p style={{ color: T_.red }}>Non-participating 1st lien holders were <strong>not invited</strong> to participate. Their existing 1st lien loans were effectively subordinated — now sitting behind ~$1.075B of new super-priority debt. Same loan, same credit agreement, but now structurally junior. This is the "creditor-on-creditor violence."</p>
-        <p><strong>Legal basis:</strong> SSB and PTL Lenders argued this was a permissible "open market purchase" under Section 9.05(g), exempt from the pro-rata sharing requirement (Section 2.18 / Sacred Rights in 9.01(b)(A)).</p>
+        <p><strong>Legal basis:</strong> SSB and PTL Lenders argued this was a permissible "open market purchase" under Section 9.05(g), exempt from the pro-rata sharing requirement (Section 2.18 / Sacred Rights in 9.01(b)(A)). The 5th Circuit ultimately rejected this reading — see 5th Circuit panel.</p>
+      </DetailPanel>
+    ),
+    advisors: (
+      <DetailPanel title="Professional Advisors" onClose={() => setDetail(null)}>
+        <p><strong>Debtors (Serta Simmons Bedding):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Weil, Gotshal &amp; Manges</strong> — Lead US legal counsel</li>
+          <li><strong>Evercore</strong> — Investment banker</li>
+          <li><strong>FTI Consulting</strong> — Financial advisor</li>
+        </ul>
+        <p><strong>PTL Ad Hoc Group (Barings, CSAM, Invesco, Eaton Vance):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Gibson, Dunn &amp; Crutcher</strong> — Lead legal counsel</li>
+          <li><strong>Jackson Walker</strong> — Texas local counsel <span style={{ color: T_.amber }}>(later at center of Jones/Freeman scandal)</span></li>
+          <li><strong>Centerview Partners</strong> — Financial advisor</li>
+        </ul>
+        <p><strong>Advent International (sponsor):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Ropes &amp; Gray</strong> — Legal counsel</li>
+        </ul>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Excluded Lender group advisors and UCC composition not verified against Kroll docket in this pass — check cases.ra.kroll.com/sertasimmons for detail.</em></p>
       </DetailPanel>
     ),
     postLME: (
@@ -1041,26 +1162,41 @@ function SertaCase() {
     ),
     fifthCircuit: (
       <DetailPanel title="5th Circuit Ruling — The Landmark Decision (Dec 31, 2024)" onClose={() => setDetail(null)}>
-        <p><em>In re Serta Simmons Bedding, LLC</em>, 125 F.4th 555 (5th Cir. 2024). <strong>First federal circuit court to rule on uptier transactions.</strong></p>
+        <p><em>In re Serta Simmons Bedding, L.L.C.</em>, 125 F.4th 555 (5th Cir. 2024). No. 23-20181. <strong>First federal circuit court to rule on uptier transactions.</strong></p>
+        <p><strong>Panel:</strong> Circuit Judges Catharina Haynes, Don R. Willett, and <strong>Andrew S. Oldham (opinion author)</strong>. Unanimous.</p>
         <p><strong>Three key holdings:</strong></p>
-        <p><strong>1. Uptier violated the credit agreement.</strong> The 2020 transaction was NOT a permissible "open market purchase" under Section 9.05(g). The court held "open market" means the secondary market for syndicated loans — not private negotiations with selected lenders. Accepting SSB's broad definition would render the Dutch Auction alternative "superfluous." Cited LSTA guidance as supporting a narrow definition.</p>
-        <p><strong>2. Equitable mootness did not bar review.</strong> Despite the plan being fully consummated, the court found a "surgical remedy" was available — excising the indemnity provision without unwinding the entire plan. "We differentiate between inability to alter the outcome (real mootness) and unwillingness to alter the outcome (equitable mootness)."</p>
+        <p><strong>1. Uptier violated the credit agreement.</strong> The 2020 transaction was NOT a permissible "open market purchase" under Section 9.05(g). The court held "open market" means the secondary market for syndicated loans — not private, individually negotiated exchanges with selected lenders. Accepting SSB's broad definition would render the Dutch Auction alternative "superfluous" under the canon against surplusage. <strong>The court grounded its interpretation in dictionaries, law reviews, and statutory-construction canons</strong> — not LSTA guidance. (Ropes &amp; Gray's memo captured this: "Law Reviews, Dictionaries, and Uptiers.")</p>
+        <p><strong>2. Equitable mootness did not bar review.</strong> Despite the plan being fully consummated, the court found a "surgical remedy" was available — excising the indemnity provision without unwinding the entire plan. The panel distinguished "inability to alter the outcome (real mootness)" from "unwillingness to alter the outcome (equitable mootness)" and expressed broad skepticism of the equitable mootness doctrine itself.</p>
         <p><strong>3. Indemnification provision excised.</strong> Violated §502(e)(1)(B) — the prepetition indemnity would have been disallowed as a contingent reimbursement claim. Repackaging it as a plan "settlement" was "an impermissible end-run." Also violated §1123(a)(4) — the indemnity's value "varied dramatically" between PTL Lenders (worth tens of millions) and non-participants (worth nothing), violating equal treatment.</p>
         <p style={{ color: T_.red }}><strong>Impact:</strong> Remanded excluded lenders' counterclaims for adjudication — potentially "hundreds of millions" in damages. PTL Lenders lost their indemnity shield. The ruling is actively reshaping how every new credit agreement is drafted.</p>
-        <p style={{ color: T_.amber }}><strong>Nuance:</strong> The court acknowledged "terms of the credit agreement in any particular case might warrant a different conclusion." Same day, a NY appellate court upheld an uptier under a different credit agreement (Mitel Networks) that lacked the "open market" qualifier.</p>
+        <p style={{ color: T_.amber }}><strong>Mitel same-day contrast:</strong> On the same day (Dec 31, 2024), the <strong>NY Appellate Division, First Department</strong> unanimously upheld the <strong>Mitel Networks</strong> uptier — the key distinction being that Mitel's credit agreement <strong>lacked the "open market" qualifier</strong> and permitted any "purchase." The two opinions together are now a standard teaching pair on contract-language drafting.</p>
+        <p style={{ color: T_.blue }}><strong>Subsequent procedural history:</strong> Amended opinion <strong>Jan 21, 2025</strong> (clarified remand reaches counterclaims against PTL lenders not originally named as plaintiffs). Further revised <strong>Feb 14, 2025</strong>. Rehearing / reconsideration denied <strong>Feb 18, 2025</strong>. On remand the case was reassigned to <strong>Judge Christopher Lopez</strong> after Jones's Oct 2023 resignation. Lopez held a <strong>five-day bench trial March 2-6, 2026</strong>, with <strong>closing arguments March 25, 2026</strong>. Judge Lopez has the matter under advisement; decision expected <strong>mid-to-late July 2026</strong> (80-90 days from closing per Lopez). See the Litigation History panel for the core §2.18(c) legal dispute and damages range ($0 / $30M / $400M).</p>
       </DetailPanel>
     ),
     litigation: (
       <DetailPanel title="Litigation History" onClose={() => setDetail(null)}>
-        <p><strong>Jun 2020:</strong> Excluded lenders (Apollo, Angelo Gordon, et al.) sued in NY state court seeking injunction. Denied.</p>
-        <p><strong>2020:</strong> LCM Asset Management sued separately in SDNY.</p>
-        <p><strong>Jan 2023:</strong> SSB filed adversary proceeding against excluded lenders at bankruptcy filing, seeking declaratory judgment that 2020 uptier was valid.</p>
-        <p><strong>Mar 2023:</strong> Bankruptcy court (Judge David Jones) granted summary judgment for SSB/PTL Lenders — found "open market purchase" was unambiguous, transaction permitted.</p>
-        <p><strong>Jun 2023:</strong> Plan confirmed with indemnification for PTL Lenders. 7-day stay (shortened from 14). Plan went effective Jun 29, 2023.</p>
-        <p><strong>Sep 2023:</strong> Fifth Circuit certified direct appeal.</p>
-        <p><strong>Dec 31, 2024:</strong> Fifth Circuit reverses — uptier violated credit agreement, indemnity excised, excluded lender counterclaims remanded.</p>
-        <p><strong>Feb 2025:</strong> Rehearing denied. Opinion finalized.</p>
-        <p style={{ color: T_.red }}>Excluded lenders can now pursue damages — potentially hundreds of millions. This litigation continues post-emergence.</p>
+        <p><strong>May 2020:</strong> <strong>LCM XXII Ltd.</strong> sued in SDNY — <strong>1:20-cv-05090</strong> — seeking declaratory relief and damages. Proceedings continued in parallel with the NY state case.</p>
+        <p><strong>Jun 12, 2020:</strong> <strong>North Star Debt Holdings v. Serta</strong> filed in NY Supreme Court, Commercial Division (Justice <strong>Andrea Masley</strong>). Court initially <strong>granted a TRO</strong> on Jun 12, 2020.</p>
+        <p><strong>Jun 19-25, 2020:</strong> TRO dissolved; preliminary injunction <strong>denied</strong> (2020 NY Slip Op 31954(U)). Justice Masley found plaintiffs could recover money damages and the balance of equities favored defendants.</p>
+        <p><strong>Jan 23, 2023:</strong> SSB filed Chapter 11; the <strong>day after</strong> filing, SSB and the PTL Lenders commenced an adversary proceeding against excluded lenders seeking a declaratory judgment that the 2020 uptier was valid.</p>
+        <p><strong>Mar 28, 2023:</strong> Bankruptcy court (Judge David R. Jones) granted <strong>summary judgment</strong> in part for SSB/PTL Lenders — finding "open market purchase" was unambiguous.</p>
+        <p><strong>Jun 6, 2023:</strong> Following a <strong>five-day bench trial</strong>, Judge Jones entered <strong>final judgment</strong> for SSB/PTL Lenders — the same day he <strong>confirmed the plan</strong>, which included the indemnification provision for PTL Lenders. 7-day stay of confirmation order (shortened from the default 14).</p>
+        <p><strong>Jun 29, 2023:</strong> Plan effective date. SSB emerged.</p>
+        <p><strong>Sep 2023:</strong> Fifth Circuit accepted direct appeal under 28 U.S.C. §158(d)(2). Citadel joined as appellant-in-interest.</p>
+        <p><strong>Oct 2023:</strong> Judge David R. Jones <strong>resigns</strong> amid disclosure of his undisclosed relationship with former <strong>Jackson Walker</strong> partner Elizabeth Freeman. Jackson Walker represented the PTL Lenders in Serta, placing this case squarely within the US Trustee's disgorgement universe (JW faces ~$13-23M in aggregate fee clawback across Jones-era cases — Neiman Marcus, Cineworld, Serta, Incora, et al.). The remand in Serta was reassigned following Jones's resignation.</p>
+        <p><strong>Dec 31, 2024:</strong> <strong>Fifth Circuit REVERSES</strong> — uptier violated credit agreement, indemnity excised, excluded lender counterclaims remanded. Same day, NY Appellate Division upholds the Mitel Networks uptier on different contract language.</p>
+        <p><strong>Jan 21, 2025:</strong> Amended opinion issued (expanded remand to reach non-plaintiff PTL lenders).</p>
+        <p><strong>Feb 14, 2025:</strong> Further revised opinion.</p>
+        <p><strong>Feb 18, 2025:</strong> Rehearing / reconsideration denied.</p>
+        <p><strong>Dec 15, 2025:</strong> <strong>Judge Christopher Lopez</strong> (reassigned post-Jones) denies motion to dismiss <strong>LCM lenders' amended breach-of-contract claim</strong> against participating lenders. LCM held ~$18.2M in Serta 1L at the uptier and its claim is <strong>separate</strong> from the larger excluded lender group (~$340M). Lopez finds a specific footnote in the 5th Circuit's revised opinion explicitly preserved LCM's open-market-purchase claim: "I read the footnote literally for what it says."</p>
+        <p><strong>Jan 26, 2026:</strong> Lopez denies excluded lenders' motion to add a new breach claim based on "assignment provisions" of the credit agreement. Only the existing open-market-purchase breach claim proceeds to trial.</p>
+        <p><strong>Feb 19, 2026:</strong> Parties retain <strong>retired Judge Chapman as mediator</strong> ahead of trial. Mediation fails to resolve.</p>
+        <p><strong>Mar 2-6, 2026:</strong> <strong>Five-day bench trial before Judge Christopher Lopez</strong> on the remanded breach-of-contract claims. Excluded lenders repped by <strong>Susheel Kirpalani (Quinn Emanuel)</strong>; participating PTL lenders repped by <strong>Gregg Costa (Gibson Dunn)</strong>.</p>
+        <p><strong>Mar 25, 2026:</strong> Closing arguments. Judge Lopez takes the matter under advisement and indicates an <strong>80-90 day timeframe for decision</strong> — anticipating a <strong>mid-to-late July 2026 ruling</strong>. Lopez also encourages continued settlement talks before his decision.</p>
+        <p style={{ color: T_.amber }}><strong>The core legal issue at trial — Section 2.18(c):</strong> The trial turns on whether §2.18(c) of the 2016 first-lien credit agreement was breached. Kirpalani (excluded lenders) argues §2.18(c) is a "lender ratable treatment provision" that guarantees equal payment to all lenders — whether in cash or new debt. The core question: is the <strong>$734M of new first-out debt</strong> provided to participating lenders in exchange for <strong>$929M of their existing TL</strong> a "payment" of principal under §2.18(c)? Costa (participating lenders) argues §2.18(c) is a "cash turnover provision" tied to §2.18(a), which requires payments in cash / US dollars — doesn't apply to cashless debt-for-debt exchanges. Whichever reading Lopez adopts is dispositive.</p>
+        <p style={{ color: T_.amber }}><strong>Damages gap at trial:</strong> Excluded lenders demand <strong>$400M</strong> (characterized by participating counsel as "pie-in-the-sky"). Participating lenders argue damages are at most <strong>$30M</strong> (tied to a documented pre-transaction offer by excluded lenders to pay participating lenders $30M to abandon the uptier) and potentially <strong>$0</strong> because excluded lenders could have matched the $0.74 discount but chose to hold out at $0.78. Matching would have cost them ~$31M.</p>
+        <p style={{ color: T_.amber }}><strong>"Who threw the first punch" narrative:</strong> Participating lenders' central defense — the excluded lenders started the LME arms race with an unsolicited <strong>J.Crew-style IP drop-down proposal from Angelo Gordon</strong>, threatening participating lenders' collateral. Participating lenders claim they were acting in self-defense. Crucially, Judge Jones's prior confirmation findings — that participating lenders acted in good faith because the excluded lenders' drop-down threatened their collateral — were <strong>NOT reversed by the 5th Circuit and remain binding</strong>. Kirpalani rebutted that <strong>Barings (itself a participating lender) also proposed an IP drop-down</strong> before joining the uptier, undercutting the "self-defense" framing. Equitable doctrines (unclean hands, in pari delicto) contested but excluded lenders argue these defenses don't apply to legal breach-of-contract claims.</p>
+        <p style={{ color: T_.red }}>As of April 2026: Judge Lopez's decision pending; expected mid-to-late July 2026. A ruling for excluded lenders could result in damages anywhere from $30M to $400M. A ruling for participating lenders would effectively close out six years of Serta litigation. The outcome will define whether "Serta liability" becomes a real economic cost for participating PTL lenders or a narrow legal loss with no monetary consequence.</p>
       </DetailPanel>
     ),
   };
@@ -1230,10 +1366,11 @@ function SertaCase() {
       </div>
 
       {/* ── Detail buttons ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {[
           { k: "preLME", label: "Pre-Uptier Structure", color: T_.textMid, sub: "$2.625B · 2016 Credit Agreement" },
           { k: "plan", label: "Ch.11 Plan Treatment", color: T_.blue, sub: "$1.9B → $315M · Class recoveries" },
+          { k: "advisors", label: "Professional Advisors", color: T_.amber, sub: "Weil · Evercore · Gibson Dunn · Jackson Walker" },
           { k: "fifthCircuit", label: "5th Circuit Ruling", color: T_.accent, sub: "Landmark · Uptier invalidated" },
         ].map(d => (
           <div key={d.k} onClick={() => toggle(d.k)} style={{
@@ -1273,6 +1410,7 @@ function SertaCase() {
           { label: "Indemnification as Plan Currency", color: T_.purple, summary: "PTL Lenders demanded protection from excluded lender lawsuits as price of supporting the plan.", detail: "The bankruptcy plan indemnified PTL Lenders against all liability from the 2020 uptier. This was the 'price' for PTL Lenders equitizing ~$1B of debt. The 5th Circuit struck this down: the prepetition indemnity was a contingent claim that would have been disallowed under §502(e)(1)(B). Repackaging it as a 'settlement' was 'an impermissible end-run.' The indemnity's value also varied dramatically between classes — worth millions to PTL Lenders, nothing to others — violating §1123(a)(4) equal treatment." },
           { label: "Equitable Mootness — Can You Appeal After Emergence?", color: T_.blue, summary: "5th Circuit said YES — rejected the doctrine that plan consummation bars appellate review.", detail: "PTL Lenders argued the appeal was moot because the plan had been fully consummated (SSB emerged, new equity distributed). The 5th Circuit distinguished between 'inability to alter the outcome (real mootness)' and 'unwillingness to alter the outcome (equitable mootness).' Found a 'surgical remedy' — excising the indemnity — that wouldn't unwind the plan. This is a major development: it means plan confirmation is no longer the end of the road for losing creditors." },
           { label: "Serta vs. Envision — Different Outcomes, Same Playbook", color: T_.emerald, summary: "Same uptier concept, radically different litigation outcomes based on credit agreement language.", detail: "Envision: 96% participation, credit docs arguably broader, UCC settled for small recovery, no circuit court ruling. Serta: significant excluded lender group (Apollo, Angelo Gordon, Citadel), credit docs had specific 'open market purchase' language, 5th Circuit invalidated the uptier. The contrast shows that the specific contract language matters enormously — two nearly identical transactions can produce opposite legal outcomes. Post-Serta, new credit agreements include explicit 'uptier blockers' and tighter definitions of permissible purchases." },
+          { label: "Market Impact — 'Serta Protection' in New-Issue Documents", color: T_.amber, summary: "Post-Serta, syndicated loan documentation has been rewritten. LSTA model language and 'Serta protection' are now standard in 2025 new-issues.", detail: "The 5th Circuit's ruling has reshaped how every new credit agreement is drafted. The LSTA has circulated model 'Serta protection' amendments that include: (1) explicit definition of 'open market purchase' limiting it to the secondary market, (2) belt-and-suspenders pro-rata sharing language tying together Sections 9.05 and 2.18, (3) explicit 'uptier blockers' preventing majority lenders from executing priming exchanges without all-lender consent, (4) 'J.Crew + Serta + Chewy blocker' packages bundled together to prevent the full menu of LME maneuvers (IP drop-downs, uptiers, and unrestricted-subsidiary transfers). The Serta/Mitel contrast has become the canonical teaching pair for drafting — same economic transaction, opposite legal outcome based purely on the 'open market' qualifier. As of 2025 new-issue markets, 'Serta protection' is table stakes for institutional buyers; deals without it price wider. The ruling also revived skepticism of the equitable mootness doctrine, meaning post-confirmation appellate review is now a more realistic threat for aggressive plans." },
         ]} />
       </div>
 
@@ -1286,15 +1424,27 @@ function SertaCase() {
           { date: "Oct 2012", event: "Advent International acquires majority stake (~$3B). Ares + OTPP retain minority.", color: T_.purple },
           { date: "Nov 2016", event: "New credit agreement: $1.95B 1L TL + $450M 2L TL + $225M ABL = $2.625B. 'Loose document' with open market purchase carveout.", color: T_.textMid },
           { date: "Mar 2020", event: "COVID hits. Mattress retail shutters. SSB faces liquidity crisis.", color: T_.red },
-          { date: "Jun 2020", event: "UPTIER EXECUTED: PTL Lenders provide $200M new money + exchange $875M at discount → new First-Out/Second-Out priority tranches. Excluded lenders (Apollo, Angelo Gordon, et al.) primed. Lawsuits filed in NY state court — injunction denied.", color: T_.red },
+          { date: "May 2020", event: "LCM XXII Ltd. sues in SDNY (1:20-cv-05090) — first formal legal challenge to the impending uptier.", color: T_.red },
+          { date: "Jun 2020", event: "UPTIER EXECUTED: PTL Lenders (Barings, CSAM, Invesco, Eaton Vance) provide $200M new money + exchange $875M at discount (~74% for 1L, ~39% for 2L) → new First-Out/Second-Out priority tranches. Excluded lenders (Apollo, Angelo Gordon, LCM, Contrarian, Columbia, et al.) primed.", color: T_.red },
+          { date: "Jun 12, 2020", event: "North Star Debt Holdings files in NY Supreme Court (Justice Andrea Masley). Court initially grants TRO.", color: T_.red },
+          { date: "Jun 19-25, 2020", event: "TRO dissolved; preliminary injunction denied (2020 NY Slip Op 31954(U)). Justice Masley: plaintiffs can recover money damages, balance of harms favors defendants.", color: T_.amber },
           { date: "2020-22", event: "LME buys time but business continues deteriorating. Mattress industry secular headwinds, inflation, DTC competition.", color: T_.amber },
-          { date: "Jan 23, 2023", event: "SSB files Chapter 11 (S.D. Tex., Case 23-90020, Judge Jones). Adversary proceeding filed against excluded lenders. RSA with PTL Lenders.", color: T_.red },
-          { date: "Mar 2023", event: "Bankruptcy court grants summary judgment: uptier was valid 'open market purchase.' Excluded lender counterclaims dismissed.", color: T_.amber },
-          { date: "Jun 6, 2023", event: "Plan confirmed. $1.9B → $315M. FLSO → 100% equity. Excluded lenders → 1-5%. Indemnity for PTL Lenders included.", color: T_.amber },
+          { date: "Jan 23, 2023", event: "SSB files Chapter 11 (S.D. Tex., Case 23-90020, Judge David R. Jones). RSA with PTL Lenders. Day after filing: adversary proceeding filed against excluded lenders.", color: T_.red },
+          { date: "Mar 28, 2023", event: "Bankruptcy court grants summary judgment in part for SSB/PTL Lenders — 'open market purchase' unambiguous.", color: T_.amber },
+          { date: "Jun 6, 2023", event: "Following a 5-day bench trial, Judge Jones enters final judgment for SSB/PTL Lenders AND confirms the plan — same day. $1.9B → $315M. FLSO → 100% equity. Excluded lenders → 1-5%. Indemnity for PTL Lenders included. 7-day stay (shortened from 14).", color: T_.amber },
           { date: "Jun 29, 2023", event: "SSB emerges from Ch.11. PTL Lenders own the reorganized company.", color: T_.green },
-          { date: "Sep 2023", event: "5th Circuit certifies direct appeal. Citadel Equity Fund joins as appellant.", color: T_.blue },
-          { date: "Dec 31, 2024", event: "5TH CIRCUIT REVERSAL: Uptier violated credit agreement. Not a permissible 'open market purchase.' Indemnity excised. Counterclaims remanded. First federal circuit ruling on uptiers.", color: T_.accent },
-          { date: "Feb 2025", event: "Rehearing denied. Ruling finalized. Excluded lenders can pursue damages — potentially hundreds of millions.", color: T_.accent },
+          { date: "Sep 2023", event: "5th Circuit accepts direct appeal under 28 U.S.C. §158(d)(2). Citadel joins as appellant-in-interest.", color: T_.blue },
+          { date: "Oct 2023", event: "Judge David R. Jones RESIGNS amid disclosed relationship with former Jackson Walker partner Elizabeth Freeman. Jackson Walker represented the PTL Lenders in Serta — placing this case within the US Trustee's ~$13-23M JW fee disgorgement universe (Neiman Marcus, Cineworld, Serta, Incora, et al.). Remand reassigned.", color: T_.amber },
+          { date: "Dec 31, 2024", event: "5TH CIRCUIT REVERSAL (Haynes/Willett/Oldham; Oldham authored). Uptier violated credit agreement. Not a permissible 'open market purchase.' Indemnity excised under §502(e)(1)(B) + §1123(a)(4). Counterclaims remanded. First federal circuit ruling on uptiers. Same day: NY Appellate Division upholds Mitel Networks uptier on different contract language.", color: T_.accent },
+          { date: "Jan 21, 2025", event: "Amended opinion expands remand to reach non-plaintiff PTL lenders.", color: T_.blue },
+          { date: "Feb 14, 2025", event: "Further revised opinion.", color: T_.blue },
+          { date: "Feb 18, 2025", event: "Rehearing / reconsideration denied. Ruling finalized.", color: T_.accent },
+          { date: "Dec 15, 2025", event: "Judge Christopher Lopez (reassigned post-Jones) denies motion to dismiss LCM lenders' separate breach-of-contract claim (~$18.2M holdings) — preserved by a specific 5th Circuit footnote.", color: T_.amber },
+          { date: "Jan 26, 2026", event: "Lopez denies excluded lenders' motion to add new breach claim based on assignment provisions. Only open-market-purchase claim proceeds to trial.", color: T_.textMid },
+          { date: "Feb 19, 2026", event: "Last-ditch mediation before retired Judge Chapman fails to resolve. Trial set for March.", color: T_.amber },
+          { date: "Mar 2-6, 2026", event: "FIVE-DAY BENCH TRIAL before Judge Christopher Lopez on the remanded breach-of-contract claims. Kirpalani (Quinn Emanuel) for excluded lenders; Costa (Gibson Dunn) for participating PTL lenders. Core issue: whether §2.18(c) of the credit agreement was breached by the $734M new first-out debt / $929M TL exchange.", color: T_.red },
+          { date: "Mar 25, 2026", event: "CLOSING ARGUMENTS. Damages positions: excluded lenders demand $400M; participating lenders counter at $30M best case, $0 argued. Lopez takes matter under advisement. Decision expected in 80-90 days (mid-to-late July 2026). Lopez encourages continued settlement talks.", color: T_.accent },
+          { date: "July 2026 (exp.)", event: "Judge Lopez decision anticipated. Will resolve six years of Serta litigation. Outcome determines whether 'Serta liability' is a real economic cost ($30M-$400M range) or a narrow legal loss with no monetary consequence.", color: T_.blue },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -1474,14 +1624,79 @@ function JCrewCase() {
       </DetailPanel>
     ),
     postEmergence: (
-      <DetailPanel title="Post-Emergence & Current State" onClose={() => setDetail(null)}>
+      <DetailPanel title="Post-Emergence: 2020-2024 Recovery Arc" onClose={() => setDetail(null)}>
         <p><strong>Emergence:</strong> Sep 10, 2020. First major national retailer to emerge from COVID-era bankruptcy.</p>
         <p><strong>Store Count at Emergence:</strong> 170 J.Crew retail + 170 J.Crew Factory + 142 Madewell. Closed all 6 UK stores.</p>
         <p><strong>Leadership Turmoil Continued:</strong> Jan Singer (CEO, appointed Jan 2020) departed Nov 2020 after &lt;10 months. <strong>Libby Wadle</strong> (Madewell CEO) named CEO of J.Crew Group.</p>
         <p><strong>IP Resolution:</strong> The transferred IP was reunified under the reorganized corporate structure. The IP controversy was resolved through equitizing both TL and IPCo noteholders into the same equity pool.</p>
-        <p><strong>Madewell IPO:</strong> Never revisited. Remains a wholly-owned subsidiary.</p>
-        <p><strong>2024 Refinancing:</strong> J.Crew returned to the leveraged loan market with a <strong>$450M refinancing</strong> led by Goldman Sachs. Priced at SOFR + 625 bps at 98 cents (yielding &gt;11%). Notably, the new loan docs included a <strong>"J.Crew blocker"</strong> provision — the company that created the loophole now has its own protective covenant.</p>
-        <p><strong>Revenue (LTM Q2 2024):</strong> $2.72B. Company remains privately held.</p>
+        <p><strong>Madewell IPO:</strong> Never revisited. Remains a wholly-owned subsidiary. The Oct 2019 Form S-1 was formally withdrawn.</p>
+        <p><strong>2021-2024 Recovery:</strong> Significant deleveraging and earnings recovery on the back of strong consumer demand. In Feb/Mar 2022, S&amp;P and Moody's upgraded issuer ratings to B and B2 respectively. Libby Wadle quoted in NYT on recapturing full-price customers and boosting AOV.</p>
+        <p><strong>Sep 2024 Refinancing (issuing entity: <span style={{color: T_.amber}}>Chinos Intermediate 2 LLC</span>):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>$450M TLB due 2031</strong> led by Goldman Sachs</li>
+          <li>Priced at <strong>S+600 bps @ 98.25 OID</strong> (tightened from talk of S+625 @ 98), 0% floor — Moody's assigned B2</li>
+          <li>~350 bps cheaper than the 7.50% exit TLB due 2027 it replaced</li>
+          <li>ABL extended 5 years alongside</li>
+          <li>Deal metrics: <strong>LTM Q2 2024 revenue $2.719B</strong>, pro-forma Adjusted EBITDA <strong>$280M</strong>, net leverage <strong>1.7x</strong></li>
+          <li>New loan docs included a <strong>"J.Crew blocker"</strong> provision — the company that created the loophole now has its own protective covenant</li>
+          <li>J.Crew = ~40% of sales, Madewell and Factory ~30% each</li>
+        </ul>
+        <p style={{ color: T_.green }}>The 2024 refi appeared to validate the restructuring thesis. But by mid-2025, the narrative cracked — see the "2025-2026 Re-Deterioration" panel.</p>
+      </DetailPanel>
+    ),
+    reDeterioration: (
+      <DetailPanel title="2025-2026 Re-Deterioration — Back On Distressed Watchlists" onClose={() => setDetail(null)}>
+        <p style={{ color: T_.red }}>The 2024 refinancing narrative unwound rapidly in 2025. Four rating downgrades in six months, debt/EBITDA expansion from 3.2x → 4.8x, and the term loan trading at distressed levels by year-end. J.Crew is back on distressed watchlists — within 18 months of the Goldman-led refi.</p>
+        <p><strong>Rating trajectory (2025):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Jun 4, 2025:</strong> Moody's cuts CFR <strong>B2 → B3</strong></li>
+          <li><strong>Jul 17, 2025:</strong> S&amp;P cuts <strong>B → B-</strong> (weak demand, FOCF deficit)</li>
+          <li><strong>Dec 15, 2025:</strong> Moody's cuts CFR <strong>B3 → Caa1</strong>; PDR to Caa1-PD; TLB rating to Caa2 from B3. Outlook stable.</li>
+          <li><strong>Dec 18, 2025:</strong> S&amp;P cuts <strong>B- → CCC+</strong> on FOCF deficit; Outlook stable.</li>
+        </ul>
+        <p><strong>Moody's Dec 2025 deterioration metrics:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Debt/EBITDA: 4.8x</strong> projected FYE 2025 (from 3.2x FYE 2024) — 50% expansion in one year</li>
+          <li><strong>EBITA/Interest: 0.5x</strong> (from 1.3x) — unable to cover interest organically</li>
+          <li>Tariff costs from administration tariff regime</li>
+          <li>Capital-intensive store-growth strategy during a difficult operating environment</li>
+          <li>Negative free cash flow</li>
+          <li>Higher ABL balances reducing financial flexibility</li>
+        </ul>
+        <p><strong>S&amp;P Dec 2025 operating data:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Q3'25 comparable sales -8.2%</strong></li>
+          <li>FOCF deficit continuing in 2026 expected</li>
+          <li>Aggressive new store opening plan is compounding the cash burn</li>
+          <li>Margin compression from promotional environment</li>
+        </ul>
+        <p><strong>Trading levels (Octus private-side analysis):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Jul 17, 2025: TL bid <strong>82.5</strong></li>
+          <li>Sep 22, 2025: TL bid <strong>87.625</strong> (brief recovery)</li>
+          <li><strong>Dec 3, 2025: TL bid 80</strong> — distressed territory</li>
+          <li>From 98.25 OID at issue → 80 cents in ~15 months</li>
+        </ul>
+        <p><strong>Leadership churn:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Dec 2024:</strong> Julia Collier named CMO</li>
+          <li><strong>Oct 2025:</strong> New HR Chief hired from LVMH</li>
+          <li><strong>Feb 18, 2026:</strong> <strong>Brendon Babenzien exits J.Crew</strong> — the creative director hired from Noah post-emergence as the brand revitalizer. Another creative-side exit in a brand whose thesis has always depended on creative leadership (Drexler/Lyons 2017, Babenzien 2026).</li>
+          <li>Adrienne (Madewell Brand President) exited after 2 years</li>
+          <li>Head of Merchandising moved from Madewell to J.Crew</li>
+        </ul>
+        <p><strong>Competitive/strategic issues (Third Bridge expert calls Sep 2025 &amp; Jan 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Quality dip</strong> on knitwear/cashmere — brand damage that hasn't fully recovered</li>
+          <li><strong>Madewell/J.Crew cannibalization on denim</strong> — both priced ~$125, confusing customers</li>
+          <li><strong>Quince</strong> at lower price points stealing share</li>
+          <li>Madewell "lost its way" post-COVID swinging between Gen Z and millennial targeting</li>
+          <li>Factory channel cannibalizing mainline where store geography overlaps</li>
+          <li>Tariff pass-through eating margin</li>
+          <li>Inconsistent sizing driving return rates online</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>The question now:</strong> does J.Crew — the company that invented the drop-down playbook — re-enter the LME arena as a distressed name? The 2024 Goldman loan explicitly included a "J.Crew blocker" in its own documentation, so the original maneuver is foreclosed against itself. But uptier/Serta-style moves remain available, and the capital structure now has a meaningful distressed-credit investor base from the 80-cent trading.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Sources: S&amp;P Ratings Alerts (Jul/Dec 2025), Moody's Ratings actions (Jun/Dec 2025), Octus Private Company Analysis (Jul/Sep/Dec 2025), 9fin "J. Crew tries on new debt" (Sep 13, 2024), Third Bridge expert transcripts (Sep 8, 2025 / Jan 12, 2026). <strong>CreditSights: no coverage</strong> — J.Crew is below CS/CR/LFI coverage threshold as a private non-reporter.</em></p>
       </DetailPanel>
     ),
   };
@@ -1491,7 +1706,7 @@ function JCrewCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Premium apparel retailer (J.Crew, Madewell, Factory). <span style={{ color: T_.purple }}>TPG + Leonard Green</span> took the company private in 2011 for ~$3B, then extracted <span style={{ color: T_.red }}>$766M in dividends and fees</span> — funding the $484M dividend with <span style={{ color: T_.red }}>$500M PIK Toggle Notes</span>. Facing a PIK maturity wall, J.Crew executed the original <span style={{ color: T_.accent }}>"trap door" IP transfer</span> — moving trademarks to unrestricted subsidiaries to raise new secured debt, stripping collateral from $1.5B+ of term loan lenders. This maneuver spawned the market-standard <span style={{ color: T_.accent }}>"J.Crew Blocker"</span> covenant provision and became the foundational precedent for Envision, Serta, and every modern LME.
+          Premium apparel retailer (J.Crew, Madewell, Factory). <span style={{ color: T_.purple }}>TPG + Leonard Green</span> took the company private in 2011 for ~$3B, then extracted <span style={{ color: T_.red }}>$766M in dividends and fees</span> — funding the $484M dividend with <span style={{ color: T_.red }}>$500M PIK Toggle Notes</span>. Facing a PIK maturity wall, J.Crew executed the original <span style={{ color: T_.accent }}>"trap door" IP transfer</span> — moving trademarks to unrestricted subsidiaries to raise new secured debt, stripping collateral from $1.5B+ of term loan lenders. This maneuver spawned the market-standard <span style={{ color: T_.accent }}>"J.Crew Blocker"</span> covenant provision and became the foundational precedent for Envision, Serta, and every modern LME. After a <span style={{ color: T_.green }}>2020-2024 recovery</span> and a Sep 2024 Goldman-led refi, the thesis <span style={{ color: T_.red }}>cracked in 2025</span>: 4 rating downgrades in 6 months (B/B2 → <strong>CCC+/Caa1</strong>), Q3'25 comps -8.2%, debt/EBITDA 3.2x → 4.8x, TL trading at 80 by Dec 2025. Back on distressed watchlists 18 months after the refi.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -1669,11 +1884,12 @@ function JCrewCase() {
       </div>
 
       {/* ── Detail buttons ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {[
-          { k: "dividends", label: "Dividend Recap", color: T_.purple, sub: "$766M extracted · $500M PIK funded $484M dividend" },
-          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: "TL → 76.5% equity · IPCo → 23.5% · Equity → $0" },
-          { k: "postEmergence", label: "Post-Emergence", color: T_.green, sub: "Emerged Sep 2020 · $450M refi 2024 · now has its own blocker" },
+          { k: "dividends", label: "Dividend Recap", color: T_.purple, sub: "$766M extracted · $500M PIK" },
+          { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: "TL → 76.5% equity · IPCo → 23.5%" },
+          { k: "postEmergence", label: "Post-Emergence 2020-24", color: T_.green, sub: "Recovered · $450M refi Sep 2024" },
+          { k: "reDeterioration", label: "2025-26 Re-Deterioration", color: T_.red, sub: "Caa1/CCC+ · TL bid 80 · distressed" },
         ].map(d => (
           <div key={d.k} onClick={() => toggle(d.k)} style={{
             padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
@@ -1733,8 +1949,8 @@ function JCrewCase() {
         <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
         {[
           { date: "1983", event: "J.Crew founded as a catalog retailer. Mickey Drexler joins as CEO in 2003 and transforms the brand.", color: T_.textMid },
-          { date: "1997", event: "TPG Capital acquires majority stake in J.Crew. Takes company public via IPO in 2006 ($376M raised).", color: T_.purple },
-          { date: "Mar 2011", event: "TPG + Leonard Green close take-private LBO at $43.50/share (~$3B). $1.2B Term Loan + $250M ABL + $600M bridge + $1.1B equity.", color: T_.purple },
+          { date: "Oct 1997", event: "TPG Capital acquires controlling stake in J.Crew. Takes company public via IPO in Jun 2006 (~$402.8M net proceeds; 21.62M shares at $20).", color: T_.purple },
+          { date: "Mar 7, 2011", event: "TPG + Leonard Green close take-private LBO at $43.50/share (~$3B). $1.0B senior secured Term Loan + $250M ABL + $600M sr unsecured bridge = $1.85B credit facilities + ~$1.1B equity. BofA/Goldman arrangers.", color: T_.purple },
           { date: "2012-13", event: "Sponsors extract $681.5M in dividends. $484M (2013) funded by $500M PIK Toggle Notes at Chinos Intermediate Holdings A.", color: T_.red },
           { date: "Mar 2014", event: "Refinanced to $1.567B Term Loan B (LIBOR+300, covenant-lite). BofA and Goldman arrangers.", color: T_.textMid },
           { date: "2014-16", event: "J.Crew brand declines: fast fashion, athleisure competition, trendier/pricier strategy alienates core customers. Rev: $2.5B peak → declining.", color: T_.red },
@@ -1749,7 +1965,17 @@ function JCrewCase() {
           { date: "May 4, 2020", event: "J.CREW FILES CH.11 (E.D. Va., Case 20-32181, Judge Phillips). 18 debtor entities. First major retailer to file in COVID. $400M DIP from Anchorage/GSO/Davidson Kempner.", color: T_.red },
           { date: "Aug 25, 2020", event: "Plan confirmed. ~$1.65B secured debt → equity. TL → 76.5% equity. IPCo → 23.5%. Unsecured negotiated from $3M to $77M. Sponsors → $0.", color: T_.amber },
           { date: "Sep 10, 2020", event: "EMERGENCE. ~4 months in Ch.11. >$1.6B debt eliminated. Exit ABL ($400M) + Exit TL ($400M). Anchorage Capital = majority owner.", color: T_.green },
-          { date: "Sep 2024", event: "J.Crew returns to loan market: $450M refinancing (Goldman, SOFR+625bps). New docs include a 'J.Crew blocker' — the company that created the loophole now has its own protective covenant.", color: T_.green },
+          { date: "Feb/Mar 2022", event: "S&P upgrades to B; Moody's upgrades to B2 on deleveraging and earnings recovery.", color: T_.green },
+          { date: "Sep 18, 2024", event: "J.Crew returns to loan market: $450M TLB due 2031 led by Goldman. Priced at S+600 @ 98.25 (tightened from S+625 @ 98 talk). Replaced $400M 7.50% exit TLB due 2027 — ~350bps cheaper. LTM Q2'24 rev $2.719B, Adj EBITDA $280M, net leverage 1.7x. Issuing entity: Chinos Intermediate 2 LLC. New docs include a 'J.Crew blocker.'", color: T_.green },
+          { date: "Dec 2024", event: "Julia Collier named CMO.", color: T_.textMid },
+          { date: "Jun 4, 2025", event: "Moody's cuts CFR B2 → B3. First sign of post-refi deterioration.", color: T_.amber },
+          { date: "Jul 17, 2025", event: "S&P cuts B → B- on weak demand + FOCF deficit. Octus private analysis: TL bid 82.5.", color: T_.amber },
+          { date: "Sep 22, 2025", event: "Octus Q2'25 analysis: TL bid 87.625 (brief recovery).", color: T_.textMid },
+          { date: "Oct 2025", event: "New HR Chief hired from LVMH. C-suite churn continues.", color: T_.textMid },
+          { date: "Dec 3, 2025", event: "Octus Q3'25 analysis: TL bid 80 — distressed territory. From 98.25 OID at issue → 80 in ~15 months.", color: T_.red },
+          { date: "Dec 15, 2025", event: "Moody's cuts B3 → Caa1 (CFR), Caa1-PD (PDR), TLB to Caa2. Debt/EBITDA projected 4.8x FYE25 (from 3.2x FYE24). EBITA/Interest 0.5x (from 1.3x). Tariff cost + capex-heavy store expansion + negative FCF.", color: T_.red },
+          { date: "Dec 18, 2025", event: "S&P cuts B- → CCC+. Q3'25 comp sales -8.2%. FOCF deficit expected to continue in 2026.", color: T_.red },
+          { date: "Feb 18, 2026", event: "BRENDON BABENZIEN EXITS J.CREW — the creative director hired from Noah post-emergence as the brand revitalizer. Another creative-side exit in a brand whose thesis has always depended on creative leadership (Drexler/Lyons 2017, Babenzien 2026).", color: T_.red },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -1801,6 +2027,7 @@ function DieboldNixdorfCase() {
         <p>In Dec 2022, Diebold closed a comprehensive recapitalization with key creditors:</p>
         <p><strong>$400M new money superpriority senior secured term loan</strong> — primes all existing debt. Provided by an ad hoc group of existing creditors who signed a Transaction Support Agreement (TSA).</p>
         <p>The TSA was supported by ~78.8% of existing term loan holders, ~59.3% of unsecured 8.50% noteholders, and ~89.7% of secured noteholders.</p>
+        <p><strong>Ad hoc group holdings at RSA signing (May 30, 2023):</strong> ~80.4% of the superpriority facility, ~79% of the first lien TL, ~78% of the first lien notes, ~58.3% of the second lien notes. These concentrations enabled the prepack strategy — the same holders who primed themselves in Dec 2022 became the plan backstop in 2023.</p>
         <p style={{ color: T_.amber }}>This was a classic liability management exercise: existing creditors provided new money at the top of the capital structure, subordinating both non-participating creditors and their own existing positions. The new money was necessary to fill a ~$213M liquidity hole and address impending maturities.</p>
       </DetailPanel>
     ),
@@ -1858,13 +2085,18 @@ function DieboldNixdorfCase() {
           <li>Class 4 (2024 Stub Unsecured Notes) — <strong>Rejected</strong></li>
         </ul>
         <p>Dutch Court sanctioned the plan on Aug 2, 2023 — finding the requisite 2/3 majority in at least one "in the money" class. Classes 1-3 voted to approve; Class 4 rejected but was bound.</p>
-        <p style={{ color: T_.amber }}><strong>WHOA Stay:</strong> Unlike Ch.11's automatic stay, WHOA does not provide an automatic stay. The Dutch Court granted an ex parte group-wide stay on Jun 8, 2023, extending it to non-debtor group companies under Section 2:24(b) of the Dutch Civil Code — a significant expansion of WHOA stay powers.</p>
+        <p style={{ color: T_.amber }}><strong>WHOA Stay:</strong> Unlike Ch.11's automatic stay, WHOA does not provide an automatic stay. The Dutch Court granted an ex parte group-wide stay (<em>afkoelingsperiode</em>) on Jun 8, 2023 under <strong>Article 376 of the Dutch Bankruptcy Act (Faillissementswet / Fw)</strong>, extending it to non-debtor group companies — a significant expansion of WHOA stay powers.</p>
         <p><strong>Ferdinand Hengst</strong> was appointed as court observer to confirm joint creditor interests were protected across all three proceedings (Ch.11 + WHOA + Ch.15).</p>
       </DetailPanel>
     ),
     dip: (
       <DetailPanel title="DIP Financing — $1.25B" onClose={() => setDetail(null)}>
         <p><strong>$1.25 billion</strong> debtor-in-possession term loan facility, backstopped by the ad hoc group of creditors. Approved on interim basis at the first-day hearing on Jun 2, 2023.</p>
+        <p><strong>Tranche Release:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Interim order ($517M):</strong> Released at first-day hearing — enough to repay superpriority TL + ABL and fund initial operations.</li>
+          <li><strong>Final order ($733M):</strong> Remaining tranche unlocked on final DIP hearing after adequate protection package finalized.</li>
+        </ul>
         <p><strong>Use of Proceeds:</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
           <li>Repay in full the $400M superpriority term loan</li>
@@ -1880,11 +2112,36 @@ function DieboldNixdorfCase() {
     crossBorder: (
       <DetailPanel title="Three-Pronged Cross-Border Structure (First-of-Its-Kind)" onClose={() => setDetail(null)}>
         <p>Diebold Nixdorf's restructuring pioneered a <strong>first-ever dual US-Dutch proceeding</strong>:</p>
-        <p><strong>1. US Chapter 11:</strong> Prepackaged plan for Diebold Holding Company, LLC and 9 US/Canadian affiliates (S.D. Tex., Houston, Case 4:23-bk-90602, Judge Marvin Isgur). Filed Jun 1, 2023.</p>
+        <p><strong>1. US Chapter 11:</strong> Prepackaged plan for Diebold Holding Company, LLC and 9 US/Canadian affiliates (S.D. Tex., Houston, Case 23-90602, <strong>Judge David R. Jones</strong>). Filed Jun 1, 2023. Judge Jones presided through confirmation and emergence; Marvin Isgur was assigned residual post-emergence matters only after Jones resigned in Oct 2023 (Jackson Walker ethics scandal). <em>Diebold was unaffected by the disgorgement fallout that hit other Jones-era cases because Sullivan &amp; Cromwell — not Jackson Walker — was debtors' counsel.</em></p>
         <p><strong>2. Dutch WHOA:</strong> Scheme of arrangement for Diebold Nixdorf Dutch Holding B.V. and 12 European affiliates (District Court of Amsterdam). Sanctioned Aug 2, 2023.</p>
-        <p><strong>3. US Chapter 15:</strong> Recognition of the Dutch WHOA as a "foreign main proceeding," granting US enforcement of Dutch restructuring orders.</p>
+        <p><strong>3. US Chapter 15:</strong> Recognition of the Dutch WHOA as a "foreign main proceeding" on <strong>Jul 12, 2023</strong>. Supplemental order giving the sanctioned WHOA plan full US effect entered <strong>Aug 7, 2023</strong>, four days before Ch.11 emergence.</p>
         <p style={{ color: T_.amber }}><strong>Structural Interdependence:</strong> The WHOA and Ch.11 plans were <strong>contractually interdependent</strong> — confirmation of each was a condition for the other's implementation. Creditors voted for or against both plans simultaneously. This prevented creditor arbitrage across jurisdictions.</p>
         <p><strong>Guarantee Restructuring:</strong> Under Section 372 DBA, the WHOA Plan restructured group guarantees provided by European affiliates. Dutch Tax Authorities were unaffected.</p>
+      </DetailPanel>
+    ),
+    advisors: (
+      <DetailPanel title="Professional Advisors" onClose={() => setDetail(null)}>
+        <p><strong>Debtors (Diebold Nixdorf):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Sullivan &amp; Cromwell</strong> — Lead US legal counsel (restructuring + corporate). Also advised on the Dec 2022 LME.</li>
+          <li><strong>Evercore</strong> — Investment banker / financial advisor.</li>
+          <li><strong>AlixPartners</strong> — Restructuring / CRO services.</li>
+          <li><strong>Kroll</strong> — Claims and noticing agent (cases.ra.kroll.com/dieboldnixdorf).</li>
+        </ul>
+        <p><strong>Ad Hoc Secured Creditor Group (Superpriority + 1L):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Davis Polk &amp; Wardwell</strong> — US legal counsel</li>
+          <li><strong>Houlihan Lokey</strong> — Financial advisor</li>
+          <li><strong>Loyens &amp; Loeff</strong> — Dutch counsel for the WHOA proceeding</li>
+          <li><strong>Porter Hedges</strong> — Texas local counsel</li>
+        </ul>
+        <p><strong>Term Loan Holder Group (existing 1L TL):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>PJT Partners</strong> — Financial advisor</li>
+          <li><strong>Gibson Dunn &amp; Crutcher</strong> — Legal counsel</li>
+        </ul>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Specific funds comprising the ad hoc group were not publicly disclosed in filings. Holder identities are typically covered by Reorg / Debtwire / 9fin reporting — pull there for names.</em></p>
+        <p style={{ color: T_.green }}><strong>Jackson Walker angle:</strong> Judge David R. Jones resigned in Oct 2023 after his undisclosed relationship with a Jackson Walker partner came to light. Because S&amp;C — not Jackson Walker — was debtors' counsel in Diebold, the case avoided the fee-disgorgement disputes that touched other Jones-era restructurings.</p>
       </DetailPanel>
     ),
     planTreatment: (
@@ -1919,18 +2176,27 @@ function DieboldNixdorfCase() {
     ),
     postEmergence: (
       <DetailPanel title="Post-Emergence & Recovery" onClose={() => setDetail(null)}>
-        <p><strong>Emergence:</strong> Aug 11, 2023. New shares relisted on NYSE under "DBD" on Aug 14, 2023. Old Frankfurt Stock Exchange listing delisted. ~35.17M new shares outstanding.</p>
-        <p><strong>Debt Reduction:</strong> ~$2.7B pre-filing → ~$1.25B exit term loan. Over <strong>$2.1B of funded debt eliminated</strong>. Fresh start accounting adopted.</p>
-        <p><strong>2024 Refinancing:</strong> Completed $950M senior secured notes offering and repurchased all exit term loans — reducing debt by an additional $100M and lowering interest costs.</p>
-        <p><strong>Financial Recovery:</strong></p>
+        <p><strong>Emergence:</strong> Aug 11, 2023. New shares relisted on NYSE under "DBD" on Aug 14, 2023. Old Frankfurt Stock Exchange listing delisted. <strong>~37.6M total new shares outstanding</strong> (successor period weighted-average, per Aug 12–Dec 31 2023 income statement). The ~35.17M figure occasionally cited refers to the plan allocation to creditors before shares reserved for the Management Incentive Plan.</p>
+        <p><strong>Debt Reduction:</strong> ~$2.7B pre-filing → ~$1.25B exit term loan. Over <strong>$2.1B of funded debt eliminated</strong>. Fresh start accounting adopted Aug 12, 2023.</p>
+        <p><strong>Dec 2024 Refinancing (Dec 11, 2024):</strong> Issued <strong>$950M of 7.750% Senior Secured Notes due March 2030</strong> (5.25-year, non-call two) and entered a new <strong>$310M revolving credit facility due Dec 2029</strong>. Goldman Sachs–led bookrunner group. <strong>Priced at par</strong> at the tight end of 7.75%-8% talk — "barely two days" from announcement to pricing. Proceeds plus balance-sheet cash repaid the full $1,250M exit TL — including a $21M call premium — reducing total debt by ~$100M and lowering interest costs materially. Jones Day advised on the refinancing. <strong>Market reception</strong>: notes traded <strong>101.5-102 on the break</strong> — strong follow-on demand despite the "distressed investor target" tag.</p>
+        <p><strong>Financial Recovery (as reported — GAAP revenue, non-GAAP Adjusted EBITDA):</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>2023 Rev: $3.76B · EBITDA: $87.8M (includes restructuring gains)</li>
-          <li>2024 Rev: $3.75B · EBITDA: $184M · Operating income: $182M</li>
-          <li>2025 Rev: $3.81B · EBITDA: $248.4M · Net income: $94.6M</li>
+          <li><strong>FY2023 (Combined):</strong> Rev $3,760.5M · Adj. EBITDA <strong>$400.8M</strong> · GAAP net income $1.38B (distorted by $1.61B non-cash gain on reorg items) · FCF $(298)M (burdened by make-whole + reorg fees)</li>
+          <li><strong>FY2024:</strong> Rev $3,751.1M · Adj. EBITDA <strong>$452.2M</strong> · GAAP operating profit $182.1M · GAAP net loss $(14.5)M · FCF $108.8M · Total debt $966.0M</li>
+          <li><strong>FY2025:</strong> Rev $3,805.7M · Adj. EBITDA <strong>$484.8M</strong> · GAAP operating profit $242.0M · Net income $97.5M ($94.6M to DBD) · Diluted EPS $2.54 · FCF $239.0M · Total debt $970.7M · Net debt $554.3M · <strong>Net leverage ~1.5x</strong> (Q1 2025 snapshot per CreditSights)</li>
         </ul>
-        <p><strong>Market Cap:</strong> ~$2.66B (as of Mar 2026), stock ~$75.57/share. S&P and Moody's credit upgrades received.</p>
+        <p style={{ color: T_.green }}><strong>Q4 2025 breakout — the acceleration story:</strong> The full-year 2025 numbers mask a meaningful back-half acceleration. Q2 2025 was slightly soft (revenue $915M, -2.6% YoY; Adj EBITDA $111M, -6.4%), Q3 2025 stabilized (revenue $945M +2%, Adj EBITDA $122M +3.7%), and <strong>Q4 2025 broke out: revenue $1.104B (+11.7% YoY), Adjusted EBITDA $164.3M (+46% YoY)</strong>. Backlog/orders were the leading indicator — orders jumped +36% in Q1 2025.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Note: the case study previously listed "EBITDA" figures that were actually GAAP operating profit lines — corrected above to Diebold's reported Adjusted EBITDA non-GAAP metric (the figure the company and analysts track).</em></p>
+        <p><strong>Rating trajectory post-refi:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Dec 17, 2025 — Moody's upgrade: CFR B2 → B1</strong>, outlook stable, on improved cash flows and leverage</li>
+          <li>S&amp;P also upgraded post-refinancing (aligned with improved metrics)</li>
+        </ul>
+        <p><strong>CreditSights coverage</strong> (the only case in the portal with active CS main-desk coverage): Diebold is covered by <strong>Peter Sakon, CFA</strong> (lead) plus 4 other analysts across CS, Covenant Review, LevFin Insights, and Financials. <strong>Current rating: "Market Perform"</strong> on the 7.75% Senior Secured Notes due 2030 (changed from "Hold" on Feb 12, 2025 — slight de-rating direction). Sakon's May 2025 view: "With net leverage of 1.5x and management reiterating 2025 guidance, we remain comfortable with our Market Perform rating."</p>
+        <p style={{ color: T_.green }}><strong>Apr 7, 2026 — S&amp;P SmallCap 600 inclusion:</strong> Diebold announced it would be added to the S&amp;P SmallCap 600 index — a meaningful post-emergence milestone signaling institutional market acceptance and graduation back into mainstream US equity indices less than three years after the Ch.11 filing.</p>
+        <p><strong>Market Cap:</strong> ~$2.94B / ~$84.78 per share (Apr 2026 close, 52-week high range).</p>
         <p><strong>Leadership:</strong> CEO Octavio Marquez, CFO Jim Barna.</p>
-        <p style={{ color: T_.green }}>The restructuring validated the thesis that the business had value if freed from its debt burden. EBITDA tripled from $87.8M to $248.4M in two years post-emergence. Former first lien creditors who received equity at ~38% recovery have seen significant appreciation.</p>
+        <p style={{ color: T_.green }}>The restructuring validated the thesis that the business had value if freed from its debt burden. Adjusted EBITDA grew from $400.8M (2023) → $452.2M (2024) → $484.8M (2025), a 21% cumulative uplift. Free cash flow swung from $(298)M in 2023 to $239M in 2025. Former first lien creditors who received equity at ~38% recovery have seen the shares roughly triple from emergence levels. Rating trajectory B2→B1, S&amp;P SmallCap 600 inclusion, and accelerating Q4 2025 momentum all reinforce the post-emergence thesis.</p>
       </DetailPanel>
     ),
   };
@@ -1940,7 +2206,7 @@ function DieboldNixdorfCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Global banking tech & retail POS company (ATMs, self-checkout, software). Distress from <span style={{ color: T_.red }}>overleveraged 2016 acquisition of Wincor Nixdorf (~$1.8B)</span>, <span style={{ color: T_.red }}>failed integration</span>, <span style={{ color: T_.red }}>revenue decline ($4.6B→$3.5B)</span>, and <span style={{ color: T_.red }}>COVID/supply-chain margin compression</span>. After a Dec 2022 <span style={{ color: T_.amber }}>liability management exercise</span> (superpriority priming + covenant stripping), filed a <span style={{ color: T_.accent }}>prepackaged Ch.11</span> with a <span style={{ color: T_.accent }}>first-ever parallel Dutch WHOA proceeding</span>. Emerged in 71 days — a landmark cross-border restructuring.
+          Global banking tech & retail POS company (ATMs, self-checkout, software). Distress from <span style={{ color: T_.red }}>overleveraged 2016 acquisition of Wincor Nixdorf (~$1.8B)</span>, <span style={{ color: T_.red }}>failed integration</span>, <span style={{ color: T_.red }}>revenue decline ($4.6B→$3.5B)</span>, and <span style={{ color: T_.red }}>COVID/supply-chain margin compression</span>. After a Dec 2022 <span style={{ color: T_.amber }}>liability management exercise</span> (superpriority priming + covenant stripping), filed a <span style={{ color: T_.accent }}>prepackaged Ch.11</span> (Judge David R. Jones, SDTX) with a <span style={{ color: T_.accent }}>first-ever parallel Dutch WHOA + Ch.15 trifecta</span> restructuring <strong>13 separate financing facilities</strong>. Emerged in 71 days — a landmark cross-border restructuring.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -1965,7 +2231,7 @@ function DieboldNixdorfCase() {
       <div style={{ margin: "0 auto" }}>
       <div style={{ marginBottom: 8 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate & Capital Structure</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 4:23-bk-90602, S.D. Tex., Judge Isgur.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>Post-Dec 2022 LME, at filing. Click any entity or debt tranche for details. Case 23-90602, S.D. Tex. (Houston), Judge David R. Jones (presiding through emergence; Isgur assigned residual post-Oct 2023 matters after Jones's resignation).</div>
         <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
           <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group (Co-Obligors)</span></span>
         </div>
@@ -2127,11 +2393,12 @@ function DieboldNixdorfCase() {
       </div>
 
       {/* ── Detail buttons ── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
         {[
           { k: "wincorMerger", label: "Wincor Nixdorf Acquisition", color: T_.purple, sub: "2016 · $1.8B · integration failure" },
           { k: "planTreatment", label: "Plan Treatment", color: T_.blue, sub: "Class recoveries · cramdown · 71-day prepack" },
-          { k: "postEmergence", label: "Post-Emergence", color: T_.green, sub: "Relisting · EBITDA tripled · $2.66B mkt cap" },
+          { k: "advisors", label: "Professional Advisors", color: T_.amber, sub: "S&C · Evercore · Davis Polk · Houlihan" },
+          { k: "postEmergence", label: "Post-Emergence", color: T_.green, sub: "Adj. EBITDA $485M · $2.94B mkt cap" },
         ].map(d => (
           <div key={d.k} onClick={() => toggle(d.k)} style={{
             padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
@@ -2181,15 +2448,25 @@ function DieboldNixdorfCase() {
           { date: "Dec 2022", event: "RECAPITALIZATION CLOSES: $400M new superpriority TL + $250M ABL. Unsecured → 2L exchange. Covenant stripping on 8.50% Notes. Interest default grace period extended to maturity.", color: T_.red },
           { date: "Feb-May 2023", event: "Exchange offer for remaining 8.50% Notes (PIK Toggle + warrants). Extended multiple times. Overtaken by Ch.11 filing.", color: T_.amber },
           { date: "May 30, 2023", event: "RSA signed with 58-80%+ of each creditor class. Prepackaged plan votes solicited.", color: T_.amber },
-          { date: "Jun 1, 2023", event: "Ch.11 filed (S.D. Tex., Judge Isgur). 10 US/Canadian debtors. WHOA commenced in Amsterdam. Ch.15 filed for recognition.", color: T_.red },
-          { date: "Jun 2, 2023", event: "First-day hearing. $1.25B DIP approved (interim). Repays superpriority TL + ABL in full.", color: T_.blue },
-          { date: "Jun 8, 2023", event: "Dutch Court grants ex parte group-wide WHOA stay — extends to non-debtor European affiliates.", color: T_.amber },
-          { date: "Jul 13, 2023", event: "Ch.11 Plan confirmed. Class 7 (unsecured stub) crammed down. 1L → 98% equity. 2L → 2% equity (gift).", color: T_.green },
+          { date: "Jun 1, 2023", event: "Ch.11 filed (S.D. Tex., Judge David R. Jones). 10 US/Canadian debtors. WHOA commenced in Amsterdam. Ch.15 filed for recognition.", color: T_.red },
+          { date: "Jun 2, 2023", event: "First-day hearing. $1.25B DIP approved — $517M released on interim order, remaining $733M on final. Repays superpriority TL + ABL in full.", color: T_.blue },
+          { date: "Jun 8, 2023", event: "Dutch Court grants ex parte group-wide WHOA stay (Art. 376 Fw / afkoelingsperiode) — extends to non-debtor European affiliates.", color: T_.amber },
+          { date: "Jul 12, 2023", event: "US Bankruptcy Court recognizes the Dutch WHOA as a 'foreign main proceeding' under Ch.15.", color: T_.purple },
+          { date: "Jul 13, 2023", event: "Ch.11 Plan confirmed by Judge Jones. Class 7 (unsecured stub) crammed down. 1L → 98% equity. 2L → 2% equity (gift).", color: T_.green },
           { date: "Aug 2, 2023", event: "Dutch Court sanctions WHOA Plan. 2/3 majority in Classes 1-3. Class 4 rejected but bound.", color: T_.green },
-          { date: "Aug 11, 2023", event: "EMERGENCE. 71 days in Ch.11. >$2.1B debt eliminated. DIP converts to $1.25B exit TL. New shares issued.", color: T_.green },
+          { date: "Aug 7, 2023", event: "US court enters supplemental Ch.15 order giving the sanctioned WHOA plan full US effect.", color: T_.purple },
+          { date: "Aug 11, 2023", event: "EMERGENCE. 71 days in Ch.11. >$2.1B debt eliminated. DIP converts to $1.25B exit TL. ~37.6M new shares issued. Fresh start accounting adopted.", color: T_.green },
           { date: "Aug 14, 2023", event: "New DBD shares begin trading on NYSE. Former first lien holders = new owners.", color: T_.green },
-          { date: "2024", event: "$950M refinancing replaces exit TL. Debt reduced by additional $100M. S&P and Moody's upgrades.", color: T_.green },
-          { date: "Mar 2026", event: "Market cap ~$2.66B. EBITDA $248M (vs. negative at filing). Stock ~$75.57. Restructuring thesis validated.", color: T_.green },
+          { date: "Oct 2023", event: "Judge David R. Jones resigns amid undisclosed Jackson Walker relationship scandal. Residual Diebold matters reassigned to Judge Isgur. Diebold unaffected by fee-disgorgement issues since S&C — not Jackson Walker — was debtors' counsel.", color: T_.amber },
+          { date: "Dec 11, 2024", event: "Refinancing priced: $950M of 7.750% Senior Secured Notes due March 2030 (5.25-yr non-call two) + new $310M RCF due Dec 2029. Goldman Sachs-led; priced at par at tight end of 7.75%-8% talk; notes traded 101.5-102 on the break. Repaid full $1.25B exit TL incl. $21M call premium.", color: T_.green },
+          { date: "FY2024", event: "Revenue $3,751M · Adj. EBITDA $452M · FCF +$109M — delivering on restructuring thesis.", color: T_.green },
+          { date: "Feb 12, 2025", event: "CreditSights (Peter Sakon) changes recommendation on the 7.75% 2030 notes from 'Hold' to 'Market Perform.'", color: T_.blue },
+          { date: "Q1-Q3 2025", event: "Mixed quarters: Q1 met guidance + orders +36%; Q2 slight weakness (rev -2.6%, EBITDA -6.4%); Q3 stabilizes (rev +2%, EBITDA +3.7%). Net leverage 1.5x per CS.", color: T_.textMid },
+          { date: "Dec 17, 2025", event: "MOODY'S UPGRADES CFR B2 → B1 on improved cash flows and leverage. Outlook stable. First specific post-refi upgrade.", color: T_.green },
+          { date: "Feb 12, 2026", event: "Q4 2025 BREAKOUT: Revenue $1.104B (+11.7% YoY), Adjusted EBITDA $164.3M (+46% YoY). Back-half acceleration drives FY2025 beat.", color: T_.green },
+          { date: "FY2025", event: "Revenue $3,806M · Adj. EBITDA $485M · FCF +$239M · Net income $95M · Diluted EPS $2.54 · Net debt $554M.", color: T_.green },
+          { date: "Apr 7, 2026", event: "S&P SMALLCAP 600 INCLUSION announced. Diebold graduates back into mainstream US equity indices less than 3 years after filing — post-emergence institutional acceptance milestone.", color: T_.accent },
+          { date: "Apr 2026", event: "Market cap ~$2.94B. Stock ~$84.78 (52-wk high). Adj. EBITDA grew 21% cumulative since emergence. Restructuring thesis validated and accelerating.", color: T_.green },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -2325,23 +2602,37 @@ function PetSmartCase() {
           </tbody>
         </table>
         <p style={{ marginTop: 10, color: T_.amber }}><strong>Key insight:</strong> Despite the 2018 crisis (unsecured notes trading at $0.48, Caa1/CCC ratings), <strong>every creditor was ultimately made whole</strong>. The Chewy IPO and COVID pet boom rescued the capital structure. Holders who panic-sold in 2018 crystallized losses; holders who held through were repaid at par in the 2021 refi.</p>
-        <p><strong>2025 Refinancing:</strong> $2.0B new TL + $1.95B secured notes (7.5%, 2032) + $750M unsecured notes (10%, 2033). Chewy Class B shares (~$1.4B) remain as collateral.</p>
+        <p><strong>Aug 2025 Refinancing — The Execution Story:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Aug 5, 2025:</strong> Deal launched at <strong>$1.7B TLB + $2.25B SSNs + $750M SUNs = $4.7B total</strong>. Dual bookrunner split: <strong>Citi led bonds, JP Morgan led TLB</strong>.</li>
+          <li><strong>Aug 6-7:</strong> Initial whispers — SSNs low-8% area, SUNs mid-10% area. Commitment deadline accelerated to Aug 8 (from Aug 11).</li>
+          <li><strong>Aug 8 — mid-marketing restructure:</strong> <strong>TLB upsized $300M to $2.0B</strong>; <strong>SSNs downsized $300M to $1.95B</strong>. Final pricing: TLB <strong>S+400 @ 99</strong> (tight end of revised S+375-400 talk); SSNs <strong>7.5%</strong> (tight end of 7.5-7.75% talk); SUNs <strong>10%</strong> (inside 10.125-10.375% talk). TLB opened <strong>99.5-100 on the break</strong>.</li>
+          <li style={{ color: T_.accent }}><strong>The ironic twist — "PetSmart Adds Investor Protections as $4.7 Billion of Debt Sold" (Bloomberg)</strong>: investors pushed back mid-marketing and demanded <strong>protective covenants added to the documentation</strong> to get the deal done. The company that pioneered the collateral-stripping "phantom guarantee" maneuver now has to offer its own "Chewy blocker"–style protections to place debt. The market has learned — and is pricing that learning into new-issue documentation.</li>
+        </ul>
       </DetailPanel>
     ),
     postEmergence: (
-      <DetailPanel title="Current State" onClose={() => setDetail(null)}>
-        <p><strong>Ownership:</strong> BC Partners remains <strong>majority shareholder</strong> with board control. GIC and management hold equity. Apollo Global Management acquired a <strong>minority equity stake</strong> in July 2023 (Kirkland & Ellis advised).</p>
-        <p><strong>Revenue:</strong> Increased &gt;40% under BC Partners ownership. PetSmart operates <strong>~1,650+ stores</strong> across US, Canada, and Puerto Rico.</p>
+      <DetailPanel title="Current State (2025-2026) — Post-COVID Reversion" onClose={() => setDetail(null)}>
+        <p><strong>Ownership:</strong> BC Partners remains <strong>majority shareholder</strong> with board control. GIC and management hold equity. Apollo Global Management acquired a <strong>minority equity stake</strong> in July 2023 (Kirkland &amp; Ellis advised).</p>
+        <p><strong>Revenue:</strong> Increased &gt;40% under BC Partners ownership through the COVID boom. PetSmart operates <strong>~1,650+ stores</strong> across US, Canada, and Puerto Rico.</p>
         <p><strong>Capital Structure (post-Aug 2025 refi):</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>~$2.0B Senior Secured Term Loan</li>
+          <li>~$2.0B Senior Secured Term Loan (S+400, 2032)</li>
           <li>~$1.95B Senior First Lien Notes due 2032 (7.500%)</li>
           <li>~$750M Senior Unsecured Notes due 2033 (10.000%)</li>
           <li>ABL Revolver (~$750M)</li>
           <li>Chewy Class B stock (~$1.4B) pledged as collateral</li>
         </ul>
-        <p><strong>Chewy:</strong> Fully independent public company (NYSE: CHWY). PetSmart owns zero shares directly. An Argos Holdings affiliate still holds Chewy Class B shares pledged as collateral for PetSmart debt.</p>
-        <p style={{ color: T_.green }}>COVID was a massive tailwind — pet stores were deemed essential, and pandemic pet adoption drove +36% sales in March 2020 and +18% revenue growth in FY2020/21. PetSmart avoided bankruptcy entirely, unlike many other PE-backed retailers.</p>
+        <p><strong>Chewy:</strong> Fully independent public company (NYSE: CHWY). PetSmart owns zero shares directly. An Argos Holdings affiliate still holds Chewy Class B shares pledged as collateral for PetSmart debt. (Feb 24, 2026: Chewy appointed Christopher Deppe CFO.)</p>
+        <p style={{ color: T_.red }}><strong>2025 Deterioration — the post-COVID tailwind has reversed:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Q2 2025 (reported Sep 2025):</strong> Revenue flat, <strong>Adjusted EBITDA down ~13% YoY</strong> — per CreditSights LevFin Insights: "double-digit decline in adjusted EBITDA for the quarter"</li>
+          <li><strong>Q3 2025 (reported Dec 17, 2025):</strong> Revenue declining, <strong>Adjusted EBITDA down 11% YoY</strong> — consecutive double-digit declines</li>
+          <li>Labeled "Special Situations / Distressed Investor Target" by LFI — back on the distressed watchlist</li>
+          <li>The COVID pandemic pet-adoption bubble that rescued PetSmart from the 2018 crisis has reversed; pet category normalization + tariff pressure driving the softness</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Another sponsor extraction — $112M Q3 2025 dividend:</strong> Per Reorg (Dec 17, 2025), PetSmart paid a <strong>$112 million dividend</strong> in Q3 2025 — simultaneously with the 11% EBITDA decline. BC Partners continues to pull cash out even as fundamentals weaken. This is the same pattern as the 2015 $800M post-LBO dividend recap and parallels J.Crew's sponsor extraction trajectory.</p>
+        <p style={{ color: T_.amber }}><strong>Bottom line:</strong> PetSmart is technically the case that "avoided bankruptcy entirely" — still true, the 2018 LME was successful, the 2019 Chewy IPO was a windfall, and the 2021 refi made all legacy creditors whole. But the 2025 story is meaningfully different from that post-COVID triumph: post-pandemic category reversion, two consecutive quarters of double-digit EBITDA decline, another $112M sponsor dividend on top of deteriorating fundamentals, and an August 2025 refi where investors demanded protective covenants to get the deal done. The case has shifted from "collateral-stripping landmark with a happy ending" to "collateral-stripping landmark with a happy middle and an uncertain 2026 outlook."</p>
       </DetailPanel>
     ),
   };
@@ -2351,7 +2642,7 @@ function PetSmartCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Largest pet retailer (1,650+ stores). <span style={{ color: T_.purple }}>BC Partners consortium</span> took PetSmart private in 2015 for $8.7B, then acquired <span style={{ color: T_.cyan }}>Chewy.com for $3.35B</span> in 2017 — the largest e-commerce acquisition ever. Facing <span style={{ color: T_.red }}>$8B+ in debt</span> and deteriorating retail fundamentals, BC Partners executed a <span style={{ color: T_.accent }}>collateral-stripping transaction</span> in June 2018 — transferring 36.5% of Chewy equity out of the credit group, triggering automatic release of Chewy's guarantee on ~$4.3B of secured debt. This "phantom guarantee" maneuver spawned <span style={{ color: T_.accent }}>"Chewy blocker"</span> provisions in credit agreements and became a landmark case alongside J.Crew and Envision.
+          Largest pet retailer (1,650+ stores). <span style={{ color: T_.purple }}>BC Partners consortium</span> took PetSmart private in 2015 for $8.7B, then acquired <span style={{ color: T_.cyan }}>Chewy.com for $3.35B</span> in 2017 — the largest e-commerce acquisition ever. Facing <span style={{ color: T_.red }}>$8B+ in debt</span> and deteriorating retail fundamentals, BC Partners executed a <span style={{ color: T_.accent }}>collateral-stripping transaction</span> in June 2018 — transferring 36.5% of Chewy equity out of the credit group, triggering automatic release of Chewy's guarantee on ~$4.3B of secured debt. This "phantom guarantee" maneuver spawned <span style={{ color: T_.accent }}>"Chewy blocker"</span> provisions in credit agreements. The case "avoided bankruptcy entirely" through the 2019 Chewy IPO and 2020-2024 COVID pet boom — but by <span style={{ color: T_.red }}>2025 the tailwind has reversed</span>: Q2/Q3 2025 EBITDA down double digits, a $112M Q3 2025 sponsor dividend paid into the decline, and an Aug 2025 refi where investors demanded protective covenants to place $4.7B of new debt. <span style={{ color: T_.amber }}>A landmark LME with a happy middle and an uncertain 2026 outlook.</span>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -2661,7 +2952,11 @@ function PetSmartCase() {
           { date: "Oct 2020", event: "Initial refinancing attempt withdrawn due to lender opposition on terms.", color: T_.amber },
           { date: "Feb 2021", event: "REFINANCING CLOSES: $2.3B new TL + $1.2B 1L notes (4.75%) + $1.15B unsecured (7.75%). All legacy debt retired at par. Chewy fully distributed to Argos. Argos pledges ~$4B Chewy stock as collateral.", color: T_.green },
           { date: "Jul 2023", event: "Apollo acquires minority equity stake from BC Partners (Kirkland & Ellis advised).", color: T_.textMid },
-          { date: "Aug 2025", event: "New $4.7B refinancing: $2.0B TL + $1.95B secured notes (7.5%, 2032) + $750M unsecured (10%, 2033). Chewy Class B shares (~$1.4B) remain as collateral.", color: T_.green },
+          { date: "Aug 5-8, 2025", event: "$4.7B REFINANCING executed. Launched as $1.7B TLB + $2.25B SSNs + $750M SUNs. Mid-marketing restructure: TLB upsized to $2.0B, SSNs downsized to $1.95B. Final: TLB S+400/99, SSNs 7.5%, SUNs 10%. Citi led bonds, JPM led TLB. Bloomberg: 'PetSmart Adds Investor Protections as $4.7 Billion of Debt Sold' — investors demanded protective covenants to place the deal.", color: T_.amber },
+          { date: "Sep 2025", event: "Q2 2025 earnings: revenue flat, Adjusted EBITDA DOWN ~13% YoY. Post-COVID pet adoption bubble reversing.", color: T_.red },
+          { date: "Dec 17, 2025", event: "Q3 2025 earnings: Revenue declining, Adjusted EBITDA DOWN 11% YoY. Consecutive double-digit declines. LFI labels as 'Special Situations / Distressed Investor Target.'", color: T_.red },
+          { date: "Q3 2025", event: "$112M SPONSOR DIVIDEND paid simultaneously with the 11% EBITDA decline. BC Partners continues to extract cash while fundamentals deteriorate — parallels the 2015 $800M dividend recap pattern.", color: T_.red },
+          { date: "Feb 24, 2026", event: "Chewy appoints Christopher Deppe as CFO. Chewy is fully independent but its stock is still pledged as collateral for PetSmart debt.", color: T_.textMid },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 80, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -2814,15 +3109,19 @@ function IncoraCase() {
       </DetailPanel>
     ),
     craneReversal: (
-      <DetailPanel title="January 2025 District Court Reversal — Judge Crane" onClose={() => setDetail(null)}>
-        <p><strong>January 2025:</strong> U.S. District Judge <strong>Randy Crane</strong> (S.D. Texas) reversed the core of Isgur's ruling on appeal.</p>
-        <p><strong>The reversal:</strong></p>
-        <p>Crane held that the 2026 indenture's sacred rights language, <strong>read textually</strong>, did not give minority noteholders the right to block the transaction. The indenture prohibited amendments that released <em>existing collateral</em>, but did not prohibit issuing new notes that diluted existing holders' voting power. "The minority noteholders didn't have that sacred right," Crane held — unlike the <em>Serta</em> plaintiffs whose loan agreement contained clearer protective language.</p>
+      <DetailPanel title="District Court Reversal — Judge Crane (Jan 2025 Preview / Dec 2025 Full Opinion)" onClose={() => setDetail(null)}>
+        <p><strong>The reversal came in two stages, 11 months apart:</strong></p>
+        <p><strong>January 2025 — the preview:</strong> U.S. District Judge <strong>Randy Crane</strong> (S.D. Texas) surprised the restructuring community with an oral/preview ruling indicating he would reverse the core of Isgur's July 2024 holding. The oral ruling didn't contain the full legal reasoning — practitioners had to wait.</p>
+        <p><strong>December 8-9, 2025 — the full written opinion:</strong> Crane released his complete written opinion with detailed legal reasoning, 11 months after the preview. Two separate holdings:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Reversed Isgur's integrated-transaction doctrine:</strong> Crane rejected the bankruptcy court's determination that issuance of new notes led directly to stripping of excluded noteholders' liens. He held that the 2026 indenture's sacred rights language, read textually, did not give minority noteholders the right to block the transaction. The indenture prohibited amendments that released <em>existing collateral</em>, but did not prohibit issuing new notes that diluted existing holders' voting power. "The minority noteholders didn't have that sacred right," Crane held.</li>
+          <li><strong>Dismissed the 2024/2026 noteholders' breach of contract claims</strong> entirely — a separate holding beyond the sacred-rights analysis. The contract-breach theory failed on its own terms.</li>
+        </ul>
         <p>Crane described the uptier as "<strong>perfectly proper</strong>" under the 2026 indenture as written — a sharp rebuke to Isgur's integrated-transaction analysis.</p>
-        <p><strong>Implication:</strong></p>
-        <p>Incora flipped from being a minority-protection precedent to being a warning that textualist courts will construe indenture language <strong>strictly</strong> against minority holders. If you want protection against a vote-dilution-plus-uptier maneuver, you need <strong>explicit language</strong> — not implied covenants, not good faith theories, not sacred rights that have to be inferred. An appeal to the Fifth Circuit is expected.</p>
-        <p style={{ color: T_.amber }}>The practical state of the law as of 2025: <em>Serta</em> (5th Cir. Dec 2024) struck down that uptier on "open market purchase" grounds — a contract-definition win. <em>Incora</em> (Crane, Jan 2025) upheld a different uptier on sacred-rights grounds — a contract-textualist loss. Minority protection now depends almost entirely on the exact words in the indenture, not on equitable principles.</p>
-        <p>Source: Octus "District Court Surprises with Preview of Ruling Reversing Judge Isgur on Incora/Wesco Uptier Exchange"; Cleary "Texas District Court Finds in Favor of Wesco/Incora LME"; Chapman &amp; Cutler "Wesco/Incora District Court Construes Debtholder Sacred Rights Narrowly."</p>
+        <p style={{ color: T_.red }}><strong>The Octus "Breaking the Chain" doctrinal framing (Dec 10, 2025):</strong> Reorg/Octus's Covenants team characterized the full opinion under the headline <em>"Breaking the Chain: District Court's Wesco Opinion Limits 'Effect of' Sacred Rights Protections, a Boon for Vote-Rigging and Other Multi-Step LMEs."</em> The framing signals the broader market takeaway — Crane's narrow reading of the "effect of" sacred-rights language means multi-step LMEs that manufacture votes to then release collateral are harder to attack than Isgur thought.</p>
+        <p><strong>Jan 7-8, 2026 — Fifth Circuit appeal filed:</strong> Minority 2026 noteholders filed a petition for Fifth Circuit review of Crane's reversal. The Incora legal saga now sits on parallel tracks with <em>Serta</em>: both are in the Fifth Circuit, both test the textualist vs. equitable reading of loan and indenture provisions. Decision timeline unknown as of early 2026.</p>
+        <p style={{ color: T_.amber }}>The practical state of the law post-Dec 2025 / pre-5th Cir ruling: <em>Serta</em> (5th Cir. Dec 2024) struck down that uptier on "open market purchase" grounds — a contract-definition win. <em>Incora</em> (Crane full opinion Dec 2025) upheld a different uptier on sacred-rights grounds — a contract-textualist loss. Minority protection now depends almost entirely on the exact words in the indenture, not on equitable principles. The 5th Circuit's Incora ruling — whenever it comes — will either confirm or unsettle this dichotomy.</p>
+        <p>Source: Octus "District Court Surprises with Preview of Ruling Reversing Judge Isgur on Incora/Wesco Uptier Exchange" (Jan 2025); Octus "District Court Explains Reversal..." (Dec 8, 2025); Octus Covenants "Breaking the Chain..." (Dec 10, 2025); Bloomberg Law "Incora's Disputed Debt Deal Didn't Breach Contracts, Judge Rules" (Dec 9, 2025); 9fin "Incora minority noteholder group appeals 2022 uptier to Fifth Circuit" (Jan 8, 2026).</p>
       </DetailPanel>
     ),
     planTreatment: (
@@ -2854,7 +3153,13 @@ function IncoraCase() {
         <p style={{ marginTop: 10, color: T_.amber }}><strong>Exit Financing:</strong> <strong>$100M</strong> in new exit debt + the $420M convertible takeback notes issued to the 1L class.</p>
         <p><strong>New Ownership:</strong> Majority owned by the former first-lien secured noteholders — principally the PSP Group (PIMCO, Silver Point) and the ad hoc 1L group advised by Davis Polk. Old Platinum sponsor equity cancelled.</p>
         <p><strong>The settlement math:</strong> Even after Isgur's ruling went against them, PSP still ended up with ~98.4% of the reorganized equity. The minority holders got a token ~1.6% + $7.5M cash as part of a negotiated settlement that released the adversary claims and avoided further appeals (at the bankruptcy level). The judicial finding of breach did not translate into proportional economic recovery — a reminder that winning in court is different from winning in the claims waterfall.</p>
-        <p>Source: Milbank "Milbank Advises Incora Through Successful Chapter 11 Restructuring"; Davis Polk "Incora Emerges from Chapter 11"; Incora GlobeNewswire Jan 31 2025.</p>
+        <p><strong>Post-Emergence Events (2025-2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Feb 3, 2026:</strong> S&amp;P assigns <strong>Incora Intermediate II LLC 'B-' / Debt 'B-' / Outlook Stable</strong> — first post-emergence rating, establishing the reorganized company's credit profile.</li>
+          <li><strong>Feb 5, 2026:</strong> Incora Intermediate II LLC <strong>admitted to the Official List</strong> (LSE) — post-emergence debt now publicly listed, signaling reintegration into mainstream credit markets.</li>
+          <li style={{ color: T_.amber }}><strong>Mar 12, 2026:</strong> <strong>Reorganized Incora sues its D&amp;O insurers to recoup $30M in uptier litigation defense costs.</strong> The company that executed the March 2022 uptier is now trying to claw back the cost of defending it from insurance carriers. A notable post-emergence event and a reminder that the economic consequences of the 2022 trade are still being litigated.</li>
+        </ul>
+        <p>Source: Milbank "Milbank Advises Incora Through Successful Chapter 11 Restructuring"; Davis Polk "Incora Emerges from Chapter 11"; Incora GlobeNewswire Jan 31 2025; Reorg "Incora/Wesco Sues D&amp;O Insurers to Recoup $30M in Uptier Litigation Defense Costs" (Mar 12, 2026).</p>
       </DetailPanel>
     ),
     blockers: (
@@ -2889,7 +3194,7 @@ function IncoraCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Global aerospace &amp; defense fastener distributor. <span style={{ color: T_.purple }}>Platinum Equity</span> took Wesco Aircraft private in Jan 2020 for ~$1.9B and merged it with Pattonair into Incora — weeks before COVID collapsed aerospace demand. In March 2022, <span style={{ color: T_.amber }}>PIMCO and Silver Point (the "PSP Group")</span> executed the defining <span style={{ color: T_.accent }}>"domino" uptier exchange</span> — first issuing new 2026 notes to themselves to manufacture a 2/3 supermajority, then using that vote to strip collateral from non-participating 1L holders and raise <span style={{ color: T_.red }}>$250M of priming new money</span>. Platinum itself participated on the 2027 side, exchanging unsecured notes it held into new 1.25-lien debt. The transaction bought ~14 months before Incora filed Ch.11 in June 2023. Judge <span style={{ color: T_.blue }}>Marvin Isgur</span> issued a <span style={{ color: T_.accent }}>landmark July 2024 ruling</span> — adopting the "integrated transaction doctrine" and holding the uptier violated the indenture's sacred rights — only for District Judge <span style={{ color: T_.red }}>Randy Crane</span> to reverse it in January 2025 on strict textualist grounds. The minority still won ~1.6% of new equity + $7.5M cash in the global settlement; PSP walked with ~98.4% of equity + $420M convertible takeback notes. The case redefined LME covenant drafting and spawned <span style={{ color: T_.accent }}>"Incora Blockers"</span>.
+          Global aerospace &amp; defense fastener distributor. <span style={{ color: T_.purple }}>Platinum Equity</span> took Wesco Aircraft private in Jan 2020 for ~$1.9B and merged it with Pattonair into Incora — weeks before COVID collapsed aerospace demand. In March 2022, <span style={{ color: T_.amber }}>PIMCO and Silver Point (the "PSP Group")</span> executed the defining <span style={{ color: T_.accent }}>"domino" uptier exchange</span> — first issuing new 2026 notes to themselves to manufacture a 2/3 supermajority, then using that vote to strip collateral from non-participating 1L holders and raise <span style={{ color: T_.red }}>$250M of priming new money</span>. Platinum itself participated on the 2027 side, exchanging unsecured notes it held into new 1.25-lien debt. The transaction bought ~14 months before Incora filed Ch.11 in June 2023. Judge <span style={{ color: T_.blue }}>Marvin Isgur</span> issued a <span style={{ color: T_.accent }}>landmark July 2024 ruling</span> — adopting the "integrated transaction doctrine" and holding the uptier violated the indenture's sacred rights — only for District Judge <span style={{ color: T_.red }}>Randy Crane</span> to reverse it (Jan 2025 preview / <strong>Dec 2025 full opinion</strong>) on strict textualist grounds. <span style={{ color: T_.accent }}>The saga continues:</span> minority 2026 noteholders <strong>filed a Fifth Circuit appeal in Jan 2026</strong>, putting Incora on parallel tracks with Serta at the 5th Cir. Post-emergence, Incora got its first S&amp;P rating (B-/Stable, Feb 2026) and is now <strong>suing its own D&amp;O insurers for $30M</strong> in uptier defense costs. Minority settled at ~1.6% equity + $7.5M cash; PSP walked with ~98.4% of equity + $420M convertible takeback notes. The case spawned <span style={{ color: T_.accent }}>"Incora Blockers"</span> in new indentures.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -3118,9 +3423,14 @@ function IncoraCase() {
           { date: "Early 2024", event: "Adversary trial. Kobre & Kim deposes Incora CFO on uptier mechanics. Minority substantially survives summary judgment. Evidence of sponsor coordination between Platinum and PSP participants surfaces in discovery.", color: T_.blue },
           { date: "Jul 10, 2024", event: "★ ISGUR BENCH RULING: the March 2022 uptier breached both the 2026 and 2027 indentures. Adopts 'integrated transaction doctrine' — first post-trial bankruptcy court ruling to invalidate a major uptier. Restores 2026 lenders' liens. Separately holds Platinum's 2027 participation violated pro rata treatment.", color: T_.green },
           { date: "Dec 27, 2024", event: "Plan confirmed. Global settlement resolves adversary. Despite Isgur's ruling, PSP takes ~98.4% of reorganized equity + $420M convertible takeback notes. Minority gets ~1.6% equity + $7.5M cash. Old Platinum equity cancelled 100%.", color: T_.amber },
-          { date: "Jan 2025", event: "★ CRANE REVERSAL: U.S. District Judge Randy Crane reverses core of Isgur's ruling. Holds the 2026 indenture's sacred rights, read textually, did not give minority the right to block the transaction. Uptier held 'perfectly proper' as written.", color: T_.red },
+          { date: "Jan 2025", event: "★ CRANE PREVIEW RULING: U.S. District Judge Randy Crane surprises practitioners with an oral/preview ruling indicating he will reverse core of Isgur's decision. Full reasoning not released.", color: T_.red },
           { date: "Jan 31, 2025", event: "EMERGENCE. ~20 months in Ch.11. Majority owned by former 1L secured noteholders (PSP Group). $100M exit debt. Incora continues as private aerospace distributor.", color: T_.green },
-          { date: "Pending", event: "Fifth Circuit appeal of Crane's reversal expected. Combined with the December 2024 Serta ruling, the final state of LME sacred-rights law for the 2020s will be set by whatever the Fifth Circuit does next.", color: T_.textGhost },
+          { date: "Dec 8-9, 2025", event: "★ CRANE FULL OPINION (11 months after preview): written reversal released. Two holdings: (1) rejects integrated transaction doctrine — 2026 indenture sacred rights, read textually, don't block the uptier; (2) DISMISSES 2024/2026 noteholders' breach of contract claims entirely. Uptier 'perfectly proper' as written.", color: T_.red },
+          { date: "Dec 10, 2025", event: "Octus Covenants frames the opinion: 'Breaking the Chain — District Court's Wesco Opinion Limits Effect of Sacred Rights Protections, a Boon for Vote-Rigging and Other Multi-Step LMEs.' Signals the broader market takeaway — Crane's narrow reading makes multi-step LMEs harder to attack.", color: T_.amber },
+          { date: "Jan 7-8, 2026", event: "★ FIFTH CIRCUIT APPEAL FILED: Minority 2026 noteholders petition the 5th Circuit for review of Crane's reversal. Incora now on parallel track with Serta — both in the 5th Circuit testing textualist vs. equitable readings of loan/indenture provisions.", color: T_.accent },
+          { date: "Feb 3, 2026", event: "S&P assigns Incora Intermediate II LLC 'B-' issuer rating, debt 'B-', outlook stable — first post-emergence rating, establishing the reorganized company's credit profile.", color: T_.blue },
+          { date: "Feb 5, 2026", event: "Incora Intermediate II LLC admitted to the Official List (LSE) — post-emergence debt publicly listed, reintegration into mainstream credit markets.", color: T_.blue },
+          { date: "Mar 12, 2026", event: "Reorganized Incora sues its D&O insurers to recoup $30M in uptier litigation defense costs. The company that executed the 2022 trade is now trying to claw back defense fees from insurance.", color: T_.amber },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -3133,6 +3443,467 @@ function IncoraCase() {
       {/* Sources footer */}
       <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
         <strong style={{ color: T_.textMid }}>Sources:</strong> Verita/Kroll docket (veritaglobal.net/incora) · Milbank &amp; Davis Polk emergence announcements · Cleary Gottlieb "Bankruptcy Court Finds Incora's Uptier Exchange is a Bust" · Octus/Reorg Research coverage · ABI "Incora Decision Shocker" · Chapman &amp; Cutler on District Court reversal · Bloomberg Apr 5 2022 · Harrison Huai Substack uptier analysis · Schulte Roth &amp; Zabel alert · Platinum Equity &amp; Willkie Farr 2020 deal announcements · GlobeNewswire. Some figures (revenue, EBITDA, precise debt at petition date) unverified in public sources.
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   CAESARS ENTERTAINMENT (CEOC)
+   ═══════════════════════════════════════════════════════ */
+
+function CaesarsCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    lbo: (
+      <DetailPanel title="The 2008 Harrah's LBO — Apollo + TPG" onClose={() => setDetail(null)}>
+        <p><strong>Dec 19, 2006:</strong> Apollo Management + TPG Capital announce the take-private of <strong>Harrah's Entertainment</strong> — then the world's largest casino operator — at <strong>$90.00/share cash</strong>. Announced value: ~$17.1B of equity value + assumption of ~$10.7B of existing Harrah's debt = <strong>~$27.8B enterprise value</strong>.</p>
+        <p><strong>Jan 28, 2008:</strong> LBO closes. At the time, it was the largest going-private deal for a publicly held casino and among the top 10 LBOs ever executed. Timing: the deal closed as the credit markets were locking up pre-GFC and just as Las Vegas gaming revenue was about to enter a multi-year decline.</p>
+        <p><strong>Lead arrangers:</strong> Bank of America, Deutsche Bank, Citigroup, Credit Suisse, JPMorgan, Merrill Lynch (per deal announcement filings; not independently re-verified in this pass).</p>
+        <p><strong>2010:</strong> Company renamed <strong>Caesars Entertainment Corporation (CEC)</strong>. IPO attempted Nov 2010 and pulled. Finally went public in <strong>Feb 2012</strong> at $9/share — a fraction of the $90 LBO price.</p>
+        <p style={{ color: T_.red }}>The thesis: Las Vegas + regional gaming was a stable cash-flow business that could support aggressive leverage. The reality: the Strip suffered an unprecedented multi-year revenue collapse from 2008-2012, and Harrah's/Caesars went from one of the strongest US gaming operators to one of the most leveraged. By 2013, the company faced an impossible debt wall.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: Cleary Gottlieb 12/19/2006 deal announcement; Cahill Gordon closing announcement Jan 28, 2008; SEC EDGAR merger proxy; Harrah's Entertainment 10-K filings.</em></p>
+      </DetailPanel>
+    ),
+    corporateSplit: (
+      <DetailPanel title="The 2013-2014 Three-Way Corporate Split — The Basis for Fraudulent Transfer Claims" onClose={() => setDetail(null)}>
+        <p>Facing an impossible debt maturity schedule at CEOC, Apollo/TPG engineered a multi-year reorganization that split Caesars Entertainment into three sibling vehicles — moving the most valuable properties and cash flows away from CEOC and its creditors. These transactions became the direct target of the examiner's fraudulent transfer findings.</p>
+        <p><strong>2013 — CERP formation:</strong> <strong>Caesars Entertainment Resort Properties, LLC ("CERP")</strong> was spun off as a new "PropCo" holding <strong>six Las Vegas properties</strong> — Paris Las Vegas, Flamingo, Harrah's LV, Rio, the LINQ Hotel development, and Octavius Tower at Caesars Palace. CERP was financed with <strong>~$4.75B of new mortgage debt</strong>. This moved prime Strip real estate out of CEOC's collateral pool.</p>
+        <p><strong>Nov 2013 — CAC IPO:</strong> <strong>Caesars Acquisition Company (CAC, NASDAQ: CACQ)</strong> IPO'd as a separately publicly-traded affiliate of CEC. CAC became the managing member of a new joint venture — <strong>Caesars Growth Partners, LLC (CGP)</strong> — 58% owned by CAC and 42% by CEC.</p>
+        <p><strong>March 2014 — "The Four Properties" sale:</strong> CEC announced the sale from CEOC to CGP of <strong>Bally's Las Vegas, The Cromwell, The Quad (later LINQ Hotel), and Harrah's New Orleans</strong> for <strong>~$2.2 billion</strong> (including ~$185M assumed debt and ~$223M committed capex). This moved another ~$1.8B of cash up to CEOC but transferred four high-value operating properties out to CGP. Fitch at the time flagged the transaction as <strong>"positive for equity and CERP but negative for CEOC"</strong> — a pre-bankruptcy warning.</p>
+        <p><strong>CGP's total asset pool after these moves:</strong> Planet Hollywood Resort + Caesars Interactive Entertainment (the online gaming + World Series of Poker business) + 41% of Horseshoe Baltimore + the Four Properties. None of this collateral was available to CEOC creditors.</p>
+        <p><strong>The B7 Amendment + Parent Guarantee Removal:</strong> In parallel, CEC amended CEOC's senior secured credit facility (the "B7 Amendment") and took steps to <strong>remove CEC's upstream parent guarantee</strong> of CEOC's unsecured notes — arguing that issuing shares to certain holders at CEC extinguished the guarantee under its own terms. First lien noteholders and unsecured holders sued in NY state court alleging the guarantee could not be unilaterally stripped.</p>
+        <p style={{ color: T_.red }}>Cumulative effect: between 2013 and 2014, Apollo/TPG moved arguably the most valuable properties and the parent guarantee out of the reach of CEOC's ~$18B of creditors. CEOC was left with a mix of regional casinos and Caesars Palace itself, while the Four Properties, CERP's prime LV real estate, Planet Hollywood, and the CIE online business sat in sibling entities beyond the bankruptcy estate's reach.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: CEC press release 3/2014 "$2.2 billion assets to CGP"; Fitch commentary 3/3/2014; REBusinessOnline; Alvarez & Marsal "Caesars Liquidity and Solvency" retrospective; NY state court filings in first lien noteholder guarantee litigation.</em></p>
+      </DetailPanel>
+    ),
+    capStructure: (
+      <DetailPanel title="Capital Structure at Filing — ~$18.4B Funded Debt" onClose={() => setDetail(null)}>
+        <p>At the January 2015 filing, CEOC carried approximately <strong>$18.4 billion of funded debt</strong> across multiple tranches. Pre-petition annual interest expense was approximately <strong>$1.7 billion/year</strong> — the term sheet with first lien noteholders targeted reducing that to ~$450M post-emergence.</p>
+        <p><strong>Approximate tranches (per plan economics and widely-cited ranges; precise balances verify against Disclosure Statement):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>First Lien Senior Secured Credit Facility (Term Loans + Revolver):</strong> ~$5.4B — held by the "First Lien Bank Group." Admin agent: <strong>Credit Suisse</strong>.</li>
+          <li><strong>First Lien Notes:</strong> ~$6.3B — indenture trustee: <strong>BOKF, N.A.</strong>. Multiple tranches with different coupons and maturities.</li>
+          <li><strong>Second Lien Notes:</strong> ~$5.2B — indenture trustees including <strong>UMB Bank</strong> and <strong>Wilmington Savings Fund Society</strong>. Led by <strong>Appaloosa Management</strong> (David Tepper) and <strong>Oaktree Capital</strong>.</li>
+          <li><strong>Senior Unsecured Notes / Subsidiary-Guaranteed Notes:</strong> various.</li>
+          <li><strong>Subordinated Notes:</strong> smaller legacy tranches.</li>
+        </ul>
+        <p style={{ color: T_.amber }}>The critical structural feature: first lien debt was backed by specific collateral, and the 2013-14 transactions had moved the most valuable collateral (Four Properties, CERP's LV real estate, Planet Hollywood, CIE) outside the credit group. What remained at CEOC was a mix of Caesars Palace, regional casinos, and Total Rewards customer data — valuable but not as valuable as what had been moved. This is what gave the examiner's fraudulent transfer findings such leverage.</p>
+      </DetailPanel>
+    ),
+    petitions: (
+      <DetailPanel title="Dueling Petitions — Delaware vs. Illinois (Jan 12-28, 2015)" onClose={() => setDetail(null)}>
+        <p>In a first-of-its-kind venue war, Caesars was pushed into Chapter 11 by <strong>two competing petitions filed three days apart in two different courts</strong>.</p>
+        <p><strong>Jan 12, 2015 — Delaware involuntary petition:</strong> Second lien noteholders (led by Appaloosa and Oaktree) filed an <strong>involuntary Chapter 11 petition against CEOC</strong> in the U.S. Bankruptcy Court for the District of Delaware — <em>In re Caesars Entertainment Operating Co., Inc.</em>, Case No. <strong>15-10047 (KG)</strong>. Second lien was trying to lock in a Delaware venue, where they believed they would get more favorable treatment on the 2013-14 asset transfers.</p>
+        <p><strong>Jan 15, 2015 — Illinois voluntary petition:</strong> CEOC and <strong>~179 affiliated debtors</strong> filed voluntary Chapter 11 petitions in the U.S. Bankruptcy Court for the Northern District of Illinois (Chicago). Lead case <strong>No. 15-01145</strong>, before <strong>Judge A. Benjamin Goldgar</strong>. Chicago venue was chosen because Caesars Entertainment Resort Properties had operations there and because the company's advisors believed Goldgar would be more sympathetic.</p>
+        <p><strong>Jan 28, 2015 — Delaware transfers to Chicago:</strong> Judge Kevin Gross in Delaware transferred the involuntary petition to N.D. Ill. under 28 U.S.C. §1412, ending the venue fight. Judge Goldgar subsequently ruled the involuntary case was effectively subsumed into the voluntary proceeding.</p>
+        <p style={{ color: T_.amber }}>The venue war was consequential. Delaware would likely have leaned more strongly toward the second lien noteholders on the fraudulent transfer analysis; Chicago proved more neutral. The creditors ultimately still got their examiner and their leverage — but only after a 2-year adversary proceeding and an intervening examiner report.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: Orrick Distressed Download "What Happens in Delaware Does Not Always Stay in Delaware"; Kroll case docket; Law360 "Trial Fires Up Over Dueling Caesars Bankruptcies"; CEOC voluntary petition press release 1/15/2015.</em></p>
+      </DetailPanel>
+    ),
+    examiner: (
+      <DetailPanel title="The Examiner — Richard J. Davis & The May 2016 Report (The Turning Point)" onClose={() => setDetail(null)}>
+        <p>The single most consequential document in the case was the Final Report of Examiner <strong>Richard J. Davis</strong> — a ~1,700-page document that transformed the second lien noteholders from backseat creditors into the dominant negotiating force.</p>
+        <p><strong>Appointment:</strong> After motions by the Second Lien Noteholders Committee, Judge Goldgar granted the examiner motion and appointed <strong>Richard J. Davis</strong> — a former Watergate prosecutor then of counsel at Weil Gotshal & Manges — as examiner in 2015. <strong>Winston & Strawn</strong> served as examiner's counsel.</p>
+        <p><strong>Mandate:</strong> Investigate the 2008 LBO era and the 2013-14 transactions, examine CEOC's solvency at various points in time, and identify potential avoidance actions or fiduciary duty claims against CEC, Apollo, TPG, directors, and officers.</p>
+        <p><strong>Final Report — March 2016 (publicly discussed May 2016):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>~1,700 pages</strong> plus appendices (one of the longest bankruptcy examiner reports ever)</li>
+          <li><strong>Headline finding: "reasonable or strong" potential claims totaling between $3.6 billion and $5.1 billion</strong></li>
+          <li>Legal theories analyzed: <strong>constructive fraudulent transfer, actual/intentional fraudulent transfer, breach of fiduciary duty, aiding and abetting breach of fiduciary duty</strong></li>
+          <li>Specific targets: the "Four Properties" transaction, the B7 credit facility amendment, the CERP transaction, the removal of the parent guarantee</li>
+          <li>Criticized the board's approval process and found that <strong>CEC's conduct became particularly problematic once CEOC became "actually insolvent"</strong></li>
+          <li>Emphasized that none of the conduct involved common-law criminal fraud — but that the legal exposure of CEC, Apollo, TPG, and the CEOC directors was substantial</li>
+        </ul>
+        <p style={{ color: T_.red }}>Impact: before the report, CEC's plan proposed giving 2L noteholders ~9% recovery. After the report, the leverage flipped. 2L holders now had a ~$5 billion hammer — claims a court could plausibly credit — that they could use to extract sponsor contribution and transform their recovery. The report is widely credited as the catalyst that forced Apollo/TPG to the table.</p>
+        <p><strong>CEC's response:</strong> CEC issued a public statement disputing the examiner's conclusions, arguing that the 2013-14 transactions were fair, the company was solvent at the time of the transfers, and the board acted within fiduciary duties. The dispute never went to trial — the parties settled.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: Final Report of Examiner Richard J. Davis (PACER/Internet Archive mirror); ABI "Will Caesars Examiner's Report Help Junior Creditors"; CEC response press release 5/2016; Law360 "Caesars Bankruptcy Highlights Cost of Conflict"; Judge Goldgar crime-fraud exception opinion.</em></p>
+      </DetailPanel>
+    ),
+    adhocGroups: (
+      <DetailPanel title="Creditor Constituencies — Ad Hoc Groups & Committees" onClose={() => setDetail(null)}>
+        <p>The CEOC case had one of the most fragmented creditor landscapes ever, with at least five major constituencies actively pushing competing plans or counter-plans. Their interplay — especially the second lien committee's willingness to spend to get an examiner — shaped every major outcome.</p>
+        <p><strong>First Lien Bank Group</strong> — the senior-most creditors. Ad hoc group held a controlling position in the term loans/revolver. Agent: Credit Suisse. Reported counsel: Kramer Levin (partially verified). Their goal: maximize recovery quickly, avoid litigation, take cash + new debt.</p>
+        <p><strong>First Lien Notes (BOKF, indenture trustee)</strong> — ~$6.3B tranche. Reached an early Restructuring Support Agreement with CEOC pre-petition. Wanted a fast consensual process with recovery in new debt + some equity.</p>
+        <p><strong>Second Lien Noteholders Committee</strong> — the decisive group. Led by <strong>Appaloosa Management (David Tepper)</strong> and <strong>Oaktree Capital</strong>. Counsel: <strong>Jones Day</strong>. Collectively held ~$5.5B of 2L notes. They filed the Delaware involuntary petition, drove the examiner appointment, and ultimately extracted ~$5B of sponsor contribution via the global settlement.</p>
+        <p><strong>Senior Unsecured / Subsidiary-Guaranteed Noteholders</strong> — additional classes with varying degrees of organized advocacy.</p>
+        <p><strong>Official Committee of Unsecured Creditors (UCC)</strong> — Court-appointed. Counsel included Proskauer Rose (among other firms per fee reporting). UCC investigated the 2013-14 transactions in parallel with the examiner and filed supporting motions.</p>
+        <p><strong>CEC / Apollo / TPG (non-debtor parent + sponsors)</strong> — Not technically creditors but the targets of the fraudulent transfer and fiduciary claims. Played dual roles — partly funding CEOC's operations via DIP-like arrangements, partly defending themselves against the very claims CEOC's own creditors were bringing. Reported counsel: Paul Weiss, Rifkind, Wharton & Garrison (partially verified).</p>
+        <p style={{ color: T_.amber }}>The 2L group's choice to pay for an examiner — an expensive, time-consuming investigation that did not directly recover cash — is one of the defining strategic moves in modern bankruptcy. Without the Davis report, the 2L group would likely have been crammed down at 9% recovery. With it, they got 66% plus the foundation for VICI Properties stock.</p>
+      </DetailPanel>
+    ),
+    mediation: (
+      <DetailPanel title="Mediation Failure — Judge Farnan & the June 2016 Deadlock" onClose={() => setDetail(null)}>
+        <p><strong>Mediator:</strong> Retired U.S. District Judge <strong>Joseph J. Farnan Jr.</strong> (D. Del.) was appointed to mediate between CEC, Apollo, TPG, the 1L bank group, the 1L noteholders, the 2L committee, and the UCC. Farnan had extensive experience in complex commercial mediation.</p>
+        <p><strong>June 2016 — deadlock declared:</strong> After months of negotiations, Farnan publicly stated that the parties remained deadlocked — with the 2L noteholders and UCC demanding substantially more sponsor contribution than CEC was willing to offer. Shortly thereafter, <strong>Farnan resigned from the mediation</strong>.</p>
+        <p><strong>Judge Goldgar's pressure tactics:</strong> Around the same time, Judge Goldgar publicly suggested from the bench that Apollo and TPG should pay meaningful amounts into any plan — and hinted that the automatic stay protecting CEC from guarantee litigation would not be extended indefinitely. The guarantee litigation in NY state court was the sword hanging over CEC — if CEC's parent guarantee was found valid, CEC itself could be liable for billions.</p>
+        <p style={{ color: T_.amber }}>The combination of: (1) the May 2016 examiner report quantifying $3.6-5.1B of exposure, (2) the June 2016 mediation failure, (3) Judge Goldgar's explicit pressure on sponsors to contribute, and (4) the looming expiration of the stay on guarantee litigation — all converged to force CEC, Apollo, and TPG back to the table with meaningfully improved terms by October 2016.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: Chicago Business "Caesars Bankruptcy Mediator Says Creditor Talks Deadlocked" (June 2016); Mediation.com on Farnan resignation; Las Vegas Review-Journal "U.S. judge suggests Apollo, TPG pay into Caesars reorganization"; ABI "Who's Who in the Caesars Bankruptcy."</em></p>
+      </DetailPanel>
+    ),
+    settlement: (
+      <DetailPanel title="The Global Settlement & CEC's ~$5B Contribution" onClose={() => setDetail(null)}>
+        <p>Following the examiner report and the mediation failure, the parties reached a global settlement over the summer and fall of 2016.</p>
+        <p><strong>October 2016 — agreement in principle with 2L:</strong> CEC, Apollo, TPG, and the second lien noteholders reached agreement on the key economic terms of a consensual plan. Total CEC/sponsor/CAC contribution: approximately <strong>$5 billion of value</strong>.</p>
+        <p><strong>Components of the ~$5B contribution (approximate, per plan economics press release):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Merger of Caesars Acquisition Company (CAC) into CEC</strong> — bringing CGP's assets (Planet Hollywood, CIE, Horseshoe Baltimore, the Four Properties) back into the single new company for CEOC creditors</li>
+          <li><strong>Apollo and TPG contributed their entire ~14% equity stake</strong> in the reorganized CEC (~$950 million in then-implied value) to CEOC creditors</li>
+          <li>Cash contribution from CEC</li>
+          <li>New convertible notes issued by the reorganized CEC to CEOC creditors</li>
+          <li>New common equity in the reorganized CEC to CEOC creditors</li>
+          <li>Releases of intercompany claims and fiduciary claims (in exchange for the value contribution)</li>
+        </ul>
+        <p><strong>Jan 13, 2017:</strong> Third Amended Joint Plan of Reorganization filed with the bankruptcy court.</p>
+        <p><strong>Jan 17, 2017:</strong> <strong>Plan confirmed by Judge Goldgar.</strong></p>
+        <p style={{ color: T_.green }}>The settlement achieved three things CEC's original plan would not have: (1) it released Apollo/TPG from potential billion-dollar fraudulent transfer exposure; (2) it delivered dramatically higher recoveries to 2L and unsecured creditors (~66% vs. ~9% originally proposed); and (3) it allowed emergence without a trial on the examiner's findings.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: CEC August 2016 key economic terms press release; PitchBook "TPG, Apollo give up nearly $1B in equity"; LVRJ restructuring deal coverage; Jones Day "Caesars Second Lien Noteholders Confirm Support for Economic Terms"; Disclosure Statement and Third Amended Plan (Kroll docket).</em></p>
+      </DetailPanel>
+    ),
+    recoveries: (
+      <DetailPanel title="Class-by-Class Recoveries (per Plan Economics)" onClose={() => setDetail(null)}>
+        <p><strong>Plan confirmed:</strong> Jan 17, 2017. <strong>Effective date:</strong> Oct 6, 2017 (~33 months total in Ch.11). Delivery was via a mix of cash, new CEC common equity, new CEC convertible notes, new secured debt, and — critically — equity in the newly-spun-off VICI Properties REIT.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Class</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Treatment</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Recovery</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { cls: "First Lien Bank (~$5.4B)", treat: "Cash + new first lien debt", rec: "~115%", c: T_.green },
+              { cls: "First Lien Notes (~$6.3B)", treat: "Cash + new debt + CEC equity + VICI equity", rec: "~109%", c: T_.green },
+              { cls: "Sub-Guaranteed Notes", treat: "CEC equity + convertible notes + VICI equity", rec: "~83%", c: T_.blue },
+              { cls: "Second Lien Notes (~$5.2B)", treat: "CEC equity + convertible notes + VICI equity", rec: "~66%", c: T_.amber },
+              { cls: "Senior Unsecured", treat: "CEC equity + convertible notes", rec: "~66%", c: T_.amber },
+              { cls: "Old CEC Equity (Apollo/TPG)", treat: "14% stake (~$950M) surrendered to plan", rec: "~0%", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.cls}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.treat}</td>
+                <td style={{ padding: "6px 8px", color: r.c, fontWeight: 600, textAlign: "right" }}>{r.rec}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 10, color: T_.green }}><strong>Key observations:</strong> First lien creditors actually <em>made money</em> on the restructuring — they recovered above par thanks to accrued interest, make-whole premiums, and exit economics. Second lien and unsecured — classes that had been heading toward single-digit recoveries before the examiner report — ended up around 66 cents on the dollar plus meaningful equity upside via VICI. The only class completely wiped out was old CEC equity, and even there Apollo/TPG retained a minority position in the reorganized entity via other mechanisms.</p>
+        <p style={{ color: T_.amber }}><strong>Important caveat:</strong> these recoveries are <em>per CEC's August 2016 plan economics press release and widely-cited secondary sources</em>. Actual effective-date recoveries may have differed slightly once the plan was implemented and market prices set. For precise figures, consult the Disclosure Statement and Notice of Effective Date on the Kroll docket.</p>
+      </DetailPanel>
+    ),
+    vici: (
+      <DetailPanel title="VICI Properties — The Birth of the Modern Gaming REIT" onClose={() => setDetail(null)}>
+        <p><strong>October 6, 2017 — simultaneously with CEOC's emergence:</strong> A new publicly-traded REIT called <strong>VICI Properties Inc.</strong> was spun off to CEOC creditors as part of the plan. VICI held a curated portfolio of CEC's most valuable real estate assets and became the first modern large-scale gaming REIT.</p>
+        <p><strong>Initial portfolio:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>19 casinos and racetracks</strong> including Caesars Palace Las Vegas and 18 regional properties</li>
+          <li><strong>4 golf courses</strong></li>
+          <li>Master-leased to Caesars Entertainment (the reorganized CEC) on a triple-net basis at an initial annual rent of approximately <strong>$630 million</strong></li>
+        </ul>
+        <p><strong>Feb 2018 — NYSE IPO:</strong> VICI completed its formal IPO on the NYSE, raising approximately <strong>$1.2 billion</strong>. The REIT traded publicly under the ticker <strong>VICI</strong>.</p>
+        <p><strong>Master lease structure:</strong> Different from the Windstream/Uniti situation in one critical way — this was a <strong>voluntary</strong> sale-leaseback, negotiated as part of a consensual plan, with arm's-length market rent. There was no hidden "phantom sale-leaseback" claim of the kind Aurelius used to detonate Windstream. Caesars and VICI have continued to work together for years.</p>
+        <p style={{ color: T_.green }}><strong>Market significance:</strong> VICI established the template that Gaming & Leisure Properties (GLPI, a predecessor) had first built — but at much larger scale and with stronger tenant quality. It became the precedent for MGM Growth Properties (later merged into VICI in 2022), the template for Hard Rock and other gaming operators considering sale-leaseback structures, and one of the most successful post-bankruptcy value creations of the decade. VICI today owns real estate across the Strip and US regional gaming and is a member of the S&P 500.</p>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: BusinessWire VICI spin-off completion 10/6/2017; VICI Q3 2017 10-Q (SEC EDGAR); Harvard Law Forum "VICI Properties: Creating Value from the Ashes of Caesars' Demise"; Nevada Independent.</em></p>
+      </DetailPanel>
+    ),
+    eldorado: (
+      <DetailPanel title="Post-Emergence & the 2019-2020 Eldorado Merger" onClose={() => setDetail(null)}>
+        <p>The reorganized Caesars Entertainment Corporation emerged from Ch.11 with a cleaned-up balance sheet, the CAC merger completed, the VICI spin executed, and a new board. But the full arc of the post-LBO story did not close until the Eldorado merger nearly three years later.</p>
+        <p><strong>2017-2019 — The Icahn catalyst:</strong> <strong>Carl Icahn</strong> accumulated a significant stake in the reorganized CEC and publicly pushed the board to explore a sale. Icahn argued that Caesars was undermanaged and that a strategic combination would unlock value. His activist pressure — combined with the board's own strategic review — led to engagement with Eldorado Resorts.</p>
+        <p><strong>June 24, 2019 — Eldorado deal announced:</strong> <strong>Eldorado Resorts</strong> (a smaller regional casino operator led by <strong>Tom Reeg</strong>) announced an agreement to acquire Caesars Entertainment in a <strong>$17.3 billion</strong> cash-and-stock deal. Structure:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>$7.2 billion in cash</strong></li>
+          <li><strong>~77 million Eldorado shares</strong> issued to Caesars shareholders</li>
+          <li>Assumption of Caesars net debt</li>
+          <li>Total implied value: $17.3B</li>
+        </ul>
+        <p><strong>July 20, 2020 — merger closes:</strong> After more than a dozen state gaming regulator approvals and FTC review, the Eldorado-Caesars merger closed. The combined company retained the <strong>Caesars Entertainment</strong> name and trades on NASDAQ under ticker <strong>CZR</strong>. CEO: <strong>Tom Reeg</strong> (formerly Eldorado CEO).</p>
+        <p><strong>Full stakeholder arc retrospectively:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Apollo + TPG</strong>: Invested ~$17.1B of equity in 2008. Largely wiped out by 2017. Surrendered their 14% reorganized stake (~$950M). Exited any residual position via the Eldorado merger. <strong>Net outcome: near-total loss on the LBO.</strong></li>
+          <li><strong>CEOC 1L bank and notes</strong>: Recovered ~109-115%. Made money on the restructuring. <strong>Net outcome: positive total return.</strong></li>
+          <li><strong>CEOC 2L noteholders (Appaloosa + Oaktree)</strong>: Their bet on the examiner and litigation leverage paid off. Moved from ~9% recovery in early plan drafts to ~66% plus VICI equity, which subsequently appreciated. <strong>Net outcome: likely positive total return given VICI price appreciation.</strong></li>
+          <li><strong>CEOC senior unsecured</strong>: ~66% recovery, similar profile to 2L.</li>
+          <li><strong>VICI creditors-turned-shareholders</strong>: Received brand-new REIT equity in 2017. VICI appreciated substantially over 2018-2024. <strong>Net outcome: one of the best post-bankruptcy recoveries of the decade.</strong></li>
+          <li><strong>Eldorado/Tom Reeg</strong>: Used activist pressure + strategic vision to reverse-merge a smaller operator into Caesars. Now runs one of the two largest gaming operators in the US.</li>
+          <li><strong>CreditSights today (2026)</strong>: Covers reorganized CZR actively. Current rating: <strong>"Underperform"</strong> (changed from "Market Perform" Mar 2, 2026) — reflecting concerns about post-merger debt levels and regional gaming competition.</li>
+        </ul>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>Source: CEC Eldorado combination announcement 6/24/2019; PR Newswire merger closing 7/20/2020; Las Vegas Sun; CDC Gaming; Caesars Tom Reeg bio; CreditSights coverage.</em></p>
+      </DetailPanel>
+    ),
+    advisors: (
+      <DetailPanel title="Professional Advisors" onClose={() => setDetail(null)}>
+        <p>CEOC was among the most expensive US bankruptcies by professional fees — total fees are widely reported at <strong>~$150 million or more</strong>. Kirkland & Ellis alone billed approximately <strong>$77 million</strong>.</p>
+        <p><strong>Debtors (CEOC):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Kirkland &amp; Ellis</strong> — lead bankruptcy counsel (~$77M fees)</li>
+          <li><strong>AlixPartners / AP Services</strong> — restructuring advisor. <strong>Randall Eisenberg</strong> as Chief Restructuring Officer</li>
+          <li><strong>Millstein &amp; Co.</strong> — investment banker / financial advisor</li>
+          <li><strong>Prime Clerk / Kroll Restructuring Administration</strong> — claims and noticing agent</li>
+        </ul>
+        <p><strong>Examiner Richard J. Davis:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Winston &amp; Strawn</strong> — examiner's counsel</li>
+        </ul>
+        <p><strong>Second Lien Noteholders Committee (Appaloosa, Oaktree, et al.):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Jones Day</strong> — counsel</li>
+        </ul>
+        <p><strong>Official Committee of Unsecured Creditors (UCC):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Proskauer Rose</strong> — counsel (among other firms in UCC fee reporting)</li>
+        </ul>
+        <p><strong>Non-debtor parent / sponsor side (CEC, Apollo, TPG):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Paul, Weiss, Rifkind, Wharton &amp; Garrison</strong> — reported counsel (partially verified)</li>
+          <li>Additional sponsor-side bankruptcy advice reportedly from O'Melveny and Wachtell at various points (unverified)</li>
+        </ul>
+        <p style={{ color: T_.textDim, fontSize: 11 }}><em>1L bank group counsel (reportedly Kramer Levin) and 1L notes/BOKF counsel (reportedly White &amp; Case) not independently re-verified in this pass. For the complete advisor roster, consult the monthly fee statements on the Kroll docket at cases.ra.kroll.com/ceoc.</em></p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Largest US casino operator. <span style={{ color: T_.purple }}>Apollo + TPG</span> took Harrah's Entertainment private in Jan 2008 for <span style={{ color: T_.red }}>~$27.8B</span> at the peak of the LBO cycle. As the post-GFC Vegas revenue collapse shattered the thesis, the sponsors executed a <span style={{ color: T_.amber }}>2013-14 three-way corporate split</span> — moving the most valuable properties (Bally's LV, The Cromwell, Harrah's New Orleans, Planet Hollywood, Caesars Interactive, LV Strip real estate) out of the debt-laden operating subsidiary (CEOC) into new sibling entities CERP and Caesars Growth Partners. On <span style={{ color: T_.red }}>Jan 12, 2015</span>, second lien noteholders (Appaloosa + Oaktree) filed an involuntary petition in Delaware; three days later CEOC filed a voluntary petition in Chicago to seize venue — the biggest bankruptcy venue war ever fought over an involuntary case. <span style={{ color: T_.accent }}>Examiner Richard J. Davis</span> produced a ~1,700-page report finding <strong>$3.6B-$5.1B in potentially avoidable transfers</strong>, including actual fraudulent transfer and breach of fiduciary duty exposure for Apollo, TPG, and the board. Mediation failed (June 2016), then Judge Goldgar publicly pressured the sponsors to contribute. Global settlement reached Oct 2016: Apollo/TPG and CEC contributed <span style={{ color: T_.green }}>~$5B</span> of value to the plan, including their entire 14% equity stake (~$950M). Plan confirmed Jan 17, 2017; CEOC emerged Oct 6, 2017 simultaneously with the spin-off of <span style={{ color: T_.accent }}>VICI Properties</span> — the modern gaming REIT precedent. 1L lenders recovered ~109-115%; 2L and unsecured ~66% plus VICI upside; old equity largely wiped. In 2019-2020, Icahn-backed Eldorado Resorts acquired the reorganized Caesars for <span style={{ color: T_.accent }}>$17.3B</span>. Today Caesars trades as CZR under CEO Tom Reeg.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Funded Debt", v: "~$18.4B", c: T_.red },
+            { l: "Filed", v: "Jan 15, 2015", c: T_.red },
+            { l: "Emerged", v: "Oct 6, 2017", c: T_.green },
+            { l: "Time in Ch.11", v: "~33 months", c: T_.textMid },
+            { l: "Examiner Findings", v: "$3.6-5.1B", c: T_.accent },
+            { l: "Sponsor Contrib.", v: "~$5B", c: T_.amber },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART
+         ════════════════════════════════════════════════════ */}
+      <div style={{ margin: "0 auto" }}>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate Structure — Post 2013-14 Split, At Filing</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>The three-way split that isolated valuable assets from CEOC creditors. Case 15-01145 (N.D. Ill.), Judge A. Benjamin Goldgar. Click boxes for details.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>CEOC (Debtor)</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Sibling Entities (Outside Estate)</span></span>
+        </div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: Sponsors */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Apollo Global Management + TPG Capital"
+            sub="LBO sponsors · ~$17.1B equity in 2008 → ~$0 by 2017"
+            color={T_.purple}
+            badges={[{ text: "TARGETS OF EXAMINER FINDINGS", color: T_.red }, { text: "~$950M EQUITY CONTRIBUTED", color: T_.amber }]}
+            onClick={() => toggle("lbo")} selected={detail === "lbo"}
+            width={440}
+          />
+        </div>
+
+        <VLineLabel label="Took Harrah's private Jan 2008 · Renamed Caesars 2010" color={T_.purple} />
+
+        {/* ROW 2: CEC Parent */}
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Caesars Entertainment Corporation (CEC)"
+            sub="Public parent · NASDAQ: CZR · Non-debtor · Target of fraudulent transfer claims"
+            color={T_.amber}
+            badges={[{ text: "NON-DEBTOR PARENT", color: T_.amber }, { text: "CONTRIBUTED ~$5B TO PLAN", color: T_.green }]}
+            onClick={() => toggle("corporateSplit")} selected={detail === "corporateSplit"}
+            width={480}
+          />
+        </div>
+
+        <VLine h={14} />
+
+        {/* THREE-WAY SPLIT */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginTop: 8 }}>
+
+          {/* CEOC (DEBTOR) */}
+          <div style={{ border: `2px solid ${T_.red}40`, borderRadius: 10, padding: "10px 12px", background: `${T_.red}06` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: T_.red, textTransform: "uppercase", marginBottom: 6, textAlign: "center" }}>CEOC (The Debtor)</div>
+            <div onClick={() => toggle("capStructure")} style={{ cursor: "pointer" }}>
+              <Box
+                label="Caesars Entertainment Operating Co."
+                sub="~179 affiliate debtors · ~$18.4B funded debt · Caesars Palace + regional casinos"
+                color={T_.red}
+                badges={[{ text: "CH.11 (N.D. ILL.)", color: T_.red }]}
+                selected={detail === "capStructure"}
+              />
+            </div>
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
+              The Four Properties, LV Strip real estate, and CIE were moved out in 2013-14 → basis for examiner's findings
+            </div>
+          </div>
+
+          {/* CERP */}
+          <div style={{ border: `2px dashed ${T_.green}40`, borderRadius: 10, padding: "10px 12px", background: `${T_.green}06` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: T_.green, textTransform: "uppercase", marginBottom: 6, textAlign: "center" }}>CERP (PropCo — 2013)</div>
+            <Box
+              label="Caesars Entertainment Resort Properties"
+              sub="6 LV properties + LINQ + Octavius · ~$4.75B mortgage debt · Outside CEOC estate"
+              color={T_.green}
+              dashed
+            />
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
+              Paris LV · Flamingo · Harrah's LV · Rio · LINQ · Octavius Tower
+            </div>
+          </div>
+
+          {/* CGP */}
+          <div style={{ border: `2px dashed ${T_.green}40`, borderRadius: 10, padding: "10px 12px", background: `${T_.green}06` }}>
+            <div style={{ fontSize: 10, fontWeight: 700, color: T_.green, textTransform: "uppercase", marginBottom: 6, textAlign: "center" }}>CGP (Growth JV — 2013-14)</div>
+            <Box
+              label="Caesars Growth Partners, LLC"
+              sub="JV with CAC (NASDAQ: CACQ) · Held the Four Properties, Planet Hollywood, CIE, Horseshoe Baltimore"
+              color={T_.green}
+              dashed
+              badges={[{ text: "CAC 58% / CEC 42%", color: T_.textGhost }]}
+            />
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center", marginTop: 8, lineHeight: 1.5 }}>
+              $2.2B "Four Properties" purchase from CEOC in Mar 2014 → target of examiner's fraudulent transfer analysis
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      {/* ── Detail buttons ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginTop: 12, marginBottom: 4 }}>
+        {[
+          { k: "petitions", label: "Dueling Petitions — Venue War", color: T_.red, sub: "Delaware involuntary → Chicago voluntary" },
+          { k: "examiner", label: "The Examiner Report (May 2016)", color: T_.accent, sub: "1,700 pages · $3.6-5.1B findings · Turning point" },
+          { k: "adhocGroups", label: "Creditor Constituencies", color: T_.blue, sub: "1L bank · 1L notes · 2L · UCC · CEC/sponsors" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Detail buttons row 2 ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 4 }}>
+        {[
+          { k: "mediation", label: "Mediation Failure", color: T_.amber, sub: "Judge Farnan · June 2016 deadlock · Resigned" },
+          { k: "settlement", label: "Global Settlement & ~$5B", color: T_.green, sub: "Oct 2016 · Apollo/TPG surrender 14% stake" },
+          { k: "recoveries", label: "Class Recoveries", color: T_.blue, sub: "1L ~109-115% · 2L ~66% · Equity ~0%" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Detail buttons row 3 ── */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 4 }}>
+        {[
+          { k: "vici", label: "VICI Properties Spin-Off", color: T_.accent, sub: "19 casinos + 4 golf · $630M rent · Modern gaming REIT" },
+          { k: "eldorado", label: "Eldorado Merger (2019-2020)", color: T_.green, sub: "Icahn catalyst · $17.3B · Tom Reeg CEO" },
+          { k: "advisors", label: "Professional Advisors", color: T_.amber, sub: "K&E · AlixPartners · Millstein · Winston · Jones Day" },
+        ].map(d => (
+          <div key={d.k} onClick={() => toggle(d.k)} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === d.k ? `${d.color}12` : T_.bgInput,
+            border: `1px solid ${detail === d.k ? d.color : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: d.color }}>{d.label}</div>
+            <div style={{ fontSize: 9, color: T_.textDim, marginTop: 2 }}>{d.sub}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart max-width wrapper */}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "Sponsor-Conflict Asset Transfers (Pre-LME Era)", color: T_.red, summary: "CEOC is the grand-daddy of modern sponsor-conflict cases — the 2013-14 transfers predate J.Crew (2016) and Envision (2022).", detail: "Apollo/TPG moved the Four Properties, CERP's Las Vegas real estate, Planet Hollywood, and Caesars Interactive Entertainment out of CEOC into sibling entities over a ~15-month period. Each individual transaction had a plausible business rationale at the time. Only when viewed as an integrated sequence did the examiner conclude that the cumulative effect was to strip ~$3.6-5.1B of value from CEOC creditors. This is why modern credit agreements now include J.Crew blockers, Envision blockers, and 'Caesars' provisions restricting intercompany asset transfers even when no single transaction triggers a restricted payment breach. CEOC predates all of them — it's the original sponsor-conflict drop-down case, even though it's usually filed under 'mega-LBO flameout' rather than 'LME'." },
+          { label: "Constructive vs. Actual Fraudulent Transfer", color: T_.amber, summary: "Two distinct legal theories with very different proof standards — the examiner found both applied to CEOC.", detail: "Constructive fraudulent transfer requires showing (1) the debtor received less than reasonably equivalent value for the transferred asset AND (2) the debtor was insolvent or rendered insolvent by the transfer. It's about economic substance, not intent. Actual fraudulent transfer requires showing the debtor had intent to hinder, delay, or defraud creditors — a harder bar but with broader remedies when proved. The examiner's $3.6B-$5.1B range covered constructive claims with high confidence ($3.6B floor) plus additional amounts subject to actual fraudulent transfer theories (up to $5.1B total). The distinction mattered because if actual fraudulent transfer was proved, Apollo/TPG directors and officers could face personal liability and punitive damages — not just the recovery of the transferred property. This is why the examiner report was so devastating: it credibly threatened personal liability, not just business claims." },
+          { label: "Involuntary Petition + Venue Warfare", color: T_.blue, summary: "Second lien used an involuntary petition to forum-shop Delaware — CEOC countered with a voluntary petition in Illinois.", detail: "Under 11 U.S.C. §303, three creditors holding at least $18,600 in unsecured claims can file an involuntary Chapter 11 petition. Historically this was a tool to force unwilling debtors into bankruptcy — it was rare to use for venue shopping. The Caesars 2L group used it strategically: by filing first in Delaware, they tried to lock in a court and judge (Kevin Gross) they believed would be more sympathetic to fraudulent transfer theories. CEOC responded with a voluntary petition in Chicago three days later, arguing the Chicago filing superseded the Delaware action. Delaware ultimately transferred the case — but the episode established a modern pattern: sophisticated creditors can use involuntary petitions as a venue selection tool, not just a forcing mechanism. Creditors have since tried similar moves in other cases with mixed results." },
+          { label: "The Examiner as a Restructuring Weapon", color: T_.accent, summary: "Second lien committee spent time and money on an examiner and got 60+ percentage points of recovery in return.", detail: "Examiners under 11 U.S.C. §1104(c) are appointed to investigate specific issues (typically fraud, misconduct, or mismanagement by current or former debtor management). They're neutral, unlike financial advisors or litigation counsel. Their reports carry weight because they're viewed as independent. The CEOC 2L committee bet — correctly — that an examiner would surface enough fraudulent transfer exposure to shift negotiating leverage. Richard Davis cost the estate millions in examiner fees and delayed the case by a year. But the return was enormous: 2L moved from 9% recovery in early plan drafts to 66% plus VICI upside. This is the canonical example of 'the examiner as a strategic weapon' — a playbook later used (with varying success) in other contested LBO flameouts. The key is having a credible theory of wrongdoing that an examiner can develop into a formal finding; without that, the examiner motion is just a delay tactic." },
+          { label: "Parent Guarantee Removal & Intercompany Suits", color: T_.purple, summary: "CEC tried to strip its upstream guarantee of CEOC notes — creditors sued in NY state court to enforce.", detail: "Pre-petition, CEC attempted to remove its upstream parent guarantee of CEOC's unsecured notes by arguing that specific share issuance mechanics under the guarantee's terms automatically extinguished the obligation. First lien noteholders and unsecured holders sued in NY state court to block the removal. The litigation was on a parallel track to the bankruptcy and was Judge Goldgar's key leverage point against Apollo/TPG: if CEC's guarantee was found valid, CEC would face direct billion-dollar exposure. The bankruptcy court stayed the NY litigation early in the case — but Goldgar made clear that the stay would not be extended indefinitely. This meant Apollo/TPG faced an asymmetric risk: settle now with certainty, or face a trial that could result in CEC writing a check for billions. They settled." },
+          { label: "Intercreditor Coalition Dynamics", color: T_.emerald, summary: "Five creditor groups pushed different plans — the deal only happened when the 2L group developed independent leverage.", detail: "Complex Chapter 11 cases with multiple creditor constituencies often deadlock for a simple reason: each group's preferred outcome is different. In Caesars: 1L bank lenders wanted a quick cash-out. 1L noteholders wanted a consensual deal with CEC's cooperation. 2L noteholders wanted litigation leverage for maximum recovery. Unsecured creditors wanted anything above zero. And CEC wanted minimal sponsor contribution. The resolution required the 2L group to develop independent leverage (via the examiner report) and then trade that leverage for settlement economics — simultaneously agreeing to release claims that the 1L group didn't have standing to bring. This 'leverage-for-settlement' dynamic is replicated in many modern contested bankruptcies, but CEOC is the textbook example because the examiner report let observers see exactly what claims were being released and at what implied value." },
+          { label: "Gaming REIT Spin-Off as Plan Currency", color: T_.cyan, summary: "Spinning off a REIT let Caesars give creditors two forms of value — new operating equity + new real estate equity.", detail: "VICI Properties was the first modern large-scale gaming REIT spun off as part of a Chapter 11 plan. The structure let Caesars give CEOC creditors equity in two separate entities — the reorganized CEC (operating company) and VICI (real estate) — without diluting either. Creditors effectively got: (1) new CEC equity, valued at implied operating earnings, plus (2) VICI REIT shares, valued at implied rental cash flows. The combined value often exceeded what either structure alone could have delivered, because REITs trade at different multiples than C-corp operators. VICI became an S&P 500 company and significantly appreciated post-emergence, making the 2L/unsecured recovery (66% plus VICI stock) materially better than the headline number suggested. Post-Caesars, VICI became the precedent for MGM Growth Properties (later merged into VICI) and other gaming REIT separations. For modern distressed investing, gaming REITs are one of the few 'structural upside' tools available in a plan negotiation." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "Dec 19, 2006", event: "Apollo + TPG announce take-private of Harrah's Entertainment at $90/share cash. ~$17.1B equity + ~$10.7B assumed debt = ~$27.8B enterprise value. Largest gaming LBO ever.", color: T_.purple },
+          { date: "Jan 28, 2008", event: "LBO closes. Timing is catastrophic — credit markets seizing, Las Vegas revenue about to enter a multi-year collapse.", color: T_.purple },
+          { date: "2008-2012", event: "Las Vegas Strip revenue collapses post-GFC. Harrah's/Caesars EBITDA craters. Debt-to-EBITDA blows out as business deteriorates.", color: T_.red },
+          { date: "2010", event: "Company renamed Caesars Entertainment Corporation (CEC).", color: T_.textMid },
+          { date: "Feb 2012", event: "CEC IPO at $9/share — a fraction of the $90/share LBO price. Minority float to establish a public market in the equity.", color: T_.amber },
+          { date: "2013", event: "CERP formed. Six Las Vegas properties (Paris, Flamingo, Harrah's LV, Rio, LINQ development, Octavius Tower) spun into new PropCo with ~$4.75B of new mortgage debt. First major transfer out of CEOC's collateral pool.", color: T_.amber },
+          { date: "Nov 2013", event: "Caesars Acquisition Company (CAC) IPOs on NASDAQ. CAC becomes managing member of Caesars Growth Partners (CGP) — a new JV (58% CAC / 42% CEC) that will hold additional CEC assets.", color: T_.amber },
+          { date: "Mar 2014", event: "$2.2B sale of 'The Four Properties' (Bally's LV, The Cromwell, The Quad/LINQ Hotel, Harrah's New Orleans) from CEOC to CGP. Fitch warns: 'positive for equity and CERP but negative for CEOC.' Planet Hollywood, Caesars Interactive, and Horseshoe Baltimore also sit in CGP.", color: T_.red },
+          { date: "2014", event: "B7 credit facility amendment. CEC attempts to remove parent guarantee of CEOC unsecured notes via share issuance mechanics. First lien noteholders and unsecured holders file NY state court actions challenging guarantee removal.", color: T_.red },
+          { date: "Late 2014", event: "CEOC interest burden ~$1.7B/yr on ~$18.4B of debt. Cash position deteriorating. Restructuring inevitable.", color: T_.red },
+          { date: "Jan 12, 2015", event: "SECOND LIEN NOTEHOLDERS FILE INVOLUNTARY PETITION against CEOC in D. Del. (Case 15-10047 KG). Forum-shopping Delaware for perceived more favorable fraudulent transfer treatment.", color: T_.red },
+          { date: "Jan 15, 2015", event: "CEOC FILES VOLUNTARY CH.11 in N.D. Ill. (Chicago, Case 15-01145, Judge A. Benjamin Goldgar). ~179 affiliated debtors. Term sheet with first lien noteholders already in hand. Attempts to seize venue from Delaware.", color: T_.red },
+          { date: "Jan 28, 2015", event: "Judge Kevin Gross (D. Del.) transfers the involuntary petition to N.D. Ill. under §1412. Venue fight ends; Chicago wins.", color: T_.amber },
+          { date: "2015", event: "Second Lien Noteholders Committee moves for appointment of an examiner. After contested hearings, Judge Goldgar grants the motion and appoints Richard J. Davis (formerly of Weil Gotshal). Winston & Strawn serves as examiner's counsel.", color: T_.blue },
+          { date: "2015-2016", event: "Davis conducts a ~14-month investigation. Reviews board minutes, solvency analyses, fairness opinions, deposition testimony. Separately, Judge Goldgar issues crime-fraud exception rulings enabling 2L discovery of privileged sponsor communications.", color: T_.blue },
+          { date: "Mar 2016", event: "Final Report of Examiner filed (initially under seal). Approximately 1,700 pages plus appendices.", color: T_.accent },
+          { date: "May 2016", event: "★ EXAMINER REPORT UNSEALED. Findings: $3.6B-$5.1B in potentially avoidable claims under constructive + actual fraudulent transfer, breach of fiduciary duty, and aiding & abetting theories. Targets: CEC, Apollo, TPG, CEOC directors. CEC publicly disputes conclusions.", color: T_.accent },
+          { date: "Jun 2016", event: "Mediator (retired Judge Joseph J. Farnan Jr.) publicly declares creditor negotiations deadlocked. Farnan resigns from the mediation shortly thereafter. Judge Goldgar from the bench publicly suggests Apollo and TPG should contribute meaningful value.", color: T_.red },
+          { date: "Jul-Sep 2016", event: "CEC, Apollo/TPG, 1L groups, 2L committee, and UCC re-engage under Judge Goldgar's pressure. Parallel guarantee litigation in NY state court proceeds with no further stay extensions guaranteed.", color: T_.blue },
+          { date: "Oct 2016", event: "GLOBAL SETTLEMENT REACHED. CEC, Apollo, TPG, and CAC collectively contribute ~$5B of value: cash, new CEC equity, convertible notes, CAC merger, and surrender of Apollo/TPG's 14% stake (~$950M). Second lien committee confirms support.", color: T_.green },
+          { date: "Jan 13, 2017", event: "Third Amended Joint Plan of Reorganization filed.", color: T_.green },
+          { date: "Jan 17, 2017", event: "★ PLAN CONFIRMED by Judge Goldgar.", color: T_.green },
+          { date: "Oct 6, 2017", event: "EMERGENCE. CEOC effective date + CAC merger into CEC + VICI Properties REIT spin-off (19 casinos + 4 golf courses, ~$630M initial annual rent, triple-net master lease to Caesars). ~33 months total in Ch.11.", color: T_.green },
+          { date: "Recoveries", event: "1L bank ~115% · 1L notes ~109% · Sub-guaranteed ~83% · 2L notes ~66% · Senior unsecured ~66% · Old CEC equity ~0% (Apollo/TPG 14% stake contributed). Per CEC Aug 2016 plan economics press release.", color: T_.blue },
+          { date: "Feb 2018", event: "VICI Properties Inc. completes NYSE IPO, raises ~$1.2B. Trades under ticker VICI. Becomes the first modern large-scale gaming REIT.", color: T_.accent },
+          { date: "2017-2019", event: "Carl Icahn accumulates stake in reorganized CEC and publicly pushes for strategic sale. Activist pressure + board's own strategic review lead to engagement with Eldorado Resorts.", color: T_.amber },
+          { date: "Jun 24, 2019", event: "ELDORADO-CAESARS MERGER ANNOUNCED: $17.3B deal ($7.2B cash + ~77M Eldorado shares + debt assumption). Eldorado led by CEO Tom Reeg.", color: T_.accent },
+          { date: "Jul 20, 2020", event: "Merger closes after 12+ state gaming regulator approvals + FTC review. Combined company retains Caesars Entertainment name, NASDAQ ticker CZR. Tom Reeg CEO.", color: T_.green },
+          { date: "Mar 2, 2026", event: "CreditSights (lead analyst Bussey) changes rating on CZR from 'Market Perform' to 'Underperform' — reflecting concerns about post-merger debt levels and regional gaming competition.", color: T_.amber },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Sources footer */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Final Report of Examiner Richard J. Davis (Internet Archive mirror of PACER PDF) · Kroll/Prime Clerk case docket cases.ra.kroll.com/ceoc · Third Amended Joint Plan of Reorganization and Disclosure Statement · CEC SEC filings (10-K 2013-2017) · Cleary Gottlieb + Cahill Gordon LBO announcements (2006-2008) · Orrick "Distressed Download" venue battle analysis · Law360 "Trial Fires Up Over Dueling Caesars Bankruptcies" · ABI "Who's Who in the Caesars Bankruptcy" · CEC August 2016 key economic terms press release · PitchBook "TPG, Apollo give up nearly $1B in equity" · BusinessWire VICI spin-off completion (10/6/2017) · Harvard Law Forum "VICI Properties: Creating Value from the Ashes of Caesars' Demise" · Las Vegas Review-Journal · Chicago Business mediator coverage · Jones Day second lien deal sheet · Sujeet Indap &amp; Max Frumes, <em>The Caesars Palace Coup</em> (Diversion Books, 2021) · Harvard Business School case N9-218-001. Some figures (precise tranche balances, sponsor-side advisor list, 1L group counsel) approximate per plan economics press releases and widely-cited secondary sources; verify against Disclosure Statement and Rule 2019 filings for publication-grade accuracy.
       </div>
     </div>
   );
@@ -3183,6 +3954,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "jcrew" && <JCrewCase />}
       {activeCase === "petsmart" && <PetSmartCase />}
       {activeCase === "incora" && <IncoraCase />}
+      {activeCase === "caesars" && <CaesarsCase />}
     </div>
   );
 }
