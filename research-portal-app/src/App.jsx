@@ -410,6 +410,7 @@ function AppContent() {
               { key: "whatIf", label: "What If" },
               { key: "notesIdeas", label: "Ideas" },
               { key: "dataVerification", label: "Agent Commands" },
+              { key: "tools", label: "Tools" },
             ].map(t => (
               <div key={t.key} style={{ ...s.navCo, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
                 <span>{t.label}</span>
@@ -695,6 +696,82 @@ function AppContent() {
 
         {/* DATA VERIFICATION AGENT */}
         {view.type === "dataVerificationAgent" && <DataVerificationAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+
+        {/* TOOLS */}
+        {view.type === "toolsAgent" && (
+          <div style={s.page}>
+            <h1 style={s.pageTitle}>Tools</h1>
+            <p style={s.pageSub}>CLI tools for pulling research data. Ask Claude in natural language and it will run the commands behind the scenes.</p>
+
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 6 }}>Reorg / Octus</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>Path: C:\Users\ylin1\reorg-tools\</div>
+              <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 16, lineHeight: 1.7 }}>
+                Pulls articles, company coverage, and intelligence from Reorg/Octus via authenticated session. Session stored in state.json — re-run <code style={{ background: "#0B0F19", padding: "2px 6px", borderRadius: 4, fontSize: 12 }}>node login.js</code> if session expires.
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1E293B" }}>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Command</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Description</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Example prompt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { cmd: "lookup <name>", desc: "Search for a company ID by name", ex: "\"Look up Perforce on Reorg\"" },
+                    { cmd: "articles <company_id>", desc: "List recent articles for a company", ex: "\"Pull Reorg articles on Perforce\"" },
+                    { cmd: "article <id>", desc: "Pull full text of a specific article", ex: "\"Pull that Reorg article\" (after seeing the list)" },
+                    { cmd: "popular [hours]", desc: "Most popular articles in last N hours (default 24)", ex: "\"What are the most popular Reorg articles today?\"" },
+                    { cmd: "api <path>", desc: "Raw API call to any Octus endpoint", ex: "\"Hit the Octus API at /api/v3/...\"" },
+                  ].map(r => (
+                    <tr key={r.cmd} style={{ borderBottom: "1px solid #1E293B" }}>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0", fontFamily: "monospace", fontSize: 12 }}>{r.cmd}</td>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0" }}>{r.desc}</td>
+                      <td style={{ padding: "8px 12px", color: "#60A5FA", fontStyle: "italic" }}>{r.ex}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 6 }}>Third Bridge Forum</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>Path: C:\Users\ylin1\thirdbridge-tools\</div>
+              <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 16, lineHeight: 1.7 }}>
+                Searches and pulls expert interview transcripts from Third Bridge Forum. Session stored in state.json — re-run <code style={{ background: "#0B0F19", padding: "2px 6px", borderRadius: 4, fontSize: 12 }}>node login.js</code> if session expires.
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1E293B" }}>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Command</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Description</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Example prompt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { cmd: "search <keyword>", desc: "Search interviews by keyword", ex: "\"What Third Bridge interviews do we have on Perforce?\"" },
+                    { cmd: "recent [--count N]", desc: "Most recently uploaded transcripts (default 20)", ex: "\"Show me the latest Third Bridge transcripts\"" },
+                    { cmd: "interview <uuid>", desc: "Pull full transcript with speaker attribution", ex: "\"Pull that Third Bridge transcript\" (after seeing the list)" },
+                    { cmd: "meta <uuid>", desc: "Interview metadata without transcript", ex: "\"Get the details on that interview\"" },
+                    { cmd: "api GET|POST <path>", desc: "Raw API call to any Forum endpoint", ex: "\"Hit the Third Bridge API at /api/...\"" },
+                  ].map(r => (
+                    <tr key={r.cmd} style={{ borderBottom: "1px solid #1E293B" }}>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0", fontFamily: "monospace", fontSize: 12 }}>{r.cmd}</td>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0" }}>{r.desc}</td>
+                      <td style={{ padding: "8px 12px", color: "#60A5FA", fontStyle: "italic" }}>{r.ex}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.7, marginTop: 8 }}>
+              Sessions expire periodically. If you get auth errors, tell Claude to "re-login to Reorg" or "re-login to Third Bridge" and complete the login in the browser window that opens.
+            </div>
+          </div>
+        )}
 
 
         {/* EQUITY RESEARCH */}
