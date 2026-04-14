@@ -1855,7 +1855,8 @@ export default function IndustryResearch({ initialTab }) {
                     <div style={{ width: 120, flexShrink: 0, fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.8px", textAlign: "right" }}>{layer.label}</div>
                     <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" }}>
                       {layer.items.map((item, ii) => {
-                        const inPort = item.link && tickerWeight(item.link) > 0.01;
+                        const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
+                        const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
                         return (
                         <div key={ii} style={{
                           background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
@@ -1864,7 +1865,7 @@ export default function IndustryResearch({ initialTab }) {
                           borderLeft: `3px solid ${item.color}`,
                           position: "relative",
                         }}>
-                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: "#10B981", fontWeight: 700, letterSpacing: "0.5px" }}>IN PORTFOLIO</div>}
+                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: "#10B981", fontWeight: 700, letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
                           <div style={{ fontSize: 13, fontWeight: 700, color: "#E2E8F0" }}>{item.name}</div>
                           <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3, lineHeight: 1.4 }}>{item.sub}</div>
                         </div>
@@ -3356,17 +3357,21 @@ export default function IndustryResearch({ initialTab }) {
         const TSMC_COLOR = "#E11D48";
         const nodeColor = (n) => ({ "N3": "#8B5CF6", "N2": "#3B82F6", "A16": "#06B6D4", "Pkg": "#F59E0B" }[n] || "#94A3B8");
 
-        const roadmap = [
-          { node: "N3", variant: "N3B", status: "HVM", date: "H2 2022", detail: "Base 3nm; ~25 EUV layers. Fab 18 Tainan." },
-          { node: "N3", variant: "N3E", status: "HVM", date: "2023", detail: "Main 3nm workhorse; ~19 EUV layers. Apple A17, M3." },
-          { node: "N3", variant: "N3P", status: "HVM", date: "Q4 2024", detail: "+5% perf or 5-10% lower power vs N3E. Apple 2025 iPhones, NVIDIA Rubin R100." },
-          { node: "N3", variant: "N3X", status: "On track", date: "H2 2025", detail: "Extreme performance variant for HPC." },
-          { node: "N2", variant: "N2", status: "HVM", date: "Q4 2025", detail: "First nanosheet/GAA node. Fab 22 (Kaohsiung) in production; Fab 20 (Hsinchu) to follow. 4x more tape-outs vs N5 at same stage." },
-          { node: "N2", variant: "N2P", status: "On track", date: "Late 2026", detail: "Enhanced 2nm without backside power. Optimized for client SoCs (smartphones, entry PCs)." },
-          { node: "A16", variant: "A16 (1.6nm)", status: "On track", date: "Late 2026", detail: "Super Power Rail (backside power delivery). Target: data center / AI accelerators. Arizona Fab 21 Phase 3." },
-          { node: "Pkg", variant: "CoWoS-S", status: "HVM", date: "2023+", detail: "Traditional CoWoS. Being replaced by CoWoS-L for next-gen AI." },
-          { node: "Pkg", variant: "CoWoS-L", status: "Ramping", date: "2025-2026", detail: "5.5x reticle interposer (2026); 9.5x in 2027 (12 HBM stacks + 4 accelerators). Primary for NVIDIA B200/B300." },
-          { node: "Pkg", variant: "SoIC", status: "Ramping", date: "2025+", detail: "3D face-to-face hybrid bonding (6um pitch). >100% CAGR 2022-2026." },
+        // N2 + CoWoS focused roadmap
+        const n2Roadmap = [
+          { variant: "N2", status: "HVM", date: "Q4 2025", detail: "First nanosheet/GAA transistor node. Fab 22 (Kaohsiung) in production; Fab 20 (Hsinchu) to follow. 4x more tape-outs vs N5 at same stage. Key customers: Apple, NVIDIA, AMD, Qualcomm, MediaTek." },
+          { variant: "N2P", status: "On track", date: "Late 2026", detail: "Enhanced 2nm without backside power delivery. Optimized for client SoCs (smartphones, entry-level PCs). Better power efficiency than base N2." },
+          { variant: "A16 (1.6nm)", status: "On track", date: "Late 2026", detail: "First node with Super Power Rail (backside power delivery / BSPDN). Targets data center and AI accelerators. NVIDIA reportedly first customer. Arizona Fab 21 Phase 3 will produce A16." },
+        ];
+        const cowosRoadmap = [
+          { variant: "CoWoS-L", status: "Ramping", date: "2025-2026", detail: "Primary packaging for next-gen AI GPUs. 5.5x reticle interposer in 2026, scaling to 9.5x in 2027 (12 HBM4 stacks + 4 accelerator dies). NVIDIA B300 and Rubin R100 both depend on CoWoS-L. Feynman (2028) expected to continue on CoWoS-L or successor." },
+          { variant: "CoWoS-S", status: "Legacy", date: "2023+", detail: "Traditional CoWoS. Demand declining as customers transition to CoWoS-L. Still used for smaller AI chips and non-GPU HPC." },
+          { variant: "SoIC (3D)", status: "Ramping", date: "2025+", detail: "3D chip stacking via hybrid bonding (6um pitch). CAGR >100% from 2022-2026. Enables chiplet-based architectures — multiple dies stacked vertically." },
+        ];
+        const priorNodes = [
+          { variant: "N3P (3nm)", status: "HVM", date: "Q4 2024", detail: "Current mainstream. Apple 2025 iPhones, NVIDIA Rubin R100. +5% perf vs N3E." },
+          { variant: "N3E (3nm)", status: "HVM", date: "2023", detail: "Main 3nm workhorse. ~19 EUV layers." },
+          { variant: "N3X (3nm)", status: "On track", date: "H2 2025", detail: "Extreme performance variant for HPC." },
         ];
 
         const capexData = [
@@ -3512,18 +3517,57 @@ export default function IndustryResearch({ initialTab }) {
             ))}
           </div>
 
-          {/* ── Technology Roadmap Timeline ── */}
+          {/* ── Next-Gen: N2 / 2nm Wafer Roadmap ── */}
           <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Technology Roadmap</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {roadmap.map((r, i) => (
-                <div key={i} style={{ display: "flex", gap: 12, padding: "8px 12px", background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", borderLeft: `3px solid ${nodeColor(r.node)}` }}>
-                  <div style={{ minWidth: 90, fontSize: 12, fontWeight: 700, color: nodeColor(r.node) }}>{r.variant}</div>
-                  <div style={{ minWidth: 80, fontSize: 12, color: "#94A3B8" }}>{r.date}</div>
-                  <div style={{ minWidth: 90 }}>
-                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 4 }}>Next-Gen: 2nm Wafer Roadmap</div>
+            <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>TSMC's transition from FinFET (N3) to Gate-All-Around nanosheet transistors (N2/A16). N2 capacity target: ~50K wpm by end 2025, ~120-130K wpm by end 2026.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {n2Roadmap.map((r, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", borderLeft: "3px solid #3B82F6" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#E2E8F0" }}>{r.variant}</span>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <span style={{ fontSize: 11, color: "#94A3B8" }}>{r.date}</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
+                    </div>
                   </div>
-                  <div style={{ fontSize: 12, color: "#E2E8F0", lineHeight: 1.5, flex: 1 }}>{r.detail}</div>
+                  <div style={{ fontSize: 13, color: "#94A3B8", lineHeight: 1.7 }}>{r.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── CoWoS Advanced Packaging Roadmap ── */}
+          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 4 }}>CoWoS Advanced Packaging Roadmap</div>
+            <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>CoWoS-L is the critical bottleneck for AI GPU scaling. NVIDIA Rubin (R100, 2026) and Feynman (~2028) both depend on CoWoS-L — without it, these GPUs cannot be assembled. CoWoS-L integrates multiple accelerator dies + HBM stacks on a single large interposer.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {cowosRoadmap.map((r, i) => (
+                <div key={i} style={{ padding: "14px 16px", background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", borderLeft: "3px solid #F59E0B" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: "#E2E8F0" }}>{r.variant}</span>
+                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                      <span style={{ fontSize: 11, color: "#94A3B8" }}>{r.date}</span>
+                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
+                    </div>
+                  </div>
+                  <div style={{ fontSize: 13, color: "#94A3B8", lineHeight: 1.7 }}>{r.detail}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Prior Nodes (collapsed reference) ── */}
+          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: "14px 24px", marginBottom: 20 }}>
+            <div style={{ fontSize: 13, fontWeight: 600, color: "#64748B", marginBottom: 8 }}>Current Production Nodes (N3 Family)</div>
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {priorNodes.map((r, i) => (
+                <div key={i} style={{ padding: "8px 12px", background: "#0B0F19", borderRadius: 6, border: "1px solid #1E293B", flex: "1 1 200px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "#E2E8F0" }}>{r.variant}</span>
+                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>{r.detail}</div>
                 </div>
               ))}
             </div>
@@ -3617,7 +3661,54 @@ export default function IndustryResearch({ initialTab }) {
             </div>
           </div>
 
-          {/* ── Fab Expansion Map ── */}
+          {/* ── Supply Chain & Ecosystem Map ── */}
+          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 4 }}>TSMC Supply Chain & Ecosystem Map</div>
+            <div style={{ fontSize: 12, color: "#64748B", marginBottom: 20 }}>Revenue and capex flow from materials → equipment → TSMC → packaging → customers. Direct stock positions (&gt;$20K) highlighted in green.</div>
+
+            {ecosystemLayers.map((layer, li) => (
+              <div key={layer.label}>
+                {li > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke="#334155" strokeWidth="2" fill="none"/></svg>
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
+                  <div style={{ minWidth: 120, maxWidth: 120, textAlign: "right", paddingTop: 10 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
+                    {layer.items.map(item => {
+                      const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
+                      const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
+                      return (
+                        <div key={item.name} style={{
+                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
+                          border: `1px solid ${inPort ? "#10B981" : "#1E293B"}`,
+                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
+                          borderLeft: `3px solid ${item.color}`, position: "relative",
+                        }}>
+                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: "#10B981", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
+                          <div style={{ fontSize: 13, fontWeight: 700, color: "#E2E8F0" }}>{item.name}</div>
+                          <div style={{ fontSize: 11, color: "#94A3B8", lineHeight: 1.4 }}>{item.sub}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: "#64748B" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 4, border: "1px dashed #10B981", background: "rgba(16,185,129,0.08)" }} />
+                <span>Direct position (&gt;$20K)</span>
+              </div>
+              <span>↓ = revenue / capex flow direction</span>
+            </div>
+          </div>
+
+          {/* ── Global Fab Expansion ── */}
           <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Global Fab Expansion</div>
             {fabExpansion.map(fab => (
@@ -3637,52 +3728,6 @@ export default function IndustryResearch({ initialTab }) {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* ── Supply Chain & Ecosystem Map ── */}
-          <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: "#F8FAFC", marginBottom: 4 }}>TSMC Supply Chain & Ecosystem Map</div>
-            <div style={{ fontSize: 12, color: "#64748B", marginBottom: 20 }}>Revenue and capex flow from materials → equipment → TSMC → packaging → customers. Portfolio holdings highlighted in green.</div>
-
-            {ecosystemLayers.map((layer, li) => (
-              <div key={layer.label}>
-                {li > 0 && (
-                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
-                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke="#334155" strokeWidth="2" fill="none"/></svg>
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
-                  <div style={{ minWidth: 120, maxWidth: 120, textAlign: "right", paddingTop: 10 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
-                    {layer.items.map(item => {
-                      const inPort = item.link && ["TSM","NVDA","MSFT","META","AMZN","GOOGL","AVGO","MU","ASML","AMD","QCOM","LRCX","AMAT","KLAC","INTC","ARM","SNPS","CDNS"].includes(item.link);
-                      return (
-                        <div key={item.name} style={{
-                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
-                          border: `1px solid ${inPort ? "#10B981" : "#1E293B"}`,
-                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
-                          borderLeft: `3px solid ${item.color}`, position: "relative",
-                        }}>
-                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: "#10B981", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>IN PORTFOLIO</div>}
-                          <div style={{ fontSize: 13, fontWeight: 700, color: "#E2E8F0" }}>{item.name}</div>
-                          <div style={{ fontSize: 11, color: "#94A3B8", lineHeight: 1.4 }}>{item.sub}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: "#64748B" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 16, height: 16, borderRadius: 4, border: "1px dashed #10B981", background: "rgba(16,185,129,0.08)" }} />
-                <span>In portfolio</span>
-              </div>
-              <span>↓ = revenue / capex flow direction</span>
-            </div>
           </div>
 
           <div style={{ fontSize: 11, color: "#64748B", lineHeight: 1.6 }}>
