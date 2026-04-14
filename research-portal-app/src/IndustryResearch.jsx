@@ -3361,7 +3361,7 @@ export default function IndustryResearch({ initialTab }) {
           { node: "N3", variant: "N3E", status: "HVM", date: "2023", detail: "Main 3nm workhorse; ~19 EUV layers. Apple A17, M3." },
           { node: "N3", variant: "N3P", status: "HVM", date: "Q4 2024", detail: "+5% perf or 5-10% lower power vs N3E. Apple 2025 iPhones, NVIDIA Rubin R100." },
           { node: "N3", variant: "N3X", status: "On track", date: "H2 2025", detail: "Extreme performance variant for HPC." },
-          { node: "N2", variant: "N2", status: "HVM", date: "Q4 2025", detail: "First nanosheet/GAA node. Fab 20 (Hsinchu) + Fab 22 (Kaohsiung). 4x more tape-outs vs N5 at same stage." },
+          { node: "N2", variant: "N2", status: "HVM", date: "Q4 2025", detail: "First nanosheet/GAA node. Fab 22 (Kaohsiung) in production; Fab 20 (Hsinchu) to follow. 4x more tape-outs vs N5 at same stage." },
           { node: "N2", variant: "N2P", status: "On track", date: "Late 2026", detail: "Enhanced 2nm without backside power. Optimized for client SoCs (smartphones, entry PCs)." },
           { node: "A16", variant: "A16 (1.6nm)", status: "On track", date: "Late 2026", detail: "Super Power Rail (backside power delivery). Target: data center / AI accelerators. Arizona Fab 21 Phase 3." },
           { node: "Pkg", variant: "CoWoS-S", status: "HVM", date: "2023+", detail: "Traditional CoWoS. Being replaced by CoWoS-L for next-gen AI." },
@@ -3371,7 +3371,7 @@ export default function IndustryResearch({ initialTab }) {
 
         const capexData = [
           { year: "FY2024", capex: 29.8, rev: 90.1, gm: 56.0, note: "Actual" },
-          { year: "FY2025", capex: 41.0, rev: 122.3, gm: 59.9, note: "Actual" },
+          { year: "FY2025", capex: 40.9, rev: 122.5, gm: 59.9, note: "Actual" },
           { year: "FY2026E", capex: 54.0, rev: 159.0, gm: 64.0, note: "Guided: $52-56B capex, ~30% rev growth, 63-65% GM" },
         ];
 
@@ -3415,13 +3415,13 @@ export default function IndustryResearch({ initialTab }) {
 
         const fabExpansion = [
           { loc: "Arizona (Fab 21)", phases: [
-            { phase: "P1", node: "4nm (N4)", status: "Production", date: "Early 2025", invest: "$165B total (6 fabs)" },
+            { phase: "P1", node: "4nm (N4)", status: "Production", date: "Q4 2024", invest: "$165B total (6 fabs)" },
             { phase: "P2", node: "3nm (N3)", status: "Construction", date: "2027", invest: "Equipment install Q3 2026" },
             { phase: "P3", node: "2nm / A16", status: "Groundbreaking", date: "2027", invest: "Accelerated 1yr ahead" },
           ]},
           { loc: "Japan — Kumamoto (JASM)", phases: [
             { phase: "P1", node: "12/16/22/28nm", status: "Production", date: "Dec 2024", invest: "55K wpm; image sensors, auto" },
-            { phase: "P2", node: "2nm (pivoted from 6nm)", status: "Construction", date: "~2027", invest: "$13.9B" },
+            { phase: "P2", node: "3nm or 2nm (pivoted from 6nm)", status: "Construction", date: "~2027", invest: "$13.9B; target node TBD" },
           ]},
           { loc: "Germany — Dresden (ESMC)", phases: [
             { phase: "JV", node: "28/22nm, 16/12nm", status: "Equipment H2 2026", date: "Late 2027", invest: "JV: Bosch + Infineon + NXP; 40K wpm" },
@@ -3439,8 +3439,8 @@ export default function IndustryResearch({ initialTab }) {
         // Supply chain ecosystem layers
         const ecosystemLayers = [
           { label: "End Customers", items: [
-            { name: "Apple", sub: "~20-22% rev. A/M-series SoCs (N3P)", color: "#94A3B8", link: "AAPL" },
-            { name: "NVIDIA", sub: "~22-25% rev (largest 2025). B200/B300/Rubin", color: "#76B900", link: "NVDA" },
+            { name: "Apple", sub: "~17% rev FY2025 (was ~24% in FY2024). A/M-series SoCs (N3P)", color: "#94A3B8", link: "AAPL" },
+            { name: "NVIDIA", sub: "~19% rev FY2025 (largest customer). B200/B300/Rubin", color: "#76B900", link: "NVDA" },
             { name: "AMD", sub: "~7% rev. EPYC, MI300/MI400", color: "#ED1C24", link: "AMD" },
             { name: "Qualcomm", sub: "~8% rev. Snapdragon SoCs", color: "#3253DC", link: "QCOM" },
             { name: "MediaTek", sub: "~9% rev. Dimensity, Google TPU design", color: "#FFCC00" },
@@ -3495,12 +3495,12 @@ export default function IndustryResearch({ initialTab }) {
           {/* ── Key Metrics ── */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
             {[
-              { label: "FY2025 Revenue", value: "$122.3B", sub: "+38.5% YoY" },
+              { label: "FY2025 Revenue", value: "$122.5B", sub: "+34% YoY (USD)" },
               { label: "FY2026E Revenue", value: "~$159B", sub: "~30% growth guided" },
               { label: "FY2026E Capex", value: "$52-56B", sub: "Record; +30% YoY" },
               { label: "Gross Margin", value: "63-65%", sub: "Q1 2026 guide" },
-              { label: "Advanced (<7nm)", value: "74%", sub: "of wafer revenue" },
-              { label: "Foundry Share", value: "~72%", sub: "90%+ at advanced" },
+              { label: "Advanced (<7nm)", value: "74-77%", sub: "of wafer revenue" },
+              { label: "Foundry Share", value: "~70%", sub: "90%+ at advanced" },
               { label: "CoWoS (2026E)", value: "130K wpm", sub: "3.4x from late 2024" },
               { label: "Arizona", value: "$165B", sub: "Largest FDI in U.S." },
             ].map(m => (
