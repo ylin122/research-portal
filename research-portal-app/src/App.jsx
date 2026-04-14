@@ -804,8 +804,42 @@ function AppContent() {
               </div>
             </div>
 
+            <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 24, marginBottom: 20 }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 6 }}>9fin</div>
+              <div style={{ fontSize: 12, color: "#64748B", marginBottom: 16 }}>Path: C:\Users\ylin1\9fin-tools\</div>
+              <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 16, lineHeight: 1.7 }}>
+                Pulls news, articles, morning coffee, company search, and calendar from 9fin. Session stored in state.json — re-run <code style={{ background: "#0B0F19", padding: "2px 6px", borderRadius: 4, fontSize: 12 }}>node login.js</code> if session expires. Note: click around inside the product before signaling done — 9fin sessions can be flaky if saved too early.
+              </div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
+                <thead>
+                  <tr style={{ borderBottom: "1px solid #1E293B" }}>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Command</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Description</th>
+                    <th style={{ textAlign: "left", padding: "8px 12px", color: "#94A3B8", fontWeight: 600 }}>Example prompt</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {[
+                    { cmd: "search <keyword>", desc: "Search across companies, instruments, documents, transcripts", ex: "\"Search 9fin for Perforce\"" },
+                    { cmd: "company <keyword>", desc: "Look up a company by name", ex: "\"Look up Perforce on 9fin\"" },
+                    { cmd: "news [--company <id>]", desc: "Latest news feed, optionally filtered by company", ex: "\"What's 9fin saying about Perforce?\"" },
+                    { cmd: "article <uuid>", desc: "Pull full article text", ex: "\"Pull that 9fin article\"" },
+                    { cmd: "morningcoffee", desc: "Today's Morning Coffee briefing", ex: "\"Pull the 9fin morning coffee\"" },
+                    { cmd: "calendar [--days N]", desc: "Upcoming events in next N days (default 7)", ex: "\"What's on the 9fin calendar this week?\"" },
+                    { cmd: "api GET|POST <path>", desc: "Raw API call to any 9fin endpoint", ex: "\"Hit the 9fin API at /api/...\"" },
+                  ].map(r => (
+                    <tr key={r.cmd} style={{ borderBottom: "1px solid #1E293B" }}>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0", fontFamily: "monospace", fontSize: 12 }}>{r.cmd}</td>
+                      <td style={{ padding: "8px 12px", color: "#E2E8F0" }}>{r.desc}</td>
+                      <td style={{ padding: "8px 12px", color: "#60A5FA", fontStyle: "italic" }}>{r.ex}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
             <div style={{ fontSize: 12, color: "#64748B", lineHeight: 1.7, marginTop: 8 }}>
-              Sessions expire periodically. If you get auth errors, tell Claude to "re-login to Reorg", "re-login to Third Bridge", or "re-login to CreditSights" and complete the login in the browser window that opens.
+              Sessions expire periodically. If you get auth errors, tell Claude to "re-login to Reorg", "re-login to Third Bridge", "re-login to CreditSights", or "re-login to 9fin" and complete the login in the browser window that opens.
             </div>
           </div>
         )}
