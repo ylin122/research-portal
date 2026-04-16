@@ -138,6 +138,29 @@ export async function upsertResearchResult(companyId, results) {
   if (error) console.error('upsertResearchResult:', error);
 }
 
+// ─── Agent Definitions ────────────────────────────────
+export async function loadAgents() {
+  const { data, error } = await supabase
+    .from('agent_definitions')
+    .select('*')
+    .order('sort_order', { ascending: true });
+  if (error) { console.error('loadAgents:', error); return []; }
+  return data || [];
+}
+
+export async function upsertAgent(agent) {
+  const { error } = await supabase.from('agent_definitions').upsert(
+    { ...agent, updated_at: new Date().toISOString() },
+    { onConflict: 'id' }
+  );
+  if (error) console.error('upsertAgent:', error);
+}
+
+export async function deleteAgent(id) {
+  const { error } = await supabase.from('agent_definitions').delete().eq('id', id);
+  if (error) console.error('deleteAgent:', error);
+}
+
 // ─── Sector Notes ──────────────────────────────────────
 export async function loadSectorNotes() {
   const { data, error } = await supabase.from('sector_notes').select('*');
