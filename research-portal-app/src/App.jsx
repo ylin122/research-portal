@@ -5,6 +5,7 @@ import ThesisAgent from "./ThesisAgent";
 import NotesIdeasAgent from "./NotesIdeasAgent";
 import DataVerificationAgent from "./DataVerificationAgent";
 import BusinessModels from "./BusinessModels";
+import Accounting from "./Accounting";
 import CreditInstruments from "./CreditInstruments";
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
@@ -590,6 +591,11 @@ function AppContent() {
             <span>Business Models</span>
           </div>
 
+          {/* Accounting */}
+          <div style={{ ...s.sectorHdr, color: view.type === "accounting" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "accounting" }); setEditingField(null); }}>
+            <span>Accounting</span>
+          </div>
+
           {/* Financial Instruments */}
           <div style={{ ...s.sectorHdr, color: view.type === "creditInstruments" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "creditInstruments" }); setEditingField(null); }}>
             <span>Financial Instruments</span>
@@ -919,6 +925,9 @@ function AppContent() {
         {/* BUSINESS MODELS */}
         {view.type === "businessModels" && <BusinessModels initialTab={view.sub} />}
 
+        {/* ACCOUNTING */}
+        {view.type === "accounting" && <Accounting initialTab={view.sub} />}
+
         {/* CREDIT INSTRUMENTS */}
         {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
 
@@ -951,6 +960,7 @@ function AppContent() {
                 { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
                 { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
                 { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
+                { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
                 { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
                 { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
                 { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
