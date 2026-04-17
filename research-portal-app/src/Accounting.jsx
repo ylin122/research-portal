@@ -55,9 +55,213 @@ function DetectionList({ items }) {
   );
 }
 
+// ─── ASC STANDARDS REFERENCE DATA ───
+const ASC_STANDARDS = [
+  {
+    code: "ASC 606",
+    title: "Revenue from Contracts with Customers",
+    effective: "Public: Dec 2017 (FY beginning after Dec 15, 2017). Private: Dec 2018.",
+    replaced: "Replaced ASC 605, SOP 97-2 (software), SOP 81-1 (construction), and ~200 pieces of industry-specific guidance with a single principles-based framework.",
+    goal: "Eliminate inconsistencies across industries. Under old rules, a software company and a construction company doing economically similar deals could recognize revenue completely differently. ASC 606 forces everyone through the same 5-step model.",
+    framework: "5-step model: (1) Identify the contract \u2014 enforceable rights and obligations exist. (2) Identify performance obligations \u2014 distinct goods/services promised. (3) Determine the transaction price \u2014 including variable consideration, time value of money, non-cash consideration. (4) Allocate the price to performance obligations \u2014 using standalone selling prices. (5) Recognize revenue when/as each obligation is satisfied \u2014 either at a point in time (control transfers) or over time (customer simultaneously receives and consumes benefits).",
+    keyJudgments: "Over-time vs. point-in-time recognition, identifying distinct performance obligations in bundled deals, estimating variable consideration (rebates, penalties, returns), principal vs. agent (gross vs. net reporting), contract modification treatment (cumulative catch-up vs. prospective).",
+    relevance: "Most common area of restatements and SEC enforcement. Software/SaaS, construction, and multi-element arrangements are highest-risk. Watch for DSO trends, deferred revenue changes, and percentage-of-completion estimate revisions.",
+    example: "A SaaS company sells a $1.2M, 3-year deal that bundles software licenses, implementation services, and ongoing support. Under ASC 606: Step 1 \u2014 one contract exists. Step 2 \u2014 three performance obligations (license, implementation, support) because each is distinct. Step 3 \u2014 transaction price is $1.2M. Step 4 \u2014 allocate based on standalone selling prices: license $500K, implementation $200K, support $500K. Step 5 \u2014 license recognized at a point in time when delivered ($500K Day 1), implementation over time as work is performed ($200K over ~3 months), support ratably over 36 months (~$13.9K/month). Without ASC 606, the company might have booked the full $1.2M upfront. With ASC 606, only $500K hits revenue on Day 1, the rest is spread. This is why deferred revenue is so important to track \u2014 it shows how much has been paid but not yet recognized.",
+    financialImpact: {
+      incomeStatement: "Revenue recognized only as performance obligations are satisfied \u2014 $500K license on Day 1, $200K implementation over 3 months, $500K support ratably over 36 months. Timing of revenue directly drives reported margins and growth rates.",
+      balanceSheet: "Cash collected upfront ($1.2M) but not yet earned sits as Deferred Revenue (liability). As revenue is recognized, deferred revenue decreases and retained earnings increase. Accounts receivable appears if billed but not yet collected.",
+      cashFlow: "Cash from operations gets the full $1.2M when collected, regardless of revenue timing. This is why CFO can significantly exceed net income for subscription businesses \u2014 cash comes in upfront, revenue trickles in over time.",
+    },
+  },
+  {
+    code: "ASC 842",
+    title: "Leases",
+    effective: "Public: Jan 2019. Private: Jan 2022.",
+    replaced: "Replaced ASC 840. Under old rules, operating leases were entirely off-balance sheet \u2014 companies could have billions in lease obligations with no balance sheet recognition.",
+    goal: "Bring operating leases onto the balance sheet so investors can see the full scope of a company's lease obligations. Pre-ASC 842, airlines, retailers, and restaurant chains had massive hidden liabilities.",
+    framework: "Lessees recognize a right-of-use (ROU) asset and lease liability for virtually all leases >12 months. Two classifications: (1) Finance lease \u2014 front-loaded expense (interest + amortization, like old capital leases). (2) Operating lease \u2014 straight-line single lease cost. Both go on balance sheet, but P&L treatment differs. Lessors retain operating, sales-type, and direct financing classification. Practical expedients allow combining lease and non-lease components.",
+    keyJudgments: "Lease term (renewal/termination options that are 'reasonably certain'), discount rate (incremental borrowing rate if implicit rate not available), variable lease payments (usage-based, CPI-indexed), lease modifications vs. separate contracts, embedded leases in service agreements.",
+    relevance: "Critical for data center/infrastructure (CORZ, WULF, APLD), retail, airlines, restaurants. Commencement timing determines when revenue starts for lessors. Practical expedient elections (combining lease/non-lease components) affect comparability. Watch for ROU asset impairments.",
+    example: "A restaurant chain signs a 10-year lease for a location at $20K/month. Pre-ASC 842, this was just a footnote \u2014 $2.4M in annual rent expense appeared on the P&L, but zero showed on the balance sheet. Post-ASC 842: Day 1, the company records a right-of-use (ROU) asset of ~$1.7M and a lease liability of ~$1.7M (present value of all future payments at their incremental borrowing rate, say 6%). Each month, $20K is recognized as a single straight-line lease cost (operating lease). The liability decreases as payments are made; the ROU asset amortizes. Now multiply this by 500 locations \u2014 suddenly $850M+ in previously hidden liabilities appears on the balance sheet, leverage ratios jump, and debt covenants may be triggered. This is exactly why ASC 842 mattered: a retailer that 'looked' like it had 2x leverage might actually be at 4x when you include lease obligations.",
+    financialImpact: {
+      incomeStatement: "Operating lease: single straight-line lease cost ($20K/month) within operating expenses \u2014 same P&L treatment as before ASC 842. Finance lease: split into amortization expense (operating) + interest expense (below the line), front-loaded so total expense is higher in early years.",
+      balanceSheet: "ROU asset and lease liability both appear on Day 1 (~$1.7M each). Over time, both decline but at different rates. Total assets and total liabilities both increase \u2014 leverage ratios (Debt/EBITDA, Debt/Equity) jump. This is the big change: previously hidden obligations now visible.",
+      cashFlow: "Lease payments split: operating lease payments are operating cash outflows. Finance lease payments split between operating (interest portion) and financing (principal portion). No change in actual cash spent \u2014 just reclassification. But CFO looks worse for finance leases because principal repayments move to financing section.",
+    },
+  },
+  {
+    code: "ASC 350",
+    title: "Intangibles \u2014 Goodwill and Other",
+    effective: "Original: Jun 2001 (SFAS 142). Major update: Jan 2020 (ASU 2017-04 simplified impairment test).",
+    replaced: "Replaced goodwill amortization with annual impairment testing. Before SFAS 142, goodwill was amortized over up to 40 years.",
+    goal: "Better reflect the economics of acquired intangibles. Goodwill shouldn't decline on a fixed schedule \u2014 it either retains value or gets impaired. The 2017 update eliminated Step 2 (hypothetical purchase price allocation) to simplify.",
+    framework: "Goodwill: not amortized, tested annually for impairment (or when triggering events occur). Compare fair value of reporting unit to carrying value \u2014 if carrying > fair value, recognize impairment loss (capped at goodwill balance). Other intangibles: finite-life intangibles (customer relationships, patents, tech) amortized over useful life. Indefinite-life intangibles (certain trademarks, FCC licenses) tested annually like goodwill.",
+    keyJudgments: "Reporting unit identification, fair value measurement methodology (DCF vs. market multiples), discount rate selection, long-term growth rate assumptions, triggering event assessment. Companies have significant discretion in assumptions that determine whether impairment is triggered.",
+    relevance: "Serial acquirers (Broadcom, Oracle, IBM) carry massive goodwill. When an acquisition underperforms, management has incentive to delay impairment recognition using optimistic projections. Watch for goodwill as a % of total assets, acquisition track record, and whether triggering events (market cap < book value) go without impairment charges.",
+    example: "A PE-backed software company acquires a competitor for $500M. The target has $50M in net tangible assets (servers, cash, receivables minus liabilities). The acquirer identifies $150M in intangible assets: $80M in customer relationships (amortized over 10 years = $8M/yr expense), $50M in technology (amortized over 5 years = $10M/yr), and $20M in trade name (indefinite life, not amortized). The remaining $300M is goodwill \u2014 it just sits on the balance sheet, not amortized, not hitting earnings. Two years later, the acquired business underperforms. Annual impairment test: management runs a DCF using a 10% discount rate and 3% terminal growth \u2014 fair value comes out to $480M, still above carrying value, so no impairment. But if they used 12% and 2%, fair value drops to $420M, triggering a $80M impairment charge. That's the game \u2014 small changes in assumptions determine whether a massive write-down happens or not.",
+    financialImpact: {
+      incomeStatement: "Finite-life intangibles hit earnings every year via amortization ($18M/yr in this example). Goodwill ($300M) never hits earnings unless impaired. When an impairment triggers \u2014 say $80M \u2014 it's a one-time, non-cash charge that tanks net income that quarter but is typically excluded from Adjusted EBITDA.",
+      balanceSheet: "Goodwill and intangibles sit as long-term assets. Finite-life intangibles shrink each year (amortization). Goodwill stays flat until impaired, then drops by the impairment amount. A company with $5B in goodwill on $8B total assets is 62.5% goodwill \u2014 that's a lot of acquisition premium at risk.",
+      cashFlow: "Zero cash impact. Amortization and impairment charges are non-cash \u2014 they add back to CFO in the reconciliation. This is why serial acquirers love non-GAAP metrics that exclude amortization: the cash was spent when the deal closed (investing activities), but the P&L hit from amortization is ongoing.",
+    },
+  },
+  {
+    code: "ASC 360",
+    title: "Property, Plant, and Equipment",
+    effective: "Original: Mar 1995 (SFAS 121, later SFAS 144). Codified into ASC 360.",
+    replaced: "Replaced ad-hoc impairment practices. Before SFAS 121, there was no consistent standard for when to write down long-lived assets.",
+    goal: "Establish consistent framework for recognizing impairment of long-lived assets and for classifying assets as held-for-sale. Ensure carrying values don't exceed recoverable amounts.",
+    framework: "Two-step impairment test: (1) Recoverability test \u2014 if undiscounted future cash flows < carrying value, asset is impaired. (2) Measurement \u2014 write down to fair value (discounted cash flows or market value). Assets held-for-sale: carried at lower of carrying value or fair value minus cost to sell; depreciation stops. Useful life and depreciation method must reflect the pattern of economic benefit consumption.",
+    keyJudgments: "Useful life estimates (directly drives depreciation expense), triggering event identification (management has discretion on when to test), undiscounted cash flow projections for recoverability test, asset grouping (testing at too high a level can mask impaired assets), held-for-sale classification timing.",
+    relevance: "Capital-intensive businesses (data centers, telcos, manufacturing, energy). Useful life choices directly impact margins \u2014 a 25-year vs. 15-year life on a $500M data center is a $16.7M/yr difference. Watch for depreciation/gross PP&E ratios vs. peers and CIP balances growing without impairment testing.",
+    example: "A data center company builds a $500M facility. Management chooses a 25-year useful life \u2014 depreciation is $20M/year. A peer with an identical facility uses 15 years \u2014 depreciation is $33.3M/year. That's a $13.3M annual margin difference from one accounting estimate alone. Now suppose the anchor tenant leaves after 5 years. Is the facility impaired? Step 1 (recoverability): management projects $30M/year in undiscounted cash flows for the remaining 20 years = $600M, which exceeds the ~$400M carrying value \u2014 passes, no impairment. But those projections assume they re-lease at current rates within 6 months. If you use more conservative assumptions (re-lease at 70% rate, 18-month vacancy), undiscounted cash flows drop to $350M \u2014 now it fails, and you go to Step 2: write it down to fair value, maybe $300M, taking a $100M charge. The useful life choice and the re-leasing assumptions are where the real judgment lives.",
+    financialImpact: {
+      incomeStatement: "Depreciation expense flows through COGS or operating expenses, directly reducing operating income. Longer useful life = lower annual depreciation = higher margins. An impairment charge is a one-time hit to operating income. Both are non-cash but directly affect reported profitability.",
+      balanceSheet: "PP&E (net) decreases each year by depreciation. Construction-in-progress (CIP) sits as an asset during build-out \u2014 no depreciation until the asset is 'placed in service.' Impairment reduces PP&E by the write-down amount. Held-for-sale reclassification moves assets to current and stops depreciation.",
+      cashFlow: "Depreciation is non-cash \u2014 adds back to CFO. The actual cash was spent during construction (CapEx in investing activities). This is why capital-intensive companies can show strong CFO despite low net income: depreciation is a large non-cash add-back. Impairment is also non-cash. The real cash flow question is CapEx vs. CFO \u2014 free cash flow.",
+    },
+  },
+  {
+    code: "ASC 805",
+    title: "Business Combinations",
+    effective: "SFAS 141R issued Dec 2007, effective Dec 2008. Major update: ASU 2021-08 (issued Oct 2021, effective Dec 2022).",
+    replaced: "Replaced pooling-of-interests method and the old SFAS 141. Under pooling, acquisitions could be recorded at historical book values \u2014 no goodwill, no fair value adjustments.",
+    goal: "Require acquisition method for all business combinations. All assets acquired and liabilities assumed measured at fair value on acquisition date. Creates transparency about what acquirers are actually paying for.",
+    framework: "Acquisition method: (1) Identify the acquirer. (2) Determine acquisition date. (3) Recognize and measure identifiable assets, liabilities, and any non-controlling interest at fair value. (4) Recognize goodwill (excess of consideration over net identifiable assets) or a bargain purchase gain. Contingent consideration measured at fair value and remeasured each period. Acquisition costs expensed as incurred (not capitalized). In-process R&D recognized as an asset.",
+    keyJudgments: "Fair value of identified intangibles (customer relationships, technology, trade names) \u2014 determines how much goes to amortizable intangibles vs. goodwill. Contingent earnout valuation and subsequent remeasurement. Measurement period adjustments (up to 1 year post-acquisition). Determining if a transaction is a business combination vs. an asset acquisition (matters for tax and accounting treatment).",
+    relevance: "Critical for M&A-heavy sectors (tech, healthcare, PE-backed companies). The split between goodwill (not amortized) and identifiable intangibles (amortized) directly impacts future earnings. Companies can influence this allocation. Watch for acquirers consistently allocating more to goodwill (extends earnings impact) vs. finite-life intangibles.",
+    example: "Company A buys Company B for $1B. B has $200M in net identifiable assets (cash, receivables, equipment minus liabilities). The remaining $800M gets split between identifiable intangibles and goodwill. Scenario 1 (aggressive): allocate $200M to intangibles (customer relationships over 15 years) and $600M to goodwill. Annual amortization: $13.3M. Scenario 2 (conservative): allocate $500M to intangibles ($300M customer relationships over 10 years + $200M technology over 5 years) and $300M to goodwill. Annual amortization: $70M. Same deal, same price, but Scenario 2 hits earnings $56.7M harder per year. This is why you see PE-backed companies and serial acquirers love goodwill \u2014 it never hits the P&L unless impaired. When you see 'Adjusted EBITDA excludes amortization of acquired intangibles,' the company is trying to undo the impact of this allocation. The contingent earnout adds another layer: if Company A promises B's founders $100M if revenue hits $50M in Year 2, that $100M must be fair-valued at close (say $60M) and remeasured each quarter. If the target crushes it, the earnout liability increases and hits earnings as a loss.",
+    financialImpact: {
+      incomeStatement: "Acquisition costs (banker fees, legal, diligence) expensed immediately \u2014 not capitalized. Ongoing amortization of identified intangibles hits operating income each year. Contingent earnout remeasurement gains/losses flow through earnings. Revenue from the target consolidated from acquisition date forward.",
+      balanceSheet: "Goodwill and intangible assets appear as long-term assets. Contingent earnout is a liability (remeasured quarterly). If acquisition is stock-for-stock, equity increases; if cash, assets decrease. Measurement period adjustments (up to 1 year) can retroactively adjust the allocation between goodwill and intangibles.",
+      cashFlow: "Cash paid for acquisition shows in investing activities (a single large outflow). Earnout payments when triggered are also investing outflows. Amortization of intangibles adds back to CFO (non-cash). Key insight: a $1B all-cash acquisition shows as a $1B investing outflow, but subsequent intangible amortization improves CFO through add-backs \u2014 so CFO looks better after the deal even though cash was spent.",
+    },
+  },
+  {
+    code: "ASC 810",
+    title: "Consolidation",
+    effective: "Various updates. Key: ASU 2015-02 (issued Feb 2015, effective Dec 2015) reformed VIE analysis.",
+    replaced: "Modernized consolidation framework post-Enron. Before reforms, Enron used thousands of SPEs to hide debt off-balance sheet.",
+    goal: "Determine which entities a company must consolidate in its financial statements. Prevent off-balance sheet schemes where economic risk is retained but liabilities are hidden.",
+    framework: "Two models: (1) Voting interest model \u2014 consolidate if >50% voting interest (traditional majority ownership). (2) Variable interest entity (VIE) model \u2014 consolidate if the company is the primary beneficiary (has power to direct activities AND obligation to absorb losses/right to receive benefits). Primary beneficiary analysis considers both power and economics. VIEs include SPEs, certain joint ventures, and entities where voting rights don't determine control.",
+    keyJudgments: "Whether an entity is a VIE, who is the primary beneficiary when multiple parties have involvement, related-party considerations, kick-out rights and participating rights analysis, reconsideration events that trigger re-evaluation.",
+    relevance: "Private equity, structured finance, real estate (JVs), and any company with complex entity structures. Off-balance sheet VIEs can hide significant liabilities. Watch for footnote disclosures about unconsolidated VIEs, maximum loss exposure, and entities where consolidation conclusions changed.",
+    example: "A real estate company creates a joint venture with a partner to develop a $200M property. The company owns 40% equity and manages the project (power to direct activities). The partner owns 60% and provides most of the capital. Question: who consolidates? Under the voting interest model, the 60% partner would consolidate. But if this JV is a VIE (which it likely is because voting rights don't align with economics), you look at who is the primary beneficiary: who has (1) power to direct the most significant activities AND (2) obligation to absorb losses / right to receive benefits? The 40% manager directs leasing, construction, and operations (power), and absorbs losses through their equity plus a guarantee. Result: the 40% owner consolidates \u2014 the full $200M in assets and $120M in debt show up on their balance sheet, even though they only own 40%. If they can structure it so they're NOT the primary beneficiary, all that debt stays off their balance sheet and shows up only as a footnote. This is exactly what Enron did thousands of times.",
+    financialImpact: {
+      incomeStatement: "If consolidated: 100% of the VIE's revenue and expenses appear on the parent's P&L, with the partner's share backed out as 'non-controlling interest' at the bottom. If NOT consolidated: only the parent's equity pickup (their % share of net income) appears as a single line item. The difference in reported revenue can be enormous.",
+      balanceSheet: "If consolidated: 100% of the VIE's assets and liabilities appear on the parent's balance sheet, with NCI in the equity section. If unconsolidated: only an equity method investment (one line in assets). The debt impact is the key \u2014 $120M in JV debt either appears on the balance sheet or is buried in footnotes.",
+      cashFlow: "If consolidated: all of the VIE's cash flows appear in the parent's statement. If unconsolidated: only distributions received show up (operating activities). The difference matters for leverage analysis \u2014 consolidated debt service obligations are visible; unconsolidated ones require footnote mining.",
+    },
+  },
+  {
+    code: "ASC 815",
+    title: "Derivatives and Hedging",
+    effective: "SFAS 133 issued Jun 1998, effective Jun 2000. Major overhaul: ASU 2017-12 (effective Jan 2019).",
+    replaced: "Before SFAS 133, derivatives were largely invisible in financial statements \u2014 could represent massive exposures with no balance sheet recognition.",
+    goal: "Require all derivatives on the balance sheet at fair value. The 2017 reform simplified hedge accounting to encourage companies to align accounting with actual risk management. Reduced the cost of hedging by eliminating ineffectiveness testing for cash flow and net investment hedges.",
+    framework: "All derivatives recognized at fair value on balance sheet. Changes in fair value flow through: (1) Earnings (trading/speculative). (2) OCI (effective portion of cash flow hedges, net investment hedges). (3) Adjusted basis of hedged item (fair value hedges). Hedge accounting requires formal designation and documentation. Three hedge types: fair value, cash flow, and net investment. ASU 2017-12 allows the full change in fair value of hedging instrument in OCI (no ineffectiveness in P&L for qualifying hedges).",
+    keyJudgments: "Whether hedge accounting criteria are met, fair value measurement of complex derivatives (Level 3), hedge effectiveness assessment, credit valuation adjustments (CVA/DVA), embedded derivative identification and bifurcation.",
+    relevance: "Banks, energy companies, airlines (fuel hedging), and any company with FX or interest rate exposure. Complex derivative portfolios can obscure true economic exposure. Watch for large Level 3 fair value assets/liabilities, frequent hedge de-designations, and OCI volatility that eventually hits earnings.",
+    example: "An airline expects to buy 100M gallons of jet fuel over the next year. To lock in costs, they enter into fuel swaps at $2.50/gallon. They designate these as cash flow hedges under ASC 815. At quarter-end, fuel prices drop to $2.20 \u2014 the swaps are now underwater by $30M ($0.30 x 100M gallons). With hedge accounting: that $30M loss goes to OCI (other comprehensive income) on the balance sheet, NOT through the P&L. As the airline actually buys fuel each month, the loss reclassifies from OCI to earnings, matched against the cheaper fuel cost. Net effect on earnings: smooth. Without hedge accounting: the $30M loss hits earnings immediately, even though the airline hasn't bought the fuel yet. Next quarter, if prices reverse, you get a $30M gain. The P&L whipsaws quarter to quarter even though the economic exposure is hedged. This is why companies fight to qualify for hedge accounting \u2014 it prevents earnings volatility from hedges that are actually working as intended. When a company 'de-designates' a hedge, all the accumulated OCI balance gets dumped into earnings at once.",
+    financialImpact: {
+      incomeStatement: "With hedge accounting: earnings are smooth \u2014 the hedge gain/loss is matched to the hedged item in the same period. Without hedge accounting: full mark-to-market volatility flows through earnings every quarter. De-designation dumps accumulated OCI into earnings as a one-time hit.",
+      balanceSheet: "All derivatives appear at fair value as assets or liabilities (no exceptions). Hedge gains/losses for cash flow hedges accumulate in Accumulated OCI (AOCI) within equity. This can create large swings in total equity without touching earnings. Watch the AOCI balance \u2014 it's a reservoir of gains/losses that will eventually flow through the P&L.",
+      cashFlow: "Derivative settlements are classified based on the hedged item: fuel hedge settlements go to operating (matching fuel purchases), interest rate hedge settlements go to operating or financing. Premium payments on options are operating outflows. The cash flow statement is often the cleanest view because it shows actual settlements regardless of hedge accounting treatment.",
+    },
+  },
+  {
+    code: "ASC 820",
+    title: "Fair Value Measurement",
+    effective: "SFAS 157 issued Sep 2006, effective Nov 2007. Updates: ASU 2011-04 aligned with IFRS 13.",
+    replaced: "Before SFAS 157, fair value was used throughout GAAP but defined differently in different standards. No consistent framework or disclosure requirements.",
+    goal: "Single definition of fair value, consistent framework for measurement, and enhanced disclosures. Fair value = exit price (what you'd receive to sell an asset or pay to transfer a liability) in an orderly transaction between market participants.",
+    framework: "Three-level hierarchy: Level 1 \u2014 quoted prices in active markets (stocks, liquid bonds). Level 2 \u2014 observable inputs other than Level 1 (yield curves, comparable transactions, matrix pricing). Level 3 \u2014 unobservable inputs (management models, DCF with internal assumptions). Companies must maximize observable inputs and minimize unobservable inputs. Requires disclosure of transfers between levels and Level 3 rollforward.",
+    keyJudgments: "Level classification (Level 2 vs. Level 3 boundary is subjective), valuation techniques for Level 3 (DCF assumptions, volatility estimates, credit adjustments), determining whether a market is 'active' or 'inactive' (affects whether quoted prices are used directly), blockage factors.",
+    relevance: "Banks (loan portfolios, structured products), insurance (reserves), PE/hedge funds (portfolio valuations), and any company with significant intangibles or illiquid investments. Level 3 assets are self-marked \u2014 management controls the valuation inputs. Watch for growing Level 3 balances, transfers from Level 2 to Level 3, and Level 3 gains as a % of net income.",
+    example: "A bank holds three assets: (1) 10,000 shares of Apple \u2014 Level 1, just look at the stock price, no judgment. (2) A corporate bond that doesn't trade often but similar bonds do \u2014 Level 2, you use yield curves and comparable transactions to estimate fair value. (3) A structured credit tranche tied to a pool of commercial real estate loans \u2014 Level 3, there's no market price and no comparable, so the bank builds a DCF model with assumptions about default rates, recovery rates, prepayment speeds, and discount rates. The bank says this tranche is worth $50M. But if they tweak the default rate from 3% to 5% and the discount rate from 8% to 10%, the value drops to $35M. That's a $15M difference from assumptions nobody outside the bank can verify. Now imagine the bank has $2B in Level 3 assets and reports $500M in net income \u2014 if Level 3 gains contributed $100M of that, 20% of earnings are based on management's own marks. This is exactly the problem that blew up in 2008: banks held massive Level 3 positions in mortgage-backed securities and marked them based on models that assumed housing prices wouldn't fall nationally.",
+    financialImpact: {
+      incomeStatement: "Fair value changes on trading assets/liabilities flow directly through earnings (gains/losses). For available-for-sale securities, unrealized gains/losses go to OCI (not earnings) until sold. Level 3 gains are particularly scrutinized because they're based on management's own models.",
+      balanceSheet: "Assets and liabilities carried at fair value with Level 1/2/3 classification disclosed in footnotes. Level 3 requires a full rollforward (beginning balance, purchases, sales, gains/losses, transfers in/out). Growing Level 3 balances mean more of the balance sheet is based on internal models rather than market prices.",
+      cashFlow: "Fair value changes are non-cash and adjust out of CFO (unrealized gains subtracted, unrealized losses added back). Actual cash only moves when positions are settled or sold. This is why CFO can diverge significantly from net income for banks and funds with large mark-to-market portfolios.",
+    },
+  },
+  {
+    code: "ASC 326",
+    title: "Credit Losses (CECL)",
+    effective: "Large public: Jan 2020. Smaller public: Jan 2023. Private: Jan 2023.",
+    replaced: "Replaced the 'incurred loss' model under ASC 450 (SFAS 5). Under old rules, you only recognized credit losses when loss was 'probable' \u2014 backward-looking.",
+    goal: "Shift from incurred-loss (recognize when loss is probable) to expected-loss (recognize lifetime expected credit losses at origination). The 2008 financial crisis exposed the 'too little, too late' problem \u2014 banks recognized losses after portfolios had already deteriorated significantly.",
+    framework: "CECL model: estimate lifetime expected credit losses on financial assets measured at amortized cost (loans, HTM debt securities, receivables, lease receivables). Loss allowance recognized at origination based on historical experience, current conditions, and reasonable/supportable forecasts. No threshold for recognition \u2014 Day 1 allowance required. Available-for-sale debt securities use a separate model (impairment through allowance rather than direct write-down, reversible).",
+    keyJudgments: "Forecast period and methodology (how far into the future can you reasonably forecast?), economic scenario weighting (probability of recession vs. baseline vs. optimistic), reversion to historical mean assumptions, portfolio segmentation, qualitative adjustment factors (Q-factors). CECL gives management enormous discretion in the forecast period and assumptions.",
+    relevance: "Banks, credit card companies, any company with significant receivables portfolios. CECL made reserves more volatile and pro-cyclical \u2014 reserves spike at cycle turns when forecasts darken. Watch for banks with materially lower CECL reserves than peers for similar loan portfolios, frequent methodology changes, and optimistic economic scenario weightings.",
+    example: "A bank makes a $10M commercial real estate loan on Day 1. Old rules (incurred loss): no reserve needed because nothing has gone wrong yet \u2014 the borrower is current, no loss is 'probable.' Reserve stays at zero until the borrower actually misses payments. New rules (CECL): on Day 1, the bank must estimate lifetime expected losses. They look at historical CRE default rates (say 2% over the loan's life), current conditions (office vacancy rising), and a forecast (mild recession likely in Year 2). Result: they book a $250K reserve immediately, which hits earnings as a provision expense on the day the loan is made. If the economy worsens next quarter, they re-forecast: recession probability goes from 30% to 60%, lifetime expected loss jumps to 5%, and the reserve increases to $500K \u2014 another $250K provision expense. The loan is still performing, the borrower hasn't missed a payment, but CECL forces the bank to recognize losses based on where the economy is heading, not where it's been. This is why bank earnings got crushed in Q1 2020 \u2014 CECL reserves spiked by tens of billions across the industry as COVID forecasts darkened, even before actual defaults materialized.",
+    financialImpact: {
+      incomeStatement: "Provision for credit losses expense hits the P&L when reserves increase. This is the single biggest earnings driver for banks \u2014 provision expense can swing from $500M in a good year to $5B in a downturn, overwhelming net interest income changes. Reserve releases in good times boost earnings.",
+      balanceSheet: "Allowance for credit losses (contra-asset) reduces the net loan balance. A $10M loan with a $250K CECL allowance is carried at $9.75M net. The allowance is a management estimate of lifetime losses \u2014 higher allowance = more conservative. Compare allowance-to-total-loans ratio across peer banks for the same loan types.",
+      cashFlow: "Provision expense is non-cash \u2014 adds back to CFO. Actual cash loss only occurs on charge-offs (when the bank writes off the loan as uncollectible). Recoveries on previously charged-off loans are cash inflows. The gap between provision (P&L) and charge-offs (cash) tells you whether the bank is building or releasing reserves.",
+    },
+  },
+  {
+    code: "ASC 740",
+    title: "Income Taxes",
+    effective: "SFAS 109 issued Feb 1992, effective Dec 1992. Continuously updated.",
+    replaced: "Replaced SFAS 96 and established the asset-and-liability method for deferred taxes.",
+    goal: "Recognize the tax consequences of transactions in the same period as the transactions themselves, not when taxes are paid. Deferred tax assets and liabilities represent future tax effects of temporary differences between book and tax basis.",
+    framework: "Deferred tax assets (DTA): future tax benefits from deductible temporary differences, NOL carryforwards, tax credit carryforwards. Deferred tax liabilities (DTL): future tax obligations from taxable temporary differences. DTAs require a valuation allowance if 'more likely than not' (>50%) that some or all won't be realized. Uncertain tax positions: two-step process \u2014 (1) recognition threshold (more likely than not to be sustained), (2) measurement (largest amount with >50% probability of being realized).",
+    keyJudgments: "Valuation allowance on DTAs (management assesses future profitability, tax planning strategies), indefinite reinvestment assertion on foreign earnings, uncertain tax position (UTP) reserves, transfer pricing, R&D credit eligibility, state tax apportionment.",
+    relevance: "Effective tax rate is one of the easiest levers for earnings management. Releasing valuation allowances on DTAs creates large one-time earnings boosts. Watch for: ETR consistently below statutory rate without clear explanation, sudden VA releases, growing UTP reserves, and companies with large DTAs relative to pre-tax income.",
+    example: "A tech company has $500M in net operating loss (NOL) carryforwards from years of pre-profit startup losses. At a 21% tax rate, that's a $105M deferred tax asset (DTA) \u2014 future tax savings. But will they ever be profitable enough to use it? If management concludes 'more likely than not' they won't fully use it, they must record a valuation allowance (VA) against the DTA. Say they put a $60M VA, so the net DTA on the balance sheet is $45M. Two years later, the company turns profitable. Management decides they'll now use all the NOLs. They release the $60M VA \u2014 that $60M flows through as a negative tax provision, boosting net income by $60M in a single quarter. Pre-tax income was $80M, but reported net income is $140M because of the VA release. Earnings just jumped 75% with no change in the actual business. This is the classic 'flip to profitability' earnings boost \u2014 it's real (the tax savings exist) but it's a one-time accounting event that inflates that quarter's earnings and makes growth comps look amazing. Companies turning profitable for the first time (like many SaaS companies) almost always get this one-time boost.",
+    financialImpact: {
+      incomeStatement: "Tax provision (expense) is the P&L line. VA release shows up as a negative provision or tax benefit \u2014 net income spikes. The effective tax rate (ETR) drops dramatically in the VA release quarter (can even go negative). Ongoing, NOL usage means lower cash taxes and lower ETR until the NOLs are consumed.",
+      balanceSheet: "DTA sits in long-term assets (net of VA). When VA is released, DTA increases and equity jumps by the same amount. DTLs appear when book income exceeds tax income (e.g., accelerated depreciation for tax). Net DTA vs. DTL position tells you the directional relationship between book and tax reporting.",
+      cashFlow: "Deferred tax changes are non-cash adjustments within CFO. The real cash benefit is lower actual tax payments \u2014 visible in the cash taxes paid line (supplemental disclosure). A company with $500M in NOLs pays minimal cash taxes for years, even while reporting tax expense on the P&L for the DTA amortization.",
+    },
+  },
+  {
+    code: "ASC 450/ASC 460",
+    title: "Contingencies and Guarantees",
+    effective: "ASC 450: Original SFAS 5 (1975). ASC 460: FASB Interpretation 45 (2003).",
+    replaced: "ASC 450 codified long-standing contingency accounting. ASC 460 added recognition requirements for guarantee obligations that previously had limited disclosure.",
+    goal: "Ensure companies recognize or disclose probable losses and commitments. 'Probable and estimable' threshold determines when a loss contingency must be accrued vs. disclosed. Guarantees must be recognized at fair value when issued.",
+    framework: "Loss contingencies: accrue if probable and reasonably estimable, disclose if reasonably possible, ignore if remote. Gain contingencies: never accrue (conservatism), disclose if probable. Guarantees (ASC 460): recognize at fair value at inception (product warranties, indemnifications, financial guarantees). Litigation reserves: accrue best estimate within a range; if no best estimate, accrue the low end and disclose the range.",
+    keyJudgments: "Whether a loss is 'probable' vs. 'reasonably possible' (determines accrual vs. disclosure only), estimating the range of loss (especially in litigation), evaluating guarantee obligations that may never be triggered, assessing environmental and product liability reserves.",
+    relevance: "Litigation-heavy industries (pharma, tech patent disputes, financial services). Companies minimize disclosed ranges and reserves to avoid market impact. Watch for boilerplate 'cannot estimate' disclosures on significant litigation, reserves that seem small relative to claimed damages, and sudden large reserve increases that suggest prior understatement.",
+    example: "A pharma company faces a lawsuit alleging its drug caused harm to 5,000 patients. Plaintiff attorneys demand $2B. The company's lawyers assess the situation: Is a loss probable? They think yes \u2014 the evidence is strong. Can they estimate it? They estimate a range of $300M to $800M, with $500M as the most likely outcome. Under ASC 450: they accrue $500M (best estimate within the range) as a litigation reserve on the balance sheet and disclose the $300M-$800M range in the footnotes. If they couldn't identify a 'best estimate,' they'd accrue the low end ($300M) and disclose the range. Now here's the game: what if the company's lawyers say the loss is 'reasonably possible' instead of 'probable'? Then NO accrual is required \u2014 they just disclose the range in a footnote. The difference between 'probable' and 'reasonably possible' is entirely a judgment call, and it determines whether $500M hits the P&L or just appears as a footnote that most investors skip. This is why you see pharma companies carry surprisingly small litigation reserves relative to the headline risk \u2014 they classify as many cases as 'reasonably possible' as they can defend.",
+    financialImpact: {
+      incomeStatement: "Accrual of a loss contingency (e.g., $500M litigation reserve) hits operating expenses as a one-time charge. If the case settles for less, the excess reserve is released as a gain. If it settles for more, additional expense is recognized. Guarantee obligations recognized at inception also flow through the P&L.",
+      balanceSheet: "Accrued liabilities increase by the reserve amount ($500M). If only 'reasonably possible,' no liability appears \u2014 it's footnote-only, which is why the balance sheet can look clean despite massive pending litigation. Guarantee liabilities appear when guarantees are issued and decline as the guarantee period expires.",
+      cashFlow: "The accrual is non-cash (adds back to CFO). Actual cash outflow occurs only when the settlement is paid \u2014 this can be years after the accrual. The timing gap means CFO in the accrual year looks worse than cash reality (large expense, no cash out), while CFO in the settlement year looks worse than P&L (large cash out, no new expense). Watch the 'legal settlements' line in operating or financing activities.",
+    },
+  },
+  {
+    code: "ASC 280",
+    title: "Segment Reporting",
+    effective: "Original: Jun 1997 (SFAS 131). Major update: ASU 2023-07 (Nov 2023, effective Dec 2024).",
+    replaced: "Replaced SFAS 14's industry-segment approach with the management approach (report segments as management sees the business). ASU 2023-07 adds significant expense disclosure requirements.",
+    goal: "Give investors visibility into how management views the business internally. The 'management approach' means segments align with how the CODM (Chief Operating Decision Maker) evaluates performance and allocates resources. The 2023 update requires disclosure of significant segment expenses and the CODM's identity and title.",
+    framework: "Operating segments defined by: (1) engaging in business activities that earn revenue/incur expenses, (2) regularly reviewed by the CODM, (3) discrete financial information is available. Aggregation criteria allow combining segments with similar economic characteristics. ASU 2023-07 requires: disclosure of significant segment expenses regularly provided to the CODM, reconciliation of segment expenses to total, identification of CODM by title, and interim segment disclosures previously only required annually.",
+    keyJudgments: "CODM identification, segment aggregation decisions (combining segments hides underperformers), what constitutes 'regularly reviewed' discrete financial information, whether to aggregate segments with 'similar economic characteristics' (vague standard).",
+    relevance: "Conglomerates and diversified companies use segment aggregation to hide underperforming divisions. Single-segment reporting by a diversified company is a red flag. ASU 2023-07 will force more expense transparency starting 2024/2025. Watch for segment changes around acquisitions/divestitures and compare segment profitability to consolidated metrics.",
+    example: "A company has three business lines: Cloud (growing 30%, 25% margins), Legacy Software (declining 10%, 40% margins), and Services (flat, 8% margins). If they report as one segment, investors see blended revenue growth of ~10% and ~22% margins \u2014 looks like a healthy, growing business. If they report three segments, investors immediately see that Cloud is subsidizing a declining legacy business, and Services barely covers its costs. Management argues Cloud and Legacy have 'similar economic characteristics' (both are software!) and aggregates them into a single 'Software' segment. Now Legacy's decline is hidden inside a segment that still shows growth. ASU 2023-07 makes this harder by requiring disclosure of significant segment expenses the CODM actually reviews. If the CEO gets a report every month showing Cloud, Legacy, and Services separately, that's evidence of three operating segments \u2014 the company has to explain why it aggregated. The new rule also requires naming the CODM by title, so investors know exactly who is making segment decisions.",
+    financialImpact: {
+      incomeStatement: "Segment reporting doesn't change total consolidated revenue or income \u2014 it changes how much detail you see. Each segment discloses revenue, a measure of profit/loss, and (under ASU 2023-07) significant expenses. The key: segment margins expose which parts of the business are actually making money and which are subsidized.",
+      balanceSheet: "Total segment assets are disclosed, showing capital allocation across business lines. Comparing assets-to-revenue or assets-to-profit by segment reveals capital efficiency. Goodwill is allocated to reporting units (often aligned with segments), so segment structure determines where impairment is tested.",
+      cashFlow: "Segment-level cash flow is NOT required under GAAP (only IFRS requires it). This is a major gap \u2014 you can see segment profits but not segment cash generation. Workaround: compare segment depreciation + capex disclosures (if provided) to infer which segments are cash-generating vs. cash-consuming.",
+    },
+  },
+];
+
 // ─── ACCOUNTING TOPICS DATA ───
 
 const TOPICS = {
+  ascStandards: {
+    label: "ASC Standards",
+    icon: "\uD83D\uDCD6",
+    type: "reference",
+    category: "Key GAAP Standards",
+    color: "#8B5CF6",
+    tagline: "Quick reference for the ASC standards that matter most in credit and equity research",
+  },
   revenueRecognition: {
     label: "Revenue Recognition",
     icon: "\uD83D\uDCCA",
@@ -88,7 +292,7 @@ const TOPICS = {
       {
         company: "Xerox",
         year: "1997\u20132000",
-        amount: "$6.4B revenue acceleration",
+        amount: "$6.4B revenue overstatement (~$3B accelerated, remainder via other maneuvers)",
         scheme: "Xerox accelerated revenue recognition on long-term copier leases, recognizing upfront what should have been spread over 3\u20135 year lease terms. When a customer signed a lease for a copier, Xerox would estimate the total lease value and recognize a large portion immediately as 'equipment sale' revenue rather than ratably as lease income. They also manipulated 'cookie jar' reserves \u2014 setting aside excess reserves in good quarters and releasing them to boost revenue in weak quarters. Finance executives used at least 11 different accounting maneuvers across geographies (particularly in Mexico, Brazil, and Europe).",
         unraveled: "SEC investigation beginning in 2000, prompted by internal whistleblowers and auditor concerns. KPMG (Xerox's auditor) had flagged issues but ultimately signed off on the financials. The SEC found that Xerox used accounting maneuvers to inflate revenue by $6.4B and pre-tax earnings by $1.5B over 4 years. The scale was staggering \u2014 roughly 36% of equipment revenue in some periods was improperly accelerated.",
         aftermath: "Xerox paid a $10M SEC penalty (2002) and restated financials for 1997\u20132000. Six senior executives paid $22M in penalties. KPMG paid $22.5M to settle SEC charges for improper auditing and separately paid $80M to settle shareholder lawsuits. Xerox shareholders lost billions as the stock declined ~90% from its 1999 peak. The case became a textbook example of lease revenue acceleration.",
@@ -107,7 +311,7 @@ const TOPICS = {
         amount: "$3.8B+ inflated revenue",
         scheme: "Qwest engaged in systematic round-tripping of fiber optic network capacity. They would 'sell' network capacity (IRUs \u2014 Indefeasible Rights of Use) to other telecom companies while simultaneously 'buying' equivalent capacity back from those same companies, generating revenue on both sides with no real economic substance. Qwest recognized immediate revenue on what were effectively long-term capacity swaps. They also improperly recognized revenue on equipment sales before delivery and booking recurring service revenue upfront.",
         unraveled: "SEC investigation launched in 2002 as the telecom bubble burst and investors began questioning the sustainability of reported revenue. Internal documents revealed that Qwest executives set aggressive revenue targets and pressured staff to close reciprocal capacity deals at quarter-end to hit numbers. Whistleblower complaints and internal audit concerns surfaced. The company disclosed it would need to restate $2.2B in revenue initially, later expanded to $3.8B.",
-        aftermath: "CEO Joseph Nacchio was convicted of insider trading in 2007 (selling $101M in stock while knowing revenue was fabricated) and sentenced to 6 years in federal prison. CFO Robin Szeliga pled guilty to insider trading. Qwest restated $3.8B in revenue across 1999\u20132002. The company never recovered its competitive position and was ultimately acquired by CenturyLink (now Lumen) in 2011 for $12.2B \u2014 a fraction of its peak $90B+ market cap.",
+        aftermath: "CEO Joseph Nacchio was convicted of insider trading in 2007 (accused of selling $101M in stock while knowing revenue was fabricated; convicted on $52M across 19 of 42 counts) and sentenced to 6 years in federal prison. CFO Robin Szeliga pled guilty to insider trading. Qwest restated $3.8B in revenue across 1999\u20132002. The company never recovered its competitive position and was ultimately acquired by CenturyLink (now Lumen) in 2011 for $12.2B \u2014 a fraction of its peak $90B+ market cap.",
       },
     ],
     detection: [
@@ -145,7 +349,7 @@ const TOPICS = {
         amount: "$3.8B capitalized operating expenses + $3.3B reserve manipulation = $11B total",
         scheme: "WorldCom's CFO Scott Sullivan directed staff to reclassify billions in ordinary operating expenses \u2014 primarily 'line costs' (fees paid to local telephone companies for network access, the largest single expense for a long-distance carrier) \u2014 as capital expenditures on the balance sheet. This was pure fabrication: the costs had no future economic benefit and should have been expensed immediately. The entries were booked as 'prepaid capacity' in capital accounts. Additionally, WorldCom manipulated accrual reserves, releasing reserves set aside for other purposes directly into revenue. The combined effect inflated reported EBITDA by approximately $11B. The reclassification was mechanically simple \u2014 journal entries moving costs between accounts \u2014 making it easy to execute but hard for external auditors to catch without testing the underlying nature of capitalized costs.",
         unraveled: "Internal auditor Cynthia Cooper and her team discovered the irregular capitalization entries in May\u2013June 2002 while conducting an audit of capital expenditures that was not originally authorized by CFO Sullivan (who tried to get her to delay the audit). Cooper found $3.8B in improperly capitalized line costs by tracing journal entries back to their source. She reported directly to the board's audit committee, bypassing Sullivan. Arthur Andersen (WorldCom's auditor) had failed to detect the fraud despite it being in the general ledger. The board fired Sullivan and announced the restatement on June 25, 2002.",
-        aftermath: "WorldCom filed for Chapter 11 bankruptcy on July 21, 2002 \u2014 at the time the largest bankruptcy in US history ($107B in assets). CEO Bernie Ebbers was convicted of fraud and conspiracy in 2005 and sentenced to 25 years in prison (died in 2020 after early release). CFO Sullivan pled guilty and received 5 years. Cynthia Cooper was named TIME Person of the Year (2002) alongside Sherron Watkins (Enron) and Coleen Rowley (FBI). WorldCom emerged as MCI, later acquired by Verizon for $8.4B in 2006. The fraud directly accelerated passage of the Sarbanes-Oxley Act (2002).",
+        aftermath: "WorldCom filed for Chapter 11 bankruptcy on July 21, 2002 \u2014 at the time the largest bankruptcy in US history ($107B in assets). CEO Bernie Ebbers was convicted of fraud and conspiracy in 2005 and sentenced to 25 years in prison (died in 2020 after early release). CFO Sullivan pled guilty and received 5 years. Cynthia Cooper was named TIME Person of the Year (2002) alongside Sherron Watkins (Enron) and Coleen Rowley (FBI). WorldCom emerged as MCI, later acquired by Verizon for $8.5B in 2006. The fraud directly accelerated passage of the Sarbanes-Oxley Act (2002).",
       },
       {
         company: "WeWork",
@@ -312,7 +516,7 @@ const TOPICS = {
         amount: "$50B temporarily removed from balance sheet",
         scheme: "Lehman Brothers used an accounting device called 'Repo 105' to temporarily remove approximately $50B in assets from its balance sheet at the end of each quarter. In a normal repurchase agreement (repo), a firm sells securities with an agreement to repurchase them \u2014 the transaction is treated as a financing (loan), and both the asset and liability stay on the balance sheet. Lehman structured repos where the collateral exceeded 105% of the cash received (hence 'Repo 105'). Under a technical interpretation of SFAS 140, this overcollateralization allowed the transaction to be treated as a 'sale' rather than a financing. The assets disappeared from the balance sheet for a few days around quarter-end, reducing reported leverage ratios (net leverage appeared to be 12.1x instead of the true ~16x). After the reporting date, Lehman would 'repurchase' the securities, putting them back on the balance sheet until the next quarter-end. The transactions had no business purpose other than cosmetically reducing leverage.",
         unraveled: "Lehman filed for bankruptcy on September 15, 2008. The Repo 105 scheme was discovered during the bankruptcy examiner's investigation. Anton Valukas (examiner) published a 2,200-page report in March 2010 detailing the Repo 105 transactions and alleging that senior management (CEO Dick Fuld, CFO Erin Callan, and subsequent CFOs) were aware. Internal emails showed Lehman's Senior VP Matthew Lee had raised concerns about the practice in May 2008 (and was subsequently fired). Ernst & Young (auditor) had been informed of Repo 105 and did not object, though the transactions were only executed through Lehman's London subsidiary because no US law firm would provide the required 'true sale' opinion \u2014 only Linklaters in London would sign off.",
-        aftermath: "Lehman's bankruptcy ($639B in assets) remains the largest in US history and triggered the 2008 global financial crisis. No Lehman executives were criminally charged for Repo 105 (DOJ declined to prosecute). Ernst & Young settled for $99M with the New York Attorney General and $10M with the SEC. The case led to increased regulatory focus on quarter-end window dressing and repo market transparency. It also highlighted how transactions can be technically compliant with accounting rules while being fundamentally misleading \u2014 the 'true sale' opinion was obtained from a UK firm specifically because US firms wouldn't provide it.",
+        aftermath: "Lehman's bankruptcy ($639B in assets) remains the largest in US history and triggered the 2008 global financial crisis. No Lehman executives were criminally charged for Repo 105 (DOJ declined to prosecute). Ernst & Young settled a shareholder class action for $99M and paid $10M to the New York Attorney General. The case led to increased regulatory focus on quarter-end window dressing and repo market transparency. It also highlighted how transactions can be technically compliant with accounting rules while being fundamentally misleading \u2014 the 'true sale' opinion was obtained from a UK firm specifically because US firms wouldn't provide it.",
       },
       {
         company: "Banks Pre-2008 (SIVs/Conduits)",
@@ -640,8 +844,8 @@ const TOPICS = {
       {
         company: "Cipher Mining (CIFR) \u2014 Pre-Revenue Capitalization",
         year: "2025\u20132027",
-        amount: "$5.5B AWS lease + $3.8B+ Fluidstack/Google lease",
-        scheme: "Cipher is transitioning from bitcoin mining to HPC hosting with massive long-term leases: $5.5B / 300MW / 15 years with AWS and ~$3.8B+ / 300MW / 10 years with Fluidstack (Google). These deals are structured as colocation leases where Cipher builds and owns the shell. HPC revenue won't begin until August 2026 (AWS). During the multi-year construction period, Cipher will capitalize hundreds of millions in development costs. The accounting question: what qualifies as capitalizable construction cost vs. period expense? Site acquisition, permitting, design, internal engineering labor, interest, project management overhead, community engagement, environmental compliance \u2014 the boundary is judgment-intensive. Aggressive capitalization during the pre-revenue phase makes the eventual asset base larger (inflating future depreciation but deferring current expenses), makes current-period losses look smaller, and creates a larger balance sheet that supports more borrowing capacity. Because Cipher is in pure construction mode with no HPC revenue yet, investors can't compare capitalized costs to revenue metrics \u2014 the validation only comes when leases commence.",
+        amount: "$5.5B AWS lease + ~$3B base Fluidstack/Google lease (up to $9B with extensions)",
+        scheme: "Cipher is transitioning from bitcoin mining to HPC hosting with massive long-term leases: $5.5B / 300MW / 15 years with AWS and ~$3B base / 300MW / 10 years with Fluidstack (Google), up to $9B with extensions. These deals are structured as colocation leases where Cipher builds and owns the shell. HPC revenue won't begin until August 2026 (AWS). During the multi-year construction period, Cipher will capitalize hundreds of millions in development costs. The accounting question: what qualifies as capitalizable construction cost vs. period expense? Site acquisition, permitting, design, internal engineering labor, interest, project management overhead, community engagement, environmental compliance \u2014 the boundary is judgment-intensive. Aggressive capitalization during the pre-revenue phase makes the eventual asset base larger (inflating future depreciation but deferring current expenses), makes current-period losses look smaller, and creates a larger balance sheet that supports more borrowing capacity. Because Cipher is in pure construction mode with no HPC revenue yet, investors can't compare capitalized costs to revenue metrics \u2014 the validation only comes when leases commence.",
         unraveled: "No unraveling \u2014 Cipher is pre-revenue on HPC. The risk materializes when leases commence and the capitalized asset base starts generating revenue. If CapEx/MW is significantly higher than peers, it could indicate either genuine build quality differences or aggressive capitalization. The secondary risk: if AWS or Fluidstack/Google delays or restructures the lease, Cipher could face impairment on a massive construction-in-progress balance with no tenant. The $5.5B AWS lease represents Cipher's entire strategic pivot \u2014 customer concentration risk is extreme.",
         aftermath: "Cipher has committed to its largest-ever capital expenditure program. Key monitoring: (1) Track construction-in-progress balance quarterly and compare growth to disclosed project milestones. (2) When HPC revenue begins, compare CapEx/MW to WULF, CORZ, and APLD to benchmark capitalization aggressiveness. (3) Watch for any AWS or Fluidstack contract modification disclosures. (4) Capitalized interest disclosures during the construction phase. (5) How Cipher classifies costs between 'development' (capitalizable) and 'operating' (expensed) in its cash flow statement.",
       },
@@ -649,7 +853,7 @@ const TOPICS = {
         company: "TeraWulf (WULF) \u2014 Depreciation & Useful Life",
         year: "2024\u20132026",
         amount: "200MW Lake Mariner HPC facility",
-        scheme: "TeraWulf's HPC hosting at Lake Mariner uses ASC 842 operating lease accounting with straight-line recognition. The accounting judgment that matters most for WULF is depreciation: the useful life assigned to data center infrastructure directly drives reported margins. Data center shell components have different useful lives \u2014 the building shell might last 30 years, but power distribution (UPS, switchgear) may be 15\u201320 years, cooling systems 10\u201315 years, and networking infrastructure 5\u201310 years. How these are blended into a composite useful life for the facility determines annual depreciation expense. WULF's Lake Mariner site also has a unique power advantage (behind-the-meter nuclear and hydro) that is part of the asset base. The depreciation treatment of power infrastructure (long-lived) vs. data center fit-out (shorter-lived) vs. technology-specific components creates significant room for judgment. Additionally, WULF elected the ASC 842 practical expedient to combine lease and nonlease components \u2014 meaning power delivery, security, and maintenance revenue are all bundled into a single straight-line recognition pattern rather than being recognized separately based on consumption or delivery.",
+        scheme: "TeraWulf's HPC hosting at Lake Mariner uses ASC 842 operating lease accounting with straight-line recognition. The accounting judgment that matters most for WULF is depreciation: the useful life assigned to data center infrastructure directly drives reported margins. Data center shell components have different useful lives \u2014 the building shell might last 30 years, but power distribution (UPS, switchgear) may be 15\u201320 years, cooling systems 10\u201315 years, and networking infrastructure 5\u201310 years. How these are blended into a composite useful life for the facility determines annual depreciation expense. WULF's Lake Mariner site also has a unique power advantage (New York's predominantly zero-carbon grid (~90%+ nuclear and hydro)) that is part of the asset base. The depreciation treatment of power infrastructure (long-lived) vs. data center fit-out (shorter-lived) vs. technology-specific components creates significant room for judgment. Additionally, WULF elected the ASC 842 practical expedient to combine lease and nonlease components \u2014 meaning power delivery, security, and maintenance revenue are all bundled into a single straight-line recognition pattern rather than being recognized separately based on consumption or delivery.",
         unraveled: "No unraveling \u2014 WULF's HPC operations are early-stage. The useful life and depreciation assumptions will become more visible as the asset base grows and more facilities reach operating status. The test will come when: (1) WULF reports facility-level profitability and investors can compute implied depreciation rates. (2) If Core42 or Fluidstack leases expire or aren't renewed, the residual value assumption embedded in the useful life will be tested. (3) If power density requirements change (current 50\u201380kW/rack may evolve to 100\u2013200kW+), older infrastructure may face economic obsolescence before its accounting useful life expires.",
         aftermath: "WULF trades at a significant premium to peers partly on its power cost advantage. The sustainability of that premium depends on whether the accounting (depreciation, lease recognition) accurately reflects the economic reality of operating a data center with advantaged power. Key monitoring: (1) Compare D&A/gross PP&E to CORZ, APLD. (2) Track useful life disclosures in the PP&E footnote. (3) Watch for any technology obsolescence or power density-driven asset writedowns in the industry that might signal WULF faces similar risk.",
       },
@@ -678,6 +882,7 @@ const TOPICS = {
 };
 
 const TOPIC_ORDER = [
+  "ascStandards",
   "revenueRecognition",
   "leaseAccounting",
   "expenseCapitalization",
@@ -712,7 +917,76 @@ export default function Accounting({ initialTab }) {
       </div>
 
       {/* TOPIC DETAIL */}
-      {topic && (
+      {topic && topic.type === "reference" && (
+        <div>
+          <div style={{ marginBottom: 24 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+              <span style={{ fontSize: 28 }}>{topic.icon}</span>
+              <div>
+                <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{topic.label}</div>
+                <div style={{ fontSize: 13, color: topic.color, marginTop: 2 }}>{topic.category}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{topic.tagline}</div>
+          </div>
+
+          {ASC_STANDARDS.map(asc => (
+            <Section key={asc.code} title={`${asc.code} \u2014 ${asc.title}`}>
+              <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Effective Date</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{asc.effective}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>What It Replaced</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{asc.replaced}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Goal</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{asc.goal}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Framework</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{asc.framework}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Key Judgments & Gray Areas</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{asc.keyJudgments}</div>
+                </div>
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Why It Matters for Research</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{asc.relevance}</div>
+                </div>
+                {asc.example && (
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.green, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 4 }}>Example Walkthrough</div>
+                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7, background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: 16 }}>{asc.example}</div>
+                </div>
+                )}
+                {asc.financialImpact && (
+                <div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: "#60A5FA", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Impact Across Financial Statements</div>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
+                    {[
+                      { label: "Income Statement", text: asc.financialImpact.incomeStatement, color: "#F59E0B" },
+                      { label: "Balance Sheet", text: asc.financialImpact.balanceSheet, color: "#8B5CF6" },
+                      { label: "Cash Flow Statement", text: asc.financialImpact.cashFlow, color: "#10B981" },
+                    ].map(fs => (
+                      <div key={fs.label} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: 14 }}>
+                        <div style={{ fontSize: 11, fontWeight: 600, color: fs.color, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>{fs.label}</div>
+                        <div style={{ fontSize: 12, color: T_.textMid, lineHeight: 1.6 }}>{fs.text}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                )}
+              </div>
+            </Section>
+          ))}
+        </div>
+      )}
+
+      {topic && topic.type !== "reference" && (
         <div>
           <div style={{ marginBottom: 24 }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

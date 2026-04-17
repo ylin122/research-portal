@@ -1,11 +1,12 @@
-// ─── Seed agent definitions from ~/.claude/agents/ into Supabase ───
+// ─── Push local ~/.claude/agents/ to Supabase + commit/push research portal to GitHub ───
 // Run: node scripts/seed-agents.cjs
-// Requires: dotenv, @supabase/supabase-js (already installed)
+// This is the "log off" sync — run before switching machines.
 
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
@@ -14,15 +15,19 @@ const supabase = createClient(
 
 const AGENTS_DIR = path.join(require('os').homedir(), '.claude', 'agents');
 
-// UI metadata for each agent (color, usage example, mode)
+// UI metadata — color, usage example, mode, sort order
 const UI_META = {
-  'verifier':             { color: '#34d673', usage: '@verifier check the Restructuring.jsx changes', mode: 'Read-only. Never modifies files.', sort: 0 },
-  'fact-checker':         { color: '#70b0fa', usage: '@fact-checker check the PetSmart case in Restructuring.jsx', mode: 'Read-only. Searches web for corroboration.', sort: 1 },
-  'fact-disputer':        { color: '#f87171', usage: '@fact-disputer check the PetSmart case in Restructuring.jsx', mode: 'Read-only. Searches for contradicting evidence.', sort: 2 },
+  'verifier':             { color: '#34d673', usage: '@verifier check the Restructuring.jsx changes', mode: 'Read-only', sort: 0 },
+  'fact-checker':         { color: '#70b0fa', usage: '@fact-checker check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 1 },
+  'fact-disputer':        { color: '#f87171', usage: '@fact-disputer check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 2 },
   'fact-check-reconciler':{ color: '#f5a623', usage: '@fact-check-reconciler reconcile the results above', mode: 'Read-only. Runs after both fact agents return.', sort: 3 },
-  'deploy':               { color: '#06B6D4', usage: '@deploy ship the latest changes', mode: 'Read + Write (git operations). Never force pushes or commits secrets.', sort: 4 },
-  'whatif':               { color: '#F97316', usage: '@whatif massive delays in R100 launch date driven by supply chain shocks', mode: 'Read-only. Pulls company data from Supabase, researches scenario via web.', sort: 5 },
-  'refresh':              { color: '#14B8A6', usage: '@refresh update the AI Research tab', mode: 'Read + Write. Edits hardcoded JSX; reports changes needed for DB-backed tabs.', sort: 6 },
+  'deploy':               { color: '#06B6D4', usage: '@deploy ship the latest changes', mode: 'Read + Write (git operations)', sort: 4 },
+  'whatif':               { color: '#F97316', usage: '@whatif massive delays in R100 launch date driven by supply chain shocks', mode: 'Read-only', sort: 5 },
+  'refresh':              { color: '#14B8A6', usage: '@refresh update the AI Research tab', mode: 'Read + Write', sort: 6 },
+  'third-party-research': { color: '#38BDF8', usage: '@third-party-research pull everything on Perforce', mode: 'Read-only. Runs local Playwright-authenticated CLI tools.', sort: 7 },
+  'consistency':          { color: '#c084fc', usage: '@consistency check credit research', mode: 'Read-only', sort: 8 },
+  'sync-agents-pull':     { color: '#A78BFA', usage: '@sync-agents-pull', mode: 'Read + Write (local files)', sort: 9 },
+  'sync-agents-push':     { color: '#A78BFA', usage: '@sync-agents-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
 };
 
 function parseFrontmatter(raw) {
@@ -40,6 +45,8 @@ function parseFrontmatter(raw) {
 }
 
 (async () => {
+  // ── Step 1: Push agent .md files to Supabase ──
+  console.log('\n=== Step 1: Push agents to Supabase ===');
   const files = fs.readdirSync(AGENTS_DIR).filter(f => f.endsWith('.md'));
   console.log(`Found ${files.length} agent files in ${AGENTS_DIR}`);
 
@@ -49,7 +56,7 @@ function parseFrontmatter(raw) {
     if (!parsed) { console.log(`  SKIP: ${file} (no frontmatter)`); continue; }
 
     const id = file.replace('.md', '');
-    const meta = UI_META[id] || { color: '#70b0fa', usage: '', mode: '', sort: 99 };
+    const meta = UI_META[id] || { color: '#70b0fa', usage: `@${id}`, mode: '', sort: 99 };
 
     const row = {
       id,
@@ -69,5 +76,24 @@ function parseFrontmatter(raw) {
     else console.log(`  OK: ${id}`);
   }
 
-  console.log('Done.');
+  // ── Step 2: Commit and push research portal to GitHub ──
+  console.log('\n=== Step 2: Push research portal to GitHub ===');
+  const repoDir = path.join(__dirname, '..');
+  try {
+    const status = execSync('git status --porcelain', { cwd: repoDir, encoding: 'utf-8' }).trim();
+    if (!status) {
+      console.log('  No changes to commit.');
+    } else {
+      console.log(`  ${status.split('\n').length} file(s) changed`);
+      execSync('git add -A', { cwd: repoDir });
+      execSync('git commit -m "Sync: push local changes before machine switch"', { cwd: repoDir });
+      console.log('  Committed.');
+    }
+    execSync('git push origin main', { cwd: repoDir });
+    console.log('  Pushed to GitHub.');
+  } catch (e) {
+    console.error('  Git error:', e.message.split('\n')[0]);
+  }
+
+  console.log('\nDone. Supabase + GitHub are up to date.');
 })();
