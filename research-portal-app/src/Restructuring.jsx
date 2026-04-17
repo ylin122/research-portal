@@ -116,6 +116,7 @@ const CASES = [
   { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
   { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
   { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
+  { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: "#EF4444" },
 ];
 
 function WindstreamCase() {
@@ -3910,6 +3911,692 @@ function CaesarsCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   XEROX HOLDINGS — ONGOING LME (2025-26)
+   The first "non-subsidiary" drop-down financing.
+   ═══════════════════════════════════════════════════════ */
+
+function XeroxCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    business: (
+      <DetailPanel title="The Business — Secular Decline + Lexmark Integration" onClose={() => setDetail(null)}>
+        <p><strong>Xerox Holdings Corp.</strong> (NYSE: XRX) is the legacy US document-services and printer OEM. Revenue collapsed from <strong>$9.7B (2018) → $7.0B (2025)</strong>; organic legacy Xerox (standalone) shrank <strong>54% to ~$4.5B</strong>. Adj. EBITDA margins fell <strong>17% → 7.3%</strong> as fixed costs failed to right-size against a shrinking installed base. Post-COVID print volumes are stuck at <strong>~80–85%</strong> of pre-pandemic levels — permanent reduction as hybrid work normalizes.</p>
+        <p><strong>Reported FCF of $133M in 2025 masks adjusted FCF of ($356M)</strong> after backing out $489M of finance-receivables sales (one-time). In other words, the underlying business is cash-burning.</p>
+        <p style={{ color: T_.amber }}><strong>Lexmark acquisition — the growth bet:</strong> Announced Dec 2024. Closed <strong>July 1, 2025</strong> for <strong>$1.5B (inclusive of assumed debt).</strong> Lexmark brought A4 color exposure (Xerox historically underweight vs. A3 dominance), Asia-Pacific distribution, in-house component manufacturing, and combined platform controlling ~25% of global Managed Print Services (MPS). Seller: Ninestar Corp. / PAG Asia Capital / Shanghai Shouda.</p>
+        <p><strong>Lexmark financing stack (Jul 2025):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>$327M incremental 1L term loan borrowing</li>
+          <li><strong>$250M 13% Senior Notes due 2030</strong> (Moody's assigned <span style={{ color: T_.red }}>Caa3</span> Mar 2026) — Step-Up Backed</li>
+          <li><strong>$125M 13% Senior Unsecured Notes due 2026</strong></li>
+          <li>Bridge facilities (assumed repaid on path)</li>
+          <li>$110M ITSavvy seller notes — repaid Jan 30, 2026</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>The problem:</strong> The deal added leverage on top of a structurally declining core. Pro forma gross debt ~$4.35B vs. ~$512M LTM Adj EBITDA = <strong>8.5x total / 7.5x net</strong>. Third Bridge expert (Mar 2026): <em>"For a long time, Xerox has been following, not leading... 1.5–2 years before the debt situation becomes untenable."</em></p>
+        <p style={{ color: T_.amber }}><strong>ITSavvy (Nov 2024, $400M):</strong> Earlier diversification into IT services — fastest-growing segment (39% YoY 2025) but still {"<"}10% of revenue. Third Bridge expert: <em>"genuine gap Xerox had"</em> but not enough scale to move the needle.</p>
+      </DetailPanel>
+    ),
+    holdcoOpco: (
+      <DetailPanel title="Xerox Holdings Corp. ↔ Xerox Corp. — The Double-Dip" onClose={() => setDetail(null)}>
+        <p>Structure dates from the <strong>2017 Conduent spinoff</strong>. Two issuers:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Xerox Holdings Corp.</strong> — FinCo issuer of post-2017 bonds (5.5% 2028 SUNs; 13% 2030 Step-Up SUNs; 13% 2026 SUNs). On-lends proceeds to Xerox Corp. via intercompany loan.</li>
+          <li><strong>Xerox Corp.</strong> — primary OpCo. Borrower on 1L TL, 1L/2L secured notes, 8.875% 2029 SUNs, legacy 6.75% 2039 and 2035 notes. Also <strong>guarantees</strong> the Xerox Holdings bonds — creating a "double-dip" claim for HoldCo bondholders (direct claim on HoldCo + guarantee claim on OpCo via the intercompany).</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Guarantee package is not aligned across issues.</strong> Per Reorg: Lexmark-era bonds (13% 2030 Step-Up) brought tighter guarantees from a broader set of subsidiaries; <strong>legacy OpCo notes (2035s / 2039s) have NO Holdings guarantee</strong> — they live entirely at Xerox Corp. and are structurally more vulnerable.</p>
+        <p style={{ color: T_.red }}>Legacy Xerox <strong>intellectual property sat ENTIRELY at Xerox Corp.</strong> prior to the February 2026 transaction — including the Xerox trademark itself. That's the asset that got moved to IPCo.</p>
+      </DetailPanel>
+    ),
+    ipco: (
+      <DetailPanel title="IPCo JV — The Non-Subsidiary Drop-Down (Feb 17, 2026)" onClose={() => setDetail(null)}>
+        <p>The centerpiece of the case. Announced <strong>Feb 17, 2026</strong> — a novel structure that bankruptcy lawyers immediately dubbed the "non-subsidiary drop-down."</p>
+        <p><strong>Entity architecture (two-tier):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>XRX Brandco Holdings LLC</strong> (aka "IPCo Holdings") — the JV parent. <span style={{ color: T_.red }}>NOT a "Subsidiary" of Xerox</span> under Xerox's existing indentures because Xerox holds less than 50% of voting power.</li>
+          <li><strong>XRX Brandco LLC</strong> (aka "IPCo") — wholly-owned sub of IPCo Holdings. Holds the contributed IP (including the Xerox trademark). <strong>Guarantees</strong> the new TPG term loan.</li>
+        </ul>
+        <p><strong>Capitalization:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Xerox Corp.</strong> → contributed certain IP (trademarks including the <em>Xerox</em> brand; other specified IP) → received <strong>Class B units</strong> (operating economics)</li>
+          <li><strong>TPG Credit</strong> → $45M cash → received <strong>Class A units</strong> (voting control / preferred economics)</li>
+          <li><strong>TPG-led syndicate</strong> → $405M <strong>senior secured term loan</strong> (5-year, <strong>SOFR + 8.125%</strong> or base+7.125%, 4.50%/yr amortization starting Q4 2026)</li>
+          <li>IPCo Holdings then <strong>distributed the $450M to Xerox Corp.</strong> as an equity distribution on the Class B units</li>
+          <li>Total capital raised: <strong>$450M</strong> ($405M term loan + $45M preferred equity)</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>The innovation — splitting voting from economics:</strong> TPG controls voting. Xerox controls operating economics. The "Subsidiary" test in every existing Xerox indenture is a {">"}50% VOTING test — so IPCo Holdings is not a Subsidiary. That single fact bypasses every covenant that applies to Subsidiaries: the J.Crew blockers, Envision blockers, and $370M cap on non-guarantor restricted-sub investments.</p>
+        <p style={{ color: T_.amber }}><strong>Xerox didn't amend a single covenant.</strong> Per Ropes &amp; Gray: "none of Xerox's existing debt documents were amended, underscoring that the structure was engineered to fit within the existing covenant framework."</p>
+        <p><strong>Call protection:</strong> IPCo term loan has unusual monthly step-down from <strong>10.25%</strong> in month 1 to <strong>3.875%</strong> by end of year 1. Reorg notes this may imply an unwind option was contemplated at signing — though unwinding would be expensive.</p>
+      </DetailPanel>
+    ),
+    nonSub: (
+      <DetailPanel title="Why the J.Crew / Envision / NGRS Blockers All Failed" onClose={() => setDetail(null)}>
+        <p>Three existing covenant protections should have prevented this transaction. None of them worked — because every one applied only to <strong>Subsidiaries</strong>.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Blocker</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Purpose</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Why it failed</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { b: "J.Crew Blocker", p: "Prohibits transfer of Material IP to an Unrestricted Subsidiary", w: "Applies only to Subs. IPCo Holdings is not a Subsidiary → covenant never triggered." },
+              { b: "Envision Blocker", p: "Caps transfers to Unrestricted Subs at greater of $85M and 10% of EBITDA", w: "Same defect — applies only to Unrestricted Subsidiaries." },
+              { b: "$370M NGRS Cap", p: "Caps investments in Non-Guarantor Restricted Subsidiaries at $370M", w: "NGRSs are by definition Subsidiaries. Non-Subs not subject to this cap." },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.text, fontWeight: 600 }}>{r.b}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.p}</td>
+                <td style={{ padding: "6px 8px", color: T_.red }}>{r.w}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ color: T_.amber, marginTop: 12 }}><strong>The common fault:</strong> every legacy blocker was drafted to catch the last war. J.Crew / Envision / Serta were all <em>Subsidiary</em> maneuvers — so new indentures added Subsidiary-targeted guards. Xerox sidestepped them by making the drop-down entity a <strong>non-Subsidiary JV</strong>, which no existing covenant contemplates.</p>
+        <p style={{ color: T_.textMid }}><strong>Reorg's proposed drafting fixes</strong> (Apr 17, 2026 covenants piece):</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Expand "Subsidiary" definition to include entities the borrower "otherwise controls management" of (not just {">"}50% voting)</li>
+          <li>Draft a Pluralsight blocker covering transfers to <em>"any person that is not a Loan Party"</em> (rather than non-guarantor sub)</li>
+          <li>Cap JV investments with a broad "Joint Venture" definition</li>
+          <li>Remove or cap the "returns of capital" prong in Available Amount basket (the basket-recycling vulnerability)</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Market prevalence of existing protections is low:</strong> Pluralsight blockers in only <strong>15% of BSLs</strong> and 15% of HY bonds; Envision blockers in 10% BSLs / 16% HY. Most issuers have not yet tightened. Reorg identifies Beacon Roofing, US Foods, Victoria's Secret, and Hertz as having similarly vulnerable "Subsidiary" definitions.</p>
+      </DetailPanel>
+    ),
+    basketRecycling: (
+      <DetailPanel title="Basket Recycling — The Second Technique" onClose={() => setDetail(null)}>
+        <p>The non-sub structure alone wasn't sufficient — Xerox also needed enough <strong>covenant capacity</strong> to contribute IP of the required value. The capacity came from a clever re-read of the Available Amount basket.</p>
+        <p><strong>Two-step IP contribution (per the IPCo credit agreement):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>"First IP Contribution"</strong> — condition precedent to closing. Xerox contributed IP; received Class B units.</li>
+          <li><strong>"Second IP Contribution"</strong> — required to occur <em>immediately after term loan incurrence and proceeds distribution</em> (per EoD section).</li>
+        </ul>
+        <p><strong>Reorg's reconstruction:</strong> Between steps 1 and 2, IPCo Holdings distributed the $450M proceeds back to Xerox Corp. That return of capital refilled the Available Amount basket under the Xerox term loan — which allows <strong>100% of "aggregate returns" on invested capital to replenish the basket</strong>. With the refilled basket, Xerox then contributed additional IP in step 2.</p>
+        <p style={{ color: T_.amber }}><strong>Estimated JV investment capacity (pre-recycling):</strong> ~$737M ($452M in explicit JV capacity + $285M in D&amp;O / dividend baskets). Reorg estimates post-recycling capacity is theoretically sufficient for IP materially exceeding $450M.</p>
+        <p style={{ color: T_.red }}><strong>Why this matters:</strong> The "returns of capital" prong is the vulnerability. If Xerox has further assets to monetize (Lexmark IP, XFS finance receivables, MPS contracts), the basket can in principle be recycled again — opening a pathway to future LMEs on the same covenant framework.</p>
+      </DetailPanel>
+    ),
+    ssla: (
+      <DetailPanel title="SSLA + 2% Royalty — Effective Priming via P&L" onClose={() => setDetail(null)}>
+        <p>The Shared Services and License Agreement ("SSLA") is the economic engine — and the most damaging piece for existing creditors.</p>
+        <p><strong>Terms:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Xerox and its restricted subs get a <strong>worldwide royalty-bearing license</strong> to use the contributed IP (including the Xerox brand)</li>
+          <li>Royalty rate: <strong>2.0% of specified consolidated revenue</strong></li>
+          <li>Initial term: <strong>10 years</strong>, auto-renewing in 5-year increments</li>
+          <li>Termination: either party with 18 months' notice; IPCo can terminate for material breach, insolvency, or change of control</li>
+          <li>90-day sell-off period post-termination</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Reorg's EBITDA drag estimate:</strong> Assuming ~76% of consolidated revenue is Xerox-brand legacy business subject to the 2% rate → <strong>~$121M/yr in royalty expense</strong> flowing from Xerox RemainCo to IPCo. This reduces EBITDA available to existing lenders by <strong>$100–109M/yr through 2027</strong>.</p>
+        <p style={{ color: T_.amber }}><strong>The debt service passthrough:</strong> IPCo's $405M term loan at SOFR+8.125% consumes virtually all of the royalty cash flow at current rates. In substance, the SSLA converts future Xerox operating cash flow into debt service on the new IPCo term loan — <strong>effectively priming the existing Xerox debt stack</strong> by diverting cash that would otherwise service legacy obligations.</p>
+        <p style={{ color: T_.amber }}><strong>SSLA guarantee covenants:</strong> The SSLA itself carries covenants — limits on indebtedness, liens, asset sales, investments — plus asset-coverage-ratio maintenance requirements and <strong>cross-default</strong> provisions. This creates a complex interdependency: a Xerox default on SSLA obligations triggers the IPCo debt, which in turn could cascade back.</p>
+      </DetailPanel>
+    ),
+    warrant: (
+      <DetailPanel title="Warrant Distribution — Coercive Debt-for-Equity (Feb 12, 2026)" onClose={() => setDetail(null)}>
+        <p>Announced <strong>Jan 28, 2026</strong>; distributed <strong>Feb 12, 2026</strong>. The warrant leg of the LME — targets the unsecured notes for voluntary retirement.</p>
+        <p><strong>Mechanics:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>~<strong>77M warrants</strong> distributed pro-rata to common stock (1 warrant per 2 shares), Series A Convertible Preferred (as-converted), and <strong>3.75% Convertible Notes due 2030</strong> (23.9952 warrants per $1,000 face)</li>
+          <li>Exercise price: <strong>$8.00/share</strong></li>
+          <li>Expiration: <strong>Feb 11, 2028</strong> (~2-year tenor)</li>
+          <li><strong>Dual-path exercise:</strong> pay $8.00 cash per warrant <em>OR</em> surrender "<strong>Designated Notes</strong>" at <strong>face value</strong> ($8 face = 1 warrant)</li>
+          <li>Designated Notes = <strong>all Xerox notes EXCEPT the 13% SUNs due 2026</strong> (excluded because those notes are expected to be paid at maturity)</li>
+          <li>Total aggregate exercise value: <strong>$616M</strong>. Estimated max debt retirement: <strong>~$600M</strong> of unsecured debt if fully taken up</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Economics from a bondholder's view (with XRX at ~$2.40, per Reorg):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Intrinsic bond-point value of exercising: <strong>~30 points</strong></li>
+          <li>Cost to buy warrants in market: <strong>~8 points</strong></li>
+          <li>Net intrinsic value: <strong>~22 points</strong></li>
+          <li style={{ color: T_.red }}>But 22 points is <em>above</em> the trading price of every eligible note → <strong>uneconomical for existing holders to exercise</strong></li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Moody's framing (Mar 13, 2026):</strong> noted the warrant program "could constitute a distressed exchange if material debt is exchanged" — a credit event trigger.</p>
+        <p><strong>Read as signaling:</strong> The warrant leg was announced three weeks <em>before</em> the TPG deal-away. Reorg and third-party commentary interpret the sequence as Xerox telegraphing to unsecured creditors: <em>"engage with us now on a voluntary basis — what comes next may be worse."</em></p>
+        <p><strong>Parallel action:</strong> Xerox also filed a <strong>$750M shelf registration on Jan 28, 2026</strong> — financial flexibility for future capital markets activity.</p>
+      </DetailPanel>
+    ),
+    debtStack: (
+      <DetailPanel title="Debt Stack & Trading Levels (Pro Forma, Late Mar 2026)" onClose={() => setDetail(null)}>
+        <p>Pro-forma capital structure per Reorg and CreditSights. Total funded debt: <strong>~$4.2B</strong>. Weighted avg price before the JV: ~<strong>52 cents</strong>. Discount capture potential at that point: over $2B.</p>
+        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Issuer</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Size</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Price</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Rating (S&amp;P / Moody's)</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { t: "ABL Revolver", iss: "Xerox Corp", s: "$425M committed (undrawn)", p: "—", r: "—", c: T_.green },
+              { t: "IPCo TL (SOFR+8.125%, 2031)", iss: "XRX Brandco / IPCo", s: "$405M", p: "par", r: "n.r.", c: T_.amber },
+              { t: "1L Term Loan B due 2029 (S+400)", iss: "Xerox Corp", s: "~$550M", p: "~60s", r: "B- / '2' (80%)", c: T_.blue },
+              { t: "10.25% 1L Secured Notes due 2029", iss: "Xerox Corp", s: "~$400M", p: "—", r: "B- / '2' (80%)", c: T_.blue },
+              { t: "13.5% 2L Notes due 2031", iss: "Xerox Corp", s: "$500M", p: "37–53", r: "CCC / '5' (20%)", c: T_.amber },
+              { t: "5.5% Sr Unsecured Notes due 2028", iss: "Xerox Holdings", s: "$750M", p: "low 40s", r: "CCC / '5'", c: T_.red },
+              { t: "8.875% Sr Unsecured Notes due 2029", iss: "Xerox Corp", s: "$500M", p: "—", r: "CCC / '5'", c: T_.red },
+              { t: "13% Step-Up SUNs due 2030 (Lexmark)", iss: "Xerox Holdings", s: "$250M", p: "—", r: "CCC / Caa3", c: T_.red },
+              { t: "13% SUNs due 2026 (Lexmark)", iss: "Xerox Holdings", s: "$125M", p: "near par", r: "CCC / —", c: T_.green },
+              { t: "3.75% Convertible Notes due 2030", iss: "Xerox Holdings", s: "—", p: "—", r: "—", c: T_.purple },
+              { t: "Legacy 6.75% Notes due 2039", iss: "Xerox Corp", s: "—", p: "~30", r: "CCC / —", c: T_.red },
+              { t: "Legacy Notes due 2035", iss: "Xerox Corp", s: "—", p: "—", r: "CCC / —", c: T_.red },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "5px 8px", color: r.c, fontWeight: 600 }}>{r.t}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, fontSize: 10 }}>{r.iss}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.s}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.p}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, fontSize: 10 }}>{r.r}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 12, color: T_.amber }}><strong>Leverage:</strong> Pro forma ~6x including pension/lease/finco adjustments, ~9x <em>excluding</em> finco adjustments (Moody's). S&amp;P hypothetical default scenario: 2027 default, emergence EBITDA $517M × 5.5x = <strong>net enterprise value at default $2.37B</strong>.</p>
+        <p><strong>Maturity wall:</strong> <strong>$750M in 2028</strong> (5.5% HoldCo SUNs — the first real refinancing test); <strong>{">"}$1.3B in 2029</strong> (1L TL, 1L Notes, 8.875% OpCo SUNs).</p>
+      </DetailPanel>
+    ),
+    creditors: (
+      <DetailPanel title="Creditor Organization — Three Distinct Groups" onClose={() => setDetail(null)}>
+        <p>Three separate ad hoc creditor groups have organized as of late Mar 2026 — all with different counsel and overlapping-but-distinct interests.</p>
+        <p><strong>Group 1 — Gibson Dunn / Moelis (cooperation agreement effective Feb 25, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Holdings: <strong>majority of 1L Term Loans</strong>, significant 1L Secured Notes, and <strong>13% Senior Unsecured Notes due 2030</strong></li>
+          <li>Weighted toward first lien (senior tranches)</li>
+          <li>Formed after Xerox executed the TPG deal-away <em>without</em> reaching a consensual deal — despite having restricted multiple large creditors the prior week to discuss a comprehensive balance-sheet solution</li>
+          <li style={{ color: T_.amber }}>The 13% 2030 notes have a <strong>Wesco/Incora blocker</strong> protecting against vote manipulation via debt prepayment — adds complexity to any consensual LME</li>
+        </ul>
+        <p><strong>Group 2 — Paul Hastings / Elliott (identified via CS LFI, Mar 12, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Focus: <strong>second lien and unsecured creditors</strong></li>
+          <li>Elliott Investment Management confirmed as a <strong>sizable holder</strong> behind the group (LFI)</li>
+          <li>Likely pursuing a different strategy than the Gibson Dunn group — potentially seeking to establish fulcrum-security leverage in the 2L</li>
+        </ul>
+        <p><strong>Group 3 — Cadwalader (minority TL lenders):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Minority <strong>~$150M</strong> term loan holdings</li>
+          <li>Engaged Cadwalader, Wickersham &amp; Taft; scheduled initial call <strong>Mar 18, 2026</strong></li>
+          <li>Likely concerned about adverse amendment treatment in any consensual LME</li>
+        </ul>
+        <p style={{ color: T_.amber, marginTop: 10 }}><strong>The triangulation problem:</strong> For a consensual LME, Xerox needs majority consent in four distinct tranches (1L TL, 1L Notes, 2L Notes, 13% 2030 SUNs). The Gibson Dunn group spans all four — but the Paul Hastings / Elliott group's 2L and unsecured exposure creates adverse-interest dynamics. Reorg (Feb 13, 2026 modeled scenario): "tall, but ultimately surmountable."</p>
+      </DetailPanel>
+    ),
+    counsel: (
+      <DetailPanel title="Counsel Switch — K&E → Simpson Thacher (Mar 27, 2026)" onClose={() => setDetail(null)}>
+        <p>Xerox was originally advised on the LME by <strong>Kirkland &amp; Ellis</strong> (retained October 2025). <strong>David Nemecek</strong>, the lead K&amp;E partner who architected the non-subsidiary structure, moved to <strong>Simpson Thacher &amp; Bartlett</strong> — and Xerox followed him (public around Mar 27, 2026).</p>
+        <p style={{ color: T_.amber }}>Partner-follows-client is common. Here the significance is that the architect of the transaction is still running the playbook — continuity with the advisor who structured the novel covenant read matters as creditors organize challenges.</p>
+        <p><strong>Xerox's full advisor set (as of late Mar 2026):</strong> Simpson Thacher (legal, post-move), <strong>Lazard</strong> (financial, since Oct 2025).</p>
+        <p style={{ color: T_.red }}>Reorg's bottom line as of Mar 27, 2026: Xerox "not out of the woods" despite the TPG liquidity injection. Ongoing negotiations with the Gibson Dunn group; Paul Hastings / Elliott group also active.</p>
+      </DetailPanel>
+    ),
+    ceo: (
+      <DetailPanel title="CEO Change — Bandrowczak Out, Pastor In (Mar 30, 2026)" onClose={() => setDetail(null)}>
+        <p><strong>Mar 30, 2026:</strong> <strong>Steve Bandrowczak</strong> steps down as CEO. <strong>Louie Pastor</strong> (formerly President and COO) appointed CEO effective immediately.</p>
+        <p>Xerox reaffirmed FY2026 guidance concurrent with the announcement: revenue at least $7.5B constant currency (implying <strong>~6% organic decline</strong>), AOI $450–500M, FCF $250M (dependent on $335M of forward-flow receivable sales).</p>
+        <p style={{ color: T_.amber }}><strong>Context:</strong> The CEO change came ~6 weeks after the TPG deal-away and amid the formation of the Gibson Dunn and Paul Hastings creditor groups. Bandrowczak had led Xerox through the Lexmark acquisition and the initial LME structuring.</p>
+        <p style={{ color: T_.red }}>Third Bridge expert (Mar 2026): <em>"Many Xerox people leading the charge, senior Lexmark advisors being 'showed the door.'"</em> Integration tension reflected in the management shakeup.</p>
+      </DetailPanel>
+    ),
+    ratings: (
+      <DetailPanel title="Rating Actions — S&P and Moody's" onClose={() => setDetail(null)}>
+        <p><strong>S&amp;P (Feb 27, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Corporate family: <strong>CCC+</strong>, outlook <strong>negative</strong></li>
+          <li>1L Notes and TL: lowered to <strong>B-</strong> (from B), recovery revised to <strong>'2' (80%)</strong></li>
+          <li>2L Notes: lowered to <strong>CCC</strong> (from CCC+), recovery <strong>'5' (20%)</strong></li>
+          <li>HoldCo Sr Unsecured: <strong>CCC</strong>, recovery <strong>'5' (20%)</strong></li>
+          <li>Hypothetical default scenario: 2027 default; emergence EBITDA $517M × <strong>5.5x multiple</strong>; net enterprise value at default <strong>$2.37B</strong></li>
+        </ul>
+        <p><strong>Moody's (Mar 13, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>CFR: <strong>Downgraded Caa2</strong> (from B2), outlook <strong>negative</strong></li>
+          <li>13% Step-Up Backed Senior Unsecured Notes due 2030 (Lexmark-era): <strong>Caa3</strong></li>
+          <li>Pro forma leverage: <strong>~6x</strong> including pension/lease/finco adjustments, <strong>~9x</strong> excluding finco</li>
+          <li>Drivers: below-plan performance post-Lexmark acquisition; concern debt will need to be restructured</li>
+          <li style={{ color: T_.red }}>Moody's flagged: the warrant program <strong>"could constitute a distressed exchange if material debt is exchanged"</strong></li>
+        </ul>
+      </DetailPanel>
+    ),
+    creditsights: (
+      <DetailPanel title="CreditSights — Full Coverage + Tranche Recommendations" onClose={() => setDetail(null)}>
+        <p><strong>Coverage flags (company/101205):</strong> csCoverage ✓ / crCoverage ✓ / lfiCoverage ✓ / financialsCoverage ✓ / riskProductsCoverage ✓. Analyst bench: Nick Williams, Andy Li, CFA; Veronica Graff (LFI); Grondahl, Josefsberg, Diaz-Matos, Quan.</p>
+        <p><strong>Overall rec (as of Mar 30, 2026):</strong> <span style={{ color: T_.amber, fontWeight: 600 }}>Hold</span> — upgraded from Underperform <strong>Nov 6, 2025</strong>.</p>
+        <p><strong>Tranche-by-tranche (Feb 18, 2026 update):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><span style={{ color: T_.green, fontWeight: 600 }}>BUY</span> — <strong>1L debt (TL + Notes)</strong>. Covered under all scenarios; par recovery maintained pro forma for IPCo debt.</li>
+          <li><span style={{ color: T_.amber, fontWeight: 600 }}>HOLD</span> — <strong>2L Notes</strong>. Downside risk from additional IPCo debt + incentive for 1L to argue fulcrum-security position in any restructuring.</li>
+          <li><span style={{ color: T_.green, fontWeight: 600 }}>BUY</span> — <strong>5.5% HoldCo SUNs due 2028</strong>. Leverage from being the first substantial unsecured maturity Xerox must address.</li>
+          <li><span style={{ color: T_.green, fontWeight: 600 }}>BUY</span> — <strong>13% HoldCo SUNs due 2026</strong>. Expected to be repaid at maturity.</li>
+          <li><span style={{ color: T_.red, fontWeight: 600 }}>SELL</span> — <strong>all remaining OpCo unsecured + HoldCo unsecured ex-2028</strong>. Zero to low-single-digit recoveries in low/mid scenarios.</li>
+        </ul>
+        <p><strong>Recovery scenarios (CS model):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Xerox IP valuation:</strong> ~$490M (2% royalty × estimated Xerox-brand revenue)</li>
+          <li><strong>Scenario 1 (status quo waterfall):</strong> Secured unimpaired; HoldCo unsecured <strong>~17%</strong>; OpCo unsecured <strong>~2.6%</strong></li>
+          <li><strong>Scenario 2 (excess cash diverted to unsecured exchanges — more likely):</strong> 1L par; 2L materially impaired; unsecured ex-exchange 0% (low/mid), ~3.9–4% (high)</li>
+          <li><strong>Excess cash for unsecured exchanges: ~$686.8M</strong> — at 55-cent tender retires ~$1.25B of unsecureds. Addresses 2028 + 2029 maturities but leaves later tenors unaddressed</li>
+        </ul>
+      </DetailPanel>
+    ),
+    thirdbridge: (
+      <DetailPanel title="Third Bridge Expert Views — 'A Lifeline' or 'Band-Aid'?" onClose={() => setDetail(null)}>
+        <p>Two direct Xerox-as-target transcripts (Mar 2026). Anonymous industry experts, analyst-led.</p>
+        <p><strong>Transcript 1 (Mar 4, 2026 — "JV, Lexmark Integration, Debt Pressures &amp; Future of MPS"):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><em>"Stabilising from an organisational perspective... but there's still a fair amount in flux, specifically the debt load."</em></li>
+          <li>On the JV: <em>"I equate this very similar [to] Kodak on the scanner side... USD 450m is probably accurately priced. The only question is how well are they going to be able to monetise."</em> → Described as "<strong>a lifeline</strong>."</li>
+          <li>On capital structure durability: <em>"Something's got to give... margins in this industry in print are not going to go up. [I give Xerox] <strong>1.5–2 years before the debt situation becomes untenable.</strong>"</em></li>
+          <li>On warrants: Exchanging debt at distressed levels for deeply-OTM equity <em>"would really be a head scratcher" unless it's the bondholder's only option.</em></li>
+          <li>On outlook: <em>"I don't see a way out of this environment... there's no suitor that would step up in this space to buy a print vendor that I can think of."</em></li>
+        </ul>
+        <p><strong>Transcript 2 (Mar 11, 2026 — "Portfolio Strategy, Inkjet Expansion &amp; Lexmark Operational Integration"):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>On the JV: <em>"You're selling what is made Xerox, Xerox. You're selling what was the core of the company... This is almost a <strong>scream of desperation</strong>."</em> Expert noted XRX stock had never been below $2 in their 30+ year career.</li>
+          <li>On the $450M use: <em>"Like putting a <strong>Band-Aid on an artery that's bleeding</strong>."</em></li>
+          <li>On Lexmark integration: Lexmark's lower-end A4 portfolio fills a "genuine gap." MPS software has capabilities Xerox lacks. <strong>Channel overlap is the biggest near-term issue</strong> — multiple GTM routes competing for same client.</li>
+          <li>On production inkjet: Xerox now relies on a <strong>third-party rebranded product</strong> (Baltoro/Brenva programs apparently discontinued). <em>"Xerox used to sell against [competitors that weren't the OEM]. Now they're in that position."</em> Margin headwind.</li>
+          <li>Best case upside: Ricoh (also distressed) faltering + Xerox capturing share, OR combined portfolio improving MPS win rate. Both characterized as "a long shot."</li>
+        </ul>
+      </DetailPanel>
+    ),
+    precedent: (
+      <DetailPanel title="Precedents — Robertshaw, Trinseo, and What Courts Might Do" onClose={() => setDetail(null)}>
+        <p>The non-subsidiary drop-down isn't unprecedented — but it's close. Two prior transactions used variants; one was challenged and partially struck down.</p>
+        <p><strong>Robertshaw (Dec 2023) — split-ownership non-sub:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Robertshaw used a split-ownership non-subsidiary structure for a priority drop-down</li>
+          <li>Challenged in bankruptcy. <strong>Judge Christopher Lopez (S.D. Tex.)</strong> — same judge from Envision and other recent restructurings — found it <strong>WAS a "Subsidiary"</strong> in substance, looking past form</li>
+          <li style={{ color: T_.amber }}>BUT — remedy was limited. Court awarded only a <strong>$39.4M pro-rata claim</strong>, far less than the economic injury plaintiffs argued for</li>
+          <li><strong>Implication:</strong> Courts may re-characterize non-sub structures but the damages may not meaningfully claw back the LME economics — especially if a bankruptcy has already occurred and the cure is a pro-rata recovery rather than undoing the transfer</li>
+        </ul>
+        <p><strong>Trinseo (Sep 2023) — sister-level non-sub:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Trinseo used a sister-level non-subsidiary as primary obligor in a pari-plus structure</li>
+          <li>Not directly tested in bankruptcy; remains a live precedent</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>The open question for Xerox:</strong> IPCo Holdings' LLC agreement is not publicly filed. The exact voting/economic split between Xerox and TPG is not disclosed. <em>This is the single most important undisclosed fact for assessing whether the "non-sub" characterization would survive judicial challenge.</em> Robertshaw suggests courts may look past form to substance — and if they do, IPCo Holdings could be re-characterized as a Subsidiary, retroactively triggering the J.Crew / Envision blockers.</p>
+        <p style={{ color: T_.amber }}><strong>But challenge pathway matters:</strong> Unlike an uptier (which can be challenged under existing indenture sacred-rights theories), a drop-down to a non-sub via a covenant that explicitly permits the transfer is harder to attack out-of-court. Creditors would likely need a bankruptcy filing to reach the fraudulent-transfer and equitable-subordination tools — which is exactly the leverage Xerox's management now has against creditors contemplating hostile action.</p>
+      </DetailPanel>
+    ),
+    forward: (
+      <DetailPanel title="Forward Path — What Happens Next" onClose={() => setDetail(null)}>
+        <p>Status as of <strong>April 17, 2026:</strong> ongoing. The situation is still unfolding. Several potential paths:</p>
+        <p><strong>1. Consensual LME (modeled by Reorg Feb 13, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Step One:</strong> Drop-down of Lexmark (~26% of revenues), XFS (~17% of assets), IT Solutions (~10.8%), or additional IP (~9.4%) into a new <strong>NonGuarantor Restricted Subsidiary (NGRS)</strong> — sized below "all or substantially all" threshold (&lt;50% of EV). $1B estimated asset contribution + $200M new money. Ad hoc group exchanges into new pari-plus debt with NGRS collateral + retained RemainCo claims</li>
+          <li><strong>Step Two:</strong> Follow-on discounted exchange targeting 2028 and 2029 unsecured notes. At 60% group participation: 2L "significantly impaired"; unsecured "no direct recovery"</li>
+          <li>Needs majority consent in: 1L TL, 1L Notes, 2L Notes, 13% 2030 SUNs. Reorg view: "tall, but surmountable"</li>
+        </ul>
+        <p><strong>2. More deal-aways (non-sub or otherwise):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Lexmark IP</strong> sits at Lexmark subsidiary (USPTO) — explicitly excluded from the Feb 2026 JV. <em>Prime candidate</em> for future monetization. Potentially exceeds legacy Xerox IP in value given Lexmark OEM licensing</li>
+          <li>Available Amount basket can be recycled again via the returns-of-capital prong</li>
+          <li>XFS finance receivables, MPS contracts — other potential deal-away asset categories</li>
+        </ul>
+        <p><strong>3. Chapter 11 (on the table):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Third Bridge expert: <strong>1.5–2 years before untenable</strong></li>
+          <li>S&amp;P hypothetical default: <strong>2027</strong></li>
+          <li>Moody's leverage estimate <strong>9x excluding finco</strong> → outright deleveraging unlikely through operations alone</li>
+          <li>Ch.11 would unlock fraudulent-transfer challenges to the TPG JV + equitable-subordination theories</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Status — by source consensus:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Reorg (Apr 17, 2026):</strong> Xerox can continue recycling baskets; non-sub precedent now replicable at other issuers; forward LME activity expected</li>
+          <li><strong>CreditSights (Mar 30, 2026):</strong> Hold overall; differentiated tranche calls (1L Buy / 5.5% 2028 Buy / unsecured Sell)</li>
+          <li><strong>Third Bridge (Mar 2026):</strong> "lifeline" / "Band-Aid" / "scream of desperation" — 1.5–2 year runway</li>
+          <li><strong>Rating agencies:</strong> Caa2 (Moody's) / CCC+ (S&amp;P), both negative outlook</li>
+        </ul>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Status Banner ── */}
+      <div style={{ background: `${T_.red}12`, borderRadius: 8, border: `1px dashed ${T_.red}60`, padding: "10px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, color: T_.red, padding: "2px 8px", borderRadius: 4, background: `${T_.red}25` }}>ONGOING</span>
+        <span style={{ fontSize: 12, color: T_.textMid }}>Status as of <strong>Apr 17, 2026</strong>. TPG JV closed Feb 17, 2026; Xerox has not filed Ch.11. Creditor groups (Gibson Dunn / Paul Hastings / Cadwalader) organizing.</span>
+      </div>
+
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Xerox (NYSE: XRX) closed the <span style={{ color: T_.amber }}>$1.5B Lexmark acquisition July 2025</span>, stacking leverage on a structurally declining print business (revenue $9.7B 2018 → $7.0B 2025; Adj EBITDA margins 17% → 7.3%). Pro forma debt <span style={{ color: T_.red }}>~$4.35B vs. $512M LTM EBITDA (8.5x total / 7.5x net)</span>. Starting January 2026, Xerox executed a two-part LME: <span style={{ color: T_.accent }}>(1) a Feb 12, 2026 warrant distribution offering debt-for-equity at $8 strike</span> (up to ~$600M debt retirement); and <span style={{ color: T_.accent }}>(2) the Feb 17, 2026 formation of <strong>XRX Brandco Holdings LLC</strong> — a novel "non-subsidiary" JV with <strong>TPG Credit</strong></span>. Xerox contributed the Xerox trademark and specified IP for Class B units; TPG took Class A units with voting control; a TPG-led syndicate provided <span style={{ color: T_.accent }}>$405M in SOFR+8.125% term loans + $45M preferred = $450M</span>. Because IPCo Holdings is not a "Subsidiary" under existing debt documents (Xerox holds &lt;50% voting), the structure <span style={{ color: T_.red }}>bypasses the J.Crew blockers, Envision blockers, and $370M cap on non-guarantor restricted-sub investments — without amending a single covenant</span>. The SSLA's 2% royalty (~$121M/yr) effectively primes the existing Xerox debt stack. Three creditor ad hoc groups have organized. Rating agencies cut to <span style={{ color: T_.red }}>Caa2 / CCC+</span>. Third Bridge experts give the business <strong>1.5–2 years</strong> before the debt situation becomes untenable.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Funded Debt", v: "~$4.35B", c: T_.red },
+            { l: "Total Leverage", v: "8.5x", c: T_.red },
+            { l: "Lexmark Closed", v: "Jul 1, 2025", c: T_.amber },
+            { l: "Warrant Dist.", v: "Feb 12, 2026", c: T_.accent },
+            { l: "IPCo JV", v: "Feb 17, 2026", c: T_.accent },
+            { l: "JV Size", v: "$450M", c: T_.amber },
+            { l: "CFR (M / S)", v: "Caa2 / CCC+", c: T_.red },
+            { l: "XRX Stock", v: "~$2.00", c: T_.red },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART — Post-IPCo Structure
+         ════════════════════════════════════════════════════ */}
+      <div style={{ margin: "0 auto" }}>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate &amp; Capital Structure (Post-IPCo JV, Apr 2026)</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>The non-subsidiary JV sits outside the Xerox credit group entirely. Click any box for details.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Non-Subsidiary / Outside Credit Group</span></span>
+        </div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: HoldCo + IPCo Holdings side-by-side */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.2fr 1fr", gap: 8, alignItems: "start" }}>
+          <div onClick={() => toggle("holdcoOpco")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Xerox Holdings Corp. (NYSE: XRX)"
+              sub="FinCo issuer · post-2017 Conduent-spin HoldCo bonds"
+              color={T_.red}
+              debt={[
+                { name: "5.5% SUNs due 2028 ($750M)", amount: "low 40s", color: T_.red },
+                { name: "13% Step-Up SUNs due 2030 ($250M)", amount: "Caa3", color: T_.red },
+                { name: "13% SUNs due 2026 ($125M)", amount: "near par", color: T_.green },
+                { name: "3.75% Convertibles due 2030", amount: "—", color: T_.purple },
+              ]}
+            />
+          </div>
+          <div style={{ paddingTop: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center" }}>← TPG JV<br/>SEPARATE<br/>CHAIN →</div>
+          </div>
+          <div onClick={() => toggle("ipco")} style={{ cursor: "pointer" }}>
+            <Box
+              label="XRX Brandco Holdings LLC (IPCo Holdings)"
+              sub="NON-SUBSIDIARY JV · Formed Feb 17, 2026"
+              color={T_.accent}
+              dashed
+              badges={[{ text: "XRX Class B", color: T_.amber }, { text: "TPG Class A (VOTING)", color: T_.red }]}
+              debt={[
+                { name: "IPCo Term Loan SOFR+8.125% (2031)", amount: "$405M", color: T_.accent },
+                { name: "TPG Class A Preferred", amount: "$45M", color: T_.accent },
+              ]}
+            />
+          </div>
+        </div>
+
+        {/* Downward line from Holdings */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.2fr 1fr", gap: 8 }}>
+          <VLineLabel label="Intercompany loan + on-lend" color={T_.amber} />
+          <div />
+          <VLineLabel label="IP contribution" color={T_.accent} />
+        </div>
+
+        {/* ROW 2: Xerox Corp (OpCo) + IPCo (sub of IPCo Holdings) */}
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.2fr 1fr", gap: 8, alignItems: "start" }}>
+          <div onClick={() => toggle("holdcoOpco")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Xerox Corporation (OpCo)"
+              sub="Primary operating + secured issuer"
+              color={T_.blue}
+              badges={[{ text: "Guarantor of HoldCo bonds", color: T_.blue }]}
+              debt={[
+                { name: "ABL Revolver (undrawn)", amount: "$425M", color: T_.green },
+                { name: "1L TLB due 2029 (S+400)", amount: "~$550M @ 60s", color: T_.blue },
+                { name: "10.25% 1L Secured Notes 2029", amount: "~$400M", color: T_.blue },
+                { name: "13.5% 2L Notes due 2031", amount: "$500M @ 37–53", color: T_.amber },
+                { name: "8.875% SUNs due 2029", amount: "$500M", color: T_.red },
+                { name: "Legacy 6.75% Notes due 2039", amount: "~30", color: T_.red },
+              ]}
+            />
+          </div>
+          <div style={{ paddingTop: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: 18, color: T_.accent, fontWeight: 700 }}>→</div>
+          </div>
+          <div onClick={() => toggle("ipco")} style={{ cursor: "pointer" }}>
+            <Box
+              label="XRX Brandco LLC (IPCo)"
+              sub="Wholly-owned sub of IPCo Holdings"
+              color={T_.accent}
+              dashed
+              badges={[{ text: "HOLDS XEROX IP", color: T_.red }, { text: "GUARANTOR OF $405M TL", color: T_.accent }]}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.2fr 1fr", gap: 8 }}>
+          <VLineLabel label="Operating subsidiaries" color={T_.textDim} />
+          <div />
+          <div style={{ fontSize: 10, color: T_.accent, textAlign: "center", padding: "12px 0", lineHeight: 1.5 }}>
+            IP licensed BACK to Xerox RemainCo<br/>via <strong>SSLA</strong> @ <strong>2% of revenue</strong><br/>(~$121M/yr royalty drag)
+          </div>
+        </div>
+
+        {/* ROW 3: Op subs */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 0.5fr 1fr", gap: 6, alignItems: "center" }}>
+          <Box label="Lexmark International II LLC" sub="Acquired Jul 2025 · A4 color · APAC · ~26% of pro forma rev" color={T_.amber} />
+          <Box label="ITSavvy" sub="Acquired Nov 2024 · IT services · 39% YoY 2025" color={T_.purple} />
+          <Box label="Xerox Financial Services (XFS)" sub="FinCo · finance receivables (excluded from core metrics)" color={T_.cyan} />
+          <div />
+          <div />
+        </div>
+
+        {/* Action buttons row */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 16 }}>
+          <div onClick={() => toggle("business")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "business" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "business" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Business &amp; Lexmark Integration</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Revenue $9.7B→$7B · EBITDA 17%→7.3% · Lexmark $1.5B · 80–85% print post-COVID</div>
+          </div>
+          <div onClick={() => toggle("warrant")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "warrant" ? `${T_.accent}12` : T_.bgInput,
+            border: `1px solid ${detail === "warrant" ? T_.accent : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Warrant Distribution — Debt-for-Equity</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>77M warrants · $8 strike · up to $600M retirement · uneconomical today</div>
+          </div>
+          <div onClick={() => toggle("ipco")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "ipco" ? `${T_.red}12` : T_.bgInput,
+            border: `2px solid ${detail === "ipco" ? T_.red : T_.red + "60"}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T_.red }}>★ IPCo JV — The Non-Sub Drop-Down</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$450M · XRX Brandco Holdings · TPG Class A voting · Feb 17, 2026</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("nonSub")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "nonSub" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "nonSub" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Why J.Crew / Envision / NGRS Blockers Failed</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>All apply only to "Subsidiaries" · no covenants amended</div>
+          </div>
+          <div onClick={() => toggle("basketRecycling")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "basketRecycling" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "basketRecycling" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Basket Recycling — First &amp; Second IP Contribution</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$450M return refilled Available Amount · $737M est. capacity</div>
+          </div>
+          <div onClick={() => toggle("ssla")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "ssla" ? `${T_.accent}12` : T_.bgInput,
+            border: `1px solid ${detail === "ssla" ? T_.accent : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>SSLA — 2% Royalty Effectively Primes the Stack</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>~$121M/yr drag · 10-yr term · services IPCo debt</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("debtStack")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "debtStack" ? `${T_.blue}12` : T_.bgInput,
+            border: `1px solid ${detail === "debtStack" ? T_.blue : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Full Debt Stack &amp; Trading Levels</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>~$4.2B total · avg price ~52 · 1L 60s · 2L 37–53 · 5.5% SUN 2028 low 40s</div>
+          </div>
+          <div onClick={() => toggle("creditors")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "creditors" ? `${T_.purple}12` : T_.bgInput,
+            border: `1px solid ${detail === "creditors" ? T_.purple : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Creditor Groups (3) — Gibson Dunn · Paul Hastings · Cadwalader</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>GD/Moelis 1L · PH/Elliott 2L+Unsec · CWT minority $150M TL</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("counsel")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "counsel" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "counsel" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Counsel Switch — K&amp;E → Simpson Thacher</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Nemecek moved; Xerox followed · Mar 27, 2026</div>
+          </div>
+          <div onClick={() => toggle("ceo")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "ceo" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "ceo" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>CEO Change — Bandrowczak → Pastor (Mar 30, 2026)</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>FY26 guidance reaffirmed · leadership during RX</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("ratings")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "ratings" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "ratings" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Rating Actions — S&amp;P + Moody's</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>CCC+ / Caa2 · both negative · flagged distressed-exchange risk</div>
+          </div>
+          <div onClick={() => toggle("creditsights")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "creditsights" ? `${T_.green}12` : T_.bgInput,
+            border: `1px solid ${detail === "creditsights" ? T_.green : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.green }}>CreditSights — Tranche Calls</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Hold overall · 1L Buy · 5.5% 2028 Buy · rest Sell</div>
+          </div>
+          <div onClick={() => toggle("thirdbridge")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "thirdbridge" ? `${T_.cyan}12` : T_.bgInput,
+            border: `1px solid ${detail === "thirdbridge" ? T_.cyan : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.cyan }}>Third Bridge Experts — "Lifeline" or "Band-Aid"?</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>1.5–2yr runway · "scream of desperation" · no suitor</div>
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("precedent")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "precedent" ? `${T_.purple}12` : T_.bgInput,
+            border: `1px solid ${detail === "precedent" ? T_.purple : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Precedents — Robertshaw &amp; Trinseo</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Lopez recharacterized Robertshaw but remedy was only $39.4M</div>
+          </div>
+          <div onClick={() => toggle("forward")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "forward" ? `${T_.accent}12` : T_.bgInput,
+            border: `1px solid ${detail === "forward" ? T_.accent : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Forward Path — Consensual LME · More Deal-Aways · Ch.11?</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Lexmark IP still unmonetized · S&amp;P default scenario 2027</div>
+          </div>
+        </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart box */}
+      </div>{/* end org chart max-width wrapper */}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "Non-Subsidiary Drop-Down (the innovation)", color: T_.red, summary: "The first mainstream LME to use a JV that is not a Subsidiary under existing debt documents.", detail: "The 'Subsidiary' definition in most credit agreements relies on a >50% voting test. If an entity fails that test, it is not a Subsidiary — and therefore not subject to any covenant that applies to Subsidiaries (J.Crew blockers, Envision blockers, NGRS caps, Pluralsight blockers, guarantee requirements, affiliate transaction limits). Xerox gave TPG majority voting rights in IPCo Holdings while retaining operational economics via Class B units. No covenant was amended; no consent was sought. Reorg (Apr 17, 2026): the 'non-sub' structure is replicable at many other issuers — Beacon Roofing, US Foods, Victoria's Secret, and Hertz are cited as having similarly vulnerable definitions." },
+          { label: "Basket Recycling (the second technique)", color: T_.amber, summary: "The $450M return of capital refilled the Available Amount basket, allowing a second IP contribution.", detail: "The IPCo credit agreement references two IP contributions: the 'First' (condition precedent) and the 'Second' (required immediately after proceeds distribution). Reorg's read: Xerox contributed IP in step 1, IPCo Holdings distributed $450M back to Xerox Corp. as return of capital, which refilled the Available Amount basket (the 'returns of capital' prong allows 100% replenishment), then Xerox contributed additional IP in step 2. Estimated JV investment capacity pre-recycling: ~$737M. Post-recycling: theoretically sufficient for IP materially exceeding $450M. This technique can potentially be used again for future deal-aways." },
+          { label: "Effective Priming via Royalty (not lien)", color: T_.accent, summary: "The 2% SSLA royalty diverts ~$121M/yr of cash flow from RemainCo to service IPCo debt — substitute for a lien.", detail: "Traditional priming requires a lien (uptier, drop-down, pari-plus). Xerox primed its existing creditors without touching collateral. The SSLA requires Xerox and restricted subs to pay IPCo 2% of specified consolidated revenue in perpetuity (initial 10-year term auto-renewing). On an estimated 76% Xerox-brand revenue base, that's ~$121M/yr of cash flow that now flows to IPCo rather than legacy lenders. IPCo's $405M term loan at SOFR+8.125% consumes nearly all of it — effectively converting future operating cash flow into debt service on the new tranche. EBITDA available to existing lenders drops $100–109M/yr through 2027. Cross-default provisions in the SSLA guarantee add further interdependency." },
+          { label: "Holdco / Opco Double-Dip", color: T_.blue, summary: "Post-Conduent spin structure: Holdings issues bonds, on-lends to Xerox Corp., which guarantees back up.", detail: "Xerox Holdings Corp. (post-2017 FinCo issuer) issues bonds and on-lends proceeds to Xerox Corp. via intercompany note. Xerox Corp. guarantees the Holdings bonds. Holdings bondholders get a direct claim on HoldCo + a guarantee claim on OpCo — classic double-dip. But the guarantee package is NOT aligned across all Xerox bonds: the Lexmark-era 13% 2030 Step-Ups brought tighter guarantees from a broader sub set; legacy OpCo notes (2035s, 2039s) have no Holdings guarantee and trade purely on OpCo credit. Waterfall ordering in any restructuring will be litigated precisely because of these guarantee asymmetries." },
+          { label: "Coercive Warrant Distribution", color: T_.accent, summary: "Pro-rata warrants with debt-in-kind exercise — novel alternative to an out-of-court exchange offer.", detail: "Rather than running a formal exchange offer (which has specific consent and tender mechanics), Xerox distributed warrants pro-rata to equity and convertibles. Holders can exercise by surrendering 'Designated Notes' at face value — $8 of face → 1 share at $8 strike. At XRX ~$2.40, the math gives 22 points of intrinsic value per exercised $1,000 face of eligible debt — but that's still above current trading levels of every eligible note. Result: economically coercive for equity-sensitive participants (convert holders, preferred) but sub-economic for bondholders without equity exposure. Moody's flagged that material bond retirement via the warrant could constitute a distressed exchange — a credit-event trigger." },
+          { label: "Three-Group Creditor Triangulation", color: T_.purple, summary: "Gibson Dunn (1L/GC) vs. Paul Hastings (2L/Elliott) vs. Cadwalader (minority TL) — adverse interests across the stack.", detail: "Unlike single-group LME negotiations (Envision — one ad hoc group across all classes), Xerox's stack has fragmented. Gibson Dunn / Moelis anchors the senior tranches (1L TL, 1L Notes, 13% 2030 SUNs) — weighted to recovery preservation. Paul Hastings / Elliott sits in 2L and unsecured — interest in establishing fulcrum security and possibly forcing a Ch.11 to unlock fraudulent-transfer theories on the TPG JV. Cadwalader represents ~$150M minority TL holders concerned about being forced into adverse amendments. Any consensual LME requires majorities in four tranches — but each group's preferred outcome differs." },
+          { label: "Robertshaw Precedent — Form vs. Substance", color: T_.red, summary: "Judge Lopez recharacterized a similar non-sub as a Subsidiary — but the remedy was only $39.4M.", detail: "Robertshaw (Dec 2023) used a split-ownership non-subsidiary structure for a drop-down. In bankruptcy, Judge Christopher Lopez (S.D. Tex.) looked past form and found the entity WAS a 'Subsidiary' in substance. Significant ruling — but the damages were limited to a $39.4M pro-rata claim rather than an unwind of the transfer. Implication for Xerox: a bankruptcy court could re-characterize IPCo Holdings as a Subsidiary (retroactively triggering the J.Crew blockers), but the recovery for affected creditors may be modest relative to the economic injury. The ruling matters less for damages and more for future deal-structuring — a court-rejected precedent would cool the non-sub playbook." },
+          { label: "Lexmark IP as Next-LME Candidate", color: T_.amber, summary: "Lexmark IP was excluded from the Feb 2026 deal — sits at a Lexmark subsidiary and is the biggest unmonetized asset.", detail: "Per USPTO filings, Lexmark IP sits at a Lexmark subsidiary (Lexmark International II, LLC or below). Reorg and CreditSights both note its explicit exclusion from the February 2026 JV. Lexmark has an active OEM licensing business (licensing its print engine to Konica Minolta and others) — suggesting its IP has standalone monetizable value potentially exceeding legacy Xerox IP. If Xerox continues down the deal-away path, Lexmark IP is the most obvious next target. Combined with basket recycling, the same non-sub structure could in principle be repeated. Third Bridge expert: 'there are so many potential places they could push parts of' — even if each individual push doesn't solve the whole problem." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "2018", event: "Revenue peak at $9.7B. Pre-Conduent-spin Xerox.", color: T_.textMid },
+          { date: "2017", event: "Conduent spinoff. Xerox Holdings Corp. becomes post-spin FinCo issuer; Xerox Corp. is OpCo + guarantor.", color: T_.textMid },
+          { date: "Nov 2024", event: "Xerox acquires ITSavvy for $400M ($180M cash + $220M secured notes due 2025–26) — diversification into IT services.", color: T_.purple },
+          { date: "Dec 2024", event: "Xerox-Lexmark acquisition announced.", color: T_.amber },
+          { date: "May 22, 2025", event: "Xerox updates capital allocation policy ahead of Lexmark close — dividend suspended, free cash flow directed to deleveraging.", color: T_.amber },
+          { date: "Jul 1, 2025", event: "LEXMARK CLOSES: $1.5B acquisition (incl. debt). Financing: $327M incremental TL + $250M 13% SUNs 2030 + $125M 13% SUNs 2026. Pro forma leverage ~7.5x net / 8.5x total.", color: T_.amber },
+          { date: "Oct 2025", event: "Xerox retains Kirkland & Ellis (legal) and Lazard (financial) as RX advisors.", color: T_.red },
+          { date: "Nov 6, 2025", event: "CreditSights upgrades from Underperform to Hold overall.", color: T_.textMid },
+          { date: "Dec 2025", event: "Xerox files suit against Trump administration seeking IEEPA tariff refund.", color: T_.textMid },
+          { date: "Jan 28, 2026", event: "WARRANT DISTRIBUTION ANNOUNCED: Board approves 2-year $8-strike warrants. 23.9952 warrants per $1,000 face of convertibles. $616M aggregate exercise value. $750M shelf registration filed same day.", color: T_.accent },
+          { date: "Jan 30, 2026", event: "$110M ITSavvy seller notes repaid.", color: T_.textMid },
+          { date: "Feb 12, 2026", event: "WARRANTS DISTRIBUTED: ~77M warrants to common + Series A preferred + 3.75% converts. Designated Notes = all notes except 13% SUNs 2026. Max debt retirement ~$600M.", color: T_.accent },
+          { date: "Feb 17, 2026", event: "★ IPCo JV — XRX Brandco Holdings LLC formed with TPG Credit. $405M SOFR+8.125% term loan + $45M preferred = $450M. Xerox contributes IP (incl. Xerox trademark) for Class B units; TPG takes Class A voting units. IPCo Holdings is a 'non-subsidiary' under existing debt documents.", color: T_.red },
+          { date: "Feb 18, 2026", event: "CreditSights publishes full tranche-by-tranche recovery analysis (Nick Williams, Andy Li). Valuation of Xerox IP at ~$490M.", color: T_.textMid },
+          { date: "Feb 25, 2026", event: "Gibson Dunn / Moelis cooperation agreement effective — majority of 1L TLs, 1L Notes, and 13% 2030 SUNs. Formed after Xerox executed TPG deal away from the group.", color: T_.purple },
+          { date: "Feb 27, 2026", event: "S&P downgrades: 1L B-/'2', 2L CCC/'5', HoldCo SUNs CCC/'5'. CFR CCC+ negative outlook.", color: T_.red },
+          { date: "Mar 12, 2026", event: "CreditSights LFI: Elliott Investment Management identified as behind Paul Hastings group — sizable position in 2L/unsecured.", color: T_.purple },
+          { date: "Mar 13, 2026", event: "Moody's downgrades CFR to Caa2 (from B2), negative outlook. 13% 2030 Step-Ups to Caa3. Flags warrant program as potential distressed exchange.", color: T_.red },
+          { date: "Mar 17, 2026", event: "Xerox files FY2025 10-K (delayed from original deadline due to Lexmark purchase-accounting finalization).", color: T_.textMid },
+          { date: "Mar 18, 2026", event: "Cadwalader minority TL group (~$150M) holds inaugural call.", color: T_.purple },
+          { date: "Mar 27, 2026", event: "Counsel switch: David Nemecek moves from Kirkland & Ellis to Simpson Thacher; Xerox follows. Reorg: 'not out of the woods.'", color: T_.amber },
+          { date: "Mar 30, 2026", event: "CEO change: Steve Bandrowczak steps down; Louie Pastor (ex-President/COO) appointed CEO effective immediately. FY26 guidance reaffirmed.", color: T_.red },
+          { date: "Apr 7, 2026", event: "Harvard Bankruptcy Roundtable publishes 'Liability Management 2026: For Better or Worse' — cites Xerox context as part of broader LME evolution.", color: T_.textMid },
+          { date: "Apr 17, 2026", event: "Reorg 'Jamming the Photocopier' covenants analysis: non-sub structure replicable at Beacon Roofing, US Foods, Victoria's Secret, Hertz. Proposes drafting fixes (voting+management test, Pluralsight blocker to 'non-Loan Party', JV cap with broad JV definition, cap on returns-of-capital basket). Case remains ongoing.", color: T_.red },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 100, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Sources footer ── */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg / Octus — articles 366390 (org chart), 367399 + 376308 (non-sub covenant analysis), 362564 (liquidity model), 373462 + multiple (debt stack + trading), 'Jamming the Photocopier' Apr 17 2026 covenants piece · CreditSights — "Xerox: JV IP Deal with TPG Credit; Model Update" Feb 18 2026 article 699167 (Nick Williams + Andy Li), LFI articles 40019247 (co-op announcement) + 40020677 (Elliott / Paul Hastings) + 699167 Mar 30 CEO note · Third Bridge Forum — Mar 4 2026 transcript (uuid c7c84df69c2c9f2ec6db9fb17c551dbe) + Mar 11 2026 transcript (uuid 4f55db914669930fa3e2f20976b57875) · Xerox investor relations press releases (Dec 2024 Lexmark announcement, May 22 2025 capital allocation, Jul 1 2025 Lexmark close, Jan 28 2026 warrant announcement, Feb 12 2026 warrant distribution, Feb 17 2026 IPCo JV) · Xerox 10-K FY2025 (filed Mar 17 2026) · Form 8-Ks for IPCo JV and CEO change · Ropes &amp; Gray "Distressed Debt Legal Insights: Xerox and the 'Non-Subsidiary' Drop-Down" (Mar 2026) · Winston &amp; Strawn "The Xerox Non-Subsidiary Drop-Down Financing: A New Frontier in Leakage and Subordination" · PETITION #11 (Feb 25 2026) · Harvard Bankruptcy Roundtable "Liability Management 2026: For Better or Worse" (Apr 7 2026) · Restructuring Newsletter "Xerox: From Tech Obsolescence to LME Engineering" (Mar 13 2026) · HSG LLP "Liability Management Exercises and the Courts in 2025" · Moody's + S&amp;P rating actions (Feb 27 + Mar 13 2026) · Benzinga + Stocktitan 8-K coverage · USPTO assignment records. 9fin session was expired during research — additional coverage may exist there. Ongoing case; all figures and characterizations current as of April 17, 2026.
+      </div>
+
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -3955,6 +4642,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "petsmart" && <PetSmartCase />}
       {activeCase === "incora" && <IncoraCase />}
       {activeCase === "caesars" && <CaesarsCase />}
+      {activeCase === "xerox" && <XeroxCase />}
     </div>
   );
 }
