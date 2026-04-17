@@ -90,6 +90,14 @@ function toMd({ name, description, tools, body }) {
           console.log(`  OK: ~/.claude/${file} refreshed`);
         }
       }
+      const skillsSrc = path.join(dotclaudeDir, 'skills');
+      const skillsDst = path.join(claudeDir, 'skills');
+      if (fs.existsSync(skillsSrc)) {
+        fs.mkdirSync(skillsDst, { recursive: true });
+        fs.cpSync(skillsSrc, skillsDst, { recursive: true, force: true });
+        const skillCount = fs.readdirSync(skillsSrc).filter(f => f !== '.gitkeep').length;
+        console.log(`  OK: ~/.claude/skills/ refreshed (${skillCount} skill${skillCount === 1 ? '' : 's'})`);
+      }
     } catch (e) {
       console.error('  dotclaude error:', e.message.split('\n')[0]);
     }
