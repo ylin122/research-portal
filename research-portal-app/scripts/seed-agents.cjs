@@ -28,6 +28,7 @@ const UI_META = {
   'consistency':          { color: '#c084fc', usage: '@consistency check credit research', mode: 'Read-only', sort: 8 },
   'sync-agents-pull':     { color: '#A78BFA', usage: '@sync-agents-pull', mode: 'Read + Write (local files)', sort: 9 },
   'sync-agents-push':     { color: '#A78BFA', usage: '@sync-agents-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
+  'portfolio-verifier':   { color: '#F472B6', usage: '@portfolio-verifier refresh ETF_SENSITIVITY', mode: 'Read + Write (PortfolioDashboard.jsx)', sort: 11 },
 };
 
 function parseFrontmatter(raw) {
@@ -95,5 +96,28 @@ function parseFrontmatter(raw) {
     console.error('  Git error:', e.message.split('\n')[0]);
   }
 
-  console.log('\nDone. Supabase + GitHub are up to date.');
+  // ── Step 3: Push dotclaude changes ──
+  console.log('\n=== Step 3: Push dotclaude changes ===');
+  const dotclaudeDir = path.join(require('os').homedir(), 'dotclaude');
+  if (!fs.existsSync(dotclaudeDir)) {
+    console.log('  SKIP: ~/dotclaude not cloned on this machine');
+  } else {
+    try {
+      const status = execSync('git status --porcelain', { cwd: dotclaudeDir, encoding: 'utf-8' }).trim();
+      if (!status) {
+        console.log('  No dotclaude changes to commit.');
+      } else {
+        console.log(`  ${status.split('\n').length} dotclaude file(s) changed`);
+        execSync('git add -A', { cwd: dotclaudeDir });
+        execSync('git commit -m "Sync: push dotclaude changes before machine switch"', { cwd: dotclaudeDir });
+        console.log('  Committed.');
+      }
+      execSync('git push origin main', { cwd: dotclaudeDir });
+      console.log('  dotclaude pushed to GitHub.');
+    } catch (e) {
+      console.error('  dotclaude error:', e.message.split('\n')[0]);
+    }
+  }
+
+  console.log('\nDone. Supabase + GitHub + dotclaude are up to date.');
 })();

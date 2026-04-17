@@ -63,5 +63,24 @@ function toMd({ name, description, tools, body }) {
     }
   }
 
-  console.log(`\nDone. Synced ${data.length} agents from Supabase. GitHub is up to date.`);
+  // ── Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md ──
+  console.log('\n=== Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md ===');
+  const dotclaudeDir = path.join(require('os').homedir(), 'dotclaude');
+  if (!fs.existsSync(dotclaudeDir)) {
+    console.log('  SKIP: ~/dotclaude not cloned on this machine');
+    console.log('  Run: git clone https://github.com/ylin122/dotclaude.git ~/dotclaude');
+  } else {
+    try {
+      const result = execSync('git pull --ff-only origin main', { cwd: dotclaudeDir, encoding: 'utf-8' }).trim();
+      console.log(`  ${result.split('\n')[0]}`);
+      const src = path.join(dotclaudeDir, 'CLAUDE.md');
+      const dst = path.join(require('os').homedir(), '.claude', 'CLAUDE.md');
+      fs.copyFileSync(src, dst);
+      console.log('  OK: ~/.claude/CLAUDE.md refreshed');
+    } catch (e) {
+      console.error('  dotclaude error:', e.message.split('\n')[0]);
+    }
+  }
+
+  console.log(`\nDone. Synced ${data.length} agents from Supabase. GitHub + dotclaude up to date.`);
 })();
