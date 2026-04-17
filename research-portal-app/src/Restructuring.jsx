@@ -3922,7 +3922,7 @@ function XeroxCase() {
   const panels = {
     business: (
       <DetailPanel title="The Business — Secular Decline + Lexmark Integration" onClose={() => setDetail(null)}>
-        <p><strong>Xerox Holdings Corp.</strong> (NYSE: XRX) is the legacy US document-services and printer OEM. Revenue collapsed from <strong>$9.7B (2018) → $7.0B (2025)</strong>; organic legacy Xerox (standalone) shrank <strong>54% to ~$4.5B</strong>. Adj. EBITDA margins fell <strong>17% → 7.3%</strong> as fixed costs failed to right-size against a shrinking installed base. Post-COVID print volumes are stuck at <strong>~80–85%</strong> of pre-pandemic levels — permanent reduction as hybrid work normalizes.</p>
+        <p><strong>Xerox Holdings Corp.</strong> (Nasdaq: XRX) is the legacy US document-services and printer OEM. Revenue collapsed from <strong>$9.83B (2018) → $7.02B (2025)</strong>; organic legacy Xerox (standalone) shrank <strong>54% to ~$4.5B</strong>. Adj. EBITDA margins fell <strong>17% → 7.3%</strong> as fixed costs failed to right-size against a shrinking installed base. Post-COVID print volumes are stuck at <strong>~80–85%</strong> of pre-pandemic levels — permanent reduction as hybrid work normalizes.</p>
         <p><strong>Reported FCF of $133M in 2025 masks adjusted FCF of ($356M)</strong> after backing out $489M of finance-receivables sales (one-time). In other words, the underlying business is cash-burning.</p>
         <p style={{ color: T_.amber }}><strong>Lexmark acquisition — the growth bet:</strong> Announced Dec 2024. Closed <strong>July 1, 2025</strong> for <strong>$1.5B (inclusive of assumed debt).</strong> Lexmark brought A4 color exposure (Xerox historically underweight vs. A3 dominance), Asia-Pacific distribution, in-house component manufacturing, and combined platform controlling ~25% of global Managed Print Services (MPS). Seller: Ninestar Corp. / PAG Asia Capital / Shanghai Shouda.</p>
         <p><strong>Lexmark financing stack (Jul 2025):</strong></p>
@@ -4123,7 +4123,7 @@ function XeroxCase() {
     ),
     counsel: (
       <DetailPanel title="Counsel Switch — K&E → Simpson Thacher (Mar 27, 2026)" onClose={() => setDetail(null)}>
-        <p>Xerox was originally advised on the LME by <strong>Kirkland &amp; Ellis</strong> (retained October 2025). <strong>David Nemecek</strong>, the lead K&amp;E partner who architected the non-subsidiary structure, moved to <strong>Simpson Thacher &amp; Bartlett</strong> — and Xerox followed him (public around Mar 27, 2026).</p>
+        <p>Xerox was originally advised on the LME by <strong>Kirkland &amp; Ellis</strong> (retained October 2025). <strong>David Nemecek</strong>, the lead K&amp;E partner who architected the non-subsidiary structure, moved to <strong>Simpson Thacher &amp; Bartlett</strong> on <strong>Feb 18, 2026</strong> (with additional K&amp;E partners following mid-to-late March). Xerox's public counsel switch to Simpson Thacher followed around <strong>Mar 27, 2026</strong>.</p>
         <p style={{ color: T_.amber }}>Partner-follows-client is common. Here the significance is that the architect of the transaction is still running the playbook — continuity with the advisor who structured the novel covenant read matters as creditors organize challenges.</p>
         <p><strong>Xerox's full advisor set (as of late Mar 2026):</strong> Simpson Thacher (legal, post-move), <strong>Lazard</strong> (financial, since Oct 2025).</p>
         <p style={{ color: T_.red }}>Reorg's bottom line as of Mar 27, 2026: Xerox "not out of the woods" despite the TPG liquidity injection. Ongoing negotiations with the Gibson Dunn group; Paul Hastings / Elliott group also active.</p>
@@ -4139,10 +4139,10 @@ function XeroxCase() {
     ),
     ratings: (
       <DetailPanel title="Rating Actions — S&P and Moody's" onClose={() => setDetail(null)}>
-        <p><strong>S&amp;P (Feb 27, 2026):</strong></p>
+        <p><strong>S&amp;P — initial CCC+ downgrade (Nov 5, 2025); subsequent recovery-rating revisions Feb 2026:</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Corporate family: <strong>CCC+</strong>, outlook <strong>negative</strong></li>
-          <li>1L Notes and TL: lowered to <strong>B-</strong> (from B), recovery revised to <strong>'2' (80%)</strong></li>
+          <li>Corporate family: <strong>CCC+</strong> (from B-), outlook <strong>negative</strong> — assigned Nov 5, 2025</li>
+          <li>Post-IPCo recovery revisions (Feb 2026): 1L Notes and TL lowered to <strong>B-</strong> (from B), recovery <strong>'2' (80%)</strong></li>
           <li>2L Notes: lowered to <strong>CCC</strong> (from CCC+), recovery <strong>'5' (20%)</strong></li>
           <li>HoldCo Sr Unsecured: <strong>CCC</strong>, recovery <strong>'5' (20%)</strong></li>
           <li>Hypothetical default scenario: 2027 default; emergence EBITDA $517M × <strong>5.5x multiple</strong>; net enterprise value at default <strong>$2.37B</strong></li>
@@ -4205,16 +4205,16 @@ function XeroxCase() {
         <p><strong>Robertshaw (Dec 2023) — split-ownership non-sub:</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
           <li>Robertshaw used a split-ownership non-subsidiary structure for a priority drop-down</li>
-          <li>Challenged in bankruptcy. <strong>Judge Christopher Lopez (S.D. Tex.)</strong> — same judge from Envision and other recent restructurings — found it <strong>WAS a "Subsidiary"</strong> in substance, looking past form</li>
-          <li style={{ color: T_.amber }}>BUT — remedy was limited. Court awarded only a <strong>$39.4M pro-rata claim</strong>, far less than the economic injury plaintiffs argued for</li>
-          <li><strong>Implication:</strong> Courts may re-characterize non-sub structures but the damages may not meaningfully claw back the LME economics — especially if a bankruptcy has already occurred and the cure is a pro-rata recovery rather than undoing the transfer</li>
+          <li>Challenged in bankruptcy. <strong>Judge Christopher Lopez (S.D. Tex.)</strong> — same judge from Envision and other recent restructurings — ruled the Dec 2023 prepayment <strong>breached the credit agreement's pro-rata sharing covenant</strong> (§ 2.11). The court did <em>not</em> recharacterize the non-sub entity as a "Subsidiary"</li>
+          <li style={{ color: T_.amber }}>Remedy was narrow: <strong>$39,408,199.17 Prepayment Damages claim</strong> (Invesco), plus ~$10.9M attorneys' fees — allowed as an unsecured/deficiency claim at a modeled ~3% recovery, not a cash clawback</li>
+          <li><strong>Implication:</strong> Even when a court invalidates the LME mechanic, damages may not meaningfully claw back the economics — the remedy was a pro-rata damages claim in the Ch.11, not an order undoing the transfer. Note this is a pro-rata-sharing ruling, not a non-sub recharacterization precedent</li>
         </ul>
         <p><strong>Trinseo (Sep 2023) — sister-level non-sub:</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
           <li>Trinseo used a sister-level non-subsidiary as primary obligor in a pari-plus structure</li>
           <li>Not directly tested in bankruptcy; remains a live precedent</li>
         </ul>
-        <p style={{ color: T_.red }}><strong>The open question for Xerox:</strong> IPCo Holdings' LLC agreement is not publicly filed. The exact voting/economic split between Xerox and TPG is not disclosed. <em>This is the single most important undisclosed fact for assessing whether the "non-sub" characterization would survive judicial challenge.</em> Robertshaw suggests courts may look past form to substance — and if they do, IPCo Holdings could be re-characterized as a Subsidiary, retroactively triggering the J.Crew / Envision blockers.</p>
+        <p style={{ color: T_.red }}><strong>The open question for Xerox:</strong> IPCo Holdings' LLC agreement is not publicly filed. The exact voting/economic split between Xerox and TPG is not disclosed. <em>This is the single most important undisclosed fact for assessing whether the "non-sub" characterization would survive judicial challenge.</em> Robertshaw does not itself provide a non-sub recharacterization precedent, but shows S.D. Tex. is willing to enforce the covenant substance over form where the documentary language supports it — if creditors can identify an analogous substantive breach (e.g., pro-rata sharing, "all or substantially all" tests), a similar damages remedy could attach.</p>
         <p style={{ color: T_.amber }}><strong>But challenge pathway matters:</strong> Unlike an uptier (which can be challenged under existing indenture sacred-rights theories), a drop-down to a non-sub via a covenant that explicitly permits the transfer is harder to attack out-of-court. Creditors would likely need a bankruptcy filing to reach the fraudulent-transfer and equitable-subordination tools — which is exactly the leverage Xerox's management now has against creditors contemplating hostile action.</p>
       </DetailPanel>
     ),
@@ -4262,7 +4262,7 @@ function XeroxCase() {
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Xerox (NYSE: XRX) closed the <span style={{ color: T_.amber }}>$1.5B Lexmark acquisition July 2025</span>, stacking leverage on a structurally declining print business (revenue $9.7B 2018 → $7.0B 2025; Adj EBITDA margins 17% → 7.3%). Pro forma debt <span style={{ color: T_.red }}>~$4.35B vs. $512M LTM EBITDA (8.5x total / 7.5x net)</span>. Starting January 2026, Xerox executed a two-part LME: <span style={{ color: T_.accent }}>(1) a Feb 12, 2026 warrant distribution offering debt-for-equity at $8 strike</span> (up to ~$600M debt retirement); and <span style={{ color: T_.accent }}>(2) the Feb 17, 2026 formation of <strong>XRX Brandco Holdings LLC</strong> — a novel "non-subsidiary" JV with <strong>TPG Credit</strong></span>. Xerox contributed the Xerox trademark and specified IP for Class B units; TPG took Class A units with voting control; a TPG-led syndicate provided <span style={{ color: T_.accent }}>$405M in SOFR+8.125% term loans + $45M preferred = $450M</span>. Because IPCo Holdings is not a "Subsidiary" under existing debt documents (Xerox holds &lt;50% voting), the structure <span style={{ color: T_.red }}>bypasses the J.Crew blockers, Envision blockers, and $370M cap on non-guarantor restricted-sub investments — without amending a single covenant</span>. The SSLA's 2% royalty (~$121M/yr) effectively primes the existing Xerox debt stack. Three creditor ad hoc groups have organized. Rating agencies cut to <span style={{ color: T_.red }}>Caa2 / CCC+</span>. Third Bridge experts give the business <strong>1.5–2 years</strong> before the debt situation becomes untenable.
+          Xerox (Nasdaq: XRX) closed the <span style={{ color: T_.amber }}>$1.5B Lexmark acquisition July 2025</span>, stacking leverage on a structurally declining print business (revenue $9.83B 2018 → $7.02B 2025; Adj EBITDA margins 17% → 7.3%). Pro forma debt <span style={{ color: T_.red }}>~$4.35B vs. $512M LTM EBITDA (8.5x total / 7.5x net — per Reorg; Moody's cites ~6x incl finco / ~9x excl)</span>. Starting January 2026, Xerox executed a two-part LME: <span style={{ color: T_.accent }}>(1) a Feb 12, 2026 warrant distribution offering debt-for-equity at $8 strike</span> (up to ~$600M debt retirement); and <span style={{ color: T_.accent }}>(2) the Feb 17, 2026 formation of <strong>XRX Brandco Holdings LLC</strong> — a novel "non-subsidiary" JV with <strong>TPG Credit</strong></span>. Xerox contributed the Xerox trademark and specified IP for Class B units; TPG took Class A units with voting control; a TPG-led syndicate provided <span style={{ color: T_.accent }}>$405M in SOFR+8.125% term loans + $45M preferred = $450M</span>. Because IPCo Holdings is not a "Subsidiary" under existing debt documents (Xerox holds &lt;50% voting), the structure <span style={{ color: T_.red }}>bypasses the J.Crew blockers, Envision blockers, and $370M cap on non-guarantor restricted-sub investments — without amending a single covenant</span>. The SSLA's 2% royalty (~$121M/yr) effectively primes the existing Xerox debt stack. Three creditor ad hoc groups have organized. Rating agencies cut to <span style={{ color: T_.red }}>Caa2 / CCC+</span>. Third Bridge experts give the business <strong>1.5–2 years</strong> before the debt situation becomes untenable.
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
           {[
@@ -4273,7 +4273,7 @@ function XeroxCase() {
             { l: "IPCo JV", v: "Feb 17, 2026", c: T_.accent },
             { l: "JV Size", v: "$450M", c: T_.amber },
             { l: "CFR (M / S)", v: "Caa2 / CCC+", c: T_.red },
-            { l: "XRX Stock", v: "~$2.00", c: T_.red },
+            { l: "XRX Stock", v: "~$1.74", c: T_.red },
           ].map(m => (
             <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
               <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
@@ -4302,7 +4302,7 @@ function XeroxCase() {
         <div style={{ display: "grid", gridTemplateColumns: "1.2fr 0.2fr 1fr", gap: 8, alignItems: "start" }}>
           <div onClick={() => toggle("holdcoOpco")} style={{ cursor: "pointer" }}>
             <Box
-              label="Xerox Holdings Corp. (NYSE: XRX)"
+              label="Xerox Holdings Corp. (Nasdaq: XRX)"
               sub="FinCo issuer · post-2017 Conduent-spin HoldCo bonds"
               color={T_.red}
               debt={[
