@@ -20,15 +20,23 @@ function toMd({ name, description, tools, body }) {
 }
 
 (async () => {
-  // ── Step 1: Pull latest research portal from GitHub ──
-  console.log('\n=== Step 1: Pull research portal from GitHub ===');
-  const repoDir = path.join(__dirname, '..');
-  try {
-    const result = execSync('git pull origin main', { cwd: repoDir, encoding: 'utf-8' }).trim();
-    console.log(`  ${result}`);
-  } catch (e) {
-    console.error('  Git pull error:', e.message.split('\n')[0]);
-    console.log('  Continuing with Supabase sync...');
+  // ── Step 1: Pull latest repos from GitHub ──
+  console.log('\n=== Step 1: Pull repos from GitHub ===');
+  const repos = [
+    { name: 'research-portal', dir: path.join(__dirname, '..'), branch: 'main' },
+    { name: 'portfolio-dashboard', dir: path.join(require('os').homedir(), 'projects', 'portfolio-dashboard'), branch: 'master' },
+  ];
+  for (const r of repos) {
+    if (!fs.existsSync(r.dir)) {
+      console.log(`  SKIP: ${r.name} not cloned at ${r.dir}`);
+      continue;
+    }
+    try {
+      const result = execSync(`git pull origin ${r.branch}`, { cwd: r.dir, encoding: 'utf-8' }).trim();
+      console.log(`  ${r.name}: ${result.split('\n')[0]}`);
+    } catch (e) {
+      console.error(`  ${r.name} pull error:`, e.message.split('\n')[0]);
+    }
   }
 
   // ── Step 2: Pull agent definitions from Supabase to local ──
@@ -63,8 +71,8 @@ function toMd({ name, description, tools, body }) {
     }
   }
 
-  // ── Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md ──
-  console.log('\n=== Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md ===');
+  // ── Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md and settings.json ──
+  console.log('\n=== Step 3: Pull dotclaude + refresh ~/.claude/{CLAUDE.md,settings.json} ===');
   const dotclaudeDir = path.join(require('os').homedir(), 'dotclaude');
   if (!fs.existsSync(dotclaudeDir)) {
     console.log('  SKIP: ~/dotclaude not cloned on this machine');
@@ -73,10 +81,15 @@ function toMd({ name, description, tools, body }) {
     try {
       const result = execSync('git pull --ff-only origin main', { cwd: dotclaudeDir, encoding: 'utf-8' }).trim();
       console.log(`  ${result.split('\n')[0]}`);
-      const src = path.join(dotclaudeDir, 'CLAUDE.md');
-      const dst = path.join(require('os').homedir(), '.claude', 'CLAUDE.md');
-      fs.copyFileSync(src, dst);
-      console.log('  OK: ~/.claude/CLAUDE.md refreshed');
+      const claudeDir = path.join(require('os').homedir(), '.claude');
+      for (const file of ['CLAUDE.md', 'settings.json']) {
+        const src = path.join(dotclaudeDir, file);
+        const dst = path.join(claudeDir, file);
+        if (fs.existsSync(src)) {
+          fs.copyFileSync(src, dst);
+          console.log(`  OK: ~/.claude/${file} refreshed`);
+        }
+      }
     } catch (e) {
       console.error('  dotclaude error:', e.message.split('\n')[0]);
     }
