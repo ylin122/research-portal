@@ -4609,29 +4609,20 @@ export default function Restructuring({ initialTab }) {
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Restructuring</h1>
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Restructuring</div>
+        <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>Case studies in distressed debt, liability management, and Chapter 11</div>
+      </div>
 
-      <div style={{ display: "flex", gap: 6, marginBottom: 28, flexWrap: "wrap" }}>
-        {CASES.map(c => {
-          const active = activeCase === c.key;
-          return (
-            <div key={c.key} onClick={() => setActiveCase(c.key)} style={{
-              padding: "10px 18px", borderRadius: 8, cursor: "pointer", transition: "all .15s",
-              background: active ? `${c.color}20` : T_.bgPanel,
-              border: `1px solid ${active ? c.color : T_.border}`,
-              color: active ? c.color : T_.textMid, fontSize: 13, fontWeight: active ? 600 : 400,
-            }}>
-              <div>{c.label}</div>
-              <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 2 }}>{c.sector} · {c.year}</div>
-            </div>
-          );
-        })}
-        <div style={{
-          padding: "10px 18px", borderRadius: 8, border: `1px dashed ${T_.border}`,
-          color: T_.textGhost, fontSize: 13, display: "flex", alignItems: "center", cursor: "default", opacity: 0.4,
-        }}>
-          + More coming
-        </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
+        {CASES.map(c => (
+          <button key={c.key} onClick={() => setActiveCase(c.key)} style={{
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: activeCase === c.key ? "#3B82F6" : "#111827",
+            color: activeCase === c.key ? "#FFF" : "#94A3B8",
+            transition: "all 0.15s", whiteSpace: "nowrap", fontFamily: FONT,
+          }}>{c.label}</button>
+        ))}
       </div>
 
       {activeCase === "windstream" && <WindstreamCase />}

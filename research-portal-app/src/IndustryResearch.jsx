@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 
 const fmt = (n) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
@@ -1248,12 +1248,12 @@ export default function IndustryResearch({ initialTab }) {
   return (
     <div style={s.page}>
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 24, borderBottom: "2px solid #1E293B", overflowX: "auto" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {tabs.map(tab => (
           <button key={tab.key} onClick={() => setMainTab(tab.key)} style={{
-            padding: "12px 24px", fontSize: 14, fontWeight: 600, cursor: "pointer",
-            background: "transparent", color: mainTab === tab.key ? "#F8FAFC" : "#64748B",
-            border: "none", borderBottom: mainTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: mainTab === tab.key ? "#3B82F6" : "#111827",
+            color: mainTab === tab.key ? "#FFF" : "#94A3B8",
             transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{tab.label}</button>
         ))}
@@ -1958,7 +1958,7 @@ export default function IndustryResearch({ initialTab }) {
 
       {/* ===== AI-NATIVE TAB ===== */}
       {mainTab === "ainative" && (<>
-        <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>AI-Native Platforms</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>AI-Native Platforms</div>
         <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>AI-native companies with $100M+ ARR. These platforms represent the demand side of the GPU compute stack — every dollar of AI-native revenue ultimately requires GPU infrastructure from hyperscalers and neoclouds like CoreWeave.</div>
 
         {/* Growth Trend Cards */}
@@ -2113,7 +2113,7 @@ export default function IndustryResearch({ initialTab }) {
         return (<>
         {/* Header */}
         <div style={{ marginBottom: 28, borderBottom: "1px solid #1E293B", paddingBottom: 20 }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Capex Tracker</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Capex Tracker</div>
           <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 5 }}>Hyperscaler &amp; neocloud infrastructure spending · 2022–2030</div>
         </div>
 
@@ -2473,7 +2473,7 @@ export default function IndustryResearch({ initialTab }) {
 
         return (<>
         <div style={{ marginBottom: 28, borderBottom: "1px solid #1E293B", paddingBottom: 20 }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Semi Capex</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Semi Capex</div>
           <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 5 }}>Semiconductor supply chain capex · Foundry, Memory/HBM, ASIC · 2020–2030</div>
         </div>
 
@@ -2691,7 +2691,7 @@ export default function IndustryResearch({ initialTab }) {
 
         return (<>
         <div style={{ marginBottom: 28, borderBottom: "1px solid #1E293B", paddingBottom: 20 }}>
-          <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>GPU/ASIC</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>GPU/ASIC</div>
           <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 5 }}>Tracking AI accelerator generations across NVIDIA, AMD, Google, Amazon, Microsoft, Meta &amp; OpenAI</div>
         </div>
 

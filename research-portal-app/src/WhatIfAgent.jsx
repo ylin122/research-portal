@@ -366,7 +366,7 @@ KEY UPDATE: [1-2 sentences on what's different now]`;
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT }}>
-      <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 4 }}>What If</h1>
+      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>What If</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
         Test a scenario or thesis against your entire coverage universe. Screens every company for impact with auto-verification.
       </p>

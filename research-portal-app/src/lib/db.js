@@ -15,11 +15,6 @@ export async function insertCompany({ id, name, sector, sub }) {
   if (error) console.error('insertCompany:', error);
 }
 
-export async function deleteCompany(id) {
-  const { error } = await supabase.from('companies').delete().eq('id', id);
-  if (error) console.error('deleteCompany:', error);
-}
-
 export async function updateCompanyPriority(id, priority) {
   const { error } = await supabase.from('companies').update({ priority }).eq('id', id);
   if (error) console.error('updateCompanyPriority:', error);
@@ -128,37 +123,6 @@ export async function loadResearchResults() {
     };
   }
   return map;
-}
-
-export async function upsertResearchResult(companyId, results) {
-  const { error } = await supabase.from('research_results').upsert(
-    { company_id: companyId, news: results.news || [], transactions: results.transactions || [], competitive: results.competitive || [], industry: results.industry || [], updated_at: new Date().toISOString() },
-    { onConflict: 'company_id' }
-  );
-  if (error) console.error('upsertResearchResult:', error);
-}
-
-// ─── Agent Definitions ────────────────────────────────
-export async function loadAgents() {
-  const { data, error } = await supabase
-    .from('agent_definitions')
-    .select('*')
-    .order('sort_order', { ascending: true });
-  if (error) { console.error('loadAgents:', error); return []; }
-  return data || [];
-}
-
-export async function upsertAgent(agent) {
-  const { error } = await supabase.from('agent_definitions').upsert(
-    { ...agent, updated_at: new Date().toISOString() },
-    { onConflict: 'id' }
-  );
-  if (error) console.error('upsertAgent:', error);
-}
-
-export async function deleteAgent(id) {
-  const { error } = await supabase.from('agent_definitions').delete().eq('id', id);
-  if (error) console.error('deleteAgent:', error);
 }
 
 // ─── Sector Notes ──────────────────────────────────────

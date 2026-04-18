@@ -54,10 +54,10 @@ const CLI_TOOLS = [
 
 const AGENTS = [
   {
-    name: "codeverifier", color: "#34d673",
-    desc: "Code correctness — syntax, build, structure, dead code, broken references",
-    usage: "@codeverifier check the Restructuring.jsx changes",
-    tools: "Read, Bash, Grep, Glob", mode: "Read-only",
+    name: "code-review", color: "#34d673",
+    desc: "Code review — audits for bugs, duplication, dead code, inefficiency, structural issues. Reports numbered issues by severity, then fixes on command.",
+    usage: "@code-review src/Primer.jsx",
+    tools: "Read, Edit, Write, Bash, Grep, Glob", mode: "Audit (default) or Fix",
   },
   {
     name: "fact-checker", color: "#70b0fa",
@@ -135,7 +135,7 @@ export default function DataVerificationAgent() {
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT }}>
-      <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text, marginBottom: 4 }}>Commands / Skills</h1>
+      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Commands / Skills</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
         Claude Code agents and skills. Run agents with <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span>, skills with <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>.
       </p>
@@ -217,7 +217,7 @@ export default function DataVerificationAgent() {
           <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, marginBottom: 6 }}>Recommended Workflow</div>
           <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.8 }}>
             <strong>1.</strong> Update a tab → <span style={{ fontFamily: "monospace", color: "#14B8A6" }}>@refresh</span><br/>
-            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: "#34d673" }}>@codeverifier</span><br/>
+            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: "#34d673" }}>@code-review</span> → then "fix all" or "fix 1, 3"<br/>
             <strong>3.</strong> After research content → <span style={{ fontFamily: "monospace", color: "#70b0fa" }}>@fact-checker</span> + <span style={{ fontFamily: "monospace", color: "#f87171" }}>@fact-disputer</span> in parallel<br/>
             <strong>4.</strong> Then → <span style={{ fontFamily: "monospace", color: "#f5a623" }}>@fact-check-reconciler</span> for final verdicts<br/>
             <strong>5.</strong> Fix CONFLICT / LIKELY WRONG items, re-verify<br/>

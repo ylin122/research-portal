@@ -59,7 +59,7 @@ export default function Dashboard({ companies, setView }) {
 
   return (
     <div style={{ padding: 0 }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: T_.text, marginBottom: 4, fontFamily: FONT }}>Dashboard</h1>
+      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>Dashboard</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Overview of your research portal. {companies?.length > 0 && `Tracking ${companies.length} companies.`}
       </p>
@@ -97,7 +97,7 @@ export default function Dashboard({ companies, setView }) {
       {/* Idea Pipeline */}
       {ideas.length > 0 && (
         <>
-          <SectionHeader title="Idea Pipeline" count={ideas.length} onViewAll={() => setView({ type: "ideaTracker" })} />
+          <SectionHeader title="Idea Pipeline" count={ideas.length} />
           <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 4 }}>
             {[
               { key: "seed", label: "Seed", color: T_.textDim },
@@ -118,12 +118,12 @@ export default function Dashboard({ companies, setView }) {
       {/* Pending Q&A */}
       {pendingQa > 0 && (
         <>
-          <SectionHeader title="Pending Questions" count={pendingQa} onViewAll={() => setView({ type: "qaAgent" })} />
+          <SectionHeader title="Pending Questions" count={pendingQa} />
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
             {qa.filter(q => !q.answer).slice(0, 3).map(q => (
-              <div key={q.id} onClick={() => setView({ type: "qaAgent" })} style={{
+              <div key={q.id} style={{
                 display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${T_.amber}`, cursor: "pointer",
+                background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${T_.amber}`,
               }}>
                 <span style={{ fontSize: 10, fontWeight: 600, color: T_.amber, background: `${T_.amber}15`, padding: "2px 8px", borderRadius: 4 }}>Pending</span>
                 <span style={{ fontSize: 13, color: T_.text, flex: 1 }}>{q.question}</span>

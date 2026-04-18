@@ -77,7 +77,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Communication Services & Telecom Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Wireless, broadband, towers, satellite, UCaaS, and media — the connectivity value chain</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Communication Services & Telecom Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Wireless, broadband, towers, satellite, UCaaS, and media — the connectivity value chain</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Telecom & Media — Value Chain</div>
@@ -294,7 +294,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Consumer Discretionary Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Apparel, auto, housing, restaurants, travel, and retail — spending on wants, not needs</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Consumer Discretionary Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Apparel, auto, housing, restaurants, travel, and retail — spending on wants, not needs</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Consumer Discretionary — Value Chain</div>
@@ -492,7 +492,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Consumer Staples Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Packaged food, household products, grocery, and the defensive consumer — spending on needs, not wants</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Consumer Staples Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Packaged food, household products, grocery, and the defensive consumer — spending on needs, not wants</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Consumer Staples — Value Chain</div>
@@ -698,7 +698,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Financials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Banking, capital markets, insurance, asset management, private credit, and payments</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Financials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Banking, capital markets, insurance, asset management, private credit, and payments</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Financials — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Capital flows from sources through intermediaries and distributors to end clients. The financial system intermediates risk and allocates capital.</div>
@@ -906,7 +906,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Fintech Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Digital payments, neobanking, lending platforms, insurtech, wealthtech, regtech, and crypto infrastructure</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Fintech Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Digital payments, neobanking, lending platforms, insurtech, wealthtech, regtech, and crypto infrastructure</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Fintech — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From banking infrastructure through middleware platforms to consumer-facing applications. Each layer enables the one to its right.</div>
@@ -1123,7 +1123,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Industrials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Machinery, electrical equipment, building products, distribution, waste, transportation, and E&C</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Industrials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Machinery, electrical equipment, building products, distribution, waste, transportation, and E&C</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Industrials — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From raw materials through manufacturing and distribution to end markets. The industrial economy is cyclical but increasingly benefiting from electrification, reshoring, and infrastructure investment.</div>
@@ -1330,7 +1330,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Aerospace & Defense Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Defense primes, commercial OEMs, aerostructures, defense electronics, MRO, and space</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Aerospace & Defense Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Defense primes, commercial OEMs, aerostructures, defense electronics, MRO, and space</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Aerospace & Defense — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From R&D through manufacturing and integration to operations and sustainment. Both defense and commercial aerospace follow this pattern, with different funding sources and timelines.</div>

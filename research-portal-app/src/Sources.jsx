@@ -53,7 +53,7 @@ export default function Sources() {
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Sources</h1>
+      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Sources</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Trusted sources used across the portal for research, data, and analysis.
       </p>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { T_, FONT } from "./lib/theme";
 import FinancialsTab from "./FinancialsTab";
 
@@ -9,7 +9,7 @@ const TICKER_MAP = {
   google_eq: "GOOGL", tesla_eq: "TSLA", eq_alibaba: "BABA", eq_tencent: "TCEHY",
 };
 
-const RESEARCH_FIELDS = [
+export const RESEARCH_FIELDS = [
   { key: "overview", label: "Company overview", ph: "Business description, founding year, HQ, stage, ownership, funding history, key leadership..." },
   { key: "products", label: "Key business / products", ph: "Start with how the company makes money..." },
   { key: "customers", label: "Customer focus", ph: "Target segments, key accounts, verticals..." },
@@ -19,7 +19,7 @@ const RESEARCH_FIELDS = [
   { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR..." },
 ];
 
-const s = {
+export const reviewStyles = {
   card: { background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 16 },
   section: { marginBottom: 36 },
   sectionHdr: { fontSize: 14, fontWeight: 500, color: T_.textDim, marginBottom: 14, paddingBottom: 10, borderBottom: `1px solid ${T_.borderLight}`, display: "flex", justifyContent: "space-between", alignItems: "center", fontFamily: FONT },
@@ -28,8 +28,9 @@ const s = {
   proseBody: { fontSize: 14, lineHeight: 1.9, color: T_.text, cursor: "pointer", whiteSpace: "pre-wrap", padding: "6px 0", fontFamily: FONT },
   textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
 };
+const s = reviewStyles;
 
-function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
+export function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
 function tryJSON(text) { try { return JSON.parse(text); } catch { return null; } }
 const typeBg = (t) => ({ Earnings: "rgba(139,92,246,0.12)", Capacity: "rgba(16,185,129,0.12)", Financing: "rgba(59,130,246,0.12)", Contract: "rgba(239,68,68,0.12)", Regulatory: "rgba(245,158,11,0.12)", Product: "rgba(245,158,11,0.12)", "M&A": "rgba(239,68,68,0.12)" }[t] || "rgba(245,158,11,0.12)");
 const typeColor = (t) => ({ Earnings: "#8B5CF6", Capacity: "#10B981", Financing: "#3B82F6", Contract: "#EF4444", Regulatory: "#F59E0B", Product: "#F59E0B", "M&A": "#EF4444" }[t] || "#F59E0B");

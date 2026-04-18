@@ -130,7 +130,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Healthcare & Pharma Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Healthcare & Pharma Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Pharmaceuticals, biotech, medical devices, CRO/CDMO, and life sciences value chain</div>
         </div>
 
@@ -470,7 +470,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Healthcare IT & Services Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Healthcare IT & Services Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Health systems, managed care, healthIT, digital health, and healthcare services value chain</div>
         </div>
 
@@ -778,7 +778,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Energy & Materials Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Energy & Materials Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Oil & gas, renewables, mining, chemicals, and the energy transition value chain</div>
         </div>
 
@@ -1125,7 +1125,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Real Estate Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Real Estate Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>REITs, homebuilders, CRE services, PropTech, and real estate value chain</div>
         </div>
 
@@ -1433,7 +1433,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Utilities Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Utilities Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Regulated utilities, competitive generation, clean energy, and the power value chain</div>
         </div>
 
@@ -1752,7 +1752,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>IT Services & BPO Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>IT Services & BPO Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Business process outsourcing, knowledge services, contact centers, and BPO value chain</div>
         </div>
 

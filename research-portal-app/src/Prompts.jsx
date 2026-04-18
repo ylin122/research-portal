@@ -71,7 +71,7 @@ export default function Prompts() {
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, margin: 0 }}>Prompts</h1>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", margin: 0 }}>Prompts</div>
         <button onClick={() => setAdding(true)} style={{
           background: T_.accent, border: "none", color: "#000", fontWeight: 600,
           fontSize: 13, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontFamily: FONT,

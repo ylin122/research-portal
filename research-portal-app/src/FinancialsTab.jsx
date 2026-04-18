@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 
 // ── Number formatting — negatives as (parentheses), matching portal style ──

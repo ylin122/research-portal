@@ -80,7 +80,7 @@ export default function Principles() {
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <div>
-          <div style={{ fontSize: 22, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Principles & Epiphanies</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Principles & Epiphanies</div>
           <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>Fundamental beliefs that guide decisions. Review before acting.</div>
         </div>
         <button

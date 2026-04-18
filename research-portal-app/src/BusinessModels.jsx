@@ -639,12 +639,12 @@ export default function BusinessModels({ initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Tab bar */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}`, flexWrap: "wrap" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {MODEL_ORDER.map(key => (
           <button key={key} onClick={() => setActiveModel(key)} style={{
-            padding: "10px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
-            border: "none", borderBottom: activeModel === key ? `2px solid ${MODELS[key].color}` : "2px solid transparent",
-            background: "transparent", color: activeModel === key ? T_.text : T_.textGhost,
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: activeModel === key ? "#3B82F6" : "#111827",
+            color: activeModel === key ? "#FFF" : "#94A3B8",
             fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{MODELS[key].label}</button>
         ))}
@@ -654,12 +654,9 @@ export default function BusinessModels({ initialTab }) {
       {model && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 28 }}>{model.icon}</span>
-              <div>
-                <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{model.label}</div>
-                <div style={{ fontSize: 13, color: model.color, marginTop: 2 }}>{model.category}</div>
-              </div>
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>{model.label}</div>
+              <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>{model.category}</div>
             </div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{model.tagline}</div>
           </div>

@@ -676,13 +676,13 @@ export default function AIDisruption({ companies, initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Sub-tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {[{ key: "disruption", label: "Disruption Map" }, { key: "moats", label: "Moat vs AI" }, { key: "diffusion", label: "AI Diffusion" }, { key: "jevons", label: "Jevons' Paradox" }].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
-            padding: "10px 24px", fontSize: 14, fontWeight: 500, cursor: "pointer",
-            border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
-            background: "transparent", color: subTab === t.key ? T_.text : T_.textGhost,
-            fontFamily: FONT, transition: "all 0.15s",
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: subTab === t.key ? "#3B82F6" : "#111827",
+            color: subTab === t.key ? "#FFF" : "#94A3B8",
+            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{t.label}</button>
         ))}
       </div>
@@ -713,7 +713,7 @@ export default function AIDisruption({ companies, initialTab }) {
         return (
         <div>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Moat vs AI</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Moat vs AI</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How protected is each portfolio company from AI disruption? Eight moats weighted by structural importance (T1: 3x, T2: 2x, T3: 1x)</div>
           </div>
 
@@ -825,7 +825,7 @@ export default function AIDisruption({ companies, initialTab }) {
       {subTab === "jevons" && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Jevons' Paradox & AI</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Jevons' Paradox & AI</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>When AI collapses the cost of producing X and demand for X is elastic, total consumption of X explodes. The question for every sector: was demand previously supply-constrained or price-constrained?</div>
           </div>
 
@@ -993,7 +993,7 @@ export default function AIDisruption({ companies, initialTab }) {
       {subTab === "disruption" && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>AI Disruption Map</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Disruption Map</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How AI reshapes each sector I cover. Risk levels, timelines, winners, losers, and what to watch</div>
           </div>
 
@@ -1364,7 +1364,7 @@ function AIDiffusionTab() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>AI Diffusion Timeline</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Diffusion Timeline</div>
         <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, lineHeight: 1.6 }}>
           How AI adoption is spreading across research, consumer, enterprise, infrastructure, and regulation — tracked on S-curves over time.
         </div>

@@ -1,12 +1,5 @@
 import { useState } from "react";
-
-const T_ = {
-  bg: "#0a0e17", bgPanel: "#111827", bgInput: "#161d2e",
-  border: "#283347", borderLight: "#222d40",
-  accent: "#f5a623", text: "#e8ecf1", textMid: "#b0bcc9", textDim: "#8a99ab", textGhost: "#6e7f93",
-  green: "#34d673", blue: "#70b0fa", red: "#f87171",
-};
-const FONT = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+import { T_, FONT } from "./lib/theme";
 
 const APIS = [
   {
@@ -79,7 +72,7 @@ export default function ApiDirectory() {
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 22, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>APIs & Integrations</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>APIs & Integrations</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>All APIs powering the Research Portal and Portfolio Dashboard.</div>
       </div>
 

@@ -11,13 +11,6 @@ const EQUITIES_KEY = "research_portal_equities";
 function loadLog() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; } }
 function saveLog(entries) { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
 
-window.__auditLog = function(entry) {
-  const log = loadLog();
-  log.unshift({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), timestamp: new Date().toISOString(), ...entry });
-  if (log.length > 1000) log.length = 1000;
-  saveLog(log);
-};
-
 const SOURCE_COLORS = {
   "Credit Research": { bg: "#3B82F622", color: "#3B82F6", border: "#3B82F644" },
   "Equity Research": { bg: "#10B98122", color: "#10B981", border: "#10B98144" },
@@ -142,7 +135,7 @@ export default function AuditLog({ companies, fieldsMap, notesMap }) {
   return (
     <div style={{ padding: "36px 44px", maxWidth: "none", fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <h1 style={{ fontSize: 22, fontWeight: 600, color: T_.text }}>Audit Log</h1>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Audit Log</div>
         <div style={{ display: "flex", gap: 10 }}>
           <button style={{
             padding: "8px 16px", fontSize: 12, borderRadius: 6, cursor: "pointer",

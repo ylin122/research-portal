@@ -1,23 +1,22 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import Primer from "./Primer";
-import AIDisruption from "./AIDisruption";
+import { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react";
+const Primer = lazy(() => import("./Primer"));
+const AIDisruption = lazy(() => import("./AIDisruption"));
 import ThesisAgent from "./ThesisAgent";
 import NotesIdeasAgent from "./NotesIdeasAgent";
 import DataVerificationAgent from "./DataVerificationAgent";
-import BusinessModels from "./BusinessModels";
-import Accounting from "./Accounting";
-import CreditInstruments from "./CreditInstruments";
+const BusinessModels = lazy(() => import("./BusinessModels"));
+const Accounting = lazy(() => import("./Accounting"));
+const CreditInstruments = lazy(() => import("./CreditInstruments"));
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
 import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
-import Restructuring from "./Restructuring";
+const Restructuring = lazy(() => import("./Restructuring"));
 import Principles from "./Principles";
 import ApiDirectory from "./ApiDirectory";
 import Dashboard from "./Dashboard";
 import QuickNotes from "./QuickNotes";
-// import IdeaTracker from "./IdeaTracker";
 import TractCapitalReview from "./TractCapitalReview";
 import CoreweaveReview from "./CoreweaveReview";
 import AppliedDigitalReview from "./AppliedDigitalReview";
@@ -26,7 +25,7 @@ import TerawulfReview from "./TerawulfReview";
 import MicronReview from "./MicronReview";
 import OracleReview from "./OracleReview";
 import GenericReview from "./GenericReview";
-import IndustryResearch from "./IndustryResearch";
+const IndustryResearch = lazy(() => import("./IndustryResearch"));
 import WhatIfAgent from "./WhatIfAgent";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
@@ -45,7 +44,6 @@ function useAutoSave(fn, ms = 700) {
 }
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function ts() { return new Date().toISOString(); }
-function fmt(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
 function fmtShort(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }); }
 
 // ─── Sectors ──────────────────────────────────────────
@@ -77,6 +75,8 @@ const SOURCE_FIELDS = [
 const PRIORITIES = ["High", "Medium", "Low"];
 
 // ─── News API ─────────────────────────────────────────
+// NOTE: This exposes the Anthropic API key to the browser via import.meta.env.
+// Acceptable tradeoff for this internal tool — do NOT use in public-facing apps.
 async function fetchNews(name) {
   const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
   if (!apiKey) return [];
@@ -97,7 +97,7 @@ async function fetchNews(name) {
 }
 
 // ─── App ──────────────────────────────────────────────
-const APP_PASS = "Ylin6274!";
+const APP_PASS = import.meta.env.VITE_APP_PASSWORD || "";
 
 export default function App() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem("rp_auth") === "1");
@@ -205,7 +205,7 @@ function AppContent() {
   }, []);
 
   // Seed equity companies on first load
-  useEffect(() => {
+  useEffect(() => { // eslint-disable-line react-hooks/exhaustive-deps
     const SEED = [
       { id: "eq_micron", name: "Micron", sub: "" },
       { id: "eq_alibaba", name: "Alibaba", sub: "" },
@@ -251,10 +251,6 @@ function AppContent() {
     const date = await upsertNewsCache(id, news);
     setNewsCache(p => ({ ...p, [id]: { items: news, date } }));
     setNewsLoading(p => ({ ...p, [id]: false }));
-  }
-
-  async function refreshAllNews() {
-    for (const co of companies) { await refreshNews(co.id); }
   }
 
   async function addCompanyHandler() {
@@ -317,31 +313,6 @@ function AppContent() {
   const getPrivateCos = (sector) => getCos(sector).filter(c => !isPublicCo(c));
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;
 
-  const FIELD_LABELS = Object.fromEntries([...FIELDS, ...SOURCE_FIELDS].map(f => [f.key, f.label]));
-
-  function recentUpdates(limit = 15) {
-    const all = [];
-    Object.entries(fieldsMap).forEach(([id, fields]) => {
-      const co = companies.find(c => c.id === id);
-      if (!co || co.sector === "prompts" || co.sector === "sources") return;
-      if (priorityFilter && (co.priority || "") !== priorityFilter) return;
-      Object.entries(fields).forEach(([key, val]) => {
-        if (!val.date || !val.text?.trim() || key.startsWith("ai_")) return;
-        all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: key, fieldLabel: FIELD_LABELS[key] || key, date: val.date });
-      });
-    });
-    // Also include notes
-    Object.entries(notesMap).forEach(([id, notes]) => {
-      const co = companies.find(c => c.id === id);
-      if (!co || co.sector === "prompts" || co.sector === "sources") return;
-      if (priorityFilter && (co.priority || "") !== priorityFilter) return;
-      (notes || []).forEach(n => {
-        all.push({ cid: id, coName: co.name, sector: co.sector, fieldKey: "note", fieldLabel: "Research note", date: n.date });
-      });
-    });
-    return all.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, limit);
-  }
-
   useEffect(() => { if (adding && addRef.current) addRef.current.focus(); }, [adding]);
 
   if (!ready) return (
@@ -364,7 +335,7 @@ function AppContent() {
       <div className="desktop-sidebar" style={s.sidebar}>
         <div style={s.sidebarTitle} onClick={() => { setView({ type: "home" }); setEditingField(null); }}>Research Portal</div>
         <div style={{ padding: "0 16px 14px", position: "relative" }}>
-          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} onFocus={() => {}} />
+          <input style={s.searchInput} placeholder="Search companies..." value={search} onChange={e => setSearch(e.target.value)} />
           {search.trim().length > 0 && (() => {
             const q = search.toLowerCase();
             const matches = [
@@ -410,11 +381,14 @@ function AppContent() {
               { key: "thesis", label: "Thesis Tracker" },
               { key: "whatIf", label: "What If" },
               { key: "dataVerification", label: "Commands / Skills" },
-            ].map(t => (
-              <div key={t.key} style={{ ...s.sectorHdr, marginTop: 0, color: view.type === t.key + "Agent" ? T_.accent : T_.textMid }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
-                <span>{t.label}</span>
-              </div>
-            ))}
+            ].map(t => {
+              const active = view.type === t.key + "Agent";
+              return (
+                <div key={t.key} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 38 }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
+                  <span>{t.label}</span>
+                </div>
+              );
+            })}
           </div>
 
           {/* Idea Tracker — removed */}
@@ -682,13 +656,13 @@ function AppContent() {
         )}
 
         {/* PRIMER */}
-        {view.type === "primer" && <Primer initialTab={view.sub} />}
+        {view.type === "primer" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><Primer initialTab={view.sub} /></Suspense>}
 
         {/* AI DISRUPTION */}
-        {view.type === "aidisruption" && <AIDisruption companies={companies} initialTab={view.sub} />}
+        {view.type === "aidisruption" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><AIDisruption companies={companies} initialTab={view.sub} /></Suspense>}
 
         {/* INDUSTRY RESEARCH */}
-        {view.type === "industryResearch" && <IndustryResearch initialTab={view.sub} />}
+        {view.type === "industryResearch" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><IndustryResearch initialTab={view.sub} /></Suspense>}
 
         {/* THESIS AGENT */}
         {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
@@ -723,7 +697,6 @@ function AppContent() {
         {view.type === "equityDetail" && (() => {
           const eq = equities.find(e => e.id === view.id);
           if (!eq) return null;
-          const notes = equityNotes[eq.id] || "";
           const eqFields = fieldsMap[eq.id] || {};
           return (
             <div style={s.page}>
@@ -776,21 +749,21 @@ function AppContent() {
         )}
 
         {/* BUSINESS MODELS */}
-        {view.type === "businessModels" && <BusinessModels initialTab={view.sub} />}
+        {view.type === "businessModels" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><BusinessModels initialTab={view.sub} /></Suspense>}
 
         {/* ACCOUNTING */}
-        {view.type === "accounting" && <Accounting initialTab={view.sub} />}
+        {view.type === "accounting" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><Accounting initialTab={view.sub} /></Suspense>}
 
         {/* CREDIT INSTRUMENTS */}
-        {view.type === "creditInstruments" && <CreditInstruments initialTab={view.sub} />}
+        {view.type === "creditInstruments" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><CreditInstruments initialTab={view.sub} /></Suspense>}
 
         {/* RESTRUCTURING */}
-        {view.type === "restructuring" && <Restructuring initialTab={view.sub} />}
+        {view.type === "restructuring" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><Restructuring initialTab={view.sub} /></Suspense>}
 
         {/* MOBILE MORE MENU */}
         {view.type === "mobileMore" && (
           <div style={s.page}>
-            <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
+            <h1 style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
                 { type: "home", label: "Dashboard", icon: "\u{2302}" },
@@ -953,103 +926,8 @@ function AppContent() {
             {/* Generic Review — for all Credit Research + Equity companies without dedicated reviews */}
             {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Moat vs AI Scoring — only for equity or sources sector */}
-            {(cur.sector === "equity") && (() => {
-              const MOAT_TIERS = [
-                { label: "T1 — Structural (3x)", weight: 3, color: "#34d673", moats: [
-                  { key: "data", name: "Proprietary Data" },
-                  { key: "switching", name: "Switching Cost" },
-                ]},
-                { label: "T2 — Strong (2x)", weight: 2, color: "#F59E0B", moats: [
-                  { key: "regulatory", name: "Regulatory & Compliance" },
-                  { key: "ecosystem", name: "Ecosystem & Integration" },
-                  { key: "security", name: "Security" },
-                ]},
-                { label: "T3 — Temporal (1x)", weight: 1, color: T_.textGhost, moats: [
-                  { key: "contracts", name: "Long-term Contracts" },
-                  { key: "brand", name: "Brand & Trust" },
-                  { key: "infra", name: "Infrastructure Support" },
-                ]},
-              ];
-              const moats = cur.moats || {};
-              const moatEnabled = moats._enabled !== false;
-              const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
-              const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
-              const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
-              const wTotal = MOAT_TIERS.reduce((s, t) => s + t.moats.reduce((s2, m) => s2 + (moats[m.key] || 0) * t.weight, 0), 0);
-              const maxScore = 45;
-              const totalColor = wTotal >= 33 ? "#34d673" : wTotal >= 21 ? "#F59E0B" : wTotal > 0 ? "#EF4444" : T_.textGhost;
-              const setMoat = (key, val) => {
-                const next = { ...moats, [key]: val };
-                delete next.physical;
-                const idx = companies.findIndex(c => c.id === cur.id);
-                if (idx >= 0) {
-                  const updated = [...companies];
-                  updated[idx] = { ...updated[idx], moats: next };
-                  setCompanies(updated);
-                }
-                updateCompanyMoats(cur.id, next);
-              };
-              const toggleMoat = () => {
-                const next = { ...moats, _enabled: !moatEnabled };
-                const idx = companies.findIndex(c => c.id === cur.id);
-                if (idx >= 0) {
-                  const updated = [...companies];
-                  updated[idx] = { ...updated[idx], moats: next };
-                  setCompanies(updated);
-                }
-                updateCompanyMoats(cur.id, next);
-              };
-              return (
-                <div style={s.section}>
-                  <div style={s.sectionHdr}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      Moat vs AI
-                      <span onClick={toggleMoat} style={{
-                        display: "inline-flex", alignItems: "center", width: 36, height: 18, borderRadius: 9, cursor: "pointer",
-                        background: moatEnabled ? T_.green : T_.border, padding: 2, transition: "background 0.2s",
-                      }}>
-                        <span style={{
-                          width: 14, height: 14, borderRadius: 7, background: "#fff",
-                          transform: moatEnabled ? "translateX(18px)" : "translateX(0)", transition: "transform 0.2s",
-                        }} />
-                      </span>
-                    </span>
-                    {moatEnabled && wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
-                    {!moatEnabled && <span style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>Excluded from scoring</span>}
-                  </div>
-                  {moatEnabled && MOAT_TIERS.map(tier => (
-                    <div key={tier.label} style={{ marginBottom: 10 }}>
-                      <div style={{ fontSize: 10, fontWeight: 700, color: tier.color, textTransform: "uppercase", marginBottom: 6, letterSpacing: 0.5 }}>{tier.label}</div>
-                      <div style={{ display: "grid", gridTemplateColumns: tier.moats.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: 6 }}>
-                        {tier.moats.map(m => {
-                          const v = moats[m.key] || 0;
-                          const wPts = v * tier.weight;
-                          return (
-                            <div key={m.key} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                                <span style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase" }}>{m.name}</span>
-                                {v > 0 && <span style={{ fontSize: 9, color: scoreCol(v), fontWeight: 700 }}>+{wPts}</span>}
-                              </div>
-                              <div style={{ display: "flex", gap: 4 }}>
-                                {[1, 2, 3].map(sv => (
-                                  <button key={sv} onClick={() => setMoat(m.key, v === sv ? 0 : sv)} style={{
-                                    flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
-                                    border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
-                                    background: v === sv ? scoreBg(sv) : "transparent",
-                                    color: v === sv ? scoreCol(sv) : T_.textGhost,
-                                  }}>{scoreLabel[sv]}</button>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              );
-            })()}
+            {/* Moat vs AI Scoring — only for equity sector */}
+            {cur.sector === "equity" && <MoatScoring company={cur} companies={companies} setCompanies={setCompanies} />}
 
             {/* Structured Fields — only for sources sector */}
             {cur.sector === "sources" && SOURCE_FIELDS.map(f => {
@@ -1122,14 +1000,101 @@ function AppContent() {
   );
 }
 
-function NoteInput({ onAdd }) {
-  const [t, setT] = useState("");
+// ─── MoatScoring ──────────────────────────────────────
+const MOAT_TIERS = [
+  { label: "T1 \u2014 Structural (3x)", weight: 3, color: "#34d673", moats: [
+    { key: "data", name: "Proprietary Data" },
+    { key: "switching", name: "Switching Cost" },
+  ]},
+  { label: "T2 \u2014 Strong (2x)", weight: 2, color: "#F59E0B", moats: [
+    { key: "regulatory", name: "Regulatory & Compliance" },
+    { key: "ecosystem", name: "Ecosystem & Integration" },
+    { key: "security", name: "Security" },
+  ]},
+  { label: "T3 \u2014 Temporal (1x)", weight: 1, color: T_.textGhost, moats: [
+    { key: "contracts", name: "Long-term Contracts" },
+    { key: "brand", name: "Brand & Trust" },
+    { key: "infra", name: "Infrastructure Support" },
+  ]},
+];
+
+function MoatScoring({ company, companies, setCompanies }) {
+  const moats = company.moats || {};
+  const moatEnabled = moats._enabled !== false;
+  const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
+  const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
+  const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
+  const wTotal = MOAT_TIERS.reduce((s, t) => s + t.moats.reduce((s2, m) => s2 + (moats[m.key] || 0) * t.weight, 0), 0);
+  const maxScore = 45;
+  const totalColor = wTotal >= 33 ? "#34d673" : wTotal >= 21 ? "#F59E0B" : wTotal > 0 ? "#EF4444" : T_.textGhost;
+  const setMoat = (key, val) => {
+    const next = { ...moats, [key]: val };
+    delete next.physical;
+    const idx = companies.findIndex(c => c.id === company.id);
+    if (idx >= 0) {
+      const updated = [...companies];
+      updated[idx] = { ...updated[idx], moats: next };
+      setCompanies(updated);
+    }
+    updateCompanyMoats(company.id, next);
+  };
+  const toggleMoat = () => {
+    const next = { ...moats, _enabled: !moatEnabled };
+    const idx = companies.findIndex(c => c.id === company.id);
+    if (idx >= 0) {
+      const updated = [...companies];
+      updated[idx] = { ...updated[idx], moats: next };
+      setCompanies(updated);
+    }
+    updateCompanyMoats(company.id, next);
+  };
   return (
-    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-      <input style={s.noteInput} placeholder="Add a research note..." value={t}
-        onChange={e => setT(e.target.value)}
-        onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); onAdd(t); setT(""); } }} />
-      <button style={s.btnAccent} onClick={() => { onAdd(t); setT(""); }}>Add</button>
+    <div style={s.section}>
+      <div style={s.sectionHdr}>
+        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
+          Moat vs AI
+          <span onClick={toggleMoat} style={{
+            display: "inline-flex", alignItems: "center", width: 36, height: 18, borderRadius: 9, cursor: "pointer",
+            background: moatEnabled ? T_.green : T_.border, padding: 2, transition: "background 0.2s",
+          }}>
+            <span style={{
+              width: 14, height: 14, borderRadius: 7, background: "#fff",
+              transform: moatEnabled ? "translateX(18px)" : "translateX(0)", transition: "transform 0.2s",
+            }} />
+          </span>
+        </span>
+        {moatEnabled && wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
+        {!moatEnabled && <span style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>Excluded from scoring</span>}
+      </div>
+      {moatEnabled && MOAT_TIERS.map(tier => (
+        <div key={tier.label} style={{ marginBottom: 10 }}>
+          <div style={{ fontSize: 10, fontWeight: 700, color: tier.color, textTransform: "uppercase", marginBottom: 6, letterSpacing: 0.5 }}>{tier.label}</div>
+          <div style={{ display: "grid", gridTemplateColumns: tier.moats.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: 6 }}>
+            {tier.moats.map(m => {
+              const v = moats[m.key] || 0;
+              const wPts = v * tier.weight;
+              return (
+                <div key={m.key} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+                    <span style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase" }}>{m.name}</span>
+                    {v > 0 && <span style={{ fontSize: 9, color: scoreCol(v), fontWeight: 700 }}>+{wPts}</span>}
+                  </div>
+                  <div style={{ display: "flex", gap: 4 }}>
+                    {[1, 2, 3].map(sv => (
+                      <button key={sv} onClick={() => setMoat(m.key, v === sv ? 0 : sv)} style={{
+                        flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
+                        border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
+                        background: v === sv ? scoreBg(sv) : "transparent",
+                        color: v === sv ? scoreCol(sv) : T_.textGhost,
+                      }}>{scoreLabel[sv]}</button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
@@ -1149,7 +1114,7 @@ const s = {
   navAdd: { padding: "6px 18px 6px 38px", fontSize: 12, color: T_.textGhost, cursor: "pointer", fontFamily: FONT },
   main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative", background: T_.bg },
   page: { flex: 1, padding: "36px 52px", overflowY: "auto" },
-  pageTitle: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
+  pageTitle: { fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", margin: "0 0 6px", fontFamily: FONT },
   pageSub: { fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.7, fontFamily: FONT },
   breadcrumb: { fontSize: 13, color: T_.textGhost, marginBottom: 12, display: "flex", gap: 8, alignItems: "center", cursor: "pointer", fontFamily: FONT },
   section: { marginBottom: 36 },

@@ -360,16 +360,17 @@ export default function KnowledgeInterests() {
 
   return (
     <div style={{ padding: 0 }}>
-      <h1 style={{ fontSize: 22, fontWeight: 700, color: T_.text, marginBottom: 4, fontFamily: FONT }}>Knowledge / Interests</h1>
-      <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Learn, explore, and save interesting things.
-      </p>
-      <div style={{ display: "flex", gap: 4, marginBottom: 24, borderBottom: `1px solid ${T_.border}`, paddingBottom: 1 }}>
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Knowledge / Interests</div>
+        <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>Learn, explore, and save interesting things.</div>
+      </div>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {TABS.map(t => (
           <button key={t.key} onClick={() => setActiveTab(t.key)} style={{
-            background: "none", border: "none", borderBottom: activeTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
-            color: activeTab === t.key ? T_.accent : T_.textDim, padding: "8px 20px", cursor: "pointer", fontSize: 13,
-            fontWeight: activeTab === t.key ? 600 : 400, fontFamily: FONT, marginBottom: -1,
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: activeTab === t.key ? "#3B82F6" : "#111827",
+            color: activeTab === t.key ? "#FFF" : "#94A3B8",
+            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{t.label}</button>
         ))}
       </div>

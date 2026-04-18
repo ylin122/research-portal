@@ -255,8 +255,8 @@ export default function Primer({ initialTab }) {
 
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
-      {/* Sub-tabs — Row 1 */}
-      <div style={{ display: "flex", gap: 0, flexWrap: "wrap", borderBottom: `1px solid ${T_.borderLight}` }}>
+      {/* Sub-tabs */}
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid #1E293B`, marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {[
           { key: "software", label: "Software" },
           { key: "semis", label: "Semiconductors" },
@@ -268,18 +268,6 @@ export default function Primer({ initialTab }) {
           { key: "healthservices", label: "Healthcare Svcs" },
           { key: "internet", label: "Internet" },
           { key: "education", label: "Education" },
-        ].map(t => (
-          <button key={t.key} onClick={() => setSubTab(t.key)} style={{
-            padding: "9px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
-            border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
-            background: "transparent", color: subTab === t.key ? T_.text : T_.textGhost,
-            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{t.label}</button>
-        ))}
-      </div>
-      {/* Sub-tabs — Row 2 */}
-      <div style={{ display: "flex", gap: 0, flexWrap: "wrap", marginBottom: 20, borderBottom: `1px solid ${T_.borderLight}` }}>
-        {[
           { key: "comms", label: "Comms & Telecom" },
           { key: "consumerdisc", label: "Consumer Disc." },
           { key: "consumerstaples", label: "Consumer Staples" },
@@ -292,9 +280,9 @@ export default function Primer({ initialTab }) {
           { key: "utilities", label: "Utilities" },
         ].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
-            padding: "9px 16px", fontSize: 12, fontWeight: 500, cursor: "pointer",
-            border: "none", borderBottom: subTab === t.key ? `2px solid ${T_.accent}` : "2px solid transparent",
-            background: "transparent", color: subTab === t.key ? T_.text : T_.textGhost,
+            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+            border: "none", background: subTab === t.key ? "#3B82F6" : "#111827",
+            color: subTab === t.key ? "#FFF" : "#94A3B8",
             fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{t.label}</button>
         ))}
@@ -303,7 +291,7 @@ export default function Primer({ initialTab }) {
       {subTab === "software" && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Software Industry Primer</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Software Industry Primer</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Ecosystem, subsectors, key players, and value chain</div>
           </div>
 
@@ -597,7 +585,7 @@ export default function Primer({ initialTab }) {
         return (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Semiconductor Industry Primer</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Semiconductor Industry Primer</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>From design to fabrication to packaging — the full chip value chain, subsectors, and key players</div>
           </div>
           {/* Value Chain */}
@@ -918,7 +906,7 @@ export default function Primer({ initialTab }) {
         return (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Digital Infrastructure Primer</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Digital Infrastructure Primer</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>AI data centers, cloud infrastructure, power, cooling, and silicon</div>
           </div>
           {/* Value Chain */}
@@ -1136,7 +1124,7 @@ export default function Primer({ initialTab }) {
         ];
         return (
         <div>
-          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>IT Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Consulting, VARs, managed services, MSP ecosystem, and distribution</div></div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>IT Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Consulting, VARs, managed services, MSP ecosystem, and distribution</div></div>
           {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>IT Services — Value Chain</div>
@@ -1367,7 +1355,7 @@ export default function Primer({ initialTab }) {
         ];
         return (
         <div>
-          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Healthcare IT Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>EHR, revenue cycle, payer technology, post-acute care, and workforce</div></div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Healthcare IT Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>EHR, revenue cycle, payer technology, post-acute care, and workforce</div></div>
           {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Healthcare IT — Value Chain</div>
@@ -1589,7 +1577,7 @@ export default function Primer({ initialTab }) {
         ];
         return (
         <div>
-          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Internet Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Hosting, marketplaces, consumer security, email marketing, and adtech</div></div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Internet Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Hosting, marketplaces, consumer security, email marketing, and adtech</div></div>
           {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Internet — Value Chain</div>
@@ -1846,7 +1834,7 @@ export default function Primer({ initialTab }) {
         ];
         return (
         <div>
-          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>Education & Education Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>K-12, higher ed, corporate learning, online platforms, assessment, and infrastructure</div></div>
+          <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Education & Education Services Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>K-12, higher ed, corporate learning, online platforms, assessment, and infrastructure</div></div>
           {/* Value Chain */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
             <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Education Ecosystem — Value Chain</div>

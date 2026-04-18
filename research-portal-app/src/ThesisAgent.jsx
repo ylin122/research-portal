@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { T_, FONT } from "./lib/theme";
+import { callClaude } from "./lib/callClaude";
 
 const SECTORS = {
   software: "Software",
@@ -10,22 +11,6 @@ const SECTORS = {
   education: "Education & Services",
   healthcare: "Healthcare IT",
 };
-
-async function callClaude(prompt, maxTokens = 4000) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) return null;
-  const r = await fetch("https://api.anthropic.com/v1/messages", {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-    body: JSON.stringify({
-      model: "claude-sonnet-4-20250514", max_tokens: maxTokens,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-      messages: [{ role: "user", content: prompt }],
-    }),
-  });
-  const d = await r.json();
-  return d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
-}
 
 const THESIS_STORAGE_KEY = "research_portal_theses";
 function loadTheses() { try { return JSON.parse(localStorage.getItem(THESIS_STORAGE_KEY) || "[]"); } catch { return []; } }
@@ -209,7 +194,7 @@ VERDICT: [STRONG | MODERATE | WEAK | FLAWED]`;
 
       <div style={s.tabBar}>
         {[{ key: "validate", label: "Thesis Validator" }, { key: "tracker", label: "Thesis Tracker" }].map(m => (
-          <span key={m.key} style={{ ...s.tab, ...(mode === m.key ? { color: T_.accent, borderBottomColor: T_.accent } : {}) }} onClick={() => setMode(m.key)}>{m.label}</span>
+          <span key={m.key} style={{ ...s.tab, background: mode === m.key ? "#3B82F6" : "#111827", color: mode === m.key ? "#FFF" : "#94A3B8" }} onClick={() => setMode(m.key)}>{m.label}</span>
         ))}
       </div>
 
@@ -306,10 +291,10 @@ VERDICT: [STRONG | MODERATE | WEAK | FLAWED]`;
 
 const s = {
   page: { flex: 1, padding: "36px 52px", overflowY: "auto", maxWidth: "none" },
-  title: { fontSize: 24, fontWeight: 500, color: T_.text, margin: "0 0 6px", fontFamily: FONT },
+  title: { fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", margin: "0 0 6px", fontFamily: FONT },
   sub: { fontSize: 14, color: T_.textDim, marginBottom: 24, lineHeight: 1.7, fontFamily: FONT },
-  tabBar: { display: "flex", gap: 0, borderBottom: `1px solid ${T_.borderLight}`, marginBottom: 28 },
-  tab: { padding: "10px 20px", fontSize: 13, fontWeight: 500, color: T_.textGhost, cursor: "pointer", borderBottom: "2px solid transparent", transition: "all .12s", fontFamily: FONT, marginBottom: -1 },
+  tabBar: { display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 28, width: "fit-content", maxWidth: "100%" },
+  tab: { padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer", border: "none", transition: "all 0.15s", fontFamily: FONT, whiteSpace: "nowrap" },
   label: { display: "block", fontSize: 12, fontWeight: 500, color: T_.textDim, marginBottom: 8, fontFamily: FONT },
   select: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "10px 14px", fontSize: 13, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box", appearance: "auto" },
   textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 13, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 100, lineHeight: 1.7, boxSizing: "border-box" },

@@ -303,18 +303,18 @@ export default function CreditInstruments({ initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Category headers + tabs */}
-      <div style={{ marginBottom: 20 }}>
+      <div style={{ marginBottom: 24 }}>
         {CATEGORIES.map(cat => {
           const catInstruments = INSTRUMENT_ORDER.filter(k => INSTRUMENTS[k].category === cat.key);
           return (
-            <div key={cat.key} style={{ marginBottom: 4 }}>
-              <div style={{ fontSize: 10, color: cat.color, textTransform: "uppercase", fontWeight: 700, letterSpacing: "1px", padding: "6px 0 2px 4px" }}>{cat.label}</div>
-              <div style={{ display: "flex", gap: 0, flexWrap: "wrap", borderBottom: `1px solid ${T_.borderLight}` }}>
+            <div key={cat.key} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 10, color: cat.color, textTransform: "uppercase", fontWeight: 700, letterSpacing: "1px", padding: "6px 0 4px 4px" }}>{cat.label}</div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", width: "fit-content", maxWidth: "100%" }}>
                 {catInstruments.map(key => (
                   <button key={key} onClick={() => setActive(key)} style={{
-                    padding: "8px 14px", fontSize: 12, fontWeight: 500, cursor: "pointer",
-                    border: "none", borderBottom: active === key ? `2px solid ${cat.color}` : "2px solid transparent",
-                    background: "transparent", color: active === key ? T_.text : T_.textGhost,
+                    padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    border: "none", background: active === key ? "#3B82F6" : "#111827",
+                    color: active === key ? "#FFF" : "#94A3B8",
                     fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
                   }}>{INSTRUMENTS[key].name}</button>
                 ))}
@@ -328,12 +328,9 @@ export default function CreditInstruments({ initialTab }) {
       {inst && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontSize: 28 }}>{inst.icon}</span>
-              <div>
-                <div style={{ fontSize: 22, fontWeight: 500, color: T_.text }}>{inst.name}</div>
-                <div style={{ fontSize: 13, color: activeCat?.color || T_.textDim, marginTop: 2 }}>{activeCat?.label}</div>
-              </div>
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>{inst.name}</div>
+              <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>{activeCat?.label}</div>
             </div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{inst.subtitle}</div>
           </div>
