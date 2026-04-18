@@ -17,7 +17,7 @@ const AGENTS_DIR = path.join(require('os').homedir(), '.claude', 'agents');
 
 // UI metadata — color, usage example, mode, sort order
 const UI_META = {
-  'verifier':             { color: '#34d673', usage: '@verifier check the Restructuring.jsx changes', mode: 'Read-only', sort: 0 },
+  'codeverifier':         { color: '#34d673', usage: '@codeverifier check the Restructuring.jsx changes', mode: 'Read-only', sort: 0 },
   'fact-checker':         { color: '#70b0fa', usage: '@fact-checker check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 1 },
   'fact-disputer':        { color: '#f87171', usage: '@fact-disputer check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 2 },
   'fact-check-reconciler':{ color: '#f5a623', usage: '@fact-check-reconciler reconcile the results above', mode: 'Read-only. Runs after both fact agents return.', sort: 3 },

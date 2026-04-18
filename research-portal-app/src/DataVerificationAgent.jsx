@@ -54,9 +54,9 @@ const CLI_TOOLS = [
 
 const AGENTS = [
   {
-    name: "verifier", color: "#34d673",
+    name: "codeverifier", color: "#34d673",
     desc: "Code correctness — syntax, build, structure, dead code, broken references",
-    usage: "@verifier check the Restructuring.jsx changes",
+    usage: "@codeverifier check the Restructuring.jsx changes",
     tools: "Read, Bash, Grep, Glob", mode: "Read-only",
   },
   {
@@ -217,7 +217,7 @@ export default function DataVerificationAgent() {
           <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, marginBottom: 6 }}>Recommended Workflow</div>
           <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.8 }}>
             <strong>1.</strong> Update a tab → <span style={{ fontFamily: "monospace", color: "#14B8A6" }}>@refresh</span><br/>
-            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: "#34d673" }}>@verifier</span><br/>
+            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: "#34d673" }}>@codeverifier</span><br/>
             <strong>3.</strong> After research content → <span style={{ fontFamily: "monospace", color: "#70b0fa" }}>@fact-checker</span> + <span style={{ fontFamily: "monospace", color: "#f87171" }}>@fact-disputer</span> in parallel<br/>
             <strong>4.</strong> Then → <span style={{ fontFamily: "monospace", color: "#f5a623" }}>@fact-check-reconciler</span> for final verdicts<br/>
             <strong>5.</strong> Fix CONFLICT / LIKELY WRONG items, re-verify<br/>
