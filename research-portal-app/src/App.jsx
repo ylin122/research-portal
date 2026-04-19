@@ -825,7 +825,7 @@ function AppContent() {
         )}
 
         {/* AUDIT LOG */}
-        {view.type === "auditLog" && <AuditLog companies={companies} fieldsMap={fieldsMap} notesMap={notesMap} newsCache={newsCache} sectorNotes={sectorNotes} />}
+        {view.type === "auditLog" && <AuditLog />}
 
         {/* IDEA TRACKER — removed */}
 
