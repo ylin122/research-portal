@@ -27,7 +27,7 @@ const AI_LABS_DATA = {
     ],
     computeCurrent: { value: "~1.9 GW", date: "Dec 2025", source: "CFO Sarah Friar blog (Jan 2026)" },
     computeSource: "Friar (2023-2025 actual), Stargate 10 GW commitment, Sacra: 26 GW total contracted",
-    users: { paying: "9M+ business users, 910M WAU", trend: "WAU +30% in 5 months" },
+    users: { paying: "9M+ business users, 900M WAU", trend: "WAU +30% in 5 months" },
     mau: [
       { q: "Q1 23", value: 100 }, { q: "Q2 23", value: 180 }, { q: "Q3 23", value: 180 }, { q: "Q4 23", value: 200 },
       { q: "Q1 24", value: 250 }, { q: "Q2 24", value: 350 }, { q: "Q3 24", value: 500 }, { q: "Q4 24", value: 600 },
@@ -38,7 +38,7 @@ const AI_LABS_DATA = {
     mauSource: "OpenAI disclosures, Sensor Tower, Similarweb. Q1 26E: analyst consensus.",
     burn: "$14B projected loss 2026 \u00b7 Cash flow positive ~2030",
     equity: [
-      { ticker: "MSFT", name: "Microsoft", exposure: "49% economic interest (declining), $250B Azure deal, board seat", color: "#3B82F6" },
+      { ticker: "MSFT", name: "Microsoft", exposure: "~27% equity stake (post-restructuring Oct 2025), $250B Azure deal, board seat", color: "#3B82F6" },
       { ticker: "AMZN", name: "Amazon", exposure: "$50B investor, $138B AWS deal, 2 GW Trainium", color: "#F59E0B" },
       { ticker: "NVDA", name: "Nvidia", exposure: "$30B investor, primary GPU supplier, Vera Rubin commitment", color: "#10B981" },
       { ticker: "ORCL", name: "Oracle", exposure: "~$300B Stargate cloud deal (2027-2031), ~$60B/yr", color: "#EF4444" },
@@ -49,7 +49,7 @@ const AI_LABS_DATA = {
       { category: "Chips", partners: "Nvidia (Vera Rubin), Broadcom (custom ASIC via TSMC), Cerebras (WSE-3), AMD (6 GW)", color: "#F59E0B" },
       { category: "Power", partners: "Stargate: 10 GW across 6+ US sites (Abilene TX, OH, WI, TX)", color: "#10B981" },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD GPU HBM packaging", color: "#A855F7" },
-      { category: "Distribution", partners: "ChatGPT (910M WAU), Copilot (via MSFT), Apple Siri (in talks)", color: "#EF4444" },
+      { category: "Distribution", partners: "ChatGPT (900M WAU), Copilot (via MSFT), Apple Siri (in talks)", color: "#EF4444" },
     ],
   },
   Anthropic: {
@@ -123,7 +123,7 @@ const AI_LABS_DATA = {
     ],
     mauLabel: "Gemini App MAU (M)",
     mauSource: "Alphabet earnings (Q3-Q4 2025), court docs (Apr 2025), Sensor Tower, SQ Magazine.",
-    burn: "Profitable \u00b7 GOOGL operating income $112B (2025)",
+    burn: "Profitable \u00b7 GOOGL operating income $129B (2025)",
     equity: [
       { ticker: "GOOGL", name: "Alphabet (direct)", exposure: "100% of DeepMind embedded in GOOGL. You hold 346 shares ($102K)", color: "#3B82F6" },
     ],
@@ -206,7 +206,7 @@ const AI_LABS_DATA = {
     ],
     mauLabel: "Meta AI MAU (M)",
     mauSource: "Zuckerberg shareholder mtg (Q1 2025: 1B MAU). Analyst estimates for subsequent quarters. Embedded in FB/IG/WA.",
-    burn: "Profitable \u00b7 $62.4B net income (2025) \u00b7 Op. margin ~40%",
+    burn: "Profitable \u00b7 $60.5B net income (2025) \u00b7 Op. margin ~41%",
     equity: [
       { ticker: "META", name: "Meta Platforms", exposure: "Public (NASDAQ: META) \u00b7 You hold shares directly", color: "#3B82F6" },
       { ticker: "NVDA", name: "Nvidia", exposure: "Largest GPU customer globally. Tens of $B multi-year deal (Feb 2026)", color: "#10B981" },
@@ -216,7 +216,7 @@ const AI_LABS_DATA = {
     ecosystem: [
       { category: "Chips", partners: "Nvidia (millions of Blackwell/Rubin GPUs), AMD (6 GW Instinct), Google TPU (in talks), MTIA (custom inference)", color: "#F59E0B" },
       { category: "Cloud", partners: "CoreWeave ($35.2B total, GB300, thru 2032 — expanded $21B Apr 2026), Nebius ($27B 5-yr, Vera Rubin), Google Cloud ($10B+ 6-yr), primarily on-prem DCs", color: "#3B82F6" },
-      { category: "Power", partners: "Hyperion (LA, 5 GW, nuclear-backed), 30 DCs (26 in US), $600B US investment by 2028", color: "#10B981" },
+      { category: "Power", partners: "Hyperion (Louisiana, 5 GW, nuclear-backed), 30 DCs (26 in US), $600B US investment by 2028", color: "#10B981" },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD HBM packaging", color: "#A855F7" },
       { category: "Distribution", partners: "Facebook (3B+), Instagram (2B+), WhatsApp (2.5B+), Threads, Meta AI (1.4B MAU)", color: "#EF4444" },
     ],
@@ -232,8 +232,8 @@ const AI_LABS_NEWS = [
   { date: "Apr 6", text: "Anthropic tops $30B ARR, surpassing OpenAI (~$25B) — up from $19B (Mar) and $9B (end 2025). 1,000+ customers at $1M+/yr (doubled from Feb). Claude Code ARR >$2.5B. Simultaneously announces expanded Google/Broadcom compute deal: ~3.5 GW of next-gen TPU capacity (online 2027), adding to 1 GW already live. Largest compute commitment by any AI lab. US-sited. AWS remains primary cloud partner (Bloomberg, Anthropic)." },
   { date: "Apr 6", text: "Broadcom confirms expanded long-term deal with Google — custom TPU design + networking through 2031. Anthropic named as key customer for the new TPU capacity. Deal is INCREMENTAL to existing Broadcom-Google relationship (TPU co-design ongoing), but significantly larger in scale (multi-GW). AWS relationship with Anthropic unchanged (CNBC, Broadcom IR)." },
   { date: "Mar 31", text: "OpenAI closes $122B round at $852B valuation — largest private funding in history. Amazon ($50B), Nvidia ($30B), SoftBank ($30B), $3B from individual investors via banks. Now valued higher than Intel + AMD + Qualcomm combined (Bloomberg)." },
-  { date: "Mar 30", text: "Mistral AI raises $830M debt for Paris data center — first European AI lab to self-host training. Total raised $2.6B+. Codestral (code) + Pixtral (vision) gaining traction (TechCrunch)." },
-  { date: "Mar 29", text: "Anthropic in IPO talks as soon as Q4 2026 — targeting $200B+ public valuation. Revenue tripling in 2026. CNBC reports Morgan Stanley + Goldman Sachs advising (CNBC, Bloomberg)." },
+  { date: "Mar 30", text: "Mistral AI raises $830M debt for Paris data center — first European AI lab to self-host training. Total raised $2.9B+. Codestral (code) + Pixtral (vision) gaining traction (TechCrunch)." },
+  { date: "Mar 29", text: "Anthropic in IPO talks as soon as Q4 2026 — targeting $400-500B public valuation. Revenue tripling in 2026. Goldman Sachs + JPMorgan as leads; Morgan Stanley in early discussions (CNBC, Bloomberg)." },
   { date: "Mar 29", text: "OpenAI kills Sora — video generation product shuttered. Team reassigned to core research. Usage was 'far below expectations.' Focus shifts to enterprise + reasoning (The Information)." },
   { date: "Mar 28", text: "Anthropic Claude paid subscribers more than double YTD — Claude Code $2.5B+ ARR, Claude.ai Pro/Team surging. Enterprise now >60% of revenue. Agentic workflows driving adoption (Bloomberg)." },
   { date: "Mar 28", text: "Apple opens Siri to every AI — new SDK lets ChatGPT, Claude, Gemini plug directly into Siri via 'AI Extensions.' No default lock-in. Developers can ship AI features to 2B+ Apple devices (TechCrunch)." },
@@ -247,7 +247,7 @@ const AI_LABS_NEWS = [
   { date: "Mar 17", text: "NVIDIA GTC: $1T order forecast through 2027. Vera Rubin platform (7 chips) for agentic AI. Groq 3 LPU integrated. Feynman (2028) previewed (CNBC, NVIDIA PR)." },
   { date: "Mar 17", text: "OpenAI developing desktop 'superapp' combining all products into single platform — direct competition with Google and Microsoft (TipRanks)." },
   { date: "Mar 16", text: "Meta-Nebius $27B five-year deal — $12B dedicated + $15B elastic compute. First large-scale Vera Rubin deployment. Meta 2026 capex $115-135B (Bloomberg)." },
-  { date: "Mar 13", text: "Google closes $32B Wiz acquisition — largest deal in Google history. Cybersecurity integration into Google Cloud (TechCrunch)." },
+  { date: "Mar 11", text: "Google closes $32B Wiz acquisition — largest deal in Google history. Cybersecurity integration into Google Cloud (TechCrunch)." },
   { date: "Mar 12", text: "Meta AI surpasses 1.4B MAU. Llama 4 Maverick released open-source. Anthropic raises $30B Series G at $380B valuation (company filings)." },
   { date: "Mar 5", text: "Marvell Q4 earnings beat — Data Center revenue 2x YoY. Custom AI accelerator business expanding (Google, Amazon, MSFT customers)." },
 ];
@@ -265,7 +265,7 @@ const GPU_ASIC_NEWS = [
   { date: "Mar 20", text: "SMCI co-founder charged with smuggling $2.5B in NVIDIA-powered servers to China. SMCI -33%. DOJ's highest-profile export control case. Liaw arrested, resigned from board (Bloomberg, CNBC)." },
   { date: "Mar 18", text: "Micron Q2 FY26: Revenue $23.86B (3x YoY, beat by $3.8B). EPS $12.20 vs $9.31 est. Q3 guide $33.5B (+200% YoY). HBM4 volume production started for Vera Rubin (CNBC)." },
   { date: "Mar 17", text: "GTC 2026 keynote: Jensen Huang projects $1T in GPU orders through 2027. Vera Rubin NVL72 — 10x inference perf/watt vs Blackwell. 7 chips in full production (NVIDIA PR)." },
-  { date: "Mar 17", text: "NVIDIA acquires Groq for ~$20B — Groq 3 LPU integrated into Vera Rubin for inference acceleration. Ships H2 2026. Groq founders join NVIDIA (CNBC, DCK)." },
+  { date: "Mar 17", text: "NVIDIA licenses Groq LPU technology for ~$20B (announced Dec 2025) — Groq 3 LPU integrated into Vera Rubin for inference acceleration. Ships H2 2026. Key Groq leadership joins NVIDIA; Groq remains independent entity (CNBC, DCK)." },
   { date: "Mar 17", text: "GTC: Feynman architecture (2028) previewed — Rosa CPU, LP40 LPU, BlueField-5, dual copper + co-packaged optics. Next after Vera Rubin." },
   { date: "Mar 17", text: "GTC: OpenClaw crosses 100K GitHub stars, 2M visitors in first week. Huang calls it 'most popular open source project in history of humanity.'" },
   { date: "Mar 16", text: "Vertiv role in Vera Rubin DSX AI Factory reference design confirmed. Power/cooling infrastructure for next-gen NVIDIA data centers (Investing.com)." },
@@ -341,7 +341,7 @@ const AI_CAPEX_DATA = {
       ],
       spendingOn: "Azure AI DCs, Nvidia GPUs (GB200/Vera Rubin for OpenAI), Maia custom chips, OpenAI hosting",
       news: "2026 capex tracking ~$120B+ (no full-year guide yet; Q2 FY2026 was $37.5B). Capital intensity at 45% of revenue. $250B Azure-OpenAI deal. $5B Anthropic investment. CoreWeave: ~$10B commitment but declined $12B expansion option (Mar 2025); signed $19.4B Nebius deal (Oct 2025). Diversifying away from CoreWeave dependency ($33B+ total neocloud commitments).",
-      partners: "OpenAI (49% economic interest), Nvidia, Anthropic ($5B), AMD, Nebius ($19.4B 5-yr), CoreWeave (~$10B, declining), Lambda",
+      partners: "OpenAI (~27% equity stake), Nvidia, Anthropic ($5B), AMD, Nebius ($19.4B 5-yr), CoreWeave (~$10B, declining), Lambda",
     },
     { name: "Meta Platforms", ticker: "META", color: "#EF4444",
       capex: [
@@ -500,10 +500,10 @@ const GPU_DATA = [
   },
   {
     gpu: "Vera Rubin", gen: "Rubin", year: 2026, node: "TSMC 3nm",
-    vram: 288, hbmType: "HBM4", bw: 13.0, tdp: 1800, fp16: 0, fp8: 0, nvlink: 3600,
+    vram: 288, hbmType: "HBM4", bw: 22.0, tdp: 1800, fp16: 0, fp8: 0, nvlink: 3600,
     price: { unit: 0, cloud: [] },
     perf: { trainVsA100: "TBD", inferVsA100: "TBD", tokPerSec: "TBD", tokPerWatt: "TBD", tokPerDollar: "TBD" },
-    status: "H2 2026 deployment. 336B transistors. 10x inference cost reduction vs Blackwell. HBM4, NVL144 rack (3.6 ExaFLOPS FP4). Meta $27B Nebius deal for Vera Rubin (Mar 2026). Rubin Ultra 2027.",
+    status: "H2 2026 deployment. 336B transistors. 10x inference cost reduction vs Blackwell. HBM4, NVL72 rack (3.6 ExaFLOPS FP4). Meta $27B Nebius deal for Vera Rubin (Mar 2026). Rubin Ultra 2027.",
   },
 ];
 
@@ -541,7 +541,7 @@ const LLM_PRICING_DATA = {
     { lab: "OpenAI", model: "GPT-4o", date: "2024-05", input: 5.00, output: 15.00, ctx: 128, tier: "flagship", color: "#10B981" },
     { lab: "OpenAI", model: "GPT-4o mini", date: "2024-07", input: 0.15, output: 0.60, ctx: 128, tier: "value", color: "#10B981" },
     { lab: "OpenAI", model: "GPT-4o (v2)", date: "2024-10", input: 2.50, output: 10.00, ctx: 128, tier: "flagship", color: "#10B981" },
-    { lab: "OpenAI", model: "GPT-5", date: "2025-03", input: 2.00, output: 8.00, ctx: 128, tier: "flagship", color: "#10B981" },
+    { lab: "OpenAI", model: "GPT-5", date: "2025-08", input: 1.25, output: 10.00, ctx: 128, tier: "flagship", color: "#10B981" },
     { lab: "OpenAI", model: "GPT-5.2", date: "2025-09", input: 1.75, output: 14.00, ctx: 128, tier: "flagship", color: "#10B981" },
     { lab: "OpenAI", model: "GPT-5.4", date: "2026-03", input: 2.50, output: 10.00, ctx: 1000, tier: "flagship", color: "#10B981" },
     // Anthropic
@@ -551,7 +551,7 @@ const LLM_PRICING_DATA = {
     { lab: "Anthropic", model: "Claude 3 Haiku", date: "2024-03", input: 0.25, output: 1.25, ctx: 200, tier: "value", color: "#F59E0B" },
     { lab: "Anthropic", model: "Claude 3.5 Sonnet", date: "2024-06", input: 3.00, output: 15.00, ctx: 200, tier: "flagship", color: "#F59E0B" },
     { lab: "Anthropic", model: "Claude 3.5 Haiku", date: "2024-11", input: 1.00, output: 5.00, ctx: 200, tier: "value", color: "#F59E0B" },
-    { lab: "Anthropic", model: "Claude Opus 4", date: "2025-03", input: 15.00, output: 75.00, ctx: 200, tier: "flagship", color: "#F59E0B" },
+    { lab: "Anthropic", model: "Claude Opus 4", date: "2025-05", input: 15.00, output: 75.00, ctx: 200, tier: "flagship", color: "#F59E0B" },
     { lab: "Anthropic", model: "Claude Sonnet 4", date: "2025-05", input: 3.00, output: 15.00, ctx: 200, tier: "mid", color: "#F59E0B" },
     { lab: "Anthropic", model: "Claude Opus 4.5", date: "2025-08", input: 5.00, output: 25.00, ctx: 200, tier: "flagship", color: "#F59E0B" },
     { lab: "Anthropic", model: "Claude Sonnet 4.5", date: "2025-09", input: 3.00, output: 15.00, ctx: 1000, tier: "mid", color: "#F59E0B" },
@@ -665,7 +665,7 @@ const SEMI_CAPEX_DATA = {
       ],
       breakdown: "85-90% DRAM, of which HBM ~2.5T KRW. 10% NAND",
       supplyTimeline: "HBM3E: volume ramp 2024, sold out through 2026. HBM4: capacity expansion at M15x fab, equipment prep Q1 2026, Union Fab start Q1 2027. Current 160K wafers/mo HBM output.",
-      notes: "53% HBM market share (Q2 2025). HBM4 specs raised by Nvidia to >11 Gbps. 2023 was negative gross margin from memory crash.",
+      notes: "53% HBM market share (Q3 2025). HBM4 specs raised by Nvidia to >11 Gbps. 2023 was negative gross margin from memory crash.",
     },
     { name: "Micron", ticker: "MU", segment: "Memory (HBM + DRAM)", color: "#8B5CF6",
       revenue: [
@@ -733,9 +733,9 @@ const CHIP_ROADMAP = [
   { vendor: "NVIDIA", type: "GPU", chip: "A100", arch: "Ampere", node: "7nm", year: 2020, status: "EOL", vram: 80, hbm: "HBM2e", bw: 2.0, tdp: 400, fp8: 0, fp4: 0, system: "DGX A100", notes: "Workhorse of GPT-3/4 era. 4M+ shipped. EOL but still widely deployed for inference.", color: "#64748B" },
   { vendor: "NVIDIA", type: "GPU", chip: "H100", arch: "Hopper", node: "4N", year: 2022, status: "Shipping", vram: 80, hbm: "HBM3", bw: 3.35, tdp: 700, fp8: 1979, fp4: 0, system: "DGX H100 / HGX H100", notes: "4M shipped thru Oct '25 (Jensen). Mainstream for training. Being superseded by Blackwell.", color: "#3B82F6" },
   { vendor: "NVIDIA", type: "GPU", chip: "H200", arch: "Hopper", node: "4N", year: 2024, status: "Shipping", vram: 141, hbm: "HBM3e", bw: 4.8, tdp: 700, fp8: 1979, fp4: 0, system: "HGX H200", notes: "Bridge product. 76% more VRAM than H100. Premium inference chip.", color: "#60A5FA" },
-  { vendor: "NVIDIA", type: "GPU", chip: "B200", arch: "Blackwell", node: "4NP", year: 2025, status: "Shipping", vram: 192, hbm: "HBM3e", bw: 8.0, tdp: 1000, fp8: 4500, fp4: 10000, system: "GB200 NVL72", notes: "3M+ shipped thru Oct '25. Sold out through mid-2026. Dual-die design.", color: "#10B981" },
+  { vendor: "NVIDIA", type: "GPU", chip: "B200", arch: "Blackwell", node: "4NP", year: 2025, status: "Shipping", vram: 192, hbm: "HBM3e", bw: 8.0, tdp: 1000, fp8: 4500, fp4: 9000, system: "GB200 NVL72", notes: "6M Blackwell shipped thru Oct '25 (Jensen). Sold out through mid-2026. Dual-die design.", color: "#10B981" },
   { vendor: "NVIDIA", type: "GPU", chip: "B300", arch: "Blackwell Ultra", node: "4NP", year: 2025, status: "Shipping", vram: 288, hbm: "HBM3e 12-Hi", bw: 8.0, tdp: 1200, fp8: 0, fp4: 15000, system: "GB300 NVL72", notes: "Shipping since Jan 2026. 1.5x B200 FP4. 288GB via 12-Hi stacks. CX-8 NIC (800G). First commercial deployment: CoreWeave (Jul 2025). Used for OpenAI Tranche 3 and Meta $35.2B deal.", color: "#059669" },
-  { vendor: "NVIDIA", type: "GPU", chip: "VR200 (Vera Rubin)", arch: "Rubin", node: "3nm", year: 2026, status: "H2 2026", vram: 288, hbm: "HBM4", bw: 13.0, tdp: 1800, fp8: 0, fp4: 50000, system: "VR200 NVL144", notes: "In production (Jensen, CES 2026). Mass production late Q2 2026, rack assembly Q3 2026. ~5-7K racks H2 2026. 3.3x B300 compute. HBM4. NVLink 6. Vera CPU (88-core Arm). 3.6 EFLOPS FP4/rack.", color: "#F59E0B" },
+  { vendor: "NVIDIA", type: "GPU", chip: "VR200 (Vera Rubin)", arch: "Rubin", node: "3nm", year: 2026, status: "H2 2026", vram: 288, hbm: "HBM4", bw: 22.0, tdp: 1800, fp8: 0, fp4: 50000, system: "VR200 NVL72", notes: "In production (Jensen, CES 2026). Mass production late Q2 2026, rack assembly Q3 2026. ~5-7K racks H2 2026. 3.3x B300 compute. HBM4. NVLink 6. Vera CPU (88-core Arm). 3.6 EFLOPS FP4/rack.", color: "#F59E0B" },
   { vendor: "NVIDIA", type: "GPU", chip: "VR300 (Rubin Ultra)", arch: "Rubin Ultra", node: "3nm", year: 2027, status: "H2 2027", vram: 1024, hbm: "HBM4e 16-Hi", bw: 8.0, tdp: 3600, fp8: 0, fp4: 100000, system: "VR300 NVL576 (Kyber)", notes: "21x GB200 NVL72 perf. 144 GPUs per Kyber rack. NVLink 7. 4-die GPU. 1TB HBM4e. 15 EFLOPS FP4/rack.", color: "#D97706" },
   { vendor: "NVIDIA", type: "GPU", chip: "Feynman", arch: "Feynman", node: "TSMC A16 (1.6nm)", year: 2028, status: "Announced", vram: 0, hbm: "HBM4e/HBM5 (proprietary)", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "TBD", notes: "3D die stacking (first stacked GPU dies), custom HBM memory variant, TSMC A16 1.6nm. Rosa CPU. LP40 LPU (Groq). BlueField-5. Silicon photonics (optical NVLink). Previewed at GTC 2026 (Mar 2026).", color: "#94A3B8" },
   // AMD GPUs
@@ -1316,7 +1316,7 @@ export default function IndustryResearch({ initialTab }) {
             <tbody>
               {[
                 { metric: "Valuation", vals: ["$852B", "$380B", "GOOGL $3.76T", "$230B", "META $1.5T"], bold: true },
-                { metric: "Latest ARR", vals: ["$25B+ (Apr '26)", "$30B (Apr '26)", "$62B (Cloud)", "~$1B", "$201B (Rev)"], bold: true },
+                { metric: "Latest ARR", vals: ["$25B+ (Apr '26)", "$30B (Apr '26)", "$71B (Cloud)", "~$1B", "$201B (Rev)"], bold: true },
                 { metric: "2026E ARR", vals: ["$50B", "$26B", "$78B (Cloud)", "$2B", "$220B (Rev)"], bold: false },
                 { metric: "MAU (Latest)", vals: ["~900M WAU", "~40M", "750M (Gemini)", "~35M (Grok)", "1.4B (Meta AI)"], bold: true },
                 { metric: "Paying Users", vals: ["50M+ subs", "300K+ biz", "120K+ enterprise", "X Premium", "3.54B DAP"], bold: false },
@@ -1604,7 +1604,7 @@ export default function IndustryResearch({ initialTab }) {
           const supplyChains = {
             OpenAI: {
               layers: [
-                { label: "AI Lab", items: [{ name: "OpenAI", sub: "$25B ARR · 910M WAU", color: "#10B981" }] },
+                { label: "AI Lab", items: [{ name: "OpenAI", sub: "$25B ARR · 900M WAU", color: "#10B981" }] },
                 { label: "Cloud / Compute", items: [
                   { name: "Microsoft Azure", sub: "$250B (2025-2032)", color: "#3B82F6", link: "MSFT" },
                   { name: "Oracle Cloud", sub: "$300B (2027-2031)", color: "#EF4444", link: "ORCL" },
@@ -1626,7 +1626,7 @@ export default function IndustryResearch({ initialTab }) {
                   { name: "MGX (Abu Dhabi)", sub: "Stargate co-funder", color: "#64748B" },
                 ]},
                 { label: "Distribution", items: [
-                  { name: "ChatGPT", sub: "910M WAU · $200/mo Pro", color: "#10B981" },
+                  { name: "ChatGPT", sub: "900M WAU · $200/mo Pro", color: "#10B981" },
                   { name: "Microsoft Copilot", sub: "M365, GitHub, Azure AI", color: "#3B82F6", link: "MSFT" },
                   { name: "Apple", sub: "Siri integration (in talks)", color: "#94A3B8", link: "AAPL" },
                 ]},
@@ -1693,7 +1693,7 @@ export default function IndustryResearch({ initialTab }) {
             },
             Google: {
               layers: [
-                { label: "AI Lab", items: [{ name: "Google DeepMind", sub: "Gemini · $62B Cloud ARR", color: "#3B82F6" }] },
+                { label: "AI Lab", items: [{ name: "Google DeepMind", sub: "Gemini · $71B Cloud ARR", color: "#3B82F6" }] },
                 { label: "Cloud Platform", items: [
                   { name: "Google Cloud (GCP)", sub: "$93B capex 2026 · 7.5+ GW fleet", color: "#3B82F6", link: "GOOGL" },
                 ]},
@@ -2819,7 +2819,7 @@ export default function IndustryResearch({ initialTab }) {
           <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Delivery &amp; Volume Expectations — Current &amp; Upcoming</div>
           {(() => {
             const deliveryData = [
-              { vendor: "NVIDIA", chip: "Vera Rubin (VR200)", status: "H2 2026", shipDate: "2026-07", vol2025: "—", vol2026: "5.7M units (JPM)", customers: "OpenAI (1st GW), all hyperscalers", notes: "HBM4 288GB · TSMC 3nm · NVL144. First GW for OpenAI H2 2026.", color: "#8B5CF6", sortOrder: 1 },
+              { vendor: "NVIDIA", chip: "Vera Rubin (VR200)", status: "H2 2026", shipDate: "2026-07", vol2025: "—", vol2026: "5.7M units (JPM)", customers: "OpenAI (1st GW), all hyperscalers", notes: "HBM4 288GB · TSMC 3nm · NVL72. First GW for OpenAI H2 2026.", color: "#8B5CF6", sortOrder: 1 },
               { vendor: "NVIDIA", chip: "Blackwell (B200/GB200)", status: "Shipping", shipDate: "2025-03", vol2025: "5.2M units", vol2026: "1.8M (wind-down)", customers: "MSFT, META, AMZN, GOOGL, ORCL", notes: "Sold out thru mid-2026. 3.6M backlog. 25-35K NVL72 racks in 2025.", color: "#10B981", sortOrder: 2 },
               { vendor: "NVIDIA", chip: "Rubin Ultra", status: "H2 2027", shipDate: "2027-07", vol2025: "—", vol2026: "—", customers: "TBD", notes: "Next-gen after Vera Rubin. Annual cadence.", color: "#64748B", sortOrder: 0 },
               { vendor: "AMD", chip: "MI450X Helios", status: "H2 2026", shipDate: "2026-07", vol2025: "—", vol2026: "Ramp begins", customers: "OpenAI (6 GW), Meta (6 GW)", notes: "HBM4 · Full-rack system. $90B OAI + $60-100B Meta deals.", color: "#EF4444", sortOrder: 1 },
@@ -3039,7 +3039,7 @@ export default function IndustryResearch({ initialTab }) {
                 <Area type="monotone" dataKey="GB200 NVL72" stroke="#F59E0B" strokeWidth={2} fill={`url(#demand-grad-GB200NVL72)`} dot={{ r: 4, fill: "#F59E0B" }} connectNulls />
               </AreaChart>
             </ResponsiveContainer>
-            <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 8, fontStyle: "italic" }}>Sources: Epoch AI Chip Sales DB, TrendForce, Jensen Huang (4M Hoppers + 3M Blackwell thru Oct '25), SemiAnalysis. A100 = cumulative installed; Hopper/Blackwell = cumulative shipped.</div>
+            <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 8, fontStyle: "italic" }}>Sources: Epoch AI Chip Sales DB, TrendForce, Jensen Huang (4M Hoppers + 6M Blackwell thru Oct '25), SemiAnalysis. A100 = cumulative installed; Hopper/Blackwell = cumulative shipped.</div>
           </div>
 
           {/* GPU Specs Comparison Table */}
@@ -3116,7 +3116,7 @@ export default function IndustryResearch({ initialTab }) {
                 { label: "Blackwell Premium", text: "B200/GB200 commands 3x H100 pricing but delivers 15x inference throughput — net 5x better cost per token.", color: "#10B981" },
                 { label: "Memory Wall", text: "HBM3e prices rose 40-60% in 2025-2026 due to AI demand. This flows into GPU costs — AMD warned of 2026 hikes.", color: "#EF4444" },
                 { label: "Power Scaling", text: "TDP rose from 400W (A100) → 700W (H100) → 1200W (GB200). Data center power is now the binding constraint.", color: "#F59E0B" },
-                { label: "Vera Rubin (2026)", text: "HBM4 at 288 GB, 13 TB/s bandwidth, TSMC 3nm. NVL144 rack at 3.6 ExaFLOPS FP4. Will reset the price curve.", color: "#8B5CF6" },
+                { label: "Vera Rubin (2026)", text: "HBM4 at 288 GB, 22 TB/s bandwidth, TSMC 3nm. NVL72 rack at 3.6 ExaFLOPS FP4. Will reset the price curve.", color: "#8B5CF6" },
               ].map((obs, i) => (
                 <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                   <div style={{ minWidth: 110, padding: "5px 10px", borderRadius: 6, background: `${obs.color}15`, border: `1px solid ${obs.color}40`, fontSize: 12, fontWeight: 700, color: obs.color, textAlign: "center" }}>
