@@ -97,7 +97,7 @@ async function fetchNews(name) {
 }
 
 // ─── App ──────────────────────────────────────────────
-const APP_PASS = import.meta.env.VITE_APP_PASSWORD || "";
+const APP_PASS = "Ylin6274!";
 
 export default function App() {
   const [authed, setAuthed] = useState(() => sessionStorage.getItem("rp_auth") === "1");

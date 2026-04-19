@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 
+// Updated 2026-04-18
 const fmt = (n) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 const fmtPct = (n) => (n * 100).toFixed(1) + "%";
 const fmtShares = (n) => n % 1 === 0 ? n.toLocaleString() : n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 3 });
@@ -17,7 +18,7 @@ const AI_LABS_DATA = {
       { year: 2026, value: 50, est: true }, { year: 2027, value: 100, est: true }, { year: 2028, value: 150, est: true },
       { year: 2029, value: 200, est: true }, { year: 2030, value: 280, est: true },
     ],
-    arrCurrent: { value: "$25B+ ARR", date: "Mar 2026", source: "Bloomberg (Mar 31). Crossed $25B end of Feb. $122B round closed at $852B val." },
+    arrCurrent: { value: "$24-25B ARR", date: "Apr 2026", source: "Bloomberg (Mar 31). $2B/mo revenue. $122B round closed at $852B val. 900M WAU, 50M paying subs. Surpassed by Anthropic ($30B) in Apr." },
     arrSource: "2023-2025: CFO Sarah Friar (Jan 2026 blog). 2027E: Altman ($100B). 2030E: CNBC ($280B high).",
     compute: [
       { year: 2023, value: 0.2 }, { year: 2024, value: 0.6 }, { year: 2025, value: 1.9 },
@@ -60,8 +61,8 @@ const AI_LABS_DATA = {
       { year: 2026, value: 26, est: true }, { year: 2027, value: 45, est: true }, { year: 2028, value: 70, est: true },
       { year: 2029, value: 85, est: true }, { year: 2030, value: 100, est: true },
     ],
-    arrCurrent: { value: "$30B+ ARR", date: "Apr 2026", source: "Bloomberg/Anthropic (Apr 6, 2026). Up from $19B (Mar), $14B (Feb), $9B (end 2025). Surpassed OpenAI (~$24-25B)." },
-    arrSource: "2024: $1B ARR exit (company). 2025: $9B ARR exit (SaaStr). 2026E: $20-26B (TechCrunch). 2028E: $70B bull (The Information).",
+    arrCurrent: { value: "$30B+ ARR", date: "Apr 2026", source: "Bloomberg/Anthropic (Apr 6, 2026). Up from $19B (Mar), $14B (Feb), $9B (end 2025). Surpassed OpenAI (~$24-25B). 80% from 300K+ biz customers." },
+    arrSource: "2024: $1B ARR exit (company). 2025: $9B ARR exit (SaaStr). 2026E: $20-26B (TechCrunch). 2028E: $70B bull (The Information). Claude Code ARR $2.5B+.",
     compute: [
       { year: 2023, value: 0.05 }, { year: 2024, value: 0.15 }, { year: 2025, value: 0.5 },
       { year: 2026, value: 1.5, est: true }, { year: 2027, value: 3, est: true }, { year: 2028, value: 5, est: true },
@@ -90,7 +91,7 @@ const AI_LABS_DATA = {
       { category: "Chips", partners: "Google TPU v7, AWS Trainium, Nvidia Grace Blackwell + Vera Rubin", color: "#F59E0B" },
       { category: "Power", partners: "Fluidstack ($50B own DCs — TX, NY), AWS Rainier (2.2 GW), Google TPU DCs", color: "#10B981" },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via TPU/GPU from cloud partners", color: "#A855F7" },
-      { category: "Distribution", partners: "Claude.ai, Claude Code ($2.5B ARR), API (300K+), Cowork", color: "#EF4444" },
+      { category: "Distribution", partners: "Claude.ai, Claude Code ($2.5B ARR), API (300K+), Cowork. Opus 4.7 released Apr 17.", color: "#EF4444" },
     ],
   },
   Google: {
@@ -137,7 +138,7 @@ const AI_LABS_DATA = {
   xAI: {
     name: "xAI", tagline: "Understanding the Universe",
     hq: "SF / Memphis, TN", founded: 2023, employees: "~200+", ceo: "Elon Musk",
-    valuation: { current: "$250B", date: "Feb 2026", series: "Series E ($20B, Jan 2026)", investors: "Valor, Fidelity, QIA, MGX, Nvidia, Cisco, Tesla ($2B)" },
+    valuation: { current: "$230B", date: "Jan 2026", series: "Series E ($20B, Jan 2026)", investors: "Valor, Stepstone, Fidelity, QIA, MGX, Baron, Nvidia, Cisco, Tesla ($2B)" },
     arr: [
       { year: 2023, value: 0 }, { year: 2024, value: 0.1 }, { year: 2025, value: 0.5 },
       { year: 2026, value: 2, est: true }, { year: 2027, value: 5, est: true }, { year: 2028, value: 12, est: true },
@@ -355,7 +356,7 @@ const AI_CAPEX_DATA = {
     },
   ],
   others: [
-    { rank: 6, name: "CoreWeave", ticker: "CRWV", capex2025: 14.9, capex2026: 33, capex2027: 45, status: "Public (IPO Mar 2025 at $40). FY2025 rev $5.1B (+167% YoY). $66.8B backlog. RPO $60.7B. Capex $14.9B (2025), guided $30-35B (2026). $19.6B total debt (post-Meta loan). 850 MW active, 1.7 GW target YE2026. 43 data centers. First to deploy GB200 (Feb 2025) & GB300 NVL72 (Jul 2025). Key customers: MSFT ($10B), OpenAI ($22.4B), Meta ($19.2B+), NVIDIA ($6.3B backstop). EBITDA $3.1B (FY2025).", color: "#06B6D4" },
+    { rank: 6, name: "CoreWeave", ticker: "CRWV", capex2025: 14.9, capex2026: 33, capex2027: 45, status: "Public (IPO Mar 2025 at $40). FY2025 rev $5.1B (+167% YoY). $88B revenue backlog. RPO $60.7B. Capex $14.9B (2025), guided $30-35B (2026). $19.6B total debt (post-Meta loan). 850 MW active, 1.7 GW target YE2026. 43 data centers. Key customers: MSFT ($10B), OpenAI ($22.4B), Meta ($35.2B total, expanded $21B Apr 2026 thru 2032), NVIDIA ($6.3B backstop). 2026 rev guide $12-13B.", color: "#06B6D4" },
     { rank: 7, name: "xAI (Musk)", ticker: "Private", capex2025: 18, capex2026: 25, capex2027: 30, status: "Colossus cluster: 555K GPUs ($18B). 2 GW capacity. Series E $20B. Acquired BY SpaceX Feb 2026 (wholly-owned sub). TERAFAB JV $20-25B (separate).", color: "#F97316" },
     { rank: 8, name: "Alibaba Cloud", ticker: "BABA", capex2025: 16, capex2026: 23, capex2027: 25, status: "RMB 380B (~$53B) committed over 3 yrs for AI & cloud. 35.8% China AI cloud share. Buying RTX 4090s for inference.", color: "#EF4444" },
     { rank: 9, name: "ByteDance / TikTok", ticker: "Private", capex2025: 15, capex2026: 23, capex2027: 25, status: "RMB 160B (~$23B) 2026 target. $14B earmarked for Nvidia AI chips. DCs in Malaysia, Indonesia, US.", color: "#84CC16" },
@@ -607,20 +608,20 @@ const SEMI_CAPEX_DATA = {
   companies: [
     { name: "TSMC", ticker: "TSM", segment: "Foundry", color: "#10B981",
       revenue: [
-        { year: 2022, value: 75.9 }, { year: 2023, value: 69.3 }, { year: 2024, value: 87.1 }, { year: 2025, value: 108 },
-        { year: 2026, value: 140, est: true }, { year: 2027, value: 165, est: true }, { year: 2028, value: 185, est: true }, { year: 2029, value: 200, est: true }, { year: 2030, value: 210, est: true },
+        { year: 2022, value: 75.9 }, { year: 2023, value: 69.3 }, { year: 2024, value: 88.3 }, { year: 2025, value: 122 },
+        { year: 2026, value: 159, est: true }, { year: 2027, value: 190, est: true }, { year: 2028, value: 215, est: true }, { year: 2029, value: 235, est: true }, { year: 2030, value: 250, est: true },
       ],
       grossMargin: [
-        { year: 2022, value: 59.6 }, { year: 2023, value: 54.4 }, { year: 2024, value: 56.1 }, { year: 2025, value: 58.0 },
-        { year: 2026, value: 57, est: true }, { year: 2027, value: 56, est: true }, { year: 2028, value: 56, est: true }, { year: 2029, value: 55, est: true }, { year: 2030, value: 55, est: true },
+        { year: 2022, value: 59.6 }, { year: 2023, value: 54.4 }, { year: 2024, value: 56.1 }, { year: 2025, value: 59.9 },
+        { year: 2026, value: 64, est: true }, { year: 2027, value: 62, est: true }, { year: 2028, value: 60, est: true }, { year: 2029, value: 59, est: true }, { year: 2030, value: 58, est: true },
       ],
       capex: [
         { year: 2022, value: 36.3 }, { year: 2023, value: 30.5 }, { year: 2024, value: 29.8 }, { year: 2025, value: 40.9 },
         { year: 2026, value: 54, est: true }, { year: 2027, value: 60, est: true }, { year: 2028, value: 62, est: true }, { year: 2029, value: 58, est: true }, { year: 2030, value: 55, est: true },
       ],
       breakdown: "70-80% advanced nodes (2nm/3nm), 10% specialty, 10-20% packaging (CoWoS/SoIC)",
-      supplyTimeline: "N3 ramp: capex in 2023 → volume supply H2 2024. N2 capex 2025 → risk production H2 2025, volume H1 2026. CoWoS capacity target: 150K wafers/mo by end 2026 (4x late-2024 levels). Arizona Fab 2 (N3/N2): capex 2024-2026 → production 2028.",
-      notes: "Record $54B guided for 2026 (+33% YoY). HPC now 58% of revenue. Revenue surpassed $100B in 2025 for first time. Margins sustainable at 56%+.",
+      supplyTimeline: "N3 ramp: capex in 2023 → volume supply H2 2024. N2 HVM Q4 2025, volume H1 2026. CoWoS capacity: 75K wpm end-2025, target 130K wpm end-2026. Arizona Fab 21 P1 in production (4nm), P2 construction (3nm, 2027), P3 groundbreaking (2nm/A16, 2027).",
+      notes: "Q1 2026: Rev $35.9B (+41% YoY), GM 66.2%, OM 58.1%. Record 4th consecutive quarter. HPC 61% of rev. FY2025 rev $122B. FY2026E rev ~$159B (+30%). Capex guided $52-56B (high end likely). Q2 guide $39-40.2B.",
     },
     { name: "Samsung Semi", ticker: "005930", segment: "Memory + Foundry", color: "#3B82F6",
       revenue: [
@@ -671,7 +672,7 @@ const SEMI_CAPEX_DATA = {
       ],
       breakdown: "Primarily 1-gamma node DRAM + TSV equipment for HBM. Exited consumer memory (Dec 2025).",
       supplyTimeline: "HBM4E samples shipping at 11 Gbps. 2026 HBM sold out. New ID1 fab (Idaho, US): capex 2024-2026, operational not before 2027. NY fab progressing.",
-      notes: "Q2 FY26 blowout: Rev $23.86B (+196%), EPS $12.20, GM 74.4%. Q3 guide $33.5B. Capex raised >$25B. HBM4 volume prod for Vera Rubin. Idaho fab mid-2027, NY $100B campus H2 2028. 2023 was -8% GM from memory crash.",
+      notes: "Q2 FY26 blowout: Rev $23.86B (+196%), EPS $12.20, GM 74.4%. Q3 guide $33.5B (GM ~81%, EPS $19.15). Capex raised >$25B. HBM4 volume prod for Vera Rubin. 30% dividend increase (Mar 2026). Idaho fab mid-2027, NY $100B campus H2 2028. 2023 was -8% GM from memory crash.",
     },
     { name: "Intel", ticker: "INTC", segment: "Foundry + IDM", color: "#06B6D4",
       revenue: [
@@ -704,8 +705,8 @@ const SEMI_CAPEX_DATA = {
         { year: 2026, value: 1.5, est: true }, { year: 2027, value: 2.0, est: true }, { year: 2028, value: 2.5, est: true }, { year: 2029, value: 2.5, est: true }, { year: 2030, value: 2.5, est: true },
       ],
       breakdown: "R&D-heavy, fab-light. Designs custom ASICs for Google (TPU), Meta (MTIA), OpenAI. Networking.",
-      supplyTimeline: "TPU v7 Ironwood co-designed with Google, ramping 2026. OpenAI custom ASIC in design, first silicon 2026-2027. Revenue from custom AI accelerators growing >3x YoY.",
-      notes: "Key ASIC partner for 3 of top 5 hyperscalers. AI rev run rate >$15B. 90% custom AI chip market. 77% gross margin — highest in semi. VMware acquisition boosted rev.",
+      supplyTimeline: "TPU v7 Ironwood co-designed with Google, ramping 2026. OpenAI custom ASIC in design, first silicon 2026-2027. Revenue from custom AI accelerators growing >3x YoY. Q2 FY26 AI rev guided $10.7B (+140% YoY).",
+      notes: "Q1 FY26: Rev $19.3B (+29%), AI rev $8.4B (+106%). Custom accelerators grew 140% YoY. 6 hyperscaler ASIC customers. $73B AI backlog. CEO: '$100B AI chip rev by 2027.' 77% gross margin — highest in semi.",
     },
   ],
   aggregate: [
@@ -754,18 +755,18 @@ const CHIP_ROADMAP = [
 
 const NEOCLOUD_DATA = [
   { name: "CoreWeave", ticker: "CRWV", status: "Public (Nasdaq, IPO Mar 2025 at $40)", valuation: "$55B+", founded: 2017, hq: "Livingston, NJ",
-    power: { connected: "850 MW", contracted: "3.1 GW" }, gpus: "250K+ (H100/H200/GB200/GB300)", backlog: "$66.8B",
-    keyClients: "Microsoft ($10B, 67% of FY2025 rev), OpenAI ($22.4B across 3 tranches), Meta ($19.2B+, GB300), NVIDIA ($6.3B backstop), IBM (GB200)",
-    contracts: "MSFT $10B multi-year · OpenAI $22.4B (3 tranches thru 2031) · Meta $19.2B+ (GB300, 6-yr thru 2032) · NVIDIA $6.3B backstop (thru Apr 2032) · OpenAI $350M equity investment at IPO",
-    revenue: "$5.1B FY2025 (+167% YoY). EBITDA $3.1B. 96% from long-term take-or-pay contracts.", investors: "NVIDIA ($5.3B equity + $6.3B capacity), OpenAI ($350M IPO), Magnetar, Coatue, Fidelity, Jane Street",
+    power: { connected: "850 MW", contracted: "3.1 GW" }, gpus: "250K+ (H100/H200/GB200/GB300)", backlog: "$88B",
+    keyClients: "Microsoft ($10B), OpenAI ($22.4B across 3 tranches), Meta ($35.2B total — expanded $21B Apr 2026 thru 2032), NVIDIA ($6.3B backstop), Anthropic",
+    contracts: "MSFT $10B multi-year · OpenAI $22.4B (3 tranches thru 2031) · Meta $35.2B total ($14.2B orig + $21B expansion Apr 2026, thru 2032) · NVIDIA $6.3B backstop (thru Apr 2032) · OpenAI $350M equity investment at IPO",
+    revenue: "$5.1B FY2025 (+167% YoY). 2026 guide $12-13B. EBITDA $3.1B. 96% from long-term take-or-pay contracts.", investors: "NVIDIA ($5.3B equity + $6.3B capacity), OpenAI ($350M IPO), Magnetar, Coatue, Fidelity, Jane Street",
     locations: "43 data centers: NJ (Kenilworth 250MW), PA (Lancaster 300MW), TX (Denton 260MW, Plano 30MW), VA (Chester 148MW), OK (Muskogee 100MW), ND (Ellendale 400MW), UK (Crawley, London), Norway, Canada (Regina 300MW)",
     timeline: "GB200 NVL72 live Feb 2025 · GB300 NVL72 live Jul 2025 · 1.7 GW target YE2026 · 3.1 GW contracted by YE2027 · 5+ GW by 2030",
-    notes: "Platinum-tier SemiAnalysis rating. Only neocloud commanding premium pricing. $34B+ off-balance-sheet leases. $19.6B total debt. Capex $14.9B (2025), guided $30-35B (2026). RPO $60.7B. Revenue per MW ~$7.4M annualized. 55-65% GPU utilization (vs Azure 35-45%).", color: "#3B82F6" },
+    notes: "Platinum-tier SemiAnalysis rating. Only neocloud commanding premium pricing. $34B+ off-balance-sheet leases. $19.6B total debt. Capex $14.9B (2025), guided $30B (2026). $88B revenue backlog (Apr 2026). Revenue per MW ~$7.4M annualized. 55-65% GPU utilization (vs Azure 35-45%). Meta deal expanded $21B (Apr 2026), Anthropic deal cemented neocloud dominance.", color: "#3B82F6" },
   { name: "Nebius", ticker: "NBIS", status: "Public (Nasdaq)", valuation: "$35B+", founded: 2024, hq: "Amsterdam, NL",
     power: { connected: "220 MW", contracted: "2.5 GW" }, gpus: "50K+ (H100/H200/B200)", backlog: "$49B+",
     keyClients: "Microsoft (5-yr GPU supply deal), Meta ($27B 5-yr), Mistral, Anthropic",
     contracts: "$49B+ backlog · Meta $27B 5-yr Vera Rubin deal (Mar 2026) · MSFT $19.4B 5-yr deal · Targeting 800 MW-1 GW by end 2026 · Sovereign AI cloud (EU/ME)",
-    revenue: "~$400M run rate (targeting $7-9B ARR by end 2026)", investors: "NVIDIA ($2B, 8.3% equity — Mar 2026), Accel ($700M round), MSFT ($19.4B infra contract), Meta ($27B + prior $3B compute)",
+    revenue: "~$400M run rate (targeting $7-9B ARR by end 2026)", investors: "NVIDIA ($2B, 8.3% equity — Mar 2026), Accel ($700M round), MSFT ($19.4B infra contract), Meta ($27B + prior $3B compute). $4.34B convertible debt closed Apr 2026.",
     locations: "Finland, France, US (Kansas City, New Jersey), Israel, UAE", timeline: "220 MW live · 800 MW-1 GW connected by end 2026 · 2.5 GW contracted",
     notes: "Ex-Yandex spin-off. Gold-tier SemiAnalysis. Open-source Soperator (Slurm-on-K8s). Strong EU sovereign cloud positioning. NBIS +630% from 2025 lows. First large-scale NVIDIA Vera Rubin deployment via Meta deal.", color: "#06B6D4" },
   { name: "Lambda Labs", ticker: "Private", status: "Private", valuation: "$4B+", founded: 2012, hq: "San Francisco, CA",
