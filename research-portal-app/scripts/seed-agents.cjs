@@ -27,9 +27,9 @@ const UI_META = {
   'refresh':              { color: '#14B8A6', usage: '@refresh update the AI Research tab', mode: 'Read + Write', sort: 6 },
   'third-party-research': { color: '#38BDF8', usage: '@third-party-research pull everything on Perforce', mode: 'Read-only. Runs local Playwright-authenticated CLI tools.', sort: 7 },
   'consistency':          { color: '#c084fc', usage: '@consistency check credit research', mode: 'Read-only', sort: 8 },
-  'sync-agents-pull':     { color: '#A78BFA', usage: '@sync-agents-pull', mode: 'Read + Write (local files)', sort: 9 },
-  'sync-agents-push':     { color: '#A78BFA', usage: '@sync-agents-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
-  'portfolio-verifier':   { color: '#F472B6', usage: '@portfolio-verifier refresh ETF_SENSITIVITY', mode: 'Read + Write (PortfolioDashboard.jsx)', sort: 11 },
+  'sync-pull':            { color: '#A78BFA', usage: '@sync-pull', mode: 'Read + Write (local files)', sort: 9 },
+  'sync-push':            { color: '#A78BFA', usage: '@sync-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
+  'numbers-audit':        { color: '#FBBF24', usage: '@numbers-audit refresh ETF_SENSITIVITY', mode: 'Audit (default) or Refresh/Fix', sort: 11 },
 };
 
 function parseFrontmatter(raw) {
@@ -52,12 +52,14 @@ function parseFrontmatter(raw) {
   const files = fs.readdirSync(AGENTS_DIR).filter(f => f.endsWith('.md'));
   console.log(`Found ${files.length} agent files in ${AGENTS_DIR}`);
 
+  const localIds = new Set();
   for (const file of files) {
     const raw = fs.readFileSync(path.join(AGENTS_DIR, file), 'utf-8');
     const parsed = parseFrontmatter(raw);
     if (!parsed) { console.log(`  SKIP: ${file} (no frontmatter)`); continue; }
 
     const id = file.replace('.md', '');
+    localIds.add(id);
     const meta = UI_META[id] || { color: '#70b0fa', usage: `@${id}`, mode: '', sort: 99 };
 
     const row = {
@@ -76,6 +78,22 @@ function parseFrontmatter(raw) {
     const { error } = await supabase.from('agent_definitions').upsert(row, { onConflict: 'id' });
     if (error) console.error(`  ERROR: ${id}:`, error.message);
     else console.log(`  OK: ${id}`);
+  }
+
+  // ── Step 1b: Reconcile — delete Supabase rows with no matching local file ──
+  const { data: remoteRows, error: listErr } = await supabase.from('agent_definitions').select('id');
+  if (listErr) {
+    console.error(`  RECONCILE ERROR: ${listErr.message}`);
+  } else {
+    const orphans = remoteRows.map(r => r.id).filter(id => !localIds.has(id));
+    if (orphans.length === 0) {
+      console.log('  Reconcile: no orphan rows to delete.');
+    } else {
+      console.log(`  Reconcile: deleting ${orphans.length} orphan row(s): ${orphans.join(', ')}`);
+      const { error: delErr } = await supabase.from('agent_definitions').delete().in('id', orphans);
+      if (delErr) console.error(`  DELETE ERROR: ${delErr.message}`);
+      else console.log('  Orphans deleted.');
+    }
   }
 
   // ── Step 2: Commit and push research portal to GitHub ──
