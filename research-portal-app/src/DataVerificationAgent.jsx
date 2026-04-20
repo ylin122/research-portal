@@ -111,6 +111,12 @@ const AGENTS = [
     tools: "Read, Bash, Grep", mode: "Read-only. Runs after both fact agents return.",
   },
   {
+    name: "numbers-audit", color: "#FBBF24",
+    desc: "Single numbers/formulas auditor + refresher across PA + research portal. Modes: `formulas` (Sharpe/IR/vol/beta/PE/PEG vs canon), `data` (hardcoded values vs live sources), and refresh (full ETF_SENSITIVITY workflow with Yahoo + cross-checks). Numbers only — prose routes to fact-checker.",
+    usage: "@numbers-audit refresh ETF_SENSITIVITY",
+    tools: "Read, Edit, Write, Bash, Grep, Glob, WebSearch, WebFetch", mode: "Audit (default) or Refresh/Fix",
+  },
+  {
     name: "deploy", color: "#06B6D4",
     desc: "Build, commit, push to GitHub, and verify Vercel deployment. Checks for secrets, runs vite build, won't push broken code.",
     usage: "@deploy ship the latest changes",
