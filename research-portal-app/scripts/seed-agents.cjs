@@ -2,7 +2,8 @@
 // Run: node scripts/seed-agents.cjs
 // This is the "log off" sync — run before switching machines.
 
-require('dotenv').config();
+require('dotenv').config({ path: require('path').resolve(__dirname, '..', '.env.local') });
+require('dotenv').config(); // fallback to .env for any keys .env.local doesn't set
 const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
