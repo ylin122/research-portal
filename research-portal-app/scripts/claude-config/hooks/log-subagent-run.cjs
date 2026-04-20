@@ -40,8 +40,8 @@ function detectProject(cwd, fallbackText) {
   // reflects the last `cd` target rather than user intent. Prompt wins when
   // it names exactly one project; cwd is only the tiebreaker.
   const fb = (fallbackText || '').toLowerCase();
-  const promptPA = fb.includes('portfolio-dashboard') || fb.includes('pa-dashboard');
-  const promptRP = fb.includes('research-portal');
+  const promptPA = fb.includes('portfolio-dashboard') || fb.includes('pa-dashboard') || fb.includes('portfolio dashboard') || fb.includes('pa dashboard');
+  const promptRP = fb.includes('research-portal') || fb.includes('research portal');
   if (promptPA && !promptRP) return 'pa-dashboard';
   if (promptRP && !promptPA) return 'research-portal';
 

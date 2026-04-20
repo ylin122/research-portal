@@ -29,7 +29,6 @@ export default function Dashboard({ companies, setView }) {
   const [concepts, setConcepts] = useState([]);
   const [qa, setQa] = useState([]);
   const [alerts, setAlerts] = useState([]);
-  const [audit, setAudit] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -39,14 +38,12 @@ export default function Dashboard({ companies, setView }) {
       supabase.from("concepts").select("id, title, topic, one_liner").order("title", { ascending: true }),
       supabase.from("qa_log").select("id, question, answer, created_at").order("created_at", { ascending: false }).limit(5),
       supabase.from("watchlist").select("id, keyword, active").order("created_at", { ascending: false }),
-      supabase.from("audit_log").select("id, title, source, timestamp").order("timestamp", { ascending: false }).limit(8),
-    ]).then(([aRes, iRes, cRes, qRes, wRes, auRes]) => {
+    ]).then(([aRes, iRes, cRes, qRes, wRes]) => {
       setArticles(aRes.data || []);
       setIdeas(iRes.data || []);
       setConcepts(cRes.data || []);
       setQa(qRes.data || []);
       setAlerts(wRes.data || []);
-      setAudit(auRes.data || []);
       setLoading(false);
     });
   }, []);
@@ -133,42 +130,6 @@ export default function Dashboard({ companies, setView }) {
         </>
       )}
 
-      {/* Recent Activity */}
-      {audit.length > 0 && (
-        <>
-          <SectionHeader title="Recent Activity" count={audit.length} onViewAll={() => setView({ type: "auditLog" })} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-            {audit.slice(0, 8).map(a => (
-              <div key={a.id} style={{
-                display: "flex", alignItems: "center", gap: 10, padding: "10px 14px",
-                background: T_.bgPanel, borderRadius: 6, border: `1px solid ${T_.border}`,
-              }}>
-                <span style={{ fontSize: 10, color: T_.blue, background: `${T_.blue}12`, padding: "2px 8px", borderRadius: 4, flexShrink: 0 }}>{a.source}</span>
-                <span style={{ fontSize: 12, color: T_.textMid, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{a.title}</span>
-                <span style={{ fontSize: 10, color: T_.textGhost, flexShrink: 0 }}>{fmtDate(a.timestamp)}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Quick Actions */}
-      <div style={{ marginTop: 32, padding: 20, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}` }}>
-        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>Quick Actions — Claude Code Commands</div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 8 }}>
-          {[
-            { cmd: "compile my wiki", desc: "Analyze new articles, update wiki" },
-            { cmd: "answer my questions", desc: "Research wiki for pending Q&A" },
-            { cmd: "scan my alerts", desc: "Search web for alert keywords" },
-            { cmd: "add concepts: [terms]", desc: "Add and explain new concepts" },
-          ].map(a => (
-            <div key={a.cmd} style={{ padding: "10px 14px", background: T_.bg, borderRadius: 6, border: `1px solid ${T_.border}` }}>
-              <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, fontFamily: "monospace" }}>{a.cmd}</div>
-              <div style={{ fontSize: 11, color: T_.textDim, marginTop: 3 }}>{a.desc}</div>
-            </div>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }
