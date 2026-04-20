@@ -1,0 +1,34 @@
+{
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
+  "autoUpdatesChannel": "latest",
+  "enableAllProjectMcpServers": true,
+  "effortLevel": "xhigh",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $HOME/projects/research-portal/research-portal-app && node scripts/sync-agents.cjs || true",
+            "timeout": 30,
+            "statusMessage": "Syncing agents + dotclaude..."
+          }
+        ]
+      }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $HOME/.claude/hooks/log-subagent-run.cjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  }
+}
