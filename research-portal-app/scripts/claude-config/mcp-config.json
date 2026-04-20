@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "edgartools": {
+      "command": "C:\\Users\\ylin1\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+      "args": ["-m", "edgar.ai"],
+      "env": {
+        "EDGAR_IDENTITY": "Yifan Lin ylin1@example.com"
+      }
+    }
+  }
+}

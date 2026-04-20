@@ -380,7 +380,7 @@ function AppContent() {
             {agentsOpen && [
               { key: "thesis", label: "Thesis Tracker" },
               { key: "whatIf", label: "What If" },
-              { key: "dataVerification", label: "Commands / Skills" },
+              { key: "dataVerification", label: "Agents / Tools" },
             ].map(t => {
               const active = view.type === t.key + "Agent";
               return (

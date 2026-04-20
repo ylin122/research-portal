@@ -33,6 +33,7 @@ export default function AuditLog() {
     const { data, error } = await supabase
       .from("agent_runs")
       .select("*")
+      .eq("project", "research-portal")
       .order("created_at", { ascending: false })
       .limit(200);
     if (error) console.error("fetchRuns:", error);

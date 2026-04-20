@@ -1,6 +1,39 @@
 import { useState } from "react";
 import { T_, FONT } from "./lib/theme";
 
+const MCP_SERVERS = [
+  {
+    name: "Gmail", provider: "claude.ai", status: "connected", color: "#EA4335",
+    desc: "Search threads, read emails, create drafts, manage labels. Powers the research-ingest pipeline.",
+    tools: ["search_threads", "get_thread", "create_draft", "list_drafts", "list_labels", "create_label", "label_message", "label_thread", "unlabel_message", "unlabel_thread"],
+  },
+  {
+    name: "memory", provider: "npm", status: "connected", color: "#A78BFA",
+    desc: "Persistent knowledge graph for entities, relations, and observations across conversations.",
+    tools: ["create_entities", "create_relations", "add_observations", "delete_entities", "delete_relations", "delete_observations", "read_graph", "search_nodes", "open_nodes"],
+  },
+  {
+    name: "sequential-thinking", provider: "npm", status: "connected", color: "#F59E0B",
+    desc: "Dynamic, reflective reasoning tool for complex problem-solving with branching and revision.",
+    tools: ["sequentialthinking"],
+  },
+  {
+    name: "git", provider: "pip", status: "connected", color: "#F05032",
+    desc: "Git operations — status, diff, log, branch, commit, checkout, reset, show.",
+    tools: ["git_status", "git_diff", "git_diff_staged", "git_diff_unstaged", "git_log", "git_show", "git_branch", "git_checkout", "git_create_branch", "git_commit", "git_add", "git_reset"],
+  },
+];
+
+const PYTHON_TOOLS = [
+  {
+    name: "edgartools", version: "5.30.0", color: "#00A36C",
+    desc: "SEC EDGAR filings, XBRL financials, 10-K/10-Q/8-K reports. Income statements, balance sheets, cash flows.",
+    install: "pip install edgartools",
+    usage: "from edgar import Company, set_identity",
+    capabilities: ["Company filings (10-K, 10-Q, 8-K, S-1, etc.)", "XBRL financial statements", "Income statement, balance sheet, cash flow", "Insider transactions & institutional holdings", "Full-text search across EDGAR"],
+  },
+];
+
 const CLI_TOOLS = [
   {
     name: "Reorg / Octus", path: "~/reorg-tools/",
@@ -108,15 +141,15 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read-only",
   },
   {
-    name: "sync-agents-pull", color: "#A78BFA",
+    name: "sync-pull", color: "#A78BFA",
     desc: "Pull agent definitions from Supabase to local ~/.claude/agents/ files. Run after editing agents in the research portal UI.",
-    usage: "@sync-agents-pull",
+    usage: "@sync-pull",
     tools: "Bash", mode: "Read + Write (local files)",
   },
   {
-    name: "sync-agents-push", color: "#A78BFA",
+    name: "sync-push", color: "#A78BFA",
     desc: "Push local ~/.claude/agents/ files to Supabase. Run after editing agent .md files locally.",
-    usage: "@sync-agents-push",
+    usage: "@sync-push",
     tools: "Bash", mode: "Read + Write (Supabase)",
   },
 ];
@@ -135,9 +168,9 @@ export default function DataVerificationAgent() {
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Commands / Skills</div>
+      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Agents / Tools</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
-        Claude Code agents and skills. Run agents with <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span>, skills with <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>.
+        Claude Code agents, skills, MCP servers, and installed tools. Agents: <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span> &nbsp; Skills: <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>
       </p>
 
       <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
@@ -213,18 +246,80 @@ export default function DataVerificationAgent() {
           </div>
         ))}
 
-        <div style={{ background: T_.bgInput, border: `1px dashed ${T_.accent}30`, borderRadius: 8, padding: "12px 14px", marginTop: 16 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: T_.accent, marginBottom: 6 }}>Recommended Workflow</div>
-          <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.8 }}>
-            <strong>1.</strong> Update a tab → <span style={{ fontFamily: "monospace", color: "#14B8A6" }}>@refresh</span><br/>
-            <strong>2.</strong> After code changes → <span style={{ fontFamily: "monospace", color: "#34d673" }}>@code-review</span> → then "fix all" or "fix 1, 3"<br/>
-            <strong>3.</strong> After research content → <span style={{ fontFamily: "monospace", color: "#70b0fa" }}>@fact-checker</span> + <span style={{ fontFamily: "monospace", color: "#f87171" }}>@fact-disputer</span> in parallel<br/>
-            <strong>4.</strong> Then → <span style={{ fontFamily: "monospace", color: "#f5a623" }}>@fact-check-reconciler</span> for final verdicts<br/>
-            <strong>5.</strong> Fix CONFLICT / LIKELY WRONG items, re-verify<br/>
-            <strong>6.</strong> Pull third-party research → <span style={{ fontFamily: "monospace", color: "#38BDF8" }}>@third-party-research</span><br/>
-            <strong>7.</strong> Test a scenario → <span style={{ fontFamily: "monospace", color: "#F97316" }}>@whatif</span> screens all companies for impact
-          </div>
+        {/* ── MCP Servers ── */}
+        <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10, marginTop: 16 }}>
+          MCP Servers
+          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>Model Context Protocol — external tool integrations</span>
         </div>
+
+        {MCP_SERVERS.map(mcp => (
+          <div key={mcp.name} style={{ marginBottom: 6 }}>
+            <div
+              style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: mcp.tools.length ? "pointer" : "default" }}
+              onClick={mcp.tools.length ? () => setExpanded(expanded === "mcp-" + mcp.name ? null : "mcp-" + mcp.name) : undefined}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: mcp.color, fontFamily: "monospace" }}>{mcp.name}</span>
+                <span style={{
+                  fontSize: 9, fontWeight: 600, padding: "1px 6px", borderRadius: 3, letterSpacing: 0.5,
+                  background: mcp.status === "connected" ? "#22c55e18" : "#f59e0b18",
+                  color: mcp.status === "connected" ? "#22c55e" : "#f59e0b",
+                  border: `1px solid ${mcp.status === "connected" ? "#22c55e30" : "#f59e0b30"}`,
+                }}>{mcp.status === "connected" ? "CONNECTED" : "NEEDS AUTH"}</span>
+                <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{mcp.desc}</span>
+                {mcp.tools.length > 0 && (
+                  <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "mcp-" + mcp.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+                )}
+              </div>
+              <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Provider:</span> {mcp.provider}</span>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Tools:</span> {mcp.tools.length}</span>
+              </div>
+            </div>
+            {expanded === "mcp-" + mcp.name && mcp.tools.length > 0 && (
+              <div style={{ marginTop: 4, marginLeft: 16, borderLeft: `2px solid ${mcp.color}30`, paddingLeft: 14, paddingTop: 4, paddingBottom: 4 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 8px" }}>
+                  {mcp.tools.map(t => (
+                    <span key={t} style={{ fontSize: 11, fontFamily: "monospace", color: mcp.color, background: `${mcp.color}10`, padding: "2px 7px", borderRadius: 4, border: `1px solid ${mcp.color}20` }}>{t}</span>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        ))}
+
+        {/* ── Python Tools ── */}
+        <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10, marginTop: 16 }}>
+          Python Tools
+          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>Installed packages available via Bash</span>
+        </div>
+
+        {PYTHON_TOOLS.map(tool => (
+          <div key={tool.name} style={{ marginBottom: 6 }}>
+            <div
+              style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: "pointer" }}
+              onClick={() => setExpanded(expanded === "py-" + tool.name ? null : "py-" + tool.name)}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: tool.color, fontFamily: "monospace" }}>{tool.name}</span>
+                <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>v{tool.version}</span>
+                <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{tool.desc}</span>
+                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "py-" + tool.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+              </div>
+              <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Install:</span> <span style={{ fontFamily: "monospace" }}>{tool.install}</span></span>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Import:</span> <span style={{ fontFamily: "monospace" }}>{tool.usage}</span></span>
+              </div>
+            </div>
+            {expanded === "py-" + tool.name && (
+              <div style={{ marginTop: 4, marginLeft: 16, borderLeft: `2px solid ${tool.color}30`, paddingLeft: 14, paddingTop: 4, paddingBottom: 4 }}>
+                {tool.capabilities.map(cap => (
+                  <div key={cap} style={{ fontSize: 11, color: T_.textMid, padding: "2px 0" }}>• {cap}</div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
   );
