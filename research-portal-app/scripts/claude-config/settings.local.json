@@ -242,7 +242,27 @@
       "WebFetch(domain:finance.yahoo.com)",
       "WebFetch(domain:etfdb.com)",
       "WebFetch(domain:www.tipranks.com)",
-      "WebFetch(domain:www.zacks.com)"
+      "WebFetch(domain:www.zacks.com)",
+      "Bash(py -m pip show edgartools)",
+      "Bash(py -m pip install \"edgartools[ai]\")",
+      "Bash(node -e \":*)",
+      "Bash(python3 -m json.tool)",
+      "mcp__memory__read_graph",
+      "Bash(cd:*)",
+      "Bash(find ~ -maxdepth 4 -path */.claude/agents -type d)",
+      "Bash(mkdir -p ~/.claude/agents/_archive)",
+      "Bash(mv ~/.claude/agents/codeverifier.md ~/.claude/agents/portfolio-verifier.md ~/.claude/agents/verifier.md ~/.claude/agents/weekly-mcp-audit.md ~/.claude/agents/whatif.md ~/.claude/agents/_archive/)",
+      "Bash(cat ~/.claude/agents/_archive/*.md)",
+      "Bash(python3 scripts/gmail_ingest.py)",
+      "WebFetch(domain:saanyaojha.substack.com)",
+      "WebFetch(domain:newsletter.semianalysis.com)",
+      "Bash(python3 scripts/patch_articles.py)",
+      "Bash(python3 scripts/sync_obsidian.py)",
+      "Bash(CFG=~/research-portal/research-portal-app/scripts/claude-config)",
+      "Bash(mkdir -p \"$CFG/hooks\")",
+      "Bash(cp ~/.claude/mcp-config.json \"$CFG/mcp-config.json\")",
+      "Bash(cp ~/.claude/settings.json \"$CFG/settings.json\")",
+      "Bash(cp ~/.claude/settings.local.json \"$CFG/settings.local.json\")"
     ]
   }
 }
