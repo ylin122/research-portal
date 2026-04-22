@@ -3,7 +3,7 @@ const Primer = lazy(() => import("./Primer"));
 const AIDisruption = lazy(() => import("./AIDisruption"));
 import ThesisAgent from "./ThesisAgent";
 import NotesIdeasAgent from "./NotesIdeasAgent";
-import DataVerificationAgent from "./DataVerificationAgent";
+import AgentsTools from "./AgentsTools";
 const BusinessModels = lazy(() => import("./BusinessModels"));
 const Accounting = lazy(() => import("./Accounting"));
 const CreditInstruments = lazy(() => import("./CreditInstruments"));
@@ -673,8 +673,8 @@ function AppContent() {
         {/* NOTES / IDEAS AGENT */}
         {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
-        {/* DATA VERIFICATION AGENT */}
-        {view.type === "dataVerificationAgent" && <DataVerificationAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+        {/* AGENTS & TOOLS */}
+        {view.type === "dataVerificationAgent" && <AgentsTools companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
         {/* TOOLS */}
 

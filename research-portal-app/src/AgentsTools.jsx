@@ -24,7 +24,14 @@ const MCP_SERVERS = [
   },
 ];
 
-const PYTHON_TOOLS = [
+const TOOLS = [
+  {
+    name: "Financial Modeling Prep", version: "stable", color: "#1A73E8",
+    desc: "Forward financials API — analyst estimates, income statements, balance sheets, DCF, ratios for public companies.",
+    install: "REST API (Vercel env: FMP_API_KEY)",
+    usage: "https://financialmodelingprep.com/stable/",
+    capabilities: ["Forward EPS & revenue estimates (consensus)", "Income statement, balance sheet, cash flow (standardized)", "Analyst price targets & recommendations", "Key ratios (P/E, PEG, ROE, margins)", "DCF & intrinsic value models", "Company profiles & sector data", "Historical & TTM financials"],
+  },
   {
     name: "edgartools", version: "5.30.0", color: "#00A36C",
     desc: "SEC EDGAR filings, XBRL financials, 10-K/10-Q/8-K reports. Income statements, balance sheets, cash flows.",
@@ -123,10 +130,28 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read + Write (git operations)",
   },
   {
-    name: "whatif", color: "#F97316",
-    desc: "Scenario screener. Input a thesis or what-if and it screens every company in coverage for impact — positive, negative, or mixed.",
-    usage: "@whatif massive delays in R100 launch date driven by supply chain shocks",
-    tools: "Read, Bash, Grep, Glob, WebSearch, WebFetch", mode: "Read-only",
+    name: "audit-mcp", color: "#F97316",
+    desc: "Security audit on MCP servers, Claude Code skills, or plugins before installation. Checks for supply chain risk, prompt injection, and data exfiltration.",
+    usage: "@audit-mcp review the new slack MCP",
+    tools: "Read, Grep, Glob, Bash, Agent", mode: "Read-only",
+  },
+  {
+    name: "security-reviewer", color: "#EF4444",
+    desc: "Audits MCP servers, skills, subagents, and plugins for supply chain, prompt injection, and data exfiltration risk. Periodic or pre-install.",
+    usage: "@security-reviewer audit all installed MCPs",
+    tools: "Read, Grep, Glob, Bash", mode: "Read-only",
+  },
+  {
+    name: "ratings-research", color: "#6366F1",
+    desc: "Ratings-agency research sweep — queries Moody's and S&P Capital IQ in parallel for a company or topic.",
+    usage: "@ratings-research pull Moody's and S&P on Carvana",
+    tools: "Read, Bash, Grep, Glob", mode: "Read-only",
+  },
+  {
+    name: "pa-refresh", color: "#10B981",
+    desc: "Full PA dashboard data refresh — pulls live Yahoo Finance for all tickers, updates hardcoded blocks (prices, P/E, PEG, beta, returns, ETF sensitivity, news), triggers API refreshes.",
+    usage: "@pa-refresh update all data",
+    tools: "Bash, Read, Edit, Write, Grep, Glob, WebFetch", mode: "Read + Write",
   },
   {
     name: "refresh", color: "#14B8A6",
@@ -169,7 +194,7 @@ const SKILLS = [
   },
 ];
 
-export default function DataVerificationAgent() {
+export default function AgentsTools() {
   const [expanded, setExpanded] = useState(null);
 
   return (
@@ -294,30 +319,30 @@ export default function DataVerificationAgent() {
           </div>
         ))}
 
-        {/* ── Python Tools ── */}
+        {/* ── Tools ── */}
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10, marginTop: 16 }}>
-          Python Tools
-          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>Installed packages available via Bash</span>
+          Tools
+          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>APIs & packages available across projects</span>
         </div>
 
-        {PYTHON_TOOLS.map(tool => (
+        {TOOLS.map(tool => (
           <div key={tool.name} style={{ marginBottom: 6 }}>
             <div
               style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: "pointer" }}
-              onClick={() => setExpanded(expanded === "py-" + tool.name ? null : "py-" + tool.name)}
+              onClick={() => setExpanded(expanded === "tool-" + tool.name ? null : "tool-" + tool.name)}
             >
               <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
                 <span style={{ fontSize: 13, fontWeight: 700, color: tool.color, fontFamily: "monospace" }}>{tool.name}</span>
                 <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>v{tool.version}</span>
                 <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{tool.desc}</span>
-                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "py-" + tool.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "tool-" + tool.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
               </div>
               <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
                 <span><span style={{ fontWeight: 600, color: T_.textDim }}>Install:</span> <span style={{ fontFamily: "monospace" }}>{tool.install}</span></span>
                 <span><span style={{ fontWeight: 600, color: T_.textDim }}>Import:</span> <span style={{ fontFamily: "monospace" }}>{tool.usage}</span></span>
               </div>
             </div>
-            {expanded === "py-" + tool.name && (
+            {expanded === "tool-" + tool.name && (
               <div style={{ marginTop: 4, marginLeft: 16, borderLeft: `2px solid ${tool.color}30`, paddingLeft: 14, paddingTop: 4, paddingBottom: 4 }}>
                 {tool.capabilities.map(cap => (
                   <div key={cap} style={{ fontSize: 11, color: T_.textMid, padding: "2px 0" }}>• {cap}</div>
