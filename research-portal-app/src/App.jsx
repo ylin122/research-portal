@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react";
 const Primer = lazy(() => import("./Primer"));
 const AIDisruption = lazy(() => import("./AIDisruption"));
-import ThesisAgent from "./ThesisAgent";
 import NotesIdeasAgent from "./NotesIdeasAgent";
 import AgentsTools from "./AgentsTools";
 const BusinessModels = lazy(() => import("./BusinessModels"));
@@ -13,6 +12,7 @@ import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
 const Restructuring = lazy(() => import("./Restructuring"));
+const CaseStudies = lazy(() => import("./CaseStudies"));
 import Principles from "./Principles";
 import ApiDirectory from "./ApiDirectory";
 import Dashboard from "./Dashboard";
@@ -26,7 +26,6 @@ import MicronReview from "./MicronReview";
 import OracleReview from "./OracleReview";
 import GenericReview from "./GenericReview";
 const IndustryResearch = lazy(() => import("./IndustryResearch"));
-import WhatIfAgent from "./WhatIfAgent";
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
   loadAllFields, upsertField,
@@ -161,7 +160,6 @@ function AppContent() {
   const [view, setView] = useState({ type: "home" });
   const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [companiesOpen, setCompaniesOpen] = useState(false);
-  const [agentsOpen, setAgentsOpen] = useState(false);
   const [equityOpen, setEquityOpen] = useState(false);
   const [publicCosOpen, setPublicCosOpen] = useState(false);
   const [publicSidebarOpen, setPublicSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
@@ -369,26 +367,9 @@ function AppContent() {
             <span>Principles & Epiphanies</span>
           </div>
 
-          {/* Agents */}
-          <div>
-            <div style={{ ...s.sectorHdr, marginTop: 0 }} onClick={() => setAgentsOpen(p => !p)}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: agentsOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span>Agents / Tools</span>
-              </div>
-            </div>
-            {agentsOpen && [
-              { key: "thesis", label: "Thesis Tracker" },
-              { key: "whatIf", label: "What If" },
-              { key: "dataVerification", label: "Agents / Tools" },
-            ].map(t => {
-              const active = view.type === t.key + "Agent";
-              return (
-                <div key={t.key} style={{ ...s.navCo, ...(active ? s.navCoActive : {}), paddingLeft: 38 }} onClick={() => { setView({ type: t.key + "Agent" }); setEditingField(null); }}>
-                  <span>{t.label}</span>
-                </div>
-              );
-            })}
+          {/* Agents / Tools */}
+          <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "dataVerificationAgent" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "dataVerificationAgent" }); setEditingField(null); }}>
+            <span>Agents / Tools</span>
           </div>
 
           {/* Idea Tracker — removed */}
@@ -554,6 +535,11 @@ function AppContent() {
             <span>Restructuring</span>
           </div>
 
+          {/* Case Studies */}
+          <div style={{ ...s.sectorHdr, color: view.type === "caseStudies" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "caseStudies" }); setEditingField(null); }}>
+            <span>Case Studies</span>
+          </div>
+
           {/* Prompts */}
           <div style={{ ...s.sectorHdr, color: view.type === "prompts" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "prompts" }); setEditingField(null); }}>
             <span>Prompts</span>
@@ -664,11 +650,6 @@ function AppContent() {
         {/* INDUSTRY RESEARCH */}
         {view.type === "industryResearch" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><IndustryResearch initialTab={view.sub} /></Suspense>}
 
-        {/* THESIS AGENT */}
-        {view.type === "thesisAgent" && <ThesisAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
-
-        {/* WHAT IF AGENT */}
-        {view.type === "whatIfAgent" && <WhatIfAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
 
         {/* NOTES / IDEAS AGENT */}
         {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
@@ -760,6 +741,9 @@ function AppContent() {
         {/* RESTRUCTURING */}
         {view.type === "restructuring" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><Restructuring initialTab={view.sub} /></Suspense>}
 
+        {/* CASE STUDIES */}
+        {view.type === "caseStudies" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><CaseStudies initialTab={view.sub} /></Suspense>}
+
         {/* MOBILE MORE MENU */}
         {view.type === "mobileMore" && (
           <div style={s.page}>
@@ -768,8 +752,7 @@ function AppContent() {
               {[
                 { type: "home", label: "Dashboard", icon: "\u{2302}" },
                 { type: null, label: "— Agents —", icon: "" },
-                { type: "thesisAgent", label: "Thesis Tracker", icon: "\u{1F3AF}" },
-                { type: "whatIfAgent", label: "What If", icon: "\u{1F4A5}" },
+                { type: "dataVerificationAgent", label: "Agents / Tools", icon: "\u{1F6E0}" },
                 { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
                 { type: null, label: "— Trackers —", icon: "" },
                 { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
@@ -788,6 +771,7 @@ function AppContent() {
                 { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
                 { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
                 { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
+                { type: "caseStudies", label: "Case Studies", icon: "\u{1F4DA}" },
                 { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
                 { type: "sources", label: "Sources", icon: "\u{1F517}" },
                 { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },
