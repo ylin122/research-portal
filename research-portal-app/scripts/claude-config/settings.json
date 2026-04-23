@@ -18,6 +18,17 @@
           }
         ]
       }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $HOME/.claude/hooks/log-subagent-run.cjs",
+            "timeout": 15
+          }
+        ]
+      }
     ]
   }
 }
