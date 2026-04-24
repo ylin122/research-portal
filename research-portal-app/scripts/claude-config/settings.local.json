@@ -88,7 +88,9 @@
       "Bash(mkdir -p \"$CFG/hooks\" \"$CFG/memory\")",
       "Bash(cp ~/.claude/mcp-config.json \"$CFG/mcp-config.json\")",
       "Bash(cp ~/.claude/settings.json \"$CFG/settings.json\")",
-      "Bash(cp ~/.claude/settings.local.json \"$CFG/settings.local.json\")"
+      "Bash(cp ~/.claude/settings.local.json \"$CFG/settings.local.json\")",
+      "Bash(cp ~/.claude/hooks/log-subagent-run.cjs \"$CFG/hooks/log-subagent-run.cjs\")",
+      "Bash(cp ~/.claude/projects/C--Users-ylin1/memory/*.md \"$CFG/memory/\")"
     ]
   }
 }
