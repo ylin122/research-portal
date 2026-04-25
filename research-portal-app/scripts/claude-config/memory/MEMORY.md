@@ -16,3 +16,4 @@
 - [feedback_open_localhost.md](feedback_open_localhost.md) — Always auto-start vercel dev and open localhost when user begins working on either project
 - [feedback_credit_philosophy.md](feedback_credit_philosophy.md) — EV is the ultimate margin of safety in credit — think through-cycle, not just cash flow/debt service
 - [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the research portal
+- [user_investment_philosophy.md](user_investment_philosophy.md) — Investment philosophy: 90-day trading restriction, averaging-down, SPY as dry powder, software background not semi infra

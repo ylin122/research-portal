@@ -90,7 +90,25 @@
       "Bash(cp ~/.claude/settings.json \"$CFG/settings.json\")",
       "Bash(cp ~/.claude/settings.local.json \"$CFG/settings.local.json\")",
       "Bash(cp ~/.claude/hooks/log-subagent-run.cjs \"$CFG/hooks/log-subagent-run.cjs\")",
-      "Bash(cp ~/.claude/projects/C--Users-ylin1/memory/*.md \"$CFG/memory/\")"
+      "Bash(cp ~/.claude/projects/C--Users-ylin1/memory/*.md \"$CFG/memory/\")",
+      "Bash(git clone:*)",
+      "Bash(bc)",
+      "Bash(python3:*)",
+      "Bash(python3 -c \":*)",
+      "Bash(py -c \"import json,sys; data=json.load\\(sys.stdin\\); [print\\(json.dumps\\({k:p.get\\(k\\) for k in [''''ticker'''',''''startMV'''',''''endMV'''',''''netInvested'''',''''dividendsReceived'''',''''periodGain'''',''''twr'''',''''mwr'''',''''mwrCum'''',''''tradingDays'''']}, indent=2\\)\\) for p in data.get\\(''''positions'''',[]\\) if p[''''ticker'''']==''''SMH'''']\")",
+      "Bash(py -c \"import json; d=json.load\\(open\\(''/tmp/perf.json''\\)\\); smh=[p for p in d.get\\(''positions'',[]\\) if p[''ticker'']==''SMH'']; print\\(json.dumps\\(smh[0] if smh else ''not found'', indent=2\\)\\)\")",
+      "Bash(py -c \"import json; d=json.load\\(open\\(''C:/Users/ylin1/perf.json''\\)\\); smh=[p for p in d.get\\(''positions'',[]\\) if p[''ticker'']==''SMH'']; print\\(json.dumps\\(smh[0] if smh else ''not found'', indent=2\\)\\)\")",
+      "Bash(py:*)",
+      "Bash(pip show:*)",
+      "Bash(pip3 install:*)",
+      "Bash(where python:*)",
+      "Bash(where python3:*)",
+      "Bash(where py:*)",
+      "Bash(ls /c/Python*/python.exe)",
+      "WebFetch(domain:hedgefollow.com)",
+      "WebFetch(domain:www.insidermonkey.com)",
+      "WebFetch(domain:stockcircle.com)",
+      "Bash(winget upgrade:*)"
     ]
   }
 }
