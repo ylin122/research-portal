@@ -2442,29 +2442,6 @@ export default function IndustryResearch({ initialTab }) {
             </tfoot>
           </table>
         </div>
-
-        {/* Key Themes */}
-        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Key Themes &amp; Observations</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {[
-              { icon: "⚡", title: "Supply-Constrained, Not Demand-Constrained", text: "All hyperscalers report demand exceeding available capacity. GPU lead times remain 6-12 months. The constraint is buildout speed, not customer demand." },
-              { icon: "💰", title: "Debt-Funded Buildout", text: "Hyperscalers raised $108B in debt in 2025. BofA projects $1.5T total over coming years. Capex now consumes ~90% of operating cash flow minus dividends." },
-              { icon: "🏗️", title: "Capital Intensity at Industrial Levels", text: "Capital intensity reached 45-57% of revenue — resembling utilities, not tech companies. ORCL at 57%, MSFT at 45%, a structural shift from historically asset-light models." },
-              { icon: "🔧", title: "Custom Silicon Rising", text: "Google TPU v7, Amazon Trainium3, Meta MTIA, Microsoft Maia — all pursuing custom chips to reduce Nvidia dependency and optimize TCO for proprietary workloads." },
-              { icon: "🌐", title: "Neoclouds Filling the Gap", text: "CoreWeave, Nebius, Lambda offer 40-60% lower GPU rental costs vs. hyperscalers. CoreWeave's $66.8B backlog validates demand. NVIDIA holds ~6% equity stake in CoreWeave." },
-              { icon: "📈", title: "Top 5 Cumulative 2025-2027: ~$1.8T", text: "Goldman initially projected $1.15T for 2025-2027, but post-earnings guidance revisions pushed the total toward ~$1.8T for the top 5 alone. AI infra spend approaching 4.4% of GDP, near dotcom peak." },
-            ].map((item, idx) => (
-              <div key={idx} style={{ background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: "14px 16px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 16 }}>{item.icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: "#E2E8F0" }}>{item.title}</span>
-                </div>
-                <div style={{ fontSize: 12, color: "#94A3B8", lineHeight: 1.6 }}>{item.text}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </>);
       })()}
 
