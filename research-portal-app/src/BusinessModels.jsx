@@ -618,14 +618,59 @@ const MODELS = {
     ],
     sources: "Company 10-Ks, Federal Reserve consumer credit data, ABS market reports (Fitch, S&P), CFPB consumer finance reports",
   },
+
+  ads: {
+    label: "Internet Advertising",
+    icon: "📣",
+    category: "Attention / Intent Marketplace",
+    color: "#F97316",
+    tagline: "Sell access to user attention or user intent at auction — the platform owns the audience and data, advertisers bid in real time for impressions, clicks, or actions",
+    howItWorks: "Internet advertising is a real-time auction marketplace where platforms (Google, Meta, Amazon, TikTok, Snap) sell access to user attention or intent to advertisers. Two structurally different sub-models exist. INTENT-based ads (Google Search, Amazon, Apple App Store) — the user types a query expressing a need, and ads compete to fulfill it. Conversion intent is high, CPCs are high ($1-50+), and the ad IS the answer. INTERRUPTION-based ads (Meta Feed/Reels, TikTok, YouTube, Snap, X, Pinterest, Reddit) — the user is browsing/entertaining; ads interrupt the feed. Conversion intent is low, CPMs are lower ($5-30), but the platform makes it up on volume (Meta serves ~1.6 trillion impressions/quarter). Auctions run on a generalized second-price (GSP) or VCG-style mechanism: winning bid = function of bid × predicted CTR × predicted conversion × ad quality. Platforms build a data flywheel — every impression and click feeds back into targeting and pCTR models, widening the moat. Revenue = (impressions OR clicks OR actions) × price-per-unit. Pricing structures stack: CPM (per 1,000 impressions, advertiser bears risk), CPC (per click, platform bears impression risk), CPA (per action, platform bears all funnel risk). The trend is toward CPA/outcome pricing as platforms' data improves enough to underwrite conversion.",
+    economics: "Gross margins: 75-85%+ (digital delivery, near-zero marginal cost per impression). Operating margins: 30-45% at scale (Meta ~40%, Google Search ~35-40%). Capex is heavy (data centers, ML infra) but amortized across trillions of impressions. Effective CPMs: Google Search ~$50-200 (highest — true intent), Amazon ~$30-100, Meta Feed ~$10-20, TikTok ~$8-15, YouTube ~$15-30, Snap ~$5-10. Ad load (% of feed that is paid) typically 15-25% — pushing higher reduces engagement. ARPU varies 10x by platform/geography: Meta US/Canada ~$256/yr, Meta APAC ~$22/yr, Snap ~$15/yr globally. Revenue per employee: Google ~$2.0M, Meta ~$2.4M (extreme operating leverage). Ad take rate of total digital ad market (~$700B globally, ~$300B US): Google ~28%, Meta ~22%, Amazon ~13% — top 3 take ~60% globally (~75% ex-China).",
+    keyMetrics: [
+      { label: "Gross Margin", value: "75-85%", sub: "Digital delivery economics" },
+      { label: "Op Margin", value: "30-45%", sub: "At platform scale" },
+      { label: "eCPM Range", value: "$5-200", sub: "Snap (low) to Google Search (high)" },
+      { label: "ARPU (US)", value: "$50-300", sub: "Annual rev per user" },
+      { label: "Ad Load", value: "15-25%", sub: "% feed monetized" },
+      { label: "Take Rate", value: "60%+", sub: "Top 3 share of global digital" },
+    ],
+    valuation: "Premium businesses traded at 18-30x P/E and 6-10x EV/Sales when growing 15%+. Google: ~22x P/E. Meta: ~24x P/E. Snap: 3-5x EV/Sales (no profit). Pinterest: 6-8x EV/Sales. The market pays for: scale (winner-take-most network effects), targeting/data depth, ad format innovation (Reels, Shorts), and durable moats. Discount applied for: privacy/regulatory exposure (Meta's ATT hit cost ~$10B run-rate, dropped multiple by ~30% in 2022), AI/search disruption risk (the Google/ChatGPT debate is now reflected in Alphabet's discount to Meta), and execution risk on emerging formats (Snap's chronic margin issues).",
+    goodVsBad: "GOOD: deep first-party data (logged-in users), high intent surface (search, e-commerce), large active user base (1B+ DAU), proprietary ad formats with scarce inventory (Search ads, Stories), strong attribution/measurement, owned distribution (no platform tax). BAD: relies on third-party data (cookies, IDFA — vulnerable to platform deprecation), low-intent surface needing high ad load to monetize, audience concentrated in low-ARPU geographies, high content moderation cost, dependency on iOS/Android distribution (Meta paid the Apple ATT tax — $10B+ — Snap paid an even bigger relative price).",
+    examples: [
+      { name: "Google (Search + YouTube)", detail: "~$265B ad revenue 2024. Search is intent-based (highest-eCPM ad surface ever built). YouTube is interruption ($35B+). Owns the query, the browser (Chrome), the OS (Android), and the ad-tech stack — vertical integration unmatched.", metric: "~$265B / 22x P/E" },
+      { name: "Meta (Facebook + Instagram)", detail: "~$165B ad revenue 2024. Pure interruption model — feed + Reels + Stories. AI-driven targeting (Advantage+). Recovered from ATT via on-device modeling. 3.3B family DAU — largest audience ever assembled.", metric: "~$165B / 24x P/E" },
+      { name: "Amazon Ads", detail: "~$56B revenue 2024 (fastest-growing major ad biz). Retail-intent surface — sponsored products on Amazon.com. Closes the loop on attribution (sees the actual sale). Encroaching on Google's shopping queries.", metric: "~$56B (~25%+ growth)" },
+      { name: "TikTok / ByteDance", detail: "~$20B+ US ad revenue (estimated). Algorithmic discovery feed — interruption model with engagement Meta envies. Faces regulatory/divestiture risk in US. Threat: data localization fragments the global ad business.", metric: "Private (~$20B est)" },
+      { name: "Snap", detail: "~$5B revenue. Cautionary tale of interruption-only business with weak first-party data and high iOS exposure. Has never sustained profitability. Demonstrates that scale alone isn't enough — data depth matters.", metric: "~3-5x EV/Sales" },
+    ],
+    risks: [
+      "Platform/distribution risk — Apple ATT (2021) cost Meta ~$10B run-rate; Google's privacy sandbox and cookie deprecation are the next shoe; mobile OS owners can unilaterally tax or break targeting",
+      "AI/search disruption — ChatGPT and answer engines reduce SERP queries and clicks; Google traffic acquisition costs already rising; long-term, the 'query → 10 blue links + ads' model is structurally challenged",
+      "Regulatory — DOJ won the Google search monopoly case (2024); EU DMA/DSA imposes ad transparency and self-preferencing rules; state-level privacy laws fragment targeting",
+      "Cyclicality — ad budgets are the first cut in recessions (2009 Google ads -3%, 2020 Meta paused growth); SMB advertisers especially fragile",
+      "Audience aging / shifting platform — Meta Blue's user base aging out, TikTok pulling Gen Z; chronic risk for any platform that can't refresh formats (Snap's stagnation)",
+      "Ad fraud / brand safety — invalid traffic, made-for-advertising sites, and brand-unsafe content adjacency drain budgets and trust",
+    ],
+    rewards: [
+      "Extreme operating leverage — incremental impression has near-zero marginal cost; once fixed costs (R&D, infra, content moderation) are covered, revenue drops to operating income at 60-80%",
+      "Data flywheel — every impression sharpens targeting; targeting improves conversion; better conversion attracts more advertisers; more advertisers raise auction prices — compounding moat",
+      "Network effects + scale — Google has 90%+ of search; Meta has 3.3B family DAU; the top 3 take ~75% of US digital ad spend; oligopoly economics with high barriers to entry",
+      "Intent surfaces are scarce — Google Search and Amazon Ads sit at the only two true high-intent funnels online; pricing power is structural, not competitive",
+      "Inflation pass-through — auctions reprice continuously; eCPMs rise with advertiser demand; no contracted pricing risk like SaaS",
+      "Optionality — same audience and ad-tech can monetize new formats (Reels, Shorts, CTV ads on YouTube); platform extends as user behavior shifts",
+    ],
+    sources: "Google/Alphabet 10-K, Meta 10-K, Amazon 10-K (services segment), Snap 10-K, eMarketer/Insider Intelligence digital ad spend forecasts, IAB internet advertising revenue reports, MoffettNathanson and Bernstein platform research",
+  },
 };
 
-const MODEL_ORDER = ["aircraft", "gpu", "equipment", "saas", "payments", "marketplace", "reits", "utilities", "banks", "franchise", "royalties", "datainfo", "specialty"];
+const MODEL_ORDER = ["aircraft", "gpu", "equipment", "saas", "payments", "marketplace", "ads", "reits", "utilities", "banks", "franchise", "royalties", "datainfo", "specialty"];
 
 const CATEGORIES = [
   { label: "Asset-Heavy / Leasing", keys: ["aircraft", "gpu", "equipment"], color: "#3B82F6" },
   { label: "Recurring Revenue", keys: ["saas"], color: "#10B981" },
   { label: "Toll / Take-Rate", keys: ["payments", "marketplace"], color: "#F59E0B" },
+  { label: "Attention / Intent Marketplace", keys: ["ads"], color: "#F97316" },
   { label: "Yield / Spread", keys: ["reits", "utilities", "banks", "specialty"], color: "#06B6D4" },
   { label: "Asset-Light", keys: ["franchise", "royalties", "datainfo"], color: "#A855F7" },
 ];
