@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
+import { supabase } from "./lib/supabase";
 
 const MCP_SERVERS = [
   {
@@ -194,8 +195,64 @@ const SKILLS = [
   },
 ];
 
+const ARROW = "▶";
+
+function reconstructFile(row) {
+  return `---\nname: ${row.name || ""}\ndescription: ${row.description || ""}\ntools: ${row.tools || ""}\n---\n\n${row.body || ""}\n`;
+}
+
+function PromptBody({ row, color, copied, onCopy }) {
+  if (!row) return <div style={{ marginTop: 8, fontSize: 11, color: T_.textGhost, fontFamily: "monospace" }}>Loading prompt from Supabase…</div>;
+  return (
+    <div style={{ marginTop: 8, position: "relative" }}>
+      <button
+        onClick={(e) => { e.stopPropagation(); onCopy(); }}
+        style={{
+          position: "absolute", top: 6, right: 6, zIndex: 1,
+          background: copied ? `${color}25` : "#1E293B", border: `1px solid ${color}40`,
+          color, fontSize: 10, fontFamily: "monospace", padding: "2px 8px",
+          borderRadius: 4, cursor: "pointer", letterSpacing: 0.3,
+        }}
+      >
+        {copied ? "✓ Copied" : "Copy"}
+      </button>
+      <pre style={{
+        margin: 0, padding: 12, background: "#0B1120", border: `1px solid ${color}30`,
+        borderRadius: 6, fontSize: 11, lineHeight: 1.55, color: "#CBD5E1",
+        fontFamily: "ui-monospace, Menlo, Consolas, monospace",
+        whiteSpace: "pre-wrap", wordBreak: "break-word", maxHeight: 480, overflow: "auto",
+      }}>{reconstructFile(row)}</pre>
+    </div>
+  );
+}
+
 export default function AgentsTools() {
   const [expanded, setExpanded] = useState(null);
+  const [rows, setRows] = useState({});
+  const [copied, setCopied] = useState(null);
+
+  const copyPrompt = (id) => {
+    const row = rows[id];
+    if (!row) return;
+    navigator.clipboard.writeText(reconstructFile(row));
+    setCopied(id);
+    setTimeout(() => setCopied(null), 1500);
+  };
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const { data, error } = await supabase
+        .from("agent_definitions")
+        .select("id, name, description, tools, body");
+      if (cancelled) return;
+      if (error) { console.error("Failed to load agent prompts:", error.message); return; }
+      const map = {};
+      for (const r of data || []) map[r.id] = r;
+      setRows(map);
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   return (
     <div style={{ padding: "36px 44px", fontFamily: FONT }}>
@@ -207,56 +264,62 @@ export default function AgentsTools() {
       <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 14 }}>
           Agents
-          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/agents/</span>
+          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/agents/ — click any row to view & copy its prompt</span>
         </div>
 
-        {AGENTS.map(agent => (
-          <div key={agent.name} style={{ marginBottom: 6 }}>
-            <div
-              style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: agent.expandable ? "pointer" : "default" }}
-              onClick={agent.expandable ? () => setExpanded(expanded === agent.name ? null : agent.name) : undefined}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                <span style={{ fontSize: 13, fontWeight: 700, color: agent.color, fontFamily: "monospace" }}>@{agent.name}</span>
-                <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{agent.desc}</span>
-                {agent.expandable && (
-                  <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === agent.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+        {AGENTS.map(agent => {
+          const isOpen = expanded === agent.name;
+          return (
+            <div key={agent.name} style={{ marginBottom: 6 }}>
+              <div
+                style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: "pointer" }}
+                onClick={() => setExpanded(isOpen ? null : agent.name)}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: agent.color, fontFamily: "monospace" }}>@{agent.name}</span>
+                  <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{agent.desc}</span>
+                  <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: isOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{ARROW}</span>
+                </div>
+                <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
+                  <span><span style={{ fontWeight: 600, color: T_.textDim }}>Usage:</span> <span style={{ fontFamily: "monospace", color: agent.color, background: `${agent.color}10`, padding: "1px 5px", borderRadius: 3 }}>{agent.usage}</span></span>
+                  <span><span style={{ fontWeight: 600, color: T_.textDim }}>Tools:</span> {agent.tools}</span>
+                  <span><span style={{ fontWeight: 600, color: T_.textDim }}>Mode:</span> {agent.mode}</span>
+                </div>
+                {isOpen && (
+                  <div onClick={(e) => e.stopPropagation()}>
+                    <PromptBody row={rows[agent.name]} color={agent.color} copied={copied === agent.name} onCopy={() => copyPrompt(agent.name)} />
+                  </div>
                 )}
               </div>
-              <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
-                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Usage:</span> <span style={{ fontFamily: "monospace", color: agent.color, background: `${agent.color}10`, padding: "1px 5px", borderRadius: 3 }}>{agent.usage}</span></span>
-                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Tools:</span> {agent.tools}</span>
-                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Mode:</span> {agent.mode}</span>
-              </div>
-            </div>
 
-            {/* Expanded CLI tools for third-party-research */}
-            {agent.expandable && expanded === agent.name && (
-              <div style={{ marginTop: 4, marginLeft: 16, borderLeft: `2px solid ${agent.color}30`, paddingLeft: 14 }}>
-                {CLI_TOOLS.map(tool => (
-                  <div key={tool.name} style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, padding: "10px 14px", marginBottom: 6 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                      <span style={{ fontSize: 12, fontWeight: 700, color: "#E2E8F0" }}>{tool.name}</span>
-                      <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>{tool.path}</span>
+              {/* Expanded CLI tools for third-party-research */}
+              {agent.expandable && isOpen && (
+                <div style={{ marginTop: 4, marginLeft: 16, borderLeft: `2px solid ${agent.color}30`, paddingLeft: 14 }}>
+                  {CLI_TOOLS.map(tool => (
+                    <div key={tool.name} style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, padding: "10px 14px", marginBottom: 6 }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: "#E2E8F0" }}>{tool.name}</span>
+                        <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>{tool.path}</span>
+                      </div>
+                      <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 6 }}>{tool.desc}</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 14px" }}>
+                        {tool.cmds.map(c => (
+                          <span key={c.cmd} style={{ fontSize: 11, color: "#94A3B8" }}>
+                            <code style={{ color: "#E2E8F0", fontFamily: "monospace", fontSize: 11 }}>{c.cmd}</code>
+                            <span style={{ color: "#64748B" }}> — {c.desc}</span>
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 6 }}>{tool.desc}</div>
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 14px" }}>
-                      {tool.cmds.map(c => (
-                        <span key={c.cmd} style={{ fontSize: 11, color: "#94A3B8" }}>
-                          <code style={{ color: "#E2E8F0", fontFamily: "monospace", fontSize: 11 }}>{c.cmd}</code>
-                          <span style={{ color: "#64748B" }}> — {c.desc}</span>
-                        </span>
-                      ))}
-                    </div>
+                  ))}
+                  <div style={{ fontSize: 10, color: T_.textGhost, lineHeight: 1.5, marginTop: 2, marginBottom: 4 }}>
+                    Sessions expire periodically. Re-login: tell Claude "re-login to [tool name]" and complete the login in the browser window.
                   </div>
-                ))}
-                <div style={{ fontSize: 10, color: T_.textGhost, lineHeight: 1.5, marginTop: 2, marginBottom: 4 }}>
-                  Sessions expire periodically. Re-login: tell Claude "re-login to [tool name]" and complete the login in the browser window.
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
+              )}
+            </div>
+          );
+        })}
 
         {/* ── Skills (slash commands) ── */}
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10, marginTop: 16 }}>
@@ -264,18 +327,32 @@ export default function AgentsTools() {
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/skills/ — invoke with /name</span>
         </div>
 
-        {SKILLS.map(skill => (
-          <div key={skill.name} style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", marginBottom: 6 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-              <span style={{ fontSize: 13, fontWeight: 700, color: skill.color, fontFamily: "monospace" }}>{skill.usage}</span>
-              <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{skill.desc}</span>
+        {SKILLS.map(skill => {
+          const skillId = `skill-${skill.name}`;
+          const isOpen = expanded === skillId;
+          return (
+            <div
+              key={skill.name}
+              style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", marginBottom: 6, cursor: "pointer" }}
+              onClick={() => setExpanded(isOpen ? null : skillId)}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+                <span style={{ fontSize: 13, fontWeight: 700, color: skill.color, fontFamily: "monospace" }}>{skill.usage}</span>
+                <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{skill.desc}</span>
+                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: isOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{ARROW}</span>
+              </div>
+              <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Tools:</span> {skill.tools}</span>
+                <span><span style={{ fontWeight: 600, color: T_.textDim }}>Mode:</span> {skill.mode}</span>
+              </div>
+              {isOpen && (
+                <div onClick={(e) => e.stopPropagation()}>
+                  <PromptBody row={rows[skillId]} color={skill.color} copied={copied === skillId} onCopy={() => copyPrompt(skillId)} />
+                </div>
+              )}
             </div>
-            <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
-              <span><span style={{ fontWeight: 600, color: T_.textDim }}>Tools:</span> {skill.tools}</span>
-              <span><span style={{ fontWeight: 600, color: T_.textDim }}>Mode:</span> {skill.mode}</span>
-            </div>
-          </div>
-        ))}
+          );
+        })}
 
         {/* ── MCP Servers ── */}
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10, marginTop: 16 }}>
@@ -299,7 +376,7 @@ export default function AgentsTools() {
                 }}>{mcp.status === "connected" ? "CONNECTED" : "NEEDS AUTH"}</span>
                 <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{mcp.desc}</span>
                 {mcp.tools.length > 0 && (
-                  <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "mcp-" + mcp.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+                  <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "mcp-" + mcp.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{ARROW}</span>
                 )}
               </div>
               <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
@@ -335,7 +412,7 @@ export default function AgentsTools() {
                 <span style={{ fontSize: 13, fontWeight: 700, color: tool.color, fontFamily: "monospace" }}>{tool.name}</span>
                 <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>v{tool.version}</span>
                 <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{tool.desc}</span>
-                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "tool-" + tool.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{"\u25B6"}</span>
+                <span style={{ fontSize: 10, color: T_.textGhost, transition: "transform .15s", transform: expanded === "tool-" + tool.name ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>{ARROW}</span>
               </div>
               <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
                 <span><span style={{ fontWeight: 600, color: T_.textDim }}>Install:</span> <span style={{ fontFamily: "monospace" }}>{tool.install}</span></span>
