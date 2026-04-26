@@ -108,7 +108,15 @@
       "WebFetch(domain:hedgefollow.com)",
       "WebFetch(domain:www.insidermonkey.com)",
       "WebFetch(domain:stockcircle.com)",
-      "Bash(winget upgrade:*)"
+      "Bash(winget upgrade:*)",
+      "Bash(vercel dev *)",
+      "Bash(echo \"started PID $!\")",
+      "Bash(\"/c/Program Files/Google/Chrome/Application/chrome.exe\" http://localhost:5173/)",
+      "Bash(awk 'NR<137 || NR>271' src/components/DashboardTab.jsx)",
+      "Bash(mv /tmp/dt.tmp src/components/DashboardTab.jsx)",
+      "WebFetch(domain:open.substack.com)",
+      "WebFetch(domain:insights.trendforce.com)",
+      "WebFetch(domain:fundaai.substack.com)"
     ]
   }
 }

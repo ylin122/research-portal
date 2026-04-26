@@ -1,11 +1,5 @@
 {
-  "enabledPlugins": {
-    "vercel@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {},
-  "autoUpdatesChannel": "latest",
   "enableAllProjectMcpServers": true,
-  "effortLevel": "xhigh",
   "hooks": {
     "SessionStart": [
       {
@@ -30,5 +24,12 @@
         ]
       }
     ]
-  }
+  },
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
+  "effortLevel": "xhigh",
+  "autoUpdatesChannel": "latest",
+  "theme": "light"
 }
