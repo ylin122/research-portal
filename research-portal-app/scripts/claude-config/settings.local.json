@@ -116,7 +116,16 @@
       "Bash(mv /tmp/dt.tmp src/components/DashboardTab.jsx)",
       "WebFetch(domain:open.substack.com)",
       "WebFetch(domain:insights.trendforce.com)",
-      "WebFetch(domain:fundaai.substack.com)"
+      "WebFetch(domain:fundaai.substack.com)",
+      "Bash(consistency\")",
+      "Bash(cmd /c start chrome http://localhost:5174/)",
+      "PowerShell(Get-Process -Id 24808, 8696, 26228 2>$null | Select-Object Id, ProcessName, Path, StartTime, @{N='WSet\\(MB\\)';E={[math]::Round\\($_.WorkingSet64/1MB,1\\)}} | Format-Table -AutoSize)",
+      "PowerShell(Get-CimInstance *)",
+      "Bash(cp /c/Users/ylin1/.claude/mcp-config.json /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/mcp-config.json)",
+      "Bash(cp /c/Users/ylin1/.claude/settings.json /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/settings.json)",
+      "Bash(cp /c/Users/ylin1/.claude/settings.local.json /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/settings.local.json)",
+      "Bash(cp /c/Users/ylin1/.claude/hooks/log-subagent-run.cjs /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/hooks/log-subagent-run.cjs)",
+      "Bash(cp '/c/Users/ylin1/.claude/projects/C--Users-ylin1/memory/*.md' /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/memory/)"
     ]
   }
 }
