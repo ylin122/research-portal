@@ -14,6 +14,7 @@ const supabase = createClient(
 );
 
 const AGENTS_DIR = path.join(require('os').homedir(), '.claude', 'agents');
+const SKILLS_DIR = path.join(require('os').homedir(), '.claude', 'skills');
 
 function toMd({ name, description, tools, body }) {
   return `---\nname: ${name}\ndescription: ${description}\ntools: ${tools}\n---\n\n${body}\n`;
@@ -50,15 +51,24 @@ function toMd({ name, description, tools, body }) {
   if (!data || data.length === 0) { console.log('No agents found in Supabase.'); return; }
 
   fs.mkdirSync(AGENTS_DIR, { recursive: true });
+  fs.mkdirSync(SKILLS_DIR, { recursive: true });
 
   // Track which files came from Supabase
   const supabaseIds = new Set();
 
-  for (const agent of data) {
-    const filePath = path.join(AGENTS_DIR, `${agent.id}.md`);
-    fs.writeFileSync(filePath, toMd(agent), 'utf-8');
-    supabaseIds.add(`${agent.id}.md`);
-    console.log(`  OK: ${agent.id}.md`);
+  for (const row of data) {
+    if (row.id.startsWith('skill-')) {
+      const skillName = row.id.replace(/^skill-/, '');
+      const skillDir = path.join(SKILLS_DIR, skillName);
+      fs.mkdirSync(skillDir, { recursive: true });
+      fs.writeFileSync(path.join(skillDir, 'SKILL.md'), toMd(row), 'utf-8');
+      console.log(`  OK: skills/${skillName}/SKILL.md`);
+    } else {
+      const filePath = path.join(AGENTS_DIR, `${row.id}.md`);
+      fs.writeFileSync(filePath, toMd(row), 'utf-8');
+      supabaseIds.add(`${row.id}.md`);
+      console.log(`  OK: ${row.id}.md`);
+    }
   }
 
   // Check for local-only agents (exist on disk but not in Supabase)

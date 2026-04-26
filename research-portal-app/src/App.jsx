@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react";
 const Primer = lazy(() => import("./Primer"));
+const ProductPrimer = lazy(() => import("./ProductPrimer"));
 const AIDisruption = lazy(() => import("./AIDisruption"));
 import NotesIdeasAgent from "./NotesIdeasAgent";
 import AgentsTools from "./AgentsTools";
@@ -402,6 +403,7 @@ function AppContent() {
                   { key: "semicapex", label: "Semi Capex" },
                   { key: "compute", label: "Compute" },
                   { key: "chiproadmap", label: "GPU/ASIC" },
+                  { key: "cpuroadmap", label: "CPU" },
                   { key: "aiinfra", label: "AI Infrastructure" },
                   { key: "foundry", label: "Foundry" },
                 ].map(tab => {
@@ -535,6 +537,16 @@ function AppContent() {
             <span>Restructuring</span>
           </div>
 
+          {/* Product / Service Primer */}
+          <div style={{ ...s.sectorHdr, color: view.type === "productPrimer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "productPrimer" }); setEditingField(null); }}>
+            <span>Product / Service Primer</span>
+          </div>
+
+          {/* Industry Primer */}
+          <div style={{ ...s.sectorHdr, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
+            <span>Industry Primer</span>
+          </div>
+
           {/* Case Studies */}
           <div style={{ ...s.sectorHdr, color: view.type === "caseStudies" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "caseStudies" }); setEditingField(null); }}>
             <span>Case Studies</span>
@@ -558,11 +570,6 @@ function AppContent() {
           {/* Financial Instruments */}
           <div style={{ ...s.sectorHdr, color: view.type === "creditInstruments" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "creditInstruments" }); setEditingField(null); }}>
             <span>Financial Instruments</span>
-          </div>
-
-          {/* Industry Primer */}
-          <div style={{ ...s.sectorHdr, color: view.type === "primer" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "primer" }); setEditingField(null); }}>
-            <span>Industry Primer</span>
           </div>
 
           {/* Sources */}
@@ -643,6 +650,7 @@ function AppContent() {
 
         {/* PRIMER */}
         {view.type === "primer" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><Primer initialTab={view.sub} /></Suspense>}
+        {view.type === "productPrimer" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><ProductPrimer /></Suspense>}
 
         {/* AI DISRUPTION */}
         {view.type === "aidisruption" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><AIDisruption companies={companies} initialTab={view.sub} /></Suspense>}

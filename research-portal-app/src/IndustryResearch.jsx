@@ -763,6 +763,75 @@ const CHIP_ROADMAP = [
   { vendor: "OpenAI", type: "ASIC", chip: "Titan (Custom ASIC w/ Broadcom)", arch: "Custom", node: "N3", year: 2026, status: "In Development", vram: 0, hbm: "HBM4", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "TBD", notes: "Broadcom co-design (18+ months), TSMC N3 fab, Samsung HBM4 (exclusive deal, Mar 2026). $10B Broadcom order. Deployment H2 2026 thru 2029. 2nd-gen planned on TSMC A16.", color: "#6366F1" },
 ];
 
+// CPU Industry News — Update during refresh
+const CPU_NEWS = [
+  { date: "Apr 14", text: "TrendForce: agentic AI is reshaping the CPU:GPU ratio. Traditional 1:4-1:8 → agentic 1:1-1:2. CPU demand surge from ~30M to ~120M cores per GW (4x). Tool processing accounts for up to 90.6% of agent latency at large batch sizes (TrendForce Insights)." },
+  { date: "Apr 14", text: "TrendForce: tool processing is CPU-bound, not GPU-bound. CPU dynamic energy at 44% of total at large batch sizes. Validates the structural CPU re-rating thesis for agentic deployments." },
+  { date: "Mar 24", text: "Arm Holdings unveils first in-house CPU (Arm AGI CPU) — 136 cores, TSMC N3, 300W TDP. Ends 35-year licensing-only model. Launch partners: Meta, OpenAI, Cerebras, Cloudflare, F5, SAP, SK Telecom. Raymond James upgrade to Outperform $166 PT (CNBC)." },
+  { date: "Mar 18", text: "Nvidia begins selling Vera CPU as standalone product. 88-core Olympus Arm core, TSMC N3, 1.8 TB/s NVLink-C2C. Launch partners: Alibaba, ByteDance, Cloudflare, CoreWeave, Crusoe, Lambda, Nebius, Oracle, Together.AI, Vultr (Nvidia)." },
+  { date: "Feb 22", text: "Intel and AMD raise CPU prices across select server lines in Q1 2026 in response to surging agentic-AI-driven demand. AMD positioned to gain share if Intel 18A yields slip (Tom's Hardware, Reuters)." },
+  { date: "Jan 17", text: "Intel Clearwater Forest (Xeon 6+, 288 E-cores, Intel 18A, ~450W) yield issues threaten H2 2026 launch. Production delays possible until 2027. Diamond Rapids (Xeon 7, 256 P-cores) at risk on same 18A capacity. AMD Venice (256C/512T, TSMC N2) on track (TrendForce, Intel)." },
+  { date: "Dec 8 2025", text: "AWS Graviton5 launched — 192 cores, TSMC N3, Neoverse V3. Now default for new EC2 instance types. AWS continues annual cadence: Graviton (2018), G2 64C/N1 (2019), G3 64C/V1 (2021), G4 96C/V2 (2024), G5 192C/V3 (2025) (AWS, Anandtech)." },
+  { date: "Nov 18 2025", text: "Microsoft Cobalt 200 launched — 132 cores, TSMC N3, ARM CSS-V3. Successor to Cobalt 100 (Nov 2023, 128C Neoverse N2). Pairs with Maia 200 inference accelerator on Azure (Microsoft, ServeTheHome)." },
+  { date: "Oct 10 2024", text: "AMD EPYC 9005 'Turin' (Zen 5) ships — up to 192C/384T on TSMC 3nm. AMD reaches ~30% server CPU revenue share by Q1 2026, gaining ~5pts on Intel since Sapphire Rapids delays (AMD)." },
+  { date: "Sep 24 2024", text: "Intel Xeon 6 P-core 'Granite Rapids' ships — up to 128C/256T on Intel 3, 12-channel DDR5/MRDIMM, AMX FP16. Currently the agentic-era mainstream Xeon (Intel)." },
+  { date: "Apr 9 2024", text: "Google Axion C4A launched — first Google in-house CPU. 96 cores Neoverse V2, TSMC 5nm, available on GCP. Joins AWS and MSFT in hyperscaler in-house silicon (Google Cloud Next)." },
+  { date: "Aug 1 2023", text: "AmpereOne launches — 192-core Arm CPU on TSMC 5nm, custom (non-Neoverse) cores. Adopted by Oracle, MSFT (legacy Azure), Tencent. AmpereOne MX (256 cores) expected H2 2026." },
+];
+
+// CPU Release Roadmap — Tracked vendors: Intel, AMD, NVIDIA, ARM, Ampere, AWS, Microsoft, Google, Alibaba
+// Sources: TrendForce, vendor announcements, Tom's Hardware, ServeTheHome, AnandTech, hyperscaler product pages
+const CPU_ROADMAP = [
+  // INTEL
+  { vendor: "Intel", chip: "Cooper Lake", arch: "Cascade Lake-R", node: "14nm++", year: 2020, status: "EOL", isa: "x86-64", cores: 28, threads: 56, channels: "6 ch DDR4", pcie: "48 Gen3", l3: "38.5 MB", tdp: 250, link: "—", system: "3rd gen Xeon SP (4S)", notes: "Pre-AI-era 4-socket workhorse. EOL but installed base still large.", color: "#0EA5E9" },
+  { vendor: "Intel", chip: "Ice Lake-SP", arch: "Sunny Cove", node: "10nm SuperFin", year: 2021, status: "EOL", isa: "x86-64", cores: 40, threads: 80, channels: "8 ch DDR4", pcie: "64 Gen4", l3: "60 MB", tdp: 270, link: "—", system: "3rd gen Xeon SP", notes: "First 10nm Xeon. Added AVX-512 + early AI extensions. Still deployed in older fleets.", color: "#0EA5E9" },
+  { vendor: "Intel", chip: "Sapphire Rapids", arch: "Golden Cove", node: "Intel 7", year: 2023, status: "Shipping", isa: "x86-64", cores: 60, threads: 120, channels: "8 ch DDR5", pcie: "80 Gen5", l3: "112.5 MB", tdp: 350, link: "CXL 1.1", system: "4th gen Xeon", notes: "First AMX (AI matrix accel) Xeon. First DDR5 + PCIe Gen5. The first 'AI-aware' Xeon. Delayed to 2023.", color: "#0EA5E9" },
+  { vendor: "Intel", chip: "Emerald Rapids", arch: "Raptor Cove", node: "Intel 7", year: 2023, status: "Shipping", isa: "x86-64", cores: 64, threads: 128, channels: "8 ch DDR5", pcie: "80 Gen5", l3: "320 MB", tdp: 350, link: "CXL 1.1", system: "5th gen Xeon", notes: "MCM refresh of SPR. 3x L3 cache. Same socket. Inference-optimized via AMX.", color: "#0284C7" },
+  { vendor: "Intel", chip: "Sierra Forest (Xeon 6 E)", arch: "Crestmont (E-core)", node: "Intel 3", year: 2024, status: "Shipping", isa: "x86-64", cores: 288, threads: 288, channels: "12 ch DDR5", pcie: "88 Gen5", l3: "108 MB", tdp: 500, link: "CXL 2.0", system: "Xeon 6 6900E", notes: "First cloud-optimized E-core-only Xeon. 288 cores in single socket. No SMT. Highest x86 density.", color: "#0EA5E9" },
+  { vendor: "Intel", chip: "Granite Rapids (Xeon 6 P)", arch: "Redwood Cove (P-core)", node: "Intel 3", year: 2024, status: "Shipping", isa: "x86-64", cores: 128, threads: 256, channels: "12 ch DDR5/MRDIMM", pcie: "96 Gen5", l3: "504 MB", tdp: 500, link: "CXL 2.0", system: "Xeon 6 6900P", notes: "P-core flagship. AMX FP16. MRDIMM bandwidth uplift. Currently shipping mainstream agentic-era Xeon.", color: "#0EA5E9" },
+  { vendor: "Intel", chip: "Clearwater Forest (Xeon 6+)", arch: "Darkmont (E-core)", node: "Intel 18A", year: 2026, status: "H2 2026", isa: "x86-64", cores: 288, threads: 288, channels: "12 ch DDR5/MRDIMM", pcie: "96 Gen5", l3: "—", tdp: 450, link: "CXL 3.0", system: "Xeon 6+", notes: "First Intel 18A product. Yield issues threaten launch — possible slip to 2027. 288 cores.", color: "#0369A1" },
+  { vendor: "Intel", chip: "Diamond Rapids (Xeon 7)", arch: "Panther Cove (P-core)", node: "Intel 18A", year: 2026, status: "Sampling", isa: "x86-64", cores: 256, threads: 256, channels: "16 ch DDR5/MRDIMM", pcie: "96 Gen6", l3: "—", tdp: 650, link: "CXL 3.0 + UALink", system: "Xeon 7", notes: "P-core flagship on 18A. 16 memory channels. Up to 650W. Yield-dependent — could slip to 2027.", color: "#0369A1" },
+
+  // AMD
+  { vendor: "AMD", chip: "EPYC 7003 (Milan)", arch: "Zen 3", node: "TSMC 7nm", year: 2021, status: "EOL", isa: "x86-64", cores: 64, threads: 128, channels: "8 ch DDR4", pcie: "128 Gen4", l3: "256 MB", tdp: 280, link: "—", system: "EPYC 'Milan'", notes: "AMD's mainstream cloud chip pre-Genoa. Drove early AMD share gains.", color: "#EF4444" },
+  { vendor: "AMD", chip: "EPYC 9004 (Genoa)", arch: "Zen 4", node: "TSMC 5nm", year: 2022, status: "Shipping", isa: "x86-64", cores: 96, threads: 192, channels: "12 ch DDR5", pcie: "128 Gen5", l3: "384 MB", tdp: 360, link: "CXL 1.1+", system: "EPYC 'Genoa'", notes: "First DDR5/PCIe Gen5 EPYC. Drove AMD's surge to 25%+ server share by 2024.", color: "#EF4444" },
+  { vendor: "AMD", chip: "EPYC 9754 (Bergamo)", arch: "Zen 4c", node: "TSMC 5nm", year: 2023, status: "Shipping", isa: "x86-64", cores: 128, threads: 256, channels: "12 ch DDR5", pcie: "128 Gen5", l3: "256 MB", tdp: 360, link: "CXL 1.1+", system: "EPYC 'Bergamo'", notes: "Cloud-native Zen 4c (smaller, denser cores). Major hyperscaler wins (Meta, Google, MSFT).", color: "#DC2626" },
+  { vendor: "AMD", chip: "EPYC 9005 (Turin)", arch: "Zen 5 / Zen 5c", node: "TSMC 3nm", year: 2024, status: "Shipping", isa: "x86-64", cores: 192, threads: 384, channels: "12 ch DDR5", pcie: "128 Gen5", l3: "384 MB", tdp: 500, link: "CXL 2.0", system: "EPYC 'Turin'", notes: "Currently shipping flagship. Up to 192C/384T. AMD ~30% server CPU revenue share Q1 2026.", color: "#EF4444" },
+  { vendor: "AMD", chip: "EPYC Venice", arch: "Zen 6", node: "TSMC N2", year: 2026, status: "H2 2026", isa: "x86-64", cores: 256, threads: 512, channels: "16 ch DDR5/MRDIMM", pcie: "96 Gen6", l3: "—", tdp: 600, link: "CXL 3.0 + Infinity Fabric", system: "EPYC 'Venice'", notes: "First TSMC N2 EPYC. 256C/512T (highest thread count). Direct Diamond Rapids competitor — wins by default if Intel 18A slips.", color: "#B91C1C" },
+
+  // NVIDIA
+  { vendor: "NVIDIA", chip: "Grace", arch: "Neoverse V2", node: "TSMC 4N", year: 2023, status: "Shipping", isa: "Arm v9", cores: 72, threads: 72, channels: "LPDDR5X 480GB", pcie: "—", l3: "117 MB", tdp: 500, link: "NVLink-C2C 900 GB/s", system: "Grace Hopper / Grace-Blackwell", notes: "Originally bundled with Hopper/Blackwell as Superchip (GH200, GB200). Not sold standalone until Vera.", color: "#10B981" },
+  { vendor: "NVIDIA", chip: "Vera", arch: "Olympus (custom Arm)", node: "TSMC N3", year: 2026, status: "Shipping", isa: "Arm v9", cores: 88, threads: 176, channels: "LPDDR5X", pcie: "Gen6", l3: "—", tdp: 0, link: "NVLink-C2C 1.8 TB/s", system: "Vera Rubin / standalone Mar 2026", notes: "Sold standalone for first time (Mar 2026). 88C custom Olympus core. NVLink-C2C 2x Grace.", color: "#10B981" },
+  { vendor: "NVIDIA", chip: "Rosa", arch: "Custom Arm", node: "TSMC A16 (1.6nm)", year: 2028, status: "Announced", isa: "Arm v9+", cores: 0, threads: 0, channels: "TBD", pcie: "TBD", l3: "—", tdp: 0, link: "NVLink-7 + optical", system: "Feynman platform", notes: "Successor to Vera. Part of Feynman 2028 platform with 3D-stacked GPU dies and silicon photonics.", color: "#059669" },
+
+  // ARM
+  { vendor: "ARM", chip: "Neoverse V2 (IP)", arch: "Demeter", node: "—", year: 2023, status: "Licensed", isa: "Arm v9", cores: 0, threads: 0, channels: "—", pcie: "—", l3: "—", tdp: 0, link: "—", system: "Used by Grace, Graviton4, Axion C4A", notes: "Reference IP cores — not a chip. Powers Nvidia Grace, AWS Graviton4, Google Axion C4A. Per-core royalty model.", color: "#A855F7" },
+  { vendor: "ARM", chip: "Neoverse V3 / Poseidon (IP)", arch: "Poseidon", node: "—", year: 2024, status: "Licensed", isa: "Arm v9.2", cores: 0, threads: 0, channels: "—", pcie: "—", l3: "—", tdp: 0, link: "—", system: "Used by Graviton5, Cobalt 200", notes: "Latest reference IP. Powers Graviton5 + Cobalt 200. ARM CSS (Compute SubSystem) speeds CSP design cycles.", color: "#A855F7" },
+  { vendor: "ARM", chip: "Arm AGI CPU", arch: "Custom Arm", node: "TSMC N3", year: 2026, status: "Shipping", isa: "Arm v9", cores: 136, threads: 136, channels: "DDR5", pcie: "Gen5", l3: "—", tdp: 300, link: "—", system: "Arm AGI platform", notes: "First in-house ARM CPU (Mar 2026). Ends 35-yr licensing-only model. Launch partners: Meta, OpenAI, Cerebras, Cloudflare, F5, SAP, SK Telecom.", color: "#7E22CE" },
+
+  // AMPERE
+  { vendor: "Ampere", chip: "Altra Q80-30", arch: "Neoverse N1", node: "TSMC 7nm", year: 2020, status: "Shipping", isa: "Arm v8", cores: 80, threads: 80, channels: "8 ch DDR4", pcie: "128 Gen4", l3: "32 MB", tdp: 210, link: "—", system: "Ampere Altra", notes: "First merchant Arm DC CPU at scale. Adopted by Oracle, MSFT, Tencent.", color: "#F97316" },
+  { vendor: "Ampere", chip: "Altra Max M128-30", arch: "Neoverse N1", node: "TSMC 7nm", year: 2021, status: "Shipping", isa: "Arm v8", cores: 128, threads: 128, channels: "8 ch DDR4", pcie: "128 Gen4", l3: "16 MB", tdp: 250, link: "—", system: "Ampere Altra Max", notes: "Density variant. Up to 128 cores per socket. Cloud-targeted.", color: "#F97316" },
+  { vendor: "Ampere", chip: "AmpereOne", arch: "Custom Arm", node: "TSMC 5nm", year: 2023, status: "Shipping", isa: "Arm v8.6", cores: 192, threads: 192, channels: "8 ch DDR5", pcie: "128 Gen5", l3: "64 MB", tdp: 350, link: "—", system: "AmpereOne A192", notes: "First custom-core Ampere CPU (no Neoverse). Cloud-optimized.", color: "#EA580C" },
+  { vendor: "Ampere", chip: "AmpereOne MX", arch: "Custom Arm", node: "TSMC 3nm", year: 2026, status: "H2 2026", isa: "Arm v9", cores: 256, threads: 256, channels: "12 ch DDR5", pcie: "Gen5", l3: "—", tdp: 0, link: "—", system: "AmpereOne MX", notes: "256-core successor. Faces stiff competition from hyperscaler in-house silicon.", color: "#C2410C" },
+
+  // AWS
+  { vendor: "AWS", chip: "Graviton2", arch: "Neoverse N1", node: "TSMC 7nm", year: 2020, status: "Shipping", isa: "Arm v8", cores: 64, threads: 64, channels: "8 ch DDR4", pcie: "64 Gen4", l3: "32 MB", tdp: 100, link: "—", system: "M6g/C6g/R6g", notes: "First mainstream Arm cloud CPU at scale. Up to 40% better price-perf vs x86. Enabled hyperscaler in-house CPU era.", color: "#F59E0B" },
+  { vendor: "AWS", chip: "Graviton3", arch: "Neoverse V1", node: "TSMC 5nm", year: 2021, status: "Shipping", isa: "Arm v8.4", cores: 64, threads: 64, channels: "8 ch DDR5", pcie: "64 Gen5", l3: "32 MB", tdp: 100, link: "—", system: "C7g/M7g/R7g", notes: "First DDR5/PCIe Gen5 Arm cloud CPU. SVE for ML inference. 25% better perf than G2.", color: "#F59E0B" },
+  { vendor: "AWS", chip: "Graviton4", arch: "Neoverse V2", node: "TSMC 4nm", year: 2024, status: "Shipping", isa: "Arm v9", cores: 96, threads: 96, channels: "12 ch DDR5", pcie: "96 Gen5", l3: "36 MB", tdp: 0, link: "—", system: "R8g/M8g/C8g", notes: "Up to 96 cores. SVE2. 50% more cores than G3, 75% more memory bandwidth.", color: "#F59E0B" },
+  { vendor: "AWS", chip: "Graviton5", arch: "Neoverse V3", node: "TSMC N3", year: 2025, status: "Shipping", isa: "Arm v9.2", cores: 192, threads: 192, channels: "12 ch DDR5", pcie: "96 Gen5", l3: "—", tdp: 0, link: "—", system: "Next-gen EC2 (Dec 2025)", notes: "Launched Dec 2025. 192 cores. Annual cadence intact. Default for new EC2 deployments.", color: "#D97706" },
+
+  // MICROSOFT
+  { vendor: "Microsoft", chip: "Cobalt 100", arch: "Neoverse N2 (CSS-N2)", node: "TSMC 5nm", year: 2023, status: "Shipping", isa: "Arm v9", cores: 128, threads: 128, channels: "12 ch DDR5", pcie: "Gen5", l3: "—", tdp: 0, link: "—", system: "Azure Dpsv6/Epsv6 VMs", notes: "MSFT's first in-house CPU (Nov 2023). ARM CSS-based design (faster time-to-market). Powers Azure Arm VMs.", color: "#8B5CF6" },
+  { vendor: "Microsoft", chip: "Cobalt 200", arch: "Neoverse V3 (CSS-V3)", node: "TSMC N3", year: 2025, status: "Shipping", isa: "Arm v9.2", cores: 132, threads: 132, channels: "12 ch DDR5", pcie: "Gen5", l3: "—", tdp: 0, link: "—", system: "Azure VMs (next-gen)", notes: "Launched Nov 2025. ARM CSS-V3 cores. Pairs with Maia 200 inference accelerator.", color: "#7C3AED" },
+
+  // GOOGLE
+  { vendor: "Google", chip: "Axion C4A", arch: "Neoverse V2 (CSS-V2)", node: "TSMC 5nm", year: 2024, status: "Shipping", isa: "Arm v9", cores: 96, threads: 96, channels: "8 ch DDR5", pcie: "Gen5", l3: "—", tdp: 0, link: "—", system: "GCP C4A VMs", notes: "Google's first in-house CPU (Apr 2024). Available on GCP for general compute. 2026 expansion planned.", color: "#3B82F6" },
+
+  // ALIBABA
+  { vendor: "Alibaba", chip: "Yitian 710", arch: "Neoverse N2", node: "TSMC 5nm", year: 2021, status: "Shipping", isa: "Arm v9", cores: 128, threads: 128, channels: "8 ch DDR5", pcie: "96 Gen5", l3: "—", tdp: 0, link: "—", system: "Alibaba Cloud ECS Y series", notes: "First major Chinese hyperscaler in-house Arm CPU. Powers Alibaba Cloud DCs. Yitian 720 rumored 2026.", color: "#DC2626" },
+];
+
 const NEOCLOUD_DATA = [
   { name: "CoreWeave", ticker: "CRWV", status: "Public (Nasdaq, IPO Mar 2025 at $40)", valuation: "$55B+", founded: 2017, hq: "Livingston, NJ",
     power: { connected: "850 MW", contracted: "3.1 GW" }, gpus: "250K+ (H100/H200/GB200/GB300)", backlog: "$88B",
@@ -1184,6 +1253,9 @@ export default function IndustryResearch({ initialTab }) {
   const [chipVendorFilter, setChipVendorFilter] = useState("All");
   const [chipDeliverySort, setChipDeliverySort] = useState({ key: "shipDate", dir: "desc" });
   const [chipHistSort, setChipHistSort] = useState({ key: "q", dir: "desc" });
+  const [cpuVendorFilter, setCpuVendorFilter] = useState("All");
+  const [cpuDeliverySort, setCpuDeliverySort] = useState({ key: "shipDate", dir: "desc" });
+  const [cpuHistSort, setCpuHistSort] = useState({ key: "q", dir: "desc" });
   const [llmLabFilter, setLlmLabFilter] = useState("All");
   const [llmTableSort, setLlmTableSort] = useState({ key: "date", dir: "desc" });
   const [neocloudSort, setNeocloudSort] = useState({ key: "backlog", dir: "desc" });
@@ -1245,31 +1317,8 @@ export default function IndustryResearch({ initialTab }) {
   // Stub holdings as empty for supply chain map (research portal has no portfolio)
   const holdings = [];
 
-  const tabs = [
-    { key: "ailabs", label: "AI Labs" },
-    { key: "ainative", label: "AI-Native" },
-    { key: "capex", label: "AI Capex" },
-    { key: "semicapex", label: "Semi Capex" },
-    { key: "compute", label: "Compute" },
-    { key: "chiproadmap", label: "GPU/ASIC" },
-    { key: "aiinfra", label: "AI Infrastructure" },
-    { key: "foundry", label: "Foundry" },
-  ];
-
   return (
     <div style={s.page}>
-      {/* Tab bar */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
-        {tabs.map(tab => (
-          <button key={tab.key} onClick={() => setMainTab(tab.key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: mainTab === tab.key ? "#3B82F6" : "#111827",
-            color: mainTab === tab.key ? "#FFF" : "#94A3B8",
-            transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{tab.label}</button>
-        ))}
-      </div>
-
       {mainTab === "ailabs" && (() => {
         const labKeys = ["OpenAI", "Anthropic", "Google", "xAI", "Meta"];
         const lab = AI_LABS_DATA[activeLab];
@@ -2921,6 +2970,269 @@ export default function IndustryResearch({ initialTab }) {
                   <span style={{ fontSize: 12, fontWeight: 700, color: vendorColors[c.vendor] }}>{c.vendor}</span>
                   <span style={{ fontSize: 13, fontWeight: 700, color: "#F8FAFC" }}>{c.chip}</span>
                   <span style={{ padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${statusColor(c.status)}20`, color: statusColor(c.status) }}>{c.status}</span>
+                </div>
+                <div style={{ fontSize: 12, color: "#94A3B8", lineHeight: 1.6 }}>{c.notes}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </>);
+      })()}
+
+      {mainTab === "cpuroadmap" && (() => {
+
+        const cpuVendorColors = { Intel: "#0EA5E9", AMD: "#EF4444", NVIDIA: "#10B981", ARM: "#A855F7", Ampere: "#F97316", AWS: "#F59E0B", Microsoft: "#8B5CF6", Google: "#3B82F6", Alibaba: "#DC2626" };
+        const cpuFiltered = cpuVendorFilter === "All" ? CPU_ROADMAP : CPU_ROADMAP.filter(c => c.vendor === cpuVendorFilter);
+        const cpuSorted = [...cpuFiltered].sort((a, b) => b.year - a.year || a.vendor.localeCompare(b.vendor));
+        const cpuVendors = ["Intel", "AMD", "NVIDIA", "ARM", "Ampere", "AWS", "Microsoft", "Google", "Alibaba"];
+        const cpuYears = [2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028];
+        const cpuStatusColor = (s) => s === "Shipping" || s === "Licensed" ? "#10B981" : s === "Sampling" ? "#F59E0B" : s === "EOL" ? "#64748B" : s.includes("2026") || s.includes("2027") ? "#F59E0B" : s === "Announced" ? "#94A3B8" : "#94A3B8";
+
+        return (<>
+        <div style={{ marginBottom: 28, borderBottom: "1px solid #1E293B", paddingBottom: 20 }}>
+          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>CPU</div>
+          <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 5 }}>Tracking server CPU generations across Intel, AMD, NVIDIA, ARM, Ampere, AWS, Microsoft, Google &amp; Alibaba — agentic AI is rebalancing the CPU:GPU ratio from 1:4-1:8 to 1:1-1:2</div>
+        </div>
+
+        {/* CPU Industry & Market Updates */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 0, marginBottom: 24, overflow: "auto" }}>
+          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: "1px solid #1E293B", display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ color: "#3B82F6" }}>●</span> Industry &amp; Market Updates
+          </div>
+          <div style={{ maxHeight: 280, overflow: "auto", padding: "12px 16px" }}>
+            {CPU_NEWS.map((item, i) => (
+              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
+                <span style={{ fontSize: 11, color: "#64748B", minWidth: 75, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{item.date}</span>
+                <span style={{ fontSize: 13, color: "#CBD5E1" }}>{item.text}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Visual Timeline */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20, overflowX: "auto" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Release Timeline</div>
+          {cpuVendors.filter(v => CPU_ROADMAP.some(c => c.vendor === v)).map(v => (
+            <div key={v} style={{ display: "flex", alignItems: "center", marginBottom: 8 }}>
+              <div style={{ width: 90, fontSize: 12, fontWeight: 700, color: cpuVendorColors[v], flexShrink: 0 }}>{v}</div>
+              <div style={{ display: "flex", flex: 1, gap: 0 }}>
+                {cpuYears.map(yr => {
+                  const chips = CPU_ROADMAP.filter(c => c.vendor === v && c.year === yr);
+                  return (
+                    <div key={yr} style={{ flex: 1, minWidth: 0, display: "flex", gap: 3, padding: "2px 4px", borderLeft: "1px solid #1E293B" }}>
+                      {chips.map(c => (
+                        <div key={c.chip} title={`${c.chip} — ${c.status}\n${c.notes}`} style={{
+                          padding: "3px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600,
+                          background: `${cpuVendorColors[v]}20`, color: cpuVendorColors[v],
+                          border: `1px solid ${c.status === "Shipping" || c.status === "Licensed" || c.status === "EOL" ? cpuVendorColors[v] : `${cpuVendorColors[v]}60`}`,
+                          borderStyle: c.status === "Shipping" || c.status === "Licensed" || c.status === "EOL" ? "solid" : "dashed",
+                          whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 130, cursor: "default",
+                        }}>
+                          {c.chip.split(" (")[0]}
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+          <div style={{ display: "flex", marginTop: 6 }}>
+            <div style={{ width: 90, flexShrink: 0 }} />
+            {cpuYears.map(yr => (
+              <div key={yr} style={{ flex: 1, textAlign: "center", fontSize: 11, color: "#94A3B8", fontWeight: 600, borderLeft: "1px solid #1E293B", padding: "4px 0" }}>{yr}</div>
+            ))}
+          </div>
+          <div style={{ display: "flex", gap: 16, marginTop: 14, fontSize: 11, color: "#94A3B8" }}>
+            <span>━ Shipping / Licensed / EOL</span>
+            <span style={{ borderBottom: "1px dashed #94A3B8", paddingBottom: 1 }}>┅ Planned / Sampling / Announced</span>
+          </div>
+        </div>
+
+        {/* Full Specs Table — filterable by vendor */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 0, marginBottom: 24, overflow: "auto" }}>
+          <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1E293B" }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px" }}>CPU Specs</div>
+            <div style={{ display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", flexWrap: "wrap" }}>
+              {["All", ...cpuVendors].map(v => (
+                <button key={v} onClick={() => setCpuVendorFilter(v)} style={{
+                  padding: "5px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer", border: "none",
+                  background: cpuVendorFilter === v ? (v === "All" ? "#3B82F6" : cpuVendorColors[v] || "#3B82F6") : "#111827",
+                  color: cpuVendorFilter === v ? "#FFF" : "#94A3B8", transition: "all 0.15s",
+                }}>{v}</button>
+              ))}
+            </div>
+          </div>
+          <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 12 }}>
+            <thead>
+              <tr>
+                {["Vendor", "Chip", "ISA", "Arch / Node", "Year", "Status", "Cores", "Threads", "Channels", "PCIe", "L3", "TDP", "Coherent Link"].map((h, i) => (
+                  <th key={i} style={{
+                    textAlign: i >= 6 && i <= 11 ? "right" : "left",
+                    padding: "8px 10px", fontSize: 10, fontWeight: 600, color: "#94A3B8",
+                    textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: "1px solid #1E293B", whiteSpace: "nowrap",
+                  }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {cpuSorted.map((c, i) => (
+                <tr key={i} onMouseEnter={e => e.currentTarget.style.background = "#1E293B40"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", fontWeight: 700, color: cpuVendorColors[c.vendor], fontSize: 13 }}>{c.vendor}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", fontWeight: 700, color: "#F8FAFC", fontSize: 13 }}>{c.chip}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", color: "#94A3B8", fontSize: 11 }}>{c.isa}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", color: "#E2E8F0", fontSize: 11 }}>{c.arch} · {c.node}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", color: "#E2E8F0", fontWeight: 600 }}>{c.year}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10" }}>
+                    <span style={{ padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600, background: `${cpuStatusColor(c.status)}20`, color: cpuStatusColor(c.status) }}>{c.status}</span>
+                  </td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: "#E2E8F0", fontVariantNumeric: "tabular-nums" }}>{c.cores > 0 ? c.cores : "—"}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: "#94A3B8", fontVariantNumeric: "tabular-nums" }}>{c.threads > 0 ? c.threads : "—"}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: "#E2E8F0", fontSize: 11 }}>{c.channels}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: "#E2E8F0", fontSize: 11 }}>{c.pcie}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: "#E2E8F0", fontSize: 11 }}>{c.l3}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", textAlign: "right", color: c.tdp >= 600 ? "#EF4444" : c.tdp >= 400 ? "#F59E0B" : "#E2E8F0", fontVariantNumeric: "tabular-nums" }}>{c.tdp > 0 ? `${c.tdp}W` : "—"}</td>
+                  <td style={{ padding: "8px 10px", borderBottom: "1px solid #1E293B10", color: "#94A3B8", fontSize: 11, maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.link}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Delivery & Volume Expectations — Current + Upcoming */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Delivery &amp; Volume Expectations — Current &amp; Upcoming</div>
+          {(() => {
+            const cpuDeliveryData = [
+              { vendor: "Intel", chip: "Diamond Rapids (Xeon 7)", status: "Sampling", shipDate: "2026-12", vol2025: "—", vol2026: "Sampling only", customers: "Hyperscalers, OEMs", notes: "256C/256T P-core. Intel 18A. Up to 650W. Yield-dependent — could slip to 2027.", color: "#0369A1" },
+              { vendor: "Intel", chip: "Clearwater Forest (Xeon 6+)", status: "H2 2026", shipDate: "2026-09", vol2025: "—", vol2026: "Limited ramp", customers: "Hyperscalers", notes: "288 E-cores, Intel 18A. Yield issues risk delay. ~450W TDP.", color: "#0369A1" },
+              { vendor: "Intel", chip: "Granite Rapids (Xeon 6 P)", status: "Shipping", shipDate: "2024-09", vol2025: "~3-4M sockets", vol2026: "~5M+ sockets", customers: "All hyperscalers, OEMs", notes: "Currently shipping flagship. AMX FP16 + MRDIMM. Mainstream agentic-era Xeon.", color: "#0EA5E9" },
+              { vendor: "Intel", chip: "Sierra Forest (Xeon 6 E)", status: "Shipping", shipDate: "2024-06", vol2025: "~1.5-2M", vol2026: "~3M+", customers: "GCP, Azure, AWS", notes: "288 E-cores per socket. Cloud density king. Power-efficient agentic runtime.", color: "#0EA5E9" },
+              { vendor: "AMD", chip: "EPYC Venice (Zen 6)", status: "H2 2026", shipDate: "2026-09", vol2025: "—", vol2026: "Ramp begins", customers: "MSFT, AWS, Meta, GCP", notes: "256C/512T on TSMC N2. AMD's primary share-gain opportunity if Intel 18A slips.", color: "#B91C1C" },
+              { vendor: "AMD", chip: "EPYC Turin (Zen 5)", status: "Shipping", shipDate: "2024-10", vol2025: "~3.5M", vol2026: "~4.5M (transition)", customers: "MSFT, AWS, Meta, GCP, Oracle", notes: "Up to 192C/384T. Currently primary AMD agentic-era CPU. ~30% server CPU revenue share Q1 2026.", color: "#EF4444" },
+              { vendor: "NVIDIA", chip: "Vera (standalone)", status: "Shipping", shipDate: "2026-03", vol2025: "—", vol2026: "Bundled + standalone", customers: "Alibaba, ByteDance, Cloudflare, CoreWeave, Crusoe, Lambda, Nebius, Oracle, Together.AI, Vultr", notes: "First standalone Nvidia CPU sale (Mar 2026). 88C Olympus + 1.8 TB/s NVLink-C2C.", color: "#10B981" },
+              { vendor: "ARM", chip: "Arm AGI CPU", status: "Shipping", shipDate: "2026-03", vol2025: "—", vol2026: "Initial deployments", customers: "Meta, OpenAI, Cerebras, Cloudflare, F5, SAP, SK Telecom", notes: "First in-house ARM CPU. 136C, TSMC N3. Ends 35-yr licensing-only model.", color: "#7E22CE" },
+              { vendor: "Ampere", chip: "AmpereOne MX", status: "H2 2026", shipDate: "2026-09", vol2025: "—", vol2026: "Limited ramp", customers: "Oracle, MSFT, Tencent", notes: "256C custom-core. Faces hyperscaler in-house silicon competition.", color: "#C2410C" },
+              { vendor: "AWS", chip: "Graviton5", status: "Shipping", shipDate: "2025-12", vol2025: "Initial", vol2026: "Mass roll-out", customers: "Internal AWS only", notes: "Launched Dec 2025. 192C V3. Default for new EC2 deployments. Arm now ~30%+ of new EC2 instances.", color: "#D97706" },
+              { vendor: "Microsoft", chip: "Cobalt 200", status: "Shipping", shipDate: "2025-11", vol2025: "Initial", vol2026: "Mass deploy", customers: "Internal Azure", notes: "Launched Nov 2025. CSS-V3 132C. Pairs with Maia 200 for inference.", color: "#7C3AED" },
+              { vendor: "Google", chip: "Axion (next-gen)", status: "H2 2026", shipDate: "2026-09", vol2025: "—", vol2026: "Limited", customers: "Internal GCP", notes: "Successor to C4A (Apr 2024). Per TrendForce: 2026 expansions planned. Likely TSMC N3 with V3-based cores.", color: "#3B82F6" },
+              { vendor: "Alibaba", chip: "Yitian 720", status: "Rumored 2026", shipDate: "2026-06", vol2025: "—", vol2026: "Internal initially", customers: "Internal Alibaba Cloud", notes: "Successor to Yitian 710 (2021). Likely TSMC N3 + Neoverse V3-based.", color: "#DC2626" },
+            ];
+            const dSorted = [...cpuDeliveryData].sort((a, b) => {
+              const k = cpuDeliverySort.key;
+              let va, vb;
+              if (k === "shipDate") { va = a.shipDate; vb = b.shipDate; }
+              else if (k === "vendor") { va = a.vendor; vb = b.vendor; }
+              else if (k === "chip") { va = a.chip; vb = b.chip; }
+              else if (k === "status") { va = a.status; vb = b.status; }
+              else { va = a.shipDate; vb = b.shipDate; }
+              if (typeof va === "string") return cpuDeliverySort.dir === "asc" ? va.localeCompare(vb) : vb.localeCompare(va);
+              return cpuDeliverySort.dir === "asc" ? va - vb : vb - va;
+            });
+            const dToggle = (key) => setCpuDeliverySort(prev => prev.key === key ? { key, dir: prev.dir === "asc" ? "desc" : "asc" } : { key, dir: "desc" });
+            const dArr = (key) => cpuDeliverySort.key === key ? (cpuDeliverySort.dir === "asc" ? " ↑" : " ↓") : "";
+            const shipLabel = (d) => { const [y, m] = d.split("-"); const months = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return `${months[+m]} ${y}`; };
+            return (
+            <div style={{ overflow: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid #1E293B" }}>
+                    {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h, i) => (
+                      <th key={h.l} onClick={h.k ? () => dToggle(h.k) : undefined} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: h.k ? "pointer" : "default" }}>{h.l}{dArr(h.k)}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {dSorted.map((row, ri) => (
+                    <tr key={ri} style={{ borderBottom: "1px solid #0B0F19" }}>
+                      <td style={{ padding: "8px 10px", fontWeight: 700, color: row.color, whiteSpace: "nowrap" }}>{row.vendor}</td>
+                      <td style={{ padding: "8px 10px", color: "#E2E8F0", fontWeight: 600, whiteSpace: "nowrap" }}>{row.chip}</td>
+                      <td style={{ padding: "8px 10px", color: "#F8FAFC", fontWeight: 600, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>{shipLabel(row.shipDate)}</td>
+                      <td style={{ padding: "8px 10px" }}><span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: row.status.includes("Shipping") ? "rgba(16,185,129,0.12)" : row.status.includes("2026") ? "rgba(245,158,11,0.12)" : "rgba(100,116,139,0.12)", color: row.status.includes("Shipping") ? "#10B981" : row.status.includes("2026") ? "#F59E0B" : "#94A3B8" }}>{row.status}</span></td>
+                      <td style={{ padding: "8px 10px", color: "#E2E8F0", fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2025}</td>
+                      <td style={{ padding: "8px 10px", color: "#F59E0B", fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2026}</td>
+                      <td style={{ padding: "8px 10px", color: "#94A3B8", fontSize: 11, whiteSpace: "nowrap" }}>{row.customers}</td>
+                      <td style={{ padding: "8px 10px", color: "#94A3B8", fontSize: 11, maxWidth: 280 }}>{row.notes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>);
+          })()}
+          <div style={{ fontSize: 10, color: "#64748B", marginTop: 10, fontStyle: "italic" }}>Sources: TrendForce, Tom's Hardware, ServeTheHome, Mercury Research, vendor product pages, hyperscaler announcements.</div>
+        </div>
+
+        {/* Historical Server CPU Shipments */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>Historical Server CPU Shipments (Quarterly, Millions of Sockets)</div>
+          <div style={{ fontSize: 11, color: "#64748B", marginBottom: 16 }}>Mercury Research server CPU socket shipments (x86) + estimated Arm DC server CPU shipments (Graviton, Cobalt, Axion, Ampere, Yitian). 2026E = estimates assuming agentic AI core demand uplift.</div>
+          {(() => {
+            const cpuHistData = [
+              { q: "Q4 2026E", qSort: 20264, intel: "8.0M", amd: "4.5M", arm: "1.5M", total: "~14.0M", qoq: "+8%", notes: "Venice + Diamond Rapids ramps + AGI CPU + Vera shipping. AI-driven core demand peaks." },
+              { q: "Q3 2026E", qSort: 20263, intel: "7.7M", amd: "4.2M", arm: "1.3M", total: "~13.2M", qoq: "+8%", notes: "Granite Rapids + Turin volume + Cobalt 200 + Graviton5 ramps." },
+              { q: "Q2 2026E", qSort: 20262, intel: "7.3M", amd: "3.9M", arm: "1.0M", total: "~12.2M", qoq: "+10%", notes: "Vera CPU first standalone shipments. Q1 price hikes flowing through volume." },
+              { q: "Q1 2026", qSort: 20261, intel: "6.8M", amd: "3.5M", arm: "0.8M", total: "~11.1M", qoq: "+10%", notes: "Intel + AMD price hikes. Agentic-AI CPU demand surge first visible." },
+              { q: "Q4 2025", qSort: 20254, intel: "6.4M", amd: "3.0M", arm: "0.7M", total: "~10.1M", qoq: "+8%", notes: "Graviton5 + Cobalt 200 launch quarters. AI server demand ramping." },
+              { q: "Q3 2025", qSort: 20253, intel: "6.1M", amd: "2.7M", arm: "0.5M", total: "~9.3M", qoq: "+10%", notes: "Turin + Granite Rapids in full ramp. AMD share crosses 30% (revenue)." },
+              { q: "Q2 2025", qSort: 20252, intel: "5.7M", amd: "2.4M", arm: "0.4M", total: "~8.5M", qoq: "+13%", notes: "AMD revenue share at 30%. Sierra Forest volume." },
+              { q: "Q1 2025", qSort: 20251, intel: "5.0M", amd: "2.1M", arm: "0.4M", total: "~7.5M", qoq: "+10%", notes: "AI server demand starting to materially boost CPU shipments." },
+              { q: "Q4 2024", qSort: 20244, intel: "4.7M", amd: "1.8M", arm: "0.3M", total: "~6.8M", qoq: "+10%", notes: "Granite Rapids + Sierra Forest + Turin all launching. AMD revenue share ~28%." },
+              { q: "Q3 2024", qSort: 20243, intel: "4.4M", amd: "1.7M", arm: "0.3M", total: "~6.4M", qoq: "+5%", notes: "Genoa/Bergamo selling well. Hyperscaler CSS designs ramping (Cobalt 100, Axion)." },
+              { q: "Q2 2024", qSort: 20242, intel: "4.3M", amd: "1.6M", arm: "0.2M", total: "~6.1M", qoq: "+9%", notes: "Graviton4 launches. AMD revenue share 30%+." },
+              { q: "Q1 2024", qSort: 20241, intel: "4.1M", amd: "1.3M", arm: "0.2M", total: "~5.6M", qoq: "+4%", notes: "Sapphire/Emerald Rapids in volume. Genoa/Bergamo." },
+              { q: "Q4 2023", qSort: 20234, intel: "4.0M", amd: "1.3M", arm: "0.15M", total: "~5.5M", qoq: "+10%", notes: "AMD breaks 25% revenue share. Generative AI capex ramps." },
+              { q: "Q3 2023", qSort: 20233, intel: "3.8M", amd: "1.1M", arm: "0.1M", total: "~5.0M", qoq: "+11%", notes: "Bergamo (cloud-optimized Zen 4c) launches." },
+              { q: "Q2 2023", qSort: 20232, intel: "3.5M", amd: "0.95M", arm: "0.08M", total: "~4.5M", qoq: "+10%", notes: "Sapphire Rapids + Genoa. AI server inflection visible." },
+              { q: "Q1 2023", qSort: 20231, intel: "3.3M", amd: "0.85M", arm: "0.08M", total: "~4.1M", qoq: "+5%", notes: "Sapphire Rapids ships (delayed from 2022). AMX inference acceleration first time." },
+              { q: "Q4 2022", qSort: 20224, intel: "3.4M", amd: "0.7M", arm: "0.05M", total: "~3.9M", qoq: "+5%", notes: "Pre-AI-boom baseline. Genoa launches end of quarter." },
+              { q: "Q4 2021", qSort: 20214, intel: "2.9M", amd: "0.4M", arm: "0.03M", total: "~3.3M", qoq: "+10%", notes: "Milan ramping. Yitian 710 launches. Graviton3 launches." },
+              { q: "Q4 2020", qSort: 20204, intel: "2.6M", amd: "0.2M", arm: "0.02M", total: "~2.9M", qoq: "+7%", notes: "AMD server share <8%. Cooper Lake era. Graviton2 + Ampere Altra at scale." },
+            ];
+            const hSorted = [...cpuHistData].sort((a, b) => cpuHistSort.dir === "asc" ? a.qSort - b.qSort : b.qSort - a.qSort);
+            const hToggle = () => setCpuHistSort(prev => ({ key: "q", dir: prev.dir === "asc" ? "desc" : "asc" }));
+            const hArr = cpuHistSort.dir === "asc" ? " ↑" : " ↓";
+            return (
+            <div style={{ overflow: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                <thead>
+                  <tr style={{ borderBottom: "2px solid #1E293B" }}>
+                    <th onClick={hToggle} style={{ padding: "8px 10px", textAlign: "right", fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: "pointer" }}>Quarter{hArr}</th>
+                    {["Intel x86","AMD x86","Arm DC (in-house + Ampere)","Total Sockets","QoQ Δ","Notes"].map(h => (
+                      <th key={h} style={{ padding: "8px 10px", textAlign: h === "Notes" ? "left" : "right", fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {hSorted.map((row, ri) => {
+                    const isEst = row.q.includes("E");
+                    return (
+                    <tr key={ri} style={{ borderBottom: "1px solid #0B0F19", background: isEst ? "rgba(59,130,246,0.03)" : "transparent" }}>
+                      <td style={{ padding: "8px 10px", fontWeight: 700, color: isEst ? "#3B82F6" : "#E2E8F0", whiteSpace: "nowrap", textAlign: "right" }}>{row.q}</td>
+                      <td style={{ padding: "8px 10px", textAlign: "right", color: "#0EA5E9", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{row.intel}</td>
+                      <td style={{ padding: "8px 10px", textAlign: "right", color: "#EF4444", fontVariantNumeric: "tabular-nums" }}>{row.amd}</td>
+                      <td style={{ padding: "8px 10px", textAlign: "right", color: "#A855F7", fontVariantNumeric: "tabular-nums" }}>{row.arm}</td>
+                      <td style={{ padding: "8px 10px", textAlign: "right", color: "#F8FAFC", fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{row.total}</td>
+                      <td style={{ padding: "8px 10px", textAlign: "right", color: row.qoq.includes("+") ? "#10B981" : "#94A3B8", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{row.qoq}</td>
+                      <td style={{ padding: "8px 10px", color: "#94A3B8", fontSize: 11, maxWidth: 320 }}>{row.notes}</td>
+                    </tr>);
+                  })}
+                </tbody>
+              </table>
+            </div>);
+          })()}
+          <div style={{ fontSize: 10, color: "#64748B", marginTop: 10, fontStyle: "italic" }}>Sources: Mercury Research (x86 server CPU socket shipments), TrendForce, vendor disclosures, IDC. Arm DC subset estimated from hyperscaler in-house silicon ramps + Ampere shipments. 2026E = estimates with agentic-AI uplift assumed.</div>
+        </div>
+
+        {/* Notes per chip — expandable */}
+        <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20 }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Key Notes &amp; Context</div>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+            {cpuSorted.filter(c => c.notes).map((c, i) => (
+              <div key={i} style={{ background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: "12px 14px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: cpuVendorColors[c.vendor] }}>{c.vendor}</span>
+                  <span style={{ fontSize: 13, fontWeight: 700, color: "#F8FAFC" }}>{c.chip}</span>
+                  <span style={{ padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${cpuStatusColor(c.status)}20`, color: cpuStatusColor(c.status) }}>{c.status}</span>
                 </div>
                 <div style={{ fontSize: 12, color: "#94A3B8", lineHeight: 1.6 }}>{c.notes}</div>
               </div>

@@ -15,6 +15,7 @@ const supabase = createClient(
 );
 
 const AGENTS_DIR = path.join(require('os').homedir(), '.claude', 'agents');
+const SKILLS_DIR = path.join(require('os').homedir(), '.claude', 'skills');
 
 // UI metadata — color, usage example, mode, sort order
 const UI_META = {
@@ -30,6 +31,8 @@ const UI_META = {
   'sync-pull':            { color: '#A78BFA', usage: '@sync-pull', mode: 'Read + Write (local files)', sort: 9 },
   'sync-push':            { color: '#A78BFA', usage: '@sync-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
   'numbers-audit':        { color: '#FBBF24', usage: '@numbers-audit refresh ETF_SENSITIVITY', mode: 'Audit (default) or Refresh/Fix', sort: 11 },
+  // Skills (id prefixed with `skill-` in Supabase to coexist with agents in the same table)
+  'skill-research-ingest':{ color: '#E879F9', usage: '/research-ingest', mode: 'Read + Write. End-to-end pipeline.', sort: 100 },
 };
 
 function parseFrontmatter(raw) {
@@ -80,7 +83,42 @@ function parseFrontmatter(raw) {
     else console.log(`  OK: ${id}`);
   }
 
-  // ── Step 1b: Reconcile — delete Supabase rows with no matching local file ──
+  // ── Step 1b: Push skill .md files to Supabase (id prefix `skill-`) ──
+  if (fs.existsSync(SKILLS_DIR)) {
+    const skillDirs = fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
+      .filter(d => d.isDirectory()).map(d => d.name);
+    console.log(`Found ${skillDirs.length} skill folder(s) in ${SKILLS_DIR}`);
+
+    for (const skillName of skillDirs) {
+      const skillFile = path.join(SKILLS_DIR, skillName, 'SKILL.md');
+      if (!fs.existsSync(skillFile)) { console.log(`  SKIP: ${skillName} (no SKILL.md)`); continue; }
+      const raw = fs.readFileSync(skillFile, 'utf-8');
+      const parsed = parseFrontmatter(raw);
+      if (!parsed) { console.log(`  SKIP: ${skillName} (no frontmatter)`); continue; }
+
+      const id = `skill-${skillName}`;
+      localIds.add(id);
+      const meta = UI_META[id] || { color: '#E879F9', usage: `/${skillName}`, mode: '', sort: 100 };
+
+      const row = {
+        id,
+        name: parsed.name,
+        description: parsed.description,
+        tools: parsed.tools,
+        body: parsed.body,
+        color: meta.color,
+        usage_example: meta.usage,
+        mode: meta.mode,
+        sort_order: meta.sort,
+        updated_at: new Date().toISOString(),
+      };
+      const { error } = await supabase.from('agent_definitions').upsert(row, { onConflict: 'id' });
+      if (error) console.error(`  ERROR: ${id}:`, error.message);
+      else console.log(`  OK: ${id}`);
+    }
+  }
+
+  // ── Step 1c: Reconcile — delete Supabase rows with no matching local file ──
   const { data: remoteRows, error: listErr } = await supabase.from('agent_definitions').select('id');
   if (listErr) {
     console.error(`  RECONCILE ERROR: ${listErr.message}`);
