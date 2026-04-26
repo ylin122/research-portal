@@ -27,7 +27,7 @@ const UI_META = {
   'whatif':               { color: '#F97316', usage: '@whatif massive delays in R100 launch date driven by supply chain shocks', mode: 'Read-only', sort: 5 },
   'refresh':              { color: '#14B8A6', usage: '@refresh update the AI Research tab', mode: 'Read + Write', sort: 6 },
   'third-party-research': { color: '#38BDF8', usage: '@third-party-research pull everything on Perforce', mode: 'Read-only. Runs local Playwright-authenticated CLI tools.', sort: 7 },
-  'consistency':          { color: '#c084fc', usage: '@consistency check credit research', mode: 'Read-only', sort: 8 },
+  'format':               { color: '#c084fc', usage: '@format check credit research', mode: 'Read-only', sort: 8 },
   'sync-pull':            { color: '#A78BFA', usage: '@sync-pull', mode: 'Read + Write (local files)', sort: 9 },
   'sync-push':            { color: '#A78BFA', usage: '@sync-push', mode: 'Read + Write (Supabase + GitHub)', sort: 10 },
   'numbers-audit':        { color: '#FBBF24', usage: '@numbers-audit refresh ETF_SENSITIVITY', mode: 'Audit (default) or Refresh/Fix', sort: 11 },

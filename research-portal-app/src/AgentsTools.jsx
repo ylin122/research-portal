@@ -167,9 +167,9 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read-only. Runs local Playwright-authenticated CLI tools.",
   },
   {
-    name: "consistency", color: "#c084fc",
-    desc: "Scans research content across tabs for missing fields, stale data, depth mismatches, and format/style inconsistencies.",
-    usage: "@consistency check credit research",
+    name: "format", color: "#c084fc",
+    desc: "Audits format/style/visual-context consistency across research portal and PA dashboard. Three layers — prose formatting, CSS/visual, and cross-page visual context. Read-only; reports issues by severity with file:line refs.",
+    usage: "@format check credit research",
     tools: "Read, Bash, Grep, Glob", mode: "Read-only",
   },
   {
