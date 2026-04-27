@@ -137,7 +137,11 @@
       "Bash(cp C:/Users/willi/.claude/settings.json C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.json)",
       "Bash(cp C:/Users/willi/.claude/settings.local.json C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.local.json)",
       "Bash(cp C:/Users/willi/.claude/hooks/log-subagent-run.cjs C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/hooks/log-subagent-run.cjs)",
-      "Bash(cp 'C:/Users/willi/.claude/projects/C--Users-willi/memory/*.md' C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/memory/)"
+      "Bash(cp 'C:/Users/willi/.claude/projects/C--Users-willi/memory/*.md' C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/memory/)",
+      "Bash(echo \"EXIT: $?\")",
+      "WebFetch(domain:arxiv.org)",
+      "WebFetch(domain:s10251.pcdn.co)",
+      "WebFetch(domain:metr.org)"
     ]
   }
 }
