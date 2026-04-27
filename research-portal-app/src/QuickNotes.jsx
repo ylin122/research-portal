@@ -14,6 +14,9 @@ export default function QuickNotes() {
     supabase.from("quick_notes").select("*").order("created_at", { ascending: false }).then(({ data }) => {
       setNotes(data || []);
       setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
     });
   }, []);
 

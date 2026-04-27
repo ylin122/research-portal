@@ -45,6 +45,9 @@ export default function Dashboard({ companies, setView }) {
       setQa(qRes.data || []);
       setAlerts(wRes.data || []);
       setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
     });
   }, []);
 

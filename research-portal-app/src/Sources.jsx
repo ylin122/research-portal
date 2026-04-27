@@ -25,6 +25,9 @@ export default function Sources() {
     supabase.from("sources").select("*").order("name", { ascending: true }).then(({ data }) => {
       setSources(data || []);
       setLoading(false);
+    }).catch(err => {
+      console.error(err);
+      setLoading(false);
     });
   }, []);
 

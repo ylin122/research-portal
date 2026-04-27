@@ -22,7 +22,6 @@ export default function Principles() {
   const [principles, setPrinciples] = useState([]);
   const [adding, setAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
-  const [newText, setNewText] = useState("");
   const [editing, setEditing] = useState(null);
   const saveTimers = useRef({});
 
@@ -33,7 +32,6 @@ export default function Principles() {
     const record = {
       id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
       title: newTitle.trim(),
-      description: newText.trim(),
       sort_order: principles.length + 1,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -41,7 +39,6 @@ export default function Principles() {
     await upsertPrinciple(record);
     setPrinciples(await loadPrinciples());
     setNewTitle("");
-    setNewText("");
     setAdding(false);
   };
 

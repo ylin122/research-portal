@@ -51,24 +51,6 @@ function getAnnual(facts, tags) {
   return [];
 }
 
-// Extract quarterly data - EDGAR reports cumulative YTD figures for Q2/Q3
-// We need to convert to standalone quarters
-function getQuarterly(facts, tags) {
-  for (const tag of tags) {
-    const entries = facts?.['us-gaap']?.[tag]?.units?.USD;
-    if (!entries) continue;
-    const quarterly = entries.filter(e => e.form === '10-Q');
-    const byEndFp = {};
-    for (const e of quarterly) {
-      const key = `${e.end}_${e.fp}`;
-      byEndFp[key] = e;
-    }
-    const sorted = Object.values(byEndFp).sort((a, b) => a.end.localeCompare(b.end));
-    if (sorted.length) return sorted;
-  }
-  return [];
-}
-
 // Build annual periods from EDGAR data
 function buildAnnualPeriods(edgarData) {
   const f = edgarData.facts || {};
@@ -116,19 +98,6 @@ function buildAnnualPeriods(edgarData) {
 
   // Drop the oldest (used only for growth calc) if we have 4
   return periods.length > 3 ? periods.slice(1) : periods;
-}
-
-// Build LTM from the most recent quarterly data
-function buildLTM(edgarData, annualPeriods) {
-  const f = edgarData.facts || {};
-
-  // For LTM, we use the latest annual + the delta from the latest quarterly filing
-  // EDGAR quarterly data is cumulative YTD, so:
-  // LTM = Latest FY + Latest Cumulative QTD - Prior Year Same Cumulative QTD
-  // But this is complex. Simpler: use the latest 10-K data as a base and note it.
-  // For now, skip LTM from EDGAR and let Yahoo provide TTM data in the meta.
-
-  return null; // LTM will come from Yahoo Finance TTM fields
 }
 
 // ── Yahoo Finance: fetch market data and estimates ──

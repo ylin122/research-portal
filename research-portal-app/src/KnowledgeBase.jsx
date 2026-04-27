@@ -30,7 +30,7 @@ async function deleteArticle(id) {
   if (error) console.error("deleteArticle:", error);
 }
 
-// ─── Section Component ──��────────────────────────────
+// ─── Section Component ───────────────────────────────
 function Section({ title, color, children }) {
   return (
     <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 }}>
@@ -239,7 +239,7 @@ function ArticleDetail({ article, onBack }) {
   );
 }
 
-// ─── Add Article Modal ���──────────────────────────────
+// ─── Add Article Modal ───────────────────────────────
 function AddArticleModal({ onClose, onSave }) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");

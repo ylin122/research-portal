@@ -28,12 +28,9 @@ import OracleReview from "./OracleReview";
 import GenericReview from "./GenericReview";
 const IndustryResearch = lazy(() => import("./IndustryResearch"));
 import {
-  loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector, updateCompanyMoats,
+  loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector,
   loadAllFields, upsertField,
-  loadAllNotes, insertNote, deleteNote as dbDeleteNote,
-  loadNewsCache, upsertNewsCache,
-  loadSectorNotes, upsertSectorNote,
-  loadResearchResults,
+  loadSectorNotes,
 } from "./lib/db";
 import { T_, FONT } from "./lib/theme";
 
@@ -74,27 +71,33 @@ const SOURCE_FIELDS = [
 
 const PRIORITIES = ["High", "Medium", "Low"];
 
-// ─── News API ─────────────────────────────────────────
-// NOTE: This exposes the Anthropic API key to the browser via import.meta.env.
-// Acceptable tradeoff for this internal tool — do NOT use in public-facing apps.
-async function fetchNews(name) {
-  const apiKey = import.meta.env.VITE_ANTHROPIC_API_KEY;
-  if (!apiKey) return [];
-  try {
-    const r = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-api-key": apiKey, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-20250514", max_tokens: 1000,
-        tools: [{ type: "web_search_20250305", name: "web_search" }],
-        messages: [{ role: "user", content: `Find the 4-6 most recent and critical news about "${name}" from the last 60 days. Focus on: funding, M&A, product launches, executive changes, partnerships, earnings, regulatory actions, and major business developments.\n\nSort results by date with the most recent first.\n\nRespond ONLY with a JSON array, no markdown backticks, no preamble. Each item:\n- "headline": string (concise, max 15 words)\n- "source": string (publication name)\n- "date": string (e.g. "Mar 15, 2026")\n- "summary": string (2-3 sentences on why this matters)\n\nIf no recent news found, return [].` }],
-      }),
-    });
-    const d = await r.json();
-    const txt = d.content?.map(i => i.type === "text" ? i.text : "").filter(Boolean).join("\n") || "";
-    try { const p = JSON.parse(txt.replace(/```json|```/g, "").trim()); return Array.isArray(p) ? p : []; } catch { return []; }
-  } catch { return []; }
-}
+const MOBILE_MORE_ITEMS = [
+  { type: "home", label: "Dashboard", icon: "\u{2302}" },
+  { type: null, label: "— Agents —", icon: "" },
+  { type: "dataVerificationAgent", label: "Agents / Tools", icon: "\u{1F6E0}" },
+  { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
+  { type: null, label: "— Trackers —", icon: "" },
+  { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
+  { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },
+  { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
+  { type: null, label: "— Research —", icon: "" },
+  { type: "equityResearch", label: "Primary Research", icon: "\u{1F4C8}" },
+  { type: null, label: "— Credit Research —", icon: "" },
+  ...Object.entries(SECTORS).filter(([sk]) => sk !== "sources").map(([sk, sec]) => ({
+    type: "sector", sector: sk, label: sec.label, icon: "\u{1F4C1}"
+  })),
+  { type: null, label: "— Reference —", icon: "" },
+  { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
+  { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
+  { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
+  { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
+  { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
+  { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
+  { type: "caseStudies", label: "Case Studies", icon: "\u{1F4DA}" },
+  { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
+  { type: "sources", label: "Sources", icon: "\u{1F517}" },
+  { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },
+];
 
 // ─── App ──────────────────────────────────────────────
 const APP_PASS = "Ylin6274@";
@@ -154,10 +157,6 @@ function AppContent() {
   const [companies, setCompanies] = useState([]);
   const [sectorNotes, setSectorNotes] = useState({});
   const [fieldsMap, setFieldsMap] = useState({});
-  const [notesMap, setNotesMap] = useState({});
-  const [newsCache, setNewsCache] = useState({});
-  const [newsLoading, setNewsLoading] = useState({});
-  const [researchResults, setResearchResults] = useState({});
   const [view, setView] = useState({ type: "home" });
   const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [companiesOpen, setCompaniesOpen] = useState(false);
@@ -168,9 +167,6 @@ function AppContent() {
   const [equities, setEquities] = useState(() => {
     try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
   });
-  const [equityNotes, setEquityNotes] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("research_portal_equity_notes") || "{}"); } catch { return {}; }
-  });
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
   const [addSub, setAddSub] = useState("");
@@ -178,7 +174,6 @@ function AppContent() {
   const [editingField, setEditingField] = useState(null);
   const [editingSector, setEditingSector] = useState(false);
   const [pendingSector, setPendingSector] = useState(null);
-  const [priorityFilter, setPriorityFilter] = useState("");
   const addRef = useRef(null);
 
   const [loadError, setLoadError] = useState(null);
@@ -186,15 +181,12 @@ function AppContent() {
   useEffect(() => {
     (async () => {
       try {
-        const [cos, fields, notes, news, sn, rr] = await Promise.all([
-          loadCompanies(), loadAllFields(), loadAllNotes(), loadNewsCache(), loadSectorNotes(), loadResearchResults()
+        const [cos, fields, sn] = await Promise.all([
+          loadCompanies(), loadAllFields(), loadSectorNotes()
         ]);
         setCompanies(cos);
         setFieldsMap(fields);
-        setNotesMap(notes);
-        setNewsCache(news);
         setSectorNotes(sn);
-        setResearchResults(rr);
         setReady(true);
       } catch (err) {
         console.error('Failed to load data:', err);
@@ -231,26 +223,9 @@ function AppContent() {
     }
   }, []);
 
-  function saveEquities(updated) { setEquities(updated); localStorage.setItem("research_portal_equities", JSON.stringify(updated)); }
-  function saveEquityNotes(updated) { setEquityNotes(updated); localStorage.setItem("research_portal_equity_notes", JSON.stringify(updated)); }
-
   const debouncedFieldSave = useAutoSave((companyId, fieldKey, text) => {
     upsertField(companyId, fieldKey, text);
   });
-
-  const debouncedSectorNoteSave = useAutoSave((key, text) => {
-    upsertSectorNote(key, text);
-  });
-
-  async function refreshNews(id) {
-    const co = companies.find(c => c.id === id);
-    if (!co) return;
-    setNewsLoading(p => ({ ...p, [id]: true }));
-    const news = await fetchNews(co.name);
-    const date = await upsertNewsCache(id, news);
-    setNewsCache(p => ({ ...p, [id]: { items: news, date } }));
-    setNewsLoading(p => ({ ...p, [id]: false }));
-  }
 
   async function addCompanyHandler() {
     if (!addName.trim() || !adding || !addSub) return;
@@ -260,7 +235,6 @@ function AppContent() {
     setCompanies(p => [...p, newCo]);
     setAdding(null); setAddName(""); setAddSub("");
     setView({ type: "company", id });
-    setTimeout(() => refreshNews(id), 200);
   }
 
   async function changeSector(id, newSector, newSub) {
@@ -282,30 +256,6 @@ function AppContent() {
     setCompanies(p => p.map(c => c.id === id ? { ...c, priority: newPr } : c));
   }
 
-  async function addNote(id, text) {
-    if (!text.trim()) return;
-    const noteId = uid();
-    const date = await insertNote(id, noteId, text);
-    setNotesMap(p => ({
-      ...p,
-      [id]: [{ id: noteId, text, date: date || ts() }, ...(p[id] || [])]
-    }));
-  }
-
-  async function delNote(cid, nid) {
-    await dbDeleteNote(nid);
-    setNotesMap(p => ({
-      ...p,
-      [cid]: (p[cid] || []).filter(n => n.id !== nid)
-    }));
-  }
-
-  function updateSN(key, text) {
-    const date = ts();
-    setSectorNotes(p => ({ ...p, [key]: { text, date } }));
-    debouncedSectorNoteSave(key, text);
-  }
-
   const getCos = (sector) => companies.filter(c => c.sector === sector).sort((a, b) => a.name.localeCompare(b.name));
   const isPublicCo = (c) => (fieldsMap[c.id]?.public_private?.text || "").startsWith("Public");
   const getPublicCos = (sector) => getCos(sector).filter(c => isPublicCo(c));
@@ -324,8 +274,6 @@ function AppContent() {
 
   const cur = view.type === "company" ? companies.find(c => c.id === view.id) : null;
   const curFields = cur ? (fieldsMap[cur.id] || {}) : null;
-  const curNotes = cur ? (notesMap[cur.id] || []) : null;
-  const curNews = cur ? (newsCache[cur.id] || null) : null;
   const curPriority = cur?.priority || "";
 
   return (
@@ -448,9 +396,9 @@ function AppContent() {
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: publicCosOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                 <span>Public Company Research</span>
               </div>
-              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && c.sector !== "equity" && isPublicCo(c)).length}</span>
+              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && isPublicCo(c)).length}</span>
             </div>
-            {publicCosOpen && Object.entries(SECTORS).filter(([sk]) => sk !== "sources" && sk !== "equity").map(([sk, sec]) => {
+            {publicCosOpen && Object.entries(SECTORS).filter(([sk]) => sk !== "sources").map(([sk, sec]) => {
               const pubCos = filteredCos(getPublicCos(sk));
               const open = publicSidebarOpen[sk];
               const total = getPublicCos(sk).length;
@@ -486,16 +434,22 @@ function AppContent() {
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: companiesOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                 <span>Private Company Research</span>
               </div>
-              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && c.sector !== "equity" && !isPublicCo(c)).length}</span>
+              <span style={s.badge}>{companies.filter(c => c.sector !== "sources" && c.sector !== "prompts" && !isPublicCo(c)).length}</span>
             </div>
             {companiesOpen && Object.entries(SECTORS).map(([sk, sec]) => {
               const privCos = filteredCos(getPrivateCos(sk));
               const open = sidebarOpen[sk];
               const total = getPrivateCos(sk).length;
-              if (sk === "equity") return null;
               return (
                 <div key={sk}>
-                  <div style={{ ...s.sectorHdr, paddingLeft: 34 }} onClick={() => sk === "sources" ? (() => { setView({ type: "company", id: "source_master_seed" }); setEditingField(null); })() : setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }))}>
+                  <div style={{ ...s.sectorHdr, paddingLeft: 34 }} onClick={() => {
+                    if (sk === "sources") {
+                      setView({ type: "company", id: "source_master_seed" });
+                      setEditingField(null);
+                    } else {
+                      setSidebarOpen(p => ({ ...p, [sk]: !p[sk] }));
+                    }
+                  }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       {sk !== "sources" && <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: open ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>}
                       <span onClick={e => { e.stopPropagation(); if (sk === "sources") { setView({ type: "company", id: "source_master_seed" }); } else { setView({ type: "sector", sector: sk }); } setEditingField(null); }}>{sec.label}</span>
@@ -757,37 +711,11 @@ function AppContent() {
           <div style={s.page}>
             <h1 style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 20, fontFamily: FONT }}>All Sections</h1>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              {[
-                { type: "home", label: "Dashboard", icon: "\u{2302}" },
-                { type: null, label: "— Agents —", icon: "" },
-                { type: "dataVerificationAgent", label: "Agents / Tools", icon: "\u{1F6E0}" },
-                { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
-                { type: null, label: "— Trackers —", icon: "" },
-                { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
-                { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },
-                { type: "quickNotes", label: "Notes", icon: "\u{1F4DD}" },
-                { type: null, label: "— Research —", icon: "" },
-                { type: "equityResearch", label: "Primary Research", icon: "\u{1F4C8}" },
-                { type: null, label: "— Credit Research —", icon: "" },
-                ...Object.entries(SECTORS).filter(([sk]) => sk !== "sources").map(([sk, sec]) => ({
-                  type: "sector", sector: sk, label: sec.label, icon: "\u{1F4C1}"
-                })),
-                { type: null, label: "— Reference —", icon: "" },
-                { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
-                { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
-                { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
-                { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
-                { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
-                { type: "restructuring", label: "Restructuring", icon: "\u{1F3D7}" },
-                { type: "caseStudies", label: "Case Studies", icon: "\u{1F4DA}" },
-                { type: "primer", label: "Industry Primer", icon: "\u{1F4D3}" },
-                { type: "sources", label: "Sources", icon: "\u{1F517}" },
-                { type: "auditLog", label: "Audit Log", icon: "\u{1F4CB}" },
-              ].map((item, idx) => (
+              {MOBILE_MORE_ITEMS.map((item, idx) => (
                 item.type === null ? (
-                  <div key={idx} style={{ fontSize: 11, fontWeight: 600, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", padding: "14px 18px 4px", marginTop: idx > 0 ? 8 : 0 }}>{item.label.replace(/—/g, "").trim()}</div>
+                  <div key={item.label} style={{ fontSize: 11, fontWeight: 600, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", padding: "14px 18px 4px", marginTop: idx > 0 ? 8 : 0 }}>{item.label.replace(/—/g, "").trim()}</div>
                 ) :
-                <div key={item.type + (item.sector || "") + idx} onClick={() => {
+                <div key={item.label} onClick={() => {
                   if (item.sector) { setView({ type: "sector", sector: item.sector }); }
                   else { setView({ type: item.type }); }
                   setEditingField(null);
@@ -918,9 +846,6 @@ function AppContent() {
             {/* Generic Review — for all Credit Research + Equity companies without dedicated reviews */}
             {!["tractcapital_seed", "coreweave_seed", "apld_seed", "cipher_seed", "terawulf_seed"].includes(cur.id) && cur.sector !== "sources" && <GenericReview companyId={cur.id} companyName={cur.name} curFields={curFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
-            {/* Moat vs AI Scoring — only for equity sector */}
-            {cur.sector === "equity" && <MoatScoring company={cur} companies={companies} setCompanies={setCompanies} />}
-
             {/* Structured Fields — only for sources sector */}
             {cur.sector === "sources" && SOURCE_FIELDS.map(f => {
               const fd = curFields?.[f.key];
@@ -992,105 +917,6 @@ function AppContent() {
   );
 }
 
-// ─── MoatScoring ──────────────────────────────────────
-const MOAT_TIERS = [
-  { label: "T1 \u2014 Structural (3x)", weight: 3, color: "#34d673", moats: [
-    { key: "data", name: "Proprietary Data" },
-    { key: "switching", name: "Switching Cost" },
-  ]},
-  { label: "T2 \u2014 Strong (2x)", weight: 2, color: "#F59E0B", moats: [
-    { key: "regulatory", name: "Regulatory & Compliance" },
-    { key: "ecosystem", name: "Ecosystem & Integration" },
-    { key: "security", name: "Security" },
-  ]},
-  { label: "T3 \u2014 Temporal (1x)", weight: 1, color: T_.textGhost, moats: [
-    { key: "contracts", name: "Long-term Contracts" },
-    { key: "brand", name: "Brand & Trust" },
-    { key: "infra", name: "Infrastructure Support" },
-  ]},
-];
-
-function MoatScoring({ company, companies, setCompanies }) {
-  const moats = company.moats || {};
-  const moatEnabled = moats._enabled !== false;
-  const scoreBg = (v) => ({ 1: "#EF444433", 2: "#F59E0B33", 3: "#34d67333" }[v] || "transparent");
-  const scoreCol = (v) => ({ 1: "#EF4444", 2: "#F59E0B", 3: "#34d673" }[v] || T_.textGhost);
-  const scoreLabel = { 1: "Weak", 2: "Med", 3: "Strong" };
-  const wTotal = MOAT_TIERS.reduce((s, t) => s + t.moats.reduce((s2, m) => s2 + (moats[m.key] || 0) * t.weight, 0), 0);
-  const maxScore = 45;
-  const totalColor = wTotal >= 33 ? "#34d673" : wTotal >= 21 ? "#F59E0B" : wTotal > 0 ? "#EF4444" : T_.textGhost;
-  const setMoat = (key, val) => {
-    const next = { ...moats, [key]: val };
-    delete next.physical;
-    const idx = companies.findIndex(c => c.id === company.id);
-    if (idx >= 0) {
-      const updated = [...companies];
-      updated[idx] = { ...updated[idx], moats: next };
-      setCompanies(updated);
-    }
-    updateCompanyMoats(company.id, next);
-  };
-  const toggleMoat = () => {
-    const next = { ...moats, _enabled: !moatEnabled };
-    const idx = companies.findIndex(c => c.id === company.id);
-    if (idx >= 0) {
-      const updated = [...companies];
-      updated[idx] = { ...updated[idx], moats: next };
-      setCompanies(updated);
-    }
-    updateCompanyMoats(company.id, next);
-  };
-  return (
-    <div style={s.section}>
-      <div style={s.sectionHdr}>
-        <span style={{ display: "flex", alignItems: "center", gap: 10 }}>
-          Moat vs AI
-          <span onClick={toggleMoat} style={{
-            display: "inline-flex", alignItems: "center", width: 36, height: 18, borderRadius: 9, cursor: "pointer",
-            background: moatEnabled ? T_.green : T_.border, padding: 2, transition: "background 0.2s",
-          }}>
-            <span style={{
-              width: 14, height: 14, borderRadius: 7, background: "#fff",
-              transform: moatEnabled ? "translateX(18px)" : "translateX(0)", transition: "transform 0.2s",
-            }} />
-          </span>
-        </span>
-        {moatEnabled && wTotal > 0 && <span style={{ fontSize: 13, fontWeight: 700, color: totalColor }}>{wTotal}/{maxScore}</span>}
-        {!moatEnabled && <span style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>Excluded from scoring</span>}
-      </div>
-      {moatEnabled && MOAT_TIERS.map(tier => (
-        <div key={tier.label} style={{ marginBottom: 10 }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: tier.color, textTransform: "uppercase", marginBottom: 6, letterSpacing: 0.5 }}>{tier.label}</div>
-          <div style={{ display: "grid", gridTemplateColumns: tier.moats.length === 2 ? "1fr 1fr" : "1fr 1fr 1fr", gap: 6 }}>
-            {tier.moats.map(m => {
-              const v = moats[m.key] || 0;
-              const wPts = v * tier.weight;
-              return (
-                <div key={m.key} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 10px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 10, color: T_.textGhost, fontWeight: 600, textTransform: "uppercase" }}>{m.name}</span>
-                    {v > 0 && <span style={{ fontSize: 9, color: scoreCol(v), fontWeight: 700 }}>+{wPts}</span>}
-                  </div>
-                  <div style={{ display: "flex", gap: 4 }}>
-                    {[1, 2, 3].map(sv => (
-                      <button key={sv} onClick={() => setMoat(m.key, v === sv ? 0 : sv)} style={{
-                        flex: 1, padding: "3px 0", fontSize: 10, fontWeight: 600, borderRadius: 4, cursor: "pointer",
-                        border: v === sv ? `1px solid ${scoreCol(sv)}` : `1px solid ${T_.border}`,
-                        background: v === sv ? scoreBg(sv) : "transparent",
-                        color: v === sv ? scoreCol(sv) : T_.textGhost,
-                      }}>{scoreLabel[sv]}</button>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 // ─── Styles ───────────────────────────────────────────
 const s = {
   wrap: { display: "flex", minHeight: "100vh", background: T_.bg, fontFamily: FONT, fontSize: 14, color: T_.text },
@@ -1116,8 +942,6 @@ const s = {
   textarea: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "14px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, resize: "vertical", minHeight: 110, lineHeight: 1.8, boxSizing: "border-box" },
   noteInput: { flex: 1, background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "11px 16px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
   noteEntry: { padding: "18px 0", borderBottom: `1px solid ${T_.borderLight}` },
-  newsScroll: { maxHeight: 400, overflowY: "auto", paddingRight: 8, scrollbarWidth: "thin", scrollbarColor: `${T_.border} transparent` },
-  newsItem: { padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}` },
   listRow: { display: "flex", alignItems: "center", gap: 14, padding: "14px 0", borderBottom: `1px solid ${T_.borderLight}`, cursor: "pointer" },
   statCard: { background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: "16px 18px", cursor: "pointer" },
   prPill: { padding: "7px 18px", fontSize: 13, borderRadius: 7, cursor: "pointer", border: `1px solid ${T_.border}`, color: T_.textGhost, transition: "all .12s", background: "transparent", fontFamily: FONT },

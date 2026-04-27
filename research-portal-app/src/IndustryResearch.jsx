@@ -1260,13 +1260,6 @@ export default function IndustryResearch({ initialTab }) {
   const [llmTableSort, setLlmTableSort] = useState({ key: "date", dir: "desc" });
   const [neocloudSort, setNeocloudSort] = useState({ key: "backlog", dir: "desc" });
   const [shellSort, setShellSort] = useState({ key: "backlog", dir: "desc" });
-  const [labNotes, setLabNotes] = useState({ OpenAI: "", xAI: "", Google: "", Anthropic: "", Meta: "" });
-  // ETF sensitivity state (available if sensitivity tab is added later)
-  // const [smhData, setSmhData] = useState(ETF_SENSITIVITY.SMH.holdings.map(h => ({ ...h })));
-  // const [soxxData, setSoxxData] = useState(ETF_SENSITIVITY.SOXX.holdings.map(h => ({ ...h })));
-  // const [flkrData, setFlkrData] = useState(ETF_SENSITIVITY.FLKR.holdings.map(h => ({ ...h })));
-  // const [sensMode, setSensMode] = useState("fwd");
-  // const [sensEtf, setSensEtf] = useState("SMH");
 
   const s = {
     page: { fontFamily: "'DM Sans', 'Segoe UI', sans-serif", background: "#0B0F19", color: "#E2E8F0", minHeight: "100vh", padding: "24px 28px" },
@@ -1308,11 +1301,6 @@ export default function IndustryResearch({ initialTab }) {
     input: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: "1px solid #1E293B", borderRadius: 6, color: "#E2E8F0", outline: "none", width: "100%" },
     select: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: "1px solid #1E293B", borderRadius: 6, color: "#E2E8F0", outline: "none" },
   };
-
-  const fmt_ = fmt;
-  const fmtPrice_ = fmtPrice;
-  const _fmt = fmt;
-  const _fmtPrice = fmtPrice;
 
   // Stub holdings as empty for supply chain map (research portal has no portfolio)
   const holdings = [];

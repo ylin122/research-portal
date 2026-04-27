@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 
@@ -106,7 +106,7 @@ function ConceptsTab() {
   const [addTopic, setAddTopic] = useState("ai");
 
   useEffect(() => {
-    supabase.from("concepts").select("*").order("title", { ascending: true }).then(({ data }) => { setConcepts(data || []); setLoading(false); });
+    supabase.from("concepts").select("*").order("title", { ascending: true }).then(({ data }) => { setConcepts(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
   }, []);
 
   const handleAdd = async () => {
@@ -350,7 +350,7 @@ function DeepDivesTab() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
   useEffect(() => {
-    supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data }) => { setDives(data || []); setLoading(false); });
+    supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data }) => { setDives(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
   }, []);
 
   const handleDelete = async (id) => {
