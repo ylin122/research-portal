@@ -1,5 +1,11 @@
 {
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
+  "autoUpdatesChannel": "latest",
   "enableAllProjectMcpServers": true,
+  "effortLevel": "xhigh",
   "hooks": {
     "SessionStart": [
       {
@@ -12,24 +18,6 @@
           }
         ]
       }
-    ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "node $HOME/.claude/hooks/log-subagent-run.cjs",
-            "timeout": 15
-          }
-        ]
-      }
     ]
-  },
-  "enabledPlugins": {
-    "vercel@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {},
-  "effortLevel": "xhigh",
-  "autoUpdatesChannel": "latest",
-  "theme": "light"
+  }
 }

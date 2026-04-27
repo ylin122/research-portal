@@ -1,10 +1,10 @@
 ---
 name: PA Dashboard Project
-description: PA dashboard (portfolio analytics) at ~/pa-dashboard — built and developed via Claude Code CLI
+description: PA dashboard (portfolio analytics) at ~/projects/portfolio-dashboard — built and developed via Claude Code CLI
 type: project
+originSessionId: 6adfe949-fbcb-4b4a-992e-9de13ae3e182
 ---
-
-PA Dashboard at ~/pa-dashboard (Vite + React + Supabase). Deployed at https://dashboard-beta-seven-79.vercel.app/
+PA Dashboard at ~/projects/portfolio-dashboard (Vite + React + Supabase). Deployed at https://dashboard-beta-seven-79.vercel.app/
 
 **Why:** Portfolio analytics dashboard tracking equity holdings, semiconductor ETFs, and related research. User calls it "PA dashboard". Built and iterated entirely via Claude Code CLI.
 

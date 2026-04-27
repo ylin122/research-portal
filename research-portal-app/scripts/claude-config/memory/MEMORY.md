@@ -2,7 +2,7 @@
 
 - [feedback_no_shortening.md](feedback_no_shortening.md) — Never shorten or abbreviate user prompts when delegating to agents
 - [project_research_portal.md](project_research_portal.md) — Research portal project context and structure
-- [project_pa_dashboard.md](project_pa_dashboard.md) — PA dashboard at ~/pa-dashboard — portfolio analytics with Yahoo Finance API on Vercel
+- [project_pa_dashboard.md](project_pa_dashboard.md) — PA dashboard at ~/projects/portfolio-dashboard — portfolio analytics with Yahoo Finance API on Vercel
 - [feedback_chrome_default.md](feedback_chrome_default.md) — Always use Google Chrome when opening URLs in the browser
 - [feedback_research_ingest.md](feedback_research_ingest.md) — "Research ingest" means full pipeline: Gmail ingest + analyze + Obsidian sync
 - [feedback_article_dates.md](feedback_article_dates.md) — Always include publication date in analyzed research article titles

@@ -126,7 +126,18 @@
       "Bash(cp /c/Users/ylin1/.claude/settings.local.json /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/settings.local.json)",
       "Bash(cp /c/Users/ylin1/.claude/hooks/log-subagent-run.cjs /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/hooks/log-subagent-run.cjs)",
       "Bash(cp '/c/Users/ylin1/.claude/projects/C--Users-ylin1/memory/*.md' /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/memory/)",
-      "WebFetch(domain:www.darioamodei.com)"
+      "WebFetch(domain:www.darioamodei.com)",
+      "Bash(nohup vercel *)",
+      "Bash(echo \"PA dashboard PID: $!\")",
+      "Bash(echo \"Research portal PID: $!\")",
+      "Bash(npx eslint *)",
+      "PowerShell(Start-Process \"chrome.exe\" -ArgumentList \"http://localhost:5174/\")",
+      "Bash(git *)",
+      "Bash(cp C:/Users/willi/.claude/mcp-config.json C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/mcp-config.json)",
+      "Bash(cp C:/Users/willi/.claude/settings.json C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.json)",
+      "Bash(cp C:/Users/willi/.claude/settings.local.json C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.local.json)",
+      "Bash(cp C:/Users/willi/.claude/hooks/log-subagent-run.cjs C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/hooks/log-subagent-run.cjs)",
+      "Bash(cp 'C:/Users/willi/.claude/projects/C--Users-willi/memory/*.md' C:/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/memory/)"
     ]
   }
 }
