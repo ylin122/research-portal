@@ -145,7 +145,13 @@
       "Bash(yarn *)",
       "Bash(tee /tmp/vite-meta.log)",
       "Bash(cat)",
-      "Bash(bash /tmp/verify.sh)"
+      "Bash(bash /tmp/verify.sh)",
+      "WebFetch(domain:finviz.com)",
+      "Bash(tasklist)",
+      "Bash(rm -f _refresh-fetch.mjs _refresh-fetch.json _refresh-extras.mjs _refresh-extras.json _refresh-betas.json _build-updates.mjs _refresh-build.json _build-etf.mjs _refresh-etf.json _refresh-etf.txt _refresh-etf-final.txt _emit-etf.mjs _compute-betas.mjs _apply-etf.mjs _apply-all.mjs _refresh-daily-values-local.mjs _consistency-check.mjs)",
+      "Bash(rm -rf _cache)",
+      "Bash(curl -s -m 60 \"http://localhost:3001/api/quote?tickers=NVDA,AMZN,MSFT,GOOGL,META,TSLA,AAPL,MU,UNH,BABA,TCEHY,SMH,QQQ\" -o _cache_q.json)",
+      "Bash(rm -f _cache_q.json)"
     ]
   }
 }
