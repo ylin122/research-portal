@@ -162,7 +162,7 @@ const AGENTS = [
   },
   {
     name: "fact-check-reconciler", color: "#818CF8",
-    desc: "Comprehensive single-agent fact-checker. Extracts every checkable claim from a target, runs internal verify + dispute passes against multiple sources, cross-checks internal consistency / math / citations / recency, then issues per-claim verdicts (VERIFIED / LIKELY CORRECT / CONFLICT / LIKELY WRONG / MISATTRIBUTED / STALE / NEEDS REVIEW). Prioritizes thoroughness over speed. Read-only.",
+    desc: "Comprehensive single-agent fact-checker. Loads the Sources tab from Supabase first and uses those curated entries as Tier-0 verification. Extracts every checkable claim, runs internal verify + dispute passes, cross-checks internal consistency / math / citations / recency, and issues per-claim verdicts (VERIFIED / LIKELY CORRECT / CONFLICT / LIKELY WRONG / MISATTRIBUTED / STALE / NEEDS REVIEW). Reports which curated sources were consulted. Prioritizes thoroughness over speed. Read-only.",
     usage: "@fact-check-reconciler src/Restructuring.jsx",
     tools: "Read, Bash, Grep, Glob, WebSearch, WebFetch", mode: "Read-only",
   },
