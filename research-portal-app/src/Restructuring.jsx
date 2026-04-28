@@ -41,6 +41,7 @@ const CASES = [
   { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
   { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
   { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
+  { key: "trinseo", label: "Trinseo plc", sector: "Specialty Chemicals · ONGOING", year: "2023-26", color: "#F472B6" },
   { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: "#EF4444" },
 ];
 
@@ -3840,6 +3841,758 @@ function CaesarsCase() {
    The first "non-subsidiary" drop-down financing.
    ═══════════════════════════════════════════════════════ */
 
+/* ═══════════════════════════════════════════════════════
+   TRINSEO CASE — pari-plus LME, ongoing as of Apr 2026
+   ═══════════════════════════════════════════════════════ */
+
+function TrinseoCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    business: (
+      <DetailPanel title="The Business — Specialty Chemicals in Cyclical Decline" onClose={() => setDetail(null)}>
+        <p><strong>Trinseo plc</strong> (NYSE: TSE) is a specialty chemicals producer focused on engineered polymers (ABS, polystyrene), plastics solutions, and methacrylates (PMMA). Spun out of Dow in 2010 (initially as Styron); IPO'd 2014. End markets: <strong>autos, building &amp; construction, consumer durables, packaging</strong> — all deeply cyclical, all under pressure simultaneously since 2023.</p>
+        <p><strong>The structural problem:</strong> Asian polymer producers (China, South Korea, Taiwan) built capacity through the 2010s assuming continuous Chinese demand growth. Post-2022, China demand softened, capacity utilization in Asia dropped, and surplus product was redirected to North America and Europe — directly into Trinseo's footprint.</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>ABS imports into Europe from South Korea: <strong>+18% YoY 1H 2025; +26% YoY Q2 2025</strong></li>
+          <li>ABS imports into the US from South Korea + Taiwan: <strong>+23% YoY</strong>; from Mexico (transshipment): <strong>+75%</strong></li>
+          <li>FY2025 Adj EBITDA guidance: cut from $200M → <strong>$167–177M</strong></li>
+          <li>FY2025 FCF guidance: <strong>negative $140M</strong> (improved from $-165M)</li>
+          <li>Year-end 2025 leverage (Moody's): <strong>{">"}10x</strong>; S&amp;P projects <strong>~15x</strong> by FY-end</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Margin sensitivity:</strong> Per CEO Frank Bozich on Q3 2025 call — a 10% volume increase translates into ~<strong>$100M of EBITDA improvement</strong>. The business has high fixed costs and operating leverage works both directions; without volume recovery, no path to deleveraging through operations.</p>
+        <p style={{ color: T_.red }}><strong>European cost disadvantage:</strong> High-cost European production (vs. Asia and US Gulf Coast) is the persistent margin headwind Moody's cites. Closures of virgin MMA plants in Italy + polystyrene production in Germany announced — $30M annual EBITDA improvement / $10M annual capex reduction once executed; cash close costs of <strong>$60–70M</strong>, with $22M expensed in 2026.</p>
+        <p style={{ color: T_.amber }}><strong>The bull case (CEO's five triggers):</strong> trade certainty, continued Fed cuts, Ukraine resolution, Asian capacity rationalization, EU Chemical Industry Action Plan support. None are within company control. Substantial cash burn over 2024–2025 plus interest coverage <strong>{"<"}1.0x</strong> are what made the LME inevitable.</p>
+      </DetailPanel>
+    ),
+    preLme: (
+      <DetailPanel title="Pre-LME Capital Structure (mid-2023)" onClose={() => setDetail(null)}>
+        <p>Before September 2023, Trinseo's debt stack was a relatively clean post-spin structure with ~$2.4B of funded debt against deteriorating earnings. The 2024 + 2025 maturity wall was the immediate trigger.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Size</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Maturity</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Coupon</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Lien</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { t: "Senior Secured Term Loan", s: "$660M", m: "May 2024", c: "SOFR+250", l: "1L on US/Lux assets", col: T_.red },
+              { t: "5.375% Sr Secured Notes", s: "$500M", m: "Sep 2025", c: "5.375%", l: "1L on US/Lux assets", col: T_.red },
+              { t: "5.125% Sr Unsecured Notes", s: "$450M", m: "Apr 2029", c: "5.125%", l: "Unsecured", col: T_.amber },
+              { t: "5.250% Sr Unsecured Notes", s: "$447M", m: "Apr 2031", c: "5.250%", l: "Unsecured", col: T_.amber },
+              { t: "ABL Revolver", s: "$375M", m: "2026", c: "Floating", l: "1L ABL collateral", col: T_.green },
+              { t: "AR Securitization", s: "$150M", m: "Rolling", c: "Floating", l: "AR pool", col: T_.green },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "5px 8px", color: r.col, fontWeight: 600 }}>{r.t}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.s}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.m}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.c}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.l}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ color: T_.red, marginTop: 12 }}><strong>The trigger:</strong> $660M TL maturing May 2024 + $500M of secured notes maturing Sep 2025 = <strong>~$1.16B of secured debt due within 24 months</strong>. With Q3 2024 gross leverage already at <strong>12.2x</strong>, normal-course refinancing was off the table. The September 2023 transaction was designed to clear both maturities in one move.</p>
+        <p style={{ color: T_.amber }}><strong>Documentation enabling the LME:</strong> The 2021-vintage credit agreement permitted (i) incremental pari-passu debt against existing collateral subject to MFN + an incurrence basket, (ii) "excluded contributions" capacity allowing equity contributions to be re-routed into unrestricted subs, (iii) post-closing redesignation of restricted subs as unrestricted, and (iv) "limited" foreign-sub guarantees with carve-outs for §956 / CFC tax leakage. None of these were unusual at the time — the combination is what enabled the pari-plus.</p>
+      </DetailPanel>
+    ),
+    sept2023: (
+      <DetailPanel title="The September 2023 Pari-Plus Transaction (the original)" onClose={() => setDetail(null)}>
+        <p>Octus / Reorg explicitly classifies this as a <strong>"pari-plus"</strong> transaction. It is the textbook deal that defined the structure — Trinseo paired a pari-passu intercompany loan with a sidecar collateral pool routed through unrestricted subs and foreign guarantors.</p>
+        <p><strong>The new debt issued (Sep 8, 2023):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>$1.077B new-money 1L term loan</strong> at <strong>SOFR+9.66%</strong>, maturing <strong>May 2028</strong>, with PIK-toggle interest feature</li>
+          <li>Issuers: <strong>Trinseo LuxCo Finance SPV Sàrl</strong> (Lux) + <strong>Trinseo NA Finance SPV LLC</strong> (US) — two new finance SPVs</li>
+          <li>Anchor lenders: <strong>Oaktree, Angelo Gordon, Apollo</strong></li>
+          <li>Use of proceeds: redeem $660M 2024 TL in full + ~75% of $500M 5.375% 2025 SSNs ($385M)</li>
+        </ul>
+        <p><strong>The "pari" leg — $948.4M intercompany TL:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Trinseo LuxCo Finance SPV Sàrl made an intercompany TL to <strong>Trinseo Holding Sàrl</strong> (fka Trinseo Materials Operating SCA) and <strong>Trinseo Materials Finance Inc.</strong> — the existing 1L TL borrowers</li>
+          <li>This intercompany TL ranks <strong>pari passu</strong> with the existing 1L TLs against the existing collateral pool. Existing lenders were <em>not</em> formally subordinated</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>The "plus" leg — sidecar collateral via unrestricted sub:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>A separate <strong>$128.9M intercompany TL</strong> from Trinseo LuxCo Finance SPV Sàrl → <strong>Trinseo Luxco Sàrl</strong> — used to fund an equity contribution classified as "excluded contributions"</li>
+          <li>The proceeds were routed into <strong>Trinseo Finance SPV LLC</strong>, designated as an <strong>unrestricted subsidiary</strong> — and Trinseo's <strong>50% stake in Americas Styrenics LLC JV</strong> was dropped into it</li>
+          <li>The new pari-plus tranche received <strong>exclusive lien</strong> on the JV stake — an asset existing 1L lenders no longer had any claim against</li>
+          <li>Plus <strong>"limited" guarantees</strong> from a designated set of foreign subs (carve-outs preserved §956 / CFC tax efficiency)</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Net economic effect:</strong> Pari-plus lenders got pari-passu treatment in the existing collateral pool <em>plus</em> an exclusive collateral side pocket (Americas Styrenics JV + foreign guarantor support). Existing 1L lenders kept the same lien rank but watched their relative collateral coverage shrink. The "pari" label is technically accurate; the recovery math is dominated by the "plus" leg.</p>
+        <p style={{ color: T_.textMid }}><strong>Reorg's framing (Jan 16, 2026):</strong> "The new financing included a number of interesting features including a <em>'pari-plus' double dip</em>, a drop-down of assets into an unrestricted subsidiary and a PIK-interest toggle." The transaction is the canonical reference point for the structure.</p>
+      </DetailPanel>
+    ),
+    jan2025: (
+      <DetailPanel title="The January 2025 Tightening (pari-plus 2.0)" onClose={() => setDetail(null)}>
+        <p>By late 2024 the September 2023 deal had bought ~16 months of runway, but the 5.125% / 5.250% unsecured notes maturity wall (Apr 2029 / Apr 2031) was approaching and 2025 EBITDA continued to deteriorate. Trinseo executed a follow-on transaction — a transaction support agreement (TSA) negotiated with a majority unsecured noteholder cohort. The pari-plus structure was layered on top of itself and tightened materially.</p>
+        <p><strong>Three moves stacked in January 2025:</strong></p>
+        <p><strong>1. Pari-plus claim upsized $948.4M → $1.443B (+$500M)</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>The 5.125% sr unsecured notes due Apr 2029 were exchanged into <strong>7.625% pari-plus 2L notes due 2029</strong> at a <strong>15% discount</strong></li>
+          <li>The new 2L notes carry the same pari-plus collateral package as the 1L pari-plus TL — including the JV, the foreign guarantor support, and (after this transaction) Aristech + Altuglas</li>
+          <li>$300M superpriority RCF added — refinanced the 5.375% 2025 SSNs and replaced the legacy ABL revolver</li>
+        </ul>
+        <p><strong>2. Foreign guarantees: "limited" → fully secured (pari-plus tranche only)</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Limited foreign guarantees converted to <strong>full secured guarantees</strong> for the pari-plus tranche only — not for the existing intercompany TL</li>
+          <li>Now-full guarantors: <strong>Trinseo Belgium BV, Trinseo Operating Belgium BV, Trinseo Deutschland GmbH</strong> (+ 4 affiliated German entities), <strong>PT Trinseo Materials Indonesia, PT Trinseo Operating Indonesia, Taiwan Trinseo Ltd., Trinseo Europe GmbH</strong></li>
+          <li>Asymmetric guarantee — the existing intercompany TL kept its old "limited" foreign guarantee package while the pari-plus tranche got the upgrade</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>3. Aristech Surfaces LLC + Altuglas LLC redesignated as unrestricted</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Both entities were <strong>previously guarantors</strong> under the existing/incremental intercompany TL credit agreement</li>
+          <li>Under the Jan 2025 amendments, both were <strong>designated unrestricted</strong> with respect to that debt — releasing them as guarantors of the existing TL</li>
+          <li>They were then <strong>pledged as exclusive collateral</strong> to the pari-plus 1L TL and pari-plus 2L notes</li>
+          <li>Asset sale proceeds from Aristech and Altuglas are <strong>mandatory repayment</strong> for the pari-plus tranche (TL senior to notes)</li>
+          <li>This is a J. Crew-style drop-down inside the broader pari-plus chassis</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Net effect of the Jan 2025 tightening:</strong> Pari-plus lenders went from a $948.4M pari claim + JV side pocket + partial foreign guarantee → to a <strong>$1.443B pari claim + JV + full secured foreign guarantor support + exclusive lien on Aristech &amp; Altuglas + senior superpriority RCF cushion</strong>. Existing 1L lenders watched their collateral pool shrink and their pari claim get diluted further.</p>
+        <p style={{ color: T_.amber }}><strong>Subordination wrinkle:</strong> Under the "Luxco merger amendment," the Sept 2023 $128.9M intercompany TL (Luxco→Luxco — the drop-down conduit) was <strong>subordinated</strong> to the existing/incremental intercompany TL. This was the consideration the existing TL group received in exchange for the Jan 2025 amendment package — a quiet upgrade in their relative position to the conduit, against their wholesale loss of relative position to the pari-plus tranche.</p>
+      </DetailPanel>
+    ),
+    paripluseDef: (
+      <DetailPanel title="What 'Pari-Plus' Means — and Why It Beats an Uptier" onClose={() => setDetail(null)}>
+        <p>"Pari-plus" sits between two more familiar LME archetypes: <strong>the uptier</strong> (formal subordination of non-participants — Serta, Mitel) and <strong>the drop-down</strong> (asset transfer to an unrestricted sub — J.Crew, Envision). It borrows from both.</p>
+        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Archetype</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Mechanic</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Litigation risk</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { a: "Uptier", m: "New tranche primes existing — non-participants formally subordinated", l: "High — sacred-rights challenges (LCM v Serta, Mitel)" },
+              { a: "Drop-Down", m: "Crown-jewel assets transferred to unrestricted sub; new debt raised there", l: "Moderate — fraudulent transfer / J.Crew blockers" },
+              { a: "Pari-Plus", m: "New tranche pari-passu vs existing collateral PLUS exclusive sidecar collateral & guarantees", l: "Lower — same lien rank means no formal subordination to challenge" },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "6px 8px", color: T_.text, fontWeight: 600 }}>{r.a}</td>
+                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.m}</td>
+                <td style={{ padding: "6px 8px", color: T_.amber }}>{r.l}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ color: T_.amber, marginTop: 12 }}><strong>The legal arbitrage:</strong> Most credit agreements protect the pro-rata right to existing collateral via sacred-rights provisions. They do NOT typically prohibit <em>asymmetric guarantees</em> or <em>asymmetric collateral</em> attached to a new pari-passu tranche. Pari-plus exploits that asymmetry. Because the new lender's lien rank against existing collateral is the same as existing lenders', no sacred right is breached — even though the economic outcome is functionally similar to subordination.</p>
+        <p style={{ color: T_.red }}><strong>Why issuers chose pari-plus over uptier in 2023–2024:</strong> Following the LCM v Serta NY appellate reversal (Dec 2024) and the in-bankruptcy uptier ruling against Serta in S.D. Tex. (Mar 2024), the uptier playbook became materially more legally fraught. Pari-plus emerged as the substitute — same economic effect, much harder to challenge under sacred-rights theories.</p>
+        <p style={{ color: T_.textMid }}><strong>Key recognition:</strong> The label "pari" is technically accurate (same lien rank, same collateral pool — for the existing collateral). The recovery math, however, is determined by the "plus" leg: JV + foreign guarantors + Aristech + Altuglas. Holdouts cannot reach those assets. Pari ranking ≠ equal recovery.</p>
+      </DetailPanel>
+    ),
+    dropDown: (
+      <DetailPanel title="The Americas Styrenics Drop-Down (the 'plus' leg, Sep 2023)" onClose={() => setDetail(null)}>
+        <p><strong>Americas Styrenics LLC</strong> is a 50/50 joint venture between Trinseo and Chevron Phillips Chemical — a leading North American producer of styrene and polystyrene. CFO David Stasse on the Q3 2025 call: "kind of [on] the left side of the cost curve" — i.e., among the lowest-cost producers in the region. Trinseo's 50% equity stake is one of the company's most valuable single assets.</p>
+        <p><strong>The mechanic:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>$128.9M of the $1.077B new-money proceeds were routed via Trinseo LuxCo Finance SPV Sàrl → <strong>Trinseo Luxco Sàrl</strong></li>
+          <li>That capital was contributed as <strong>"excluded contributions"</strong> under the existing credit agreement — a J. Crew-lineage investment basket that escapes the standard restricted-payments tests</li>
+          <li>Excluded-contribution dollars were used to fund equity into <strong>Trinseo Finance SPV LLC</strong>, designated as an <strong>unrestricted subsidiary</strong></li>
+          <li>The Americas Styrenics 50% stake was contributed into Trinseo Finance SPV LLC</li>
+          <li>The pari-plus 1L term loan received <strong>exclusive collateral</strong> on the JV stake (and any sale proceeds become mandatory repayment of the pari-plus debt)</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Why the existing lenders couldn't block it:</strong> The credit agreement's drop-down protections at signing were standard 2021-vintage — investment baskets allowed up to ~$2.5B of asset transfers to unrestricted subs subject to availability. The "excluded contributions" prong let Trinseo recycle the new-money proceeds back into investment capacity without consuming the explicit drop-down basket. By the time existing lenders were aware, the JV was already contributed.</p>
+        <p style={{ color: T_.red }}><strong>Comparison to Envision:</strong> Envision's Apr 2022 dropdown moved 83% of AmSurg (representing ~61% of total Envision EV) out of the credit group. Trinseo's was structurally similar but smaller — a single asset (the JV) rather than a full silo. Per Octus's Feb 2025 retrospective on the 7 major drop-downs since 2022, Trinseo's value loss to non-ad-hoc participating lenders was estimated at <strong>~50%</strong> on the TLB-2 due 2028 — comparable to Envision's 53% but below Del Monte's 64%.</p>
+        <p style={{ color: T_.amber }}><strong>The mandatory repayment hook:</strong> Any future sale of the Americas Styrenics 50% stake — which has been speculated in S&amp;P commentary as a potential restructuring lever — must be applied to the pari-plus tranche. The existing intercompany TL has no claim on those proceeds. This eliminates the JV as a flexible liquidity tool for the broader credit group.</p>
+      </DetailPanel>
+    ),
+    aristechAltuglas: (
+      <DetailPanel title="Aristech &amp; Altuglas — The Jan 2025 Sister-Sub Carve-Out" onClose={() => setDetail(null)}>
+        <p>The Jan 2025 transaction's most aggressive feature was the <strong>redesignation of two existing operating subsidiaries</strong> — Aristech Surfaces LLC and Altuglas LLC (US PMMA businesses) — as unrestricted subsidiaries with respect to the existing intercompany TL, while simultaneously pledging them as exclusive collateral to the pari-plus tranche.</p>
+        <p><strong>Pre–Jan 2025 status:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Aristech and Altuglas were <strong>guarantors</strong> under the existing/incremental intercompany TL credit agreement</li>
+          <li>Their assets were part of the existing 1L TL collateral pool</li>
+          <li>Existing lenders had a direct claim on PMMA cash flows</li>
+        </ul>
+        <p><strong>Post–Jan 2025:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Designated unrestricted</strong> under the existing/incremental intercompany TL + the superpriority RCF — released as guarantors</li>
+          <li><strong>Pledged as exclusive collateral</strong> to the pari-plus 1L TL and pari-plus 2L notes</li>
+          <li>Aristech / Altuglas IP held by Trinseo Europe GmbH was carved out — that subset gets its own collateral priority order (pari-plus first, then existing)</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>This is the structural innovation Reorg flagged:</strong> Existing 1L lenders had Aristech and Altuglas in their collateral pool one day, and not the next — without their consent. The credit agreement's <strong>post-closing redesignation right</strong> let the borrower flip the entities' status, and the existing TL had no anti-redesignation blocker. Once outside the existing TL's perimeter, the entities could be re-pledged elsewhere.</p>
+        <p style={{ color: T_.amber }}><strong>Why this matters for the playbook:</strong> The Aristech/Altuglas mechanic is portable to almost any credit agreement that allows post-closing unrestricted-sub redesignation without consent of the existing lenders. The "right to redesignate" was the back door. Post-Trinseo, well-drafted agreements now require <strong>existing lender consent</strong> for redesignation of guarantors as unrestricted, or cap the EBITDA / asset value of any single redesignation event.</p>
+        <p style={{ color: T_.textMid }}><strong>Mandatory repayment hook (same as JV):</strong> Sale proceeds from Aristech or Altuglas constitute mandatory repayment for the pari-plus 1L TL and 2L notes. The existing TL has no claim. PMMA — once a contributor to operating cash flows of the existing credit group — became a debt-service asset for the pari-plus tranche.</p>
+      </DetailPanel>
+    ),
+    covenants: (
+      <DetailPanel title="Covenant Architecture — What Changed in Jan 2025" onClose={() => setDetail(null)}>
+        <p>Per Reorg article 348683, the Jan 2025 amendments rewrote the existing TL's maintenance-covenant package and added a new superpriority covenant suite. The net effect was to remove a future tripwire on the existing TL while inserting tight covenants on the new superpriority RCF.</p>
+        <p><strong>Existing/incremental intercompany TL credit agreement — what changed:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>3.5x first lien net leverage maintenance test — REMOVED</strong>. With FY2025 leverage tracking 10x+ this would have been an immediate trigger for renegotiation absent waiver. Removal eliminated that pathway</li>
+          <li>Aristech + Altuglas guarantor releases (see separate panel)</li>
+          <li>$128.9M Luxco→Luxco intercompany TL (the original drop-down conduit) <strong>subordinated</strong> to the existing/incremental intercompany TL — quiet upgrade for the existing TL group's relative position to the conduit</li>
+        </ul>
+        <p><strong>Superpriority RCF — new covenants (Jan 2025 inception):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>$100M minimum liquidity</strong> at Trinseo Holding Sàrl + restricted subs — defined as cash + RCF availability + AR sec availability — tested on <strong>last business day of each month</strong></li>
+          <li><strong>Anti-cash-hoarding:</strong> mandatory paydown of RCF borrowings with excess cash &gt; $100M at loan parties or &gt; $50M at non-loan parties</li>
+          <li><strong>1.5x superpriority lien net leverage ratio</strong> when 30%+ of RCF capacity drawn — tested quarterly</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>The economic story of these covenants:</strong> They lock cash inside the borrower group and force any excess to flow first to the superpriority RCF. The pari-plus tranche sits next in line. The existing TL is structurally last in line for cash sweeps even though its lien rank is technically pari-passu.</p>
+        <p style={{ color: T_.red }}><strong>Trinseo Europe GmbH wrinkle (per Reorg 348683):</strong> The collateral priority on Trinseo Europe GmbH's IP, license agreements, tolling agreements, and inventory differs from the priority on its other assets:</p>
+        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 6 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Asset</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>1st</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>2nd</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>3rd</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>4th</th>
+          </tr></thead>
+          <tbody>
+            <tr style={{ borderBottom: `1px solid ${T_.border}10` }}>
+              <td style={{ padding: "5px 8px", color: T_.textMid }}>IP / licenses / tolling / inventory (ex-Aristech/Altuglas IP)</td>
+              <td style={{ padding: "5px 8px", color: T_.green }}>Superpriority RCF</td>
+              <td style={{ padding: "5px 8px", color: T_.amber }}>Pari-plus 1L TL</td>
+              <td style={{ padding: "5px 8px", color: T_.amber }}>Pari-plus 2L Notes</td>
+              <td style={{ padding: "5px 8px", color: T_.red }}>Existing intercompany TL</td>
+            </tr>
+            <tr style={{ borderBottom: `1px solid ${T_.border}10` }}>
+              <td style={{ padding: "5px 8px", color: T_.textMid }}>All other assets of Trinseo Europe GmbH</td>
+              <td style={{ padding: "5px 8px", color: T_.green }}>Superpriority RCF</td>
+              <td style={{ padding: "5px 8px", color: T_.amber }}>Existing intercompany TL</td>
+              <td style={{ padding: "5px 8px", color: T_.red }}>Pari-plus 1L TL</td>
+              <td style={{ padding: "5px 8px", color: T_.red }}>Pari-plus 2L Notes</td>
+            </tr>
+          </tbody>
+        </table>
+        <p style={{ color: T_.textMid, marginTop: 12 }}>Existing lenders retained their priority on Trinseo Europe GmbH's <em>other</em> assets — but on the IP and license stream (the most monetizable portion), they sit fourth. This kind of asset-by-asset priority asymmetry is unique to pari-plus and is not visible from the headline lien-rank table.</p>
+      </DetailPanel>
+    ),
+    debtStack: (
+      <DetailPanel title="Capital Structure (Pro Forma, Apr 2026)" onClose={() => setDetail(null)}>
+        <p>Pro-forma capital structure as of April 2026, after the $50M incremental superpriority RCF (April 10) and ahead of the April 30 limited-waiver expiration. Trading levels per Reorg / IHS Markit / Solve mid-Jan 2026.</p>
+        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 8 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Issuer</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Size</th>
+            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Maturity</th>
+            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Trading</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { t: "Superpriority RCF (S+225)", iss: "Trinseo Holding Sàrl", s: "$300M", m: "Feb 2, 2028", p: "—", c: T_.green },
+              { t: "Incremental Superpriority RCF (S+900 PIK)", iss: "Trinseo Holding Sàrl", s: "$50M ($10.4M drawn)", m: "Feb 2, 2028", p: "—", c: T_.green },
+              { t: "Pari-Plus 1L TL (S+966 PIK toggle)", iss: "Trinseo LuxCo Finance SPV", s: "$1.2B", m: "May 2028", p: "72.5/75.3", c: T_.amber },
+              { t: "Pari-Plus 2L Notes (7.625%)", iss: "Trinseo LuxCo Finance SPV", s: "~$495M", m: "2029", p: "—", c: T_.amber },
+              { t: "Existing/Incremental Intercompany TL", iss: "Trinseo Holding Sàrl", s: "—", m: "2028", p: "10/13", c: T_.red },
+              { t: "5.250% Sr Unsecured Notes", iss: "Trinseo plc", s: "$447M", m: "Apr 2031", p: "single digits", c: T_.red },
+              { t: "AR Securitization (advance rate 90%)", iss: "Trinseo subs", s: "—", m: "Rolling", p: "—", c: T_.green },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "5px 8px", color: r.c, fontWeight: 600 }}>{r.t}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, fontSize: 10 }}>{r.iss}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.s}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.m}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.p}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ marginTop: 12, color: T_.amber }}><strong>Liquidity (Dec 31, 2025, per Moody's):</strong> $334M total — $139M cash + $192M revolver availability. Per Q3 2025 management guidance, expected to step up modestly with seasonal Q4 working-capital release. By April 2026, the $50M incremental RCF was added to extend runway through restructuring negotiations.</p>
+        <p style={{ color: T_.red }}><strong>Key trading-level read:</strong> The ~30-point gap between the pari-plus 1L TL (mid-70s) and the existing intercompany TL (low-teens) is the visible market-implied value of the "plus" leg. Both tranches are technically pari-passu in the existing collateral pool — but the market is pricing the pari-plus tranche as substantially better collateralized via the JV + foreign guarantor + Aristech/Altuglas package.</p>
+        <p style={{ color: T_.amber }}><strong>Stock:</strong> $0.55 (mid-Jan 2026); NYSE non-compliance notice received Dec 2025; delisting initiated Mar 2026.</p>
+      </DetailPanel>
+    ),
+    lenders: (
+      <DetailPanel title="Lender Dynamics — Two Adverse Camps" onClose={() => setDetail(null)}>
+        <p>Trinseo's 2026 restructuring talks are split between two clearly adverse lender camps, each with distinct collateral exposures. Unlike Envision (one ad hoc group across the stack), Trinseo's pari-plus structure deliberately created two separate creditor cohorts whose interests diverge.</p>
+        <p><strong>Camp 1 — Pari-Plus Lenders ("the new-money group")</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Anchor lenders (per Reorg): <strong>Oaktree, Angelo Gordon, Apollo</strong> — same group provided the Sept 2023 $1.077B new money and the April 2026 $50M incremental superpriority RCF</li>
+          <li>Counsel: <strong>Paul Hastings</strong></li>
+          <li>Financial advisor: <strong>PJT Partners</strong></li>
+          <li>Position: $1.2B pari-plus 1L TL + $495M pari-plus 2L notes; collateral package includes JV, foreign guarantors, Aristech/Altuglas</li>
+          <li>Trading: TL mid-70s, notes likely high-50s/low-60s — well-collateralized; expecting strong recovery in any Ch.11</li>
+        </ul>
+        <p><strong>Camp 2 — Existing/Incremental Intercompany TL ("the OpCo loan group")</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Counsel: <strong>Gibson Dunn</strong></li>
+          <li>Financial advisor: <strong>Lazard</strong></li>
+          <li>Position: existing 1L TL — pari-passu lien rank with the pari-plus tranche but excluded from the JV, foreign guarantor, and Aristech/Altuglas collateral</li>
+          <li>Trading: 10/13 — pricing in near-total-loss recovery</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>The structural problem:</strong> The two camps cannot agree on a Ch.11 plan because their best recoveries point in opposite directions. The pari-plus camp wants to monetize the JV + Aristech + Altuglas + foreign guarantors and apply proceeds to their tranche. The OpCo loan camp wants to expand the credit group's claim against those assets — which would require unwinding either or both of the LMEs via fraudulent-transfer or recharacterization theories. Any plan benefits one camp at the other's direct expense.</p>
+        <p style={{ color: T_.amber }}><strong>Trinseo's advisors:</strong> <strong>Latham &amp; Watkins</strong> (legal); <strong>Centerview Partners</strong> (financial restructuring); <strong>FTI Consulting</strong> (operational/financial advisor). Per Reorg article 360937 — confirmed Jan 16, 2026.</p>
+        <p style={{ color: T_.textMid }}><strong>Cooperation/no-trade dynamics:</strong> Pari-plus lenders cooperated with Trinseo on the Apr 10 incremental RCF amendment — Apollo, Oaktree, and Angelo Gordon are listed as the consenting lenders on the signature page. The OpCo loan group did not have a parallel cooperation arrangement disclosed.</p>
+      </DetailPanel>
+    ),
+    defaults: (
+      <DetailPanel title="The 2026 Default Cascade" onClose={() => setDetail(null)}>
+        <p>The default sequence Mar–Apr 2026 unfolded over five weeks, each event narrowing optionality before the next.</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Feb 23, 2026</strong> — Bloomberg (via Reorg 367664): "Trinseo Said to Be Considering Bankruptcy in Coming Weeks." First public reporting of a Ch.11 timeline.</li>
+          <li><strong>Mar 3, 2026</strong> — NYSE delisting initiated (per Reorg 369389). Stock had failed continued-listing standard for {">"}30 trading days.</li>
+          <li><strong>Mar 13, 2026</strong> — Going-concern "substantial doubt" disclosed in 10-K (Reorg 371201).</li>
+          <li><strong>Mar 19, 2026</strong> — Trinseo elected not to make interest under the pari-plus 1L TL and pari-plus 2L notes (Trinseo LuxCo Finance SPV S.à r.l.). Constituted event of default; cross-defaults triggered. Limited waivers entered with lenders (per Moody's Apr 2 ratings action).</li>
+          <li><strong>Apr 2, 2026</strong> — Moody's downgrade: <span style={{ color: T_.red }}><strong>CFR Caa2 → Ca</strong></span>; PDR <strong>Ca-PD/LD</strong> with limited-default designation. Speculative-grade liquidity SGL-3 → SGL-4. CIS-5 (very high governance risk).</li>
+          <li><strong>Apr 7, 2026</strong> — S&amp;P selective default ("SD") on the missed pari-plus interest.</li>
+          <li><strong>Apr 10, 2026</strong> — $50M incremental superpriority RCF executed at SOFR+9% PIK. Initial draw $10.4M. Apollo, Oaktree, Angelo Gordon are the consenting lenders.</li>
+          <li><strong>Apr 13, 2026</strong> — AR securitization advance rate reduced 92.5% → 90%; limited waiver to Apr 30 entered for AR sec facility.</li>
+          <li><strong>Apr 14, 2026</strong> — Trinseo elected not to pay <strong>$38M of interest</strong> due under the Sept 8, 2023 credit agreement (the pari-plus 1L TL). Per 8-K disclosure: lenders had previously agreed limited waivers of acceleration rights through April 30.</li>
+          <li><strong>Apr 30, 2026 (3 days from the case-publication date Apr 27, 2026)</strong> — Limited waivers expire. Absent further extension or restructuring announcement, lenders' acceleration rights revive.</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Standstill on 2L notes:</strong> Per the intercreditor agreement, holders of the 7.625% pari-plus 2L notes are <strong>prohibited from enforcing collection action against collateral for 180 days following any acceleration</strong>. As of Apr 15, 2026 8-K disclosure, no notice or declaration of acceleration had been made on the 2L notes.</p>
+        <p style={{ color: T_.red }}><strong>What's likely next:</strong> Either (i) a further extension of the limited waivers to allow more negotiating runway, (ii) a prearranged Ch.11 filing aligning at least the pari-plus camp around a plan, or (iii) a free-fall Ch.11 if the two creditor camps cannot align on basic plan structure. Bloomberg's Feb 23 reporting suggested filing within weeks; six weeks have now passed since that report without filing, which is consistent with negotiated runway being extended.</p>
+      </DetailPanel>
+    ),
+    ratings: (
+      <DetailPanel title="Rating Actions — Moody's + S&amp;P" onClose={() => setDetail(null)}>
+        <p><strong>Moody's (Apr 2, 2026):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>CFR: <strong>Ca</strong> from Caa2 (3-notch downgrade). Outlook stable.</li>
+          <li>PDR: <strong>Ca-PD/LD</strong> from Caa2-PD. /LD designation removed in 3 business days per standard convention.</li>
+          <li>Trinseo Holding S.à r.l. backed senior secured 1L TL B2 (existing): <strong>C</strong> from Caa3</li>
+          <li>Trinseo LuxCo Finance SPV S.à r.l. senior secured TLs (pari-plus): <strong>Caa3</strong> from Caa1</li>
+          <li>Trinseo LuxCo Finance SPV S.à r.l. backed senior secured 2L notes due 2029 (pari-plus): <strong>Ca</strong> from Caa2</li>
+          <li>SGL: <strong>SGL-4</strong> from SGL-3</li>
+          <li>CIS-5: very high governance risk (financial performance below management guidance, balance-sheet size, expected restructuring)</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Moody's relative-recovery commentary:</strong> The Caa3 on pari-plus TL and Ca on pari-plus 2L "reflect their relative seniority to the other debt tranches. They only rank behind the $300M superpriority RCF (unrated)." Pari-plus has access to the 50% Americas Styrenics JV stake, US PMMA businesses (Aristech/Altuglas), and select foreign guarantor assets in Germany, Indonesia, Taiwan, Belgium. <strong>Proceeds from the sale of these assets would be used to repay Trinseo LuxCo Finance SPV S.à r.l.'s debt to the exclusion of other creditors.</strong> The C on the existing intercompany TL "reflects its junior position" — even though the lien rank is technically pari-passu.</p>
+        <p><strong>S&amp;P (timeline):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Nov 2025: <strong>CCC</strong> from CCC+ — "macroeconomic headwinds and demand uncertainty will persist over the next 12 months"</li>
+          <li>Mar 3, 2026: SD on deferred interest (per Reorg 369463)</li>
+          <li>S&amp;P projection: leverage ~13x at Sep 30, 2025 → ~15x by FY-end 2025</li>
+          <li>Refinancing path: "absent any material improvement in its end-market demand or the sale of its stake in the Americas Styrenics joint venture, we don't anticipate the company will be able to successfully refinance its super HoldCo debt maturing in 2028"</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Reading the agency split:</strong> Moody's Caa3 on pari-plus TL (vs C on existing TL) and Ca on pari-plus 2L (vs Ca-PD/LD CFR) imply a meaningful pari-plus recovery — likely 60–80% range — and near-total loss for the existing TL. The market-trading split (mid-70s vs low-teens) is consistent.</p>
+      </DetailPanel>
+    ),
+    valueLoss: (
+      <DetailPanel title="Octus Value-Loss Analysis (Feb 2025 retrospective)" onClose={() => setDetail(null)}>
+        <p>Octus published a Feb 2025 retrospective analyzing 7 major drop-down transactions since 2022 (AMC, Del Monte, Trinseo, Instant Brands, Rackspace, Envision, U.S. Renal Care). The report quantified the economic value transferred from non-ad-hoc participating lenders in each. <strong>Trinseo was measured separately</strong> from the 6 unrestricted-sub drop-downs because of its pari-plus structure.</p>
+        <p style={{ color: T_.amber }}><strong>Trinseo's value loss to non-ad-hoc participating term lenders:</strong> ~<strong>50%</strong> of pre-transaction value on the TLB-2 due 2028 — the legacy term loan tranche held by lenders who did not participate in the September 2023 new money.</p>
+        <p><strong>Comparison across the 7 LMEs (Octus aggressiveness ranking):</strong></p>
+        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 6 }}>
+          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Issuer</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Type</th>
+            <th style={{ textAlign: "right", padding: "5px 8px", color: T_.textGhost }}>Value loss</th>
+            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Outcome</th>
+          </tr></thead>
+          <tbody>
+            {[
+              { i: "Del Monte", t: "Drop-down", v: "64%", o: "Ch.11 Jul 2024", c: T_.red },
+              { i: "Envision", t: "Drop-down + uptier", v: "53%", o: "Ch.11 May 2023", c: T_.red },
+              { i: "Trinseo (TLB-2)", t: "Pari-plus", v: "~50%", o: "Default Apr 2026; Ch.11 expected", c: T_.red },
+              { i: "Instant Brands", t: "Drop-down", v: "30%", o: "Ch.11 Jun 2023", c: T_.amber },
+              { i: "U.S. Renal Care", t: "Drop-down", v: "20%", o: "Out-of-court LME 2023", c: T_.amber },
+              { i: "Rackspace", t: "Drop-down", v: "19%", o: "Out-of-court 2024", c: T_.green },
+              { i: "AMC (1L noteholders)", t: "Drop-down", v: "6–9%", o: "Refinanced 2024", c: T_.green },
+            ].map((r, i) => (
+              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
+                <td style={{ padding: "5px 8px", color: r.c, fontWeight: 600 }}>{r.i}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.t}</td>
+                <td style={{ padding: "5px 8px", color: r.c, textAlign: "right" }}>{r.v}</td>
+                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.o}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <p style={{ color: T_.amber, marginTop: 12 }}><strong>Octus's framing:</strong> "Many of these transactions are ultimately followed by further LMT or a bankruptcy filing, resulting in downward pressure on recoveries." Trinseo is now the latest data point — Sept 2023 LME → Mar 2026 default = <strong>30 months of bought runway</strong> followed by terminal distress.</p>
+        <p style={{ color: T_.textMid }}><strong>Pattern across LME types:</strong> Drop-downs and pari-plus transactions tend to delay rather than prevent eventual Ch.11 when the underlying business problem is operating cash burn rather than balance-sheet structure. Trinseo's case follows the pattern: $1.077B was raised in Sept 2023 and consumed primarily by 2024–2025 cash burn (Adj EBITDA collapsed from positive guidance to negative FCF $140M FY2025) rather than structural deleveraging. New money ≠ deleveraging when end-market demand is the primary issue.</p>
+      </DetailPanel>
+    ),
+    lessons: (
+      <DetailPanel title="Lessons for a Credit Investor" onClose={() => setDetail(null)}>
+        <p>Five takeaways from Trinseo's pari-plus arc:</p>
+        <p style={{ color: T_.amber }}><strong>1. Pari ranking ≠ equal recovery.</strong> The label "pari" describes lien rank in the existing collateral pool — nothing more. The economic outcome is dominated by the "plus" leg: JV stake, foreign guarantors, redesignated guarantor assets. Holdouts cannot reach those. The 30-point trading gap between Trinseo's pari-plus TL (mid-70s) and existing intercompany TL (low-teens) is the visible value of the "plus." Underwriting "pari" without underwriting the asymmetric collateral package gives a misleading view of recovery.</p>
+        <p style={{ color: T_.amber }}><strong>2. Watch unrestricted-sub <em>redesignation</em> rights, not just basket math.</strong> Trinseo's Jan 2025 Aristech/Altuglas mechanic is the live-fire example. If the credit agreement allows post-closing redesignation of guarantors as unrestricted without existing-lender consent (or without an EBITDA / asset-value cap on each redesignation event), your collateral can shrink without any breach. Underwrite the redesignation rights as carefully as the debt incurrence baskets and the J.Crew blocker.</p>
+        <p style={{ color: T_.amber }}><strong>3. Limited foreign-sub guarantees can be unlocked one tranche at a time.</strong> Trinseo's foreign subs were <em>limited</em> guarantors of the existing TL but became <em>fully secured</em> guarantors of the pari-plus tranche. The asymmetry is the value transfer. If your credit doc allows a new tranche to take guarantor support that the existing tranche does not have — even with the existing guarantee package nominally unchanged — you are exposed even with a vanilla pari-passu lien rank.</p>
+        <p style={{ color: T_.amber }}><strong>4. Pari-plus typically buys 24–36 months and almost always precedes Ch.11.</strong> Trinseo: Sept 2023 → Apr 2026 default = <strong>30 months</strong>. Mitel uptier: Mar 2022 → Mar 2025 Ch.11 = 36 months. Wheel Pros double-dip: Sept 2023 → Sept 2024 Ch.11 = 12 months. Octus's explicit conclusion in the Feb 2025 retrospective: "many of these transactions are ultimately followed by further LMT or a bankruptcy filing." Treat the pari-plus as <em>the start of the restructuring, not a solution</em> — particularly when the new money is funding cash burn rather than structural deleveraging.</p>
+        <p style={{ color: T_.amber }}><strong>5. The asymmetric upside is for the participating lender, not the credit.</strong> Moody's Caa3 on the pari-plus TL versus C on the existing TL captures it: the same balance sheet produces near-par recoveries for one cohort and near-zero recoveries for the other, separated by 6+ rating notches. The takeaway for a long-only credit investor: <strong>either own the new-money pari-plus tranche or sell the existing TL before the deal prints</strong>. Sitting on the existing TL through a pari-plus is the worst outcome — you keep duration and credit risk while losing relative collateral coverage. Ad-hoc-group invitations to participate in new-money tranches are not goodwill — they are the credit's way of selecting which cohort gets the upside.</p>
+      </DetailPanel>
+    ),
+    forwardPath: (
+      <DetailPanel title="Forward Path — What Happens Next" onClose={() => setDetail(null)}>
+        <p>Status as of <strong>April 27, 2026:</strong> ongoing; pre-Ch.11; limited waivers expire Apr 30 (3 days). Several plausible paths:</p>
+        <p><strong>1. Further limited-waiver extension + continued negotiation:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Most likely near-term outcome — gives both creditor camps more time to align on plan structure</li>
+          <li>Each extension typically comes with additional consideration (fees, advisor reimbursements, covenant modifications)</li>
+          <li>$50M incremental superpriority RCF (Apr 10) provided ~30 days of runway; further drawdown contingent on liquidity tests</li>
+        </ul>
+        <p><strong>2. Prearranged Ch.11 filing:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Most likely structural outcome if pari-plus camp can align with company on plan terms</li>
+          <li>Likely involves: (i) DIP financing from pari-plus camp (Apollo, Oaktree, Angelo Gordon), (ii) sale of Americas Styrenics JV stake (proceeds mandatory to pari-plus), (iii) Aristech/Altuglas sale or equitization, (iv) existing intercompany TL claim heavily impaired, (v) unsecured 5.250% notes wiped</li>
+          <li>OpCo loan group (Gibson Dunn / Lazard) likely to fight via fraudulent-transfer / equitable-subordination theories on the Sept 2023 + Jan 2025 LMEs</li>
+        </ul>
+        <p><strong>3. Free-fall Ch.11:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>If the two creditor camps cannot align on basic plan structure</li>
+          <li>Substantially longer in court — 9–18 months vs. 4–6 for prearranged</li>
+          <li>Higher litigation costs; higher potential value loss to all stakeholders if asset sales are forced</li>
+        </ul>
+        <p><strong>4. Out-of-court resolution (low probability):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Would require: third LME tightening (further extending maturities + cash interest deferral) OR a strategic sale of Americas Styrenics JV stake at a premium</li>
+          <li>Bozich previously indicated openness to JV monetization; structurally constrained because proceeds are mandatory to the pari-plus tranche</li>
+          <li>Market-implied probability low — existing intercompany TL trading 10/13 says the market expects Ch.11</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Litigation pathways for the OpCo loan group in any Ch.11:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Fraudulent transfer (§548 / NY UVTA):</strong> challenge the Sept 2023 dropdown of Americas Styrenics + the Jan 2025 Aristech/Altuglas redesignation. Reasonably-equivalent-value test likely the focus. Faces standard problems around board independence + business judgment</li>
+          <li><strong>Equitable subordination (§510(c)):</strong> challenge the pari-plus tranche's recovery on grounds of inequitable conduct by the participating lenders (Apollo, Oaktree, Angelo Gordon). Difficult standard in non-insider context</li>
+          <li><strong>Recharacterization of unrestricted subs:</strong> argue Trinseo Finance SPV LLC + Trinseo LuxCo Finance SPV Sàrl operate as Trinseo subs in substance (cf. Robertshaw recharacterization). Robertshaw remedy was a $39.4M pro-rata damages claim — narrow even when the substance argument prevails</li>
+        </ul>
+        <p style={{ color: T_.red }}><strong>Source consensus on outlook:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Reorg / Octus (Apr 2026):</strong> defaults active; Ch.11 expected; pari-plus camp well-positioned for recovery</li>
+          <li><strong>Moody's (Apr 2):</strong> Ca / LD; expected debt restructuring; pari-plus has senior recovery position</li>
+          <li><strong>S&amp;P (Mar 3 / 2025 commentary):</strong> SD on missed interest; refinancing of 2028 super-HoldCo debt unlikely absent JV sale or end-market improvement</li>
+          <li><strong>CreditSights (active coverage):</strong> Trinseo at Marketperform reaffirmed Apr 14, 2026 — explicitly because pari-plus participants are likely to recover well even though the company itself is failing</li>
+        </ul>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Status Banner ── */}
+      <div style={{ background: `${T_.red}12`, borderRadius: 8, border: `1px dashed ${T_.red}60`, padding: "10px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, color: T_.red, padding: "2px 8px", borderRadius: 4, background: `${T_.red}25` }}>ONGOING</span>
+        <span style={{ fontSize: 12, color: T_.textMid }}>Status as of <strong>Apr 27, 2026</strong>. Sept 2023 + Jan 2025 pari-plus LMEs executed. Mar 19 + Apr 14 interest defaults; limited waivers expire <strong>Apr 30</strong>. Ch.11 expected near-term.</span>
+      </div>
+
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Trinseo plc (NYSE: TSE) is the textbook <span style={{ color: T_.accent }}><strong>pari-plus LME</strong></span> case — a structure that sits between an uptier (which formally subordinates) and a drop-down (which carves out crown-jewel assets). In <span style={{ color: T_.amber }}>September 2023</span>, Trinseo raised a <span style={{ color: T_.accent }}>$1.077B new-money 1L term loan at SOFR+9.66% with PIK toggle</span>, anchored by <strong>Oaktree, Angelo Gordon, Apollo</strong>. The "pari" leg: <strong>$948.4M</strong> intercompany TL pari-passu with the existing 1L TL against the existing collateral. The "plus" leg: <strong>$128.9M</strong> routed via "excluded contributions" to drop the <strong>50% Americas Styrenics JV stake</strong> into an unrestricted sub, plus <strong>"limited" foreign guarantees</strong> from German, Belgian, Indonesian, and Taiwanese subs. In <span style={{ color: T_.amber }}>January 2025</span> the pari-plus claim was upsized to <strong>$1.443B</strong> via a 5.125% sr unsec notes exchange at 15% discount into 7.625% pari-plus 2L notes; foreign guarantees were converted to <strong>full secured</strong>; <strong>Aristech Surfaces + Altuglas</strong> were redesignated unrestricted under the existing TL and pledged exclusively to the pari-plus tranche; the existing TL's <strong>3.5x first lien net leverage maintenance test was removed</strong>; and a $300M superpriority RCF was added. Per Octus's Feb 2025 retrospective, <strong>~50% of pre-transaction value</strong> was transferred away from non-ad-hoc participating term lenders. Trinseo bought <strong>30 months of runway</strong> before Mar/Apr 2026 interest defaults; Moody's downgraded to <span style={{ color: T_.red }}>Ca / LD</span> Apr 2; S&amp;P SD Mar 3. Pari-plus 1L TL trades <strong>72.5/75.3</strong> (Reorg, mid-Jan 2026); existing intercompany TL trades <strong>10/13</strong> — same lien rank, ~30 points of trading gap = the visible value of the "plus."
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Sept 2023 LME", v: "$1.077B", c: T_.amber },
+            { l: "Jan 2025 Upsizing", v: "→ $1.443B", c: T_.amber },
+            { l: "Existing TL Trading", v: "10/13", c: T_.red },
+            { l: "Pari-Plus TL Trading", v: "72.5/75.3", c: T_.green },
+            { l: "Value Loss (TLB-2)", v: "~50%", c: T_.red },
+            { l: "Moody's CFR", v: "Ca / LD", c: T_.red },
+            { l: "S&P CFR", v: "SD", c: T_.red },
+            { l: "Stock", v: "$0.55", c: T_.red },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         ORG CHART — Pari-Plus Structure
+         ════════════════════════════════════════════════════ */}
+      <div style={{ margin: "0 auto" }}>
+      <div style={{ marginBottom: 8 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate &amp; Capital Structure (Post Jan 2025 Pari-Plus, Apr 2026)</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>The pari-plus tranche borrows from a separate finance SPV chain with exclusive collateral on the JV + foreign guarantors + Aristech/Altuglas. Click any box for details.</div>
+        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Existing Restricted Group</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.amber}50`, background: `${T_.amber}08`, display: "inline-block" }} /><span style={{ color: T_.amber }}>Pari-Plus / Sidecar Collateral</span></span>
+          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted Subsidiaries</span></span>
+        </div>
+      </div>
+
+      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+        {/* ROW 1: Trinseo plc parent (full width) */}
+        <div onClick={() => toggle("business")} style={{ cursor: "pointer", marginBottom: 8 }}>
+          <Box
+            label="Trinseo plc (NYSE: TSE)"
+            sub="Top parent · Listed (delisting underway Mar 2026) · Equity ~$0.55"
+            color={T_.red}
+            badges={[{ text: "Pari-Plus 2L Notes Guarantor", color: T_.amber }]}
+          />
+        </div>
+
+        <VLineLabel label="Owns" color={T_.textDim} />
+
+        {/* ROW 2: existing TL borrower + pari-plus SPV side-by-side */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.2fr 1fr", gap: 8, alignItems: "start" }}>
+          <div onClick={() => toggle("preLme")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Trinseo Holding Sàrl + Trinseo Materials Finance Inc."
+              sub="Existing/Incremental Intercompany TL borrowers + Superpriority RCF borrower"
+              color={T_.green}
+              debt={[
+                { name: "Superpriority RCF (S+225)", amount: "$300M / Feb 2028", color: T_.green },
+                { name: "Incremental Superpriority RCF (S+900 PIK)", amount: "$50M / Feb 2028", color: T_.green },
+                { name: "Existing 1L Intercompany TL @ 10/13", amount: "Trading near zero", color: T_.red },
+                { name: "$948.4M pari-plus intercompany TL (pari leg)", amount: "Pari w/ existing TL", color: T_.amber },
+              ]}
+            />
+          </div>
+          <div style={{ paddingTop: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center" }}>← SEPARATE<br/>FINANCE SPV<br/>CHAIN →</div>
+          </div>
+          <div onClick={() => toggle("sept2023")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Trinseo LuxCo Finance SPV Sàrl + Trinseo NA Finance SPV LLC"
+              sub="PARI-PLUS BORROWERS · New finance SPVs (Sep 2023)"
+              color={T_.amber}
+              dashed
+              badges={[{ text: "Anchored by Oaktree / Angelo Gordon / Apollo", color: T_.amber }]}
+              debt={[
+                { name: "Pari-Plus 1L TL @ S+966 PIK toggle (May 2028)", amount: "$1.2B @ 72.5/75.3", color: T_.amber },
+                { name: "Pari-Plus 7.625% 2L Notes (2029)", amount: "~$495M", color: T_.amber },
+              ]}
+            />
+          </div>
+        </div>
+
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.2fr 1fr", gap: 8 }}>
+          <VLineLabel label="Owns operating subs + foreign subs" color={T_.green} />
+          <div />
+          <VLineLabel label="Lends $948.4M pari + $128.9M plus" color={T_.amber} />
+        </div>
+
+        {/* ROW 3: ops / unrestricted-sub breakout */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
+          <div onClick={() => toggle("aristechAltuglas")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Aristech Surfaces LLC + Altuglas LLC"
+              sub="US PMMA · WAS guarantor of existing TL · Jan 2025 redesignated UNRESTRICTED · pledged exclusively to pari-plus"
+              color={T_.red}
+              dashed
+              badges={[{ text: "Pari-plus exclusive collateral", color: T_.amber }]}
+            />
+          </div>
+          <div onClick={() => toggle("dropDown")} style={{ cursor: "pointer" }}>
+            <Box
+              label="Trinseo Finance SPV LLC"
+              sub="Unrestricted sub · Holds 50% Americas Styrenics JV · Sept 2023 dropdown"
+              color={T_.red}
+              dashed
+              badges={[{ text: "Pari-plus exclusive collateral", color: T_.amber }]}
+            />
+          </div>
+          <Box
+            label="Foreign Guarantors (Belgium, Germany, Indonesia, Taiwan + Trinseo Europe GmbH)"
+            sub="Were 'limited' guarantors → Jan 2025 became FULL secured guarantors of pari-plus only"
+            color={T_.amber}
+          />
+        </div>
+
+        {/* Action buttons row 1 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 16 }}>
+          <div onClick={() => toggle("business")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "business" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "business" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Business — Asian Oversupply, Cyclical Markets</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Adj EBITDA $200M→$167–177M · FCF -$140M · Leverage 10x+ · ABS imports +18–26% YoY</div>
+          </div>
+          <div onClick={() => toggle("preLme")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "preLme" ? `${T_.blue}12` : T_.bgInput,
+            border: `1px solid ${detail === "preLme" ? T_.blue : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Pre-LME Capital Structure (mid-2023)</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$660M TL May'24 + $500M SSN Sep'25 = $1.16B wall · 12.2x leverage Q3'24</div>
+          </div>
+          <div onClick={() => toggle("paripluseDef")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "paripluseDef" ? `${T_.accent}12` : T_.bgInput,
+            border: `1px solid ${detail === "paripluseDef" ? T_.accent : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>What "Pari-Plus" Means — vs. Uptier &amp; Drop-Down</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Same lien rank · asymmetric collateral · post-Serta legal arbitrage</div>
+          </div>
+        </div>
+
+        {/* Action buttons row 2 — the two LMEs */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("sept2023")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "sept2023" ? `${T_.amber}12` : T_.bgInput,
+            border: `2px solid ${detail === "sept2023" ? T_.amber : T_.amber + "60"}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T_.amber }}>★ September 2023 — The Original Pari-Plus</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$1.077B at S+966 · $948.4M pari · $128.9M plus · JV dropdown · Oaktree/AG/Apollo</div>
+          </div>
+          <div onClick={() => toggle("jan2025")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "jan2025" ? `${T_.red}12` : T_.bgInput,
+            border: `2px solid ${detail === "jan2025" ? T_.red : T_.red + "60"}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T_.red }}>★ January 2025 — Pari-Plus 2.0 (Tightening)</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Claim $948M→$1.443B · Aristech/Altuglas redesignated · $300M Superpriority RCF · 3.5x maint test removed</div>
+          </div>
+        </div>
+
+        {/* Action buttons row 3 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("dropDown")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "dropDown" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "dropDown" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Americas Styrenics JV Dropdown (the "plus")</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>50% JV stake · "excluded contributions" basket · low-cost producer</div>
+          </div>
+          <div onClick={() => toggle("aristechAltuglas")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "aristechAltuglas" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "aristechAltuglas" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Aristech &amp; Altuglas — Sister-Sub Carve-Out</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Were guarantors · Jan 2025 redesignated unrestricted · pledged exclusively to pari-plus</div>
+          </div>
+          <div onClick={() => toggle("covenants")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "covenants" ? `${T_.purple}12` : T_.bgInput,
+            border: `1px solid ${detail === "covenants" ? T_.purple : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Covenant Architecture — What Changed Jan 2025</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>3.5x maint test removed · $100M min liquidity · 1.5x SP lien net lev when 30%+ drawn</div>
+          </div>
+        </div>
+
+        {/* Action buttons row 4 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("debtStack")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "debtStack" ? `${T_.blue}12` : T_.bgInput,
+            border: `1px solid ${detail === "debtStack" ? T_.blue : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Full Debt Stack &amp; Trading Levels</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Pari-plus TL 72.5/75.3 · Existing intercompany TL 10/13 · 30-pt gap = "plus" value</div>
+          </div>
+          <div onClick={() => toggle("lenders")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "lenders" ? `${T_.purple}12` : T_.bgInput,
+            border: `1px solid ${detail === "lenders" ? T_.purple : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Lender Dynamics — Two Adverse Camps</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>PJT/Paul Hastings (Apollo/Oaktree/AG) vs. Lazard/Gibson Dunn (existing TL)</div>
+          </div>
+          <div onClick={() => toggle("defaults")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "defaults" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "defaults" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>The 2026 Default Cascade</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Mar 19 + Apr 14 interest defaults · waivers expire Apr 30 · Ch.11 imminent</div>
+          </div>
+        </div>
+
+        {/* Action buttons row 5 */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("ratings")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "ratings" ? `${T_.red}12` : T_.bgInput,
+            border: `1px solid ${detail === "ratings" ? T_.red : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Rating Actions — Moody's + S&amp;P</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Ca/LD · SD · Pari-plus Caa3 vs Existing TL C — 6+ notch split</div>
+          </div>
+          <div onClick={() => toggle("valueLoss")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "valueLoss" ? `${T_.amber}12` : T_.bgInput,
+            border: `1px solid ${detail === "valueLoss" ? T_.amber : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Octus Value-Loss Analysis (~50% on TLB-2)</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Ranked vs Del Monte 64% / Envision 53% / Instant Brands 30% / AMC 6–9%</div>
+          </div>
+          <div onClick={() => toggle("forwardPath")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "forwardPath" ? `${T_.accent}12` : T_.bgInput,
+            border: `1px solid ${detail === "forwardPath" ? T_.accent : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Forward Path — Prearranged Ch.11 Most Likely</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Waivers expire Apr 30 · DIP from Apollo/Oaktree/AG · OpCo TL fight expected</div>
+          </div>
+        </div>
+
+        {/* Action buttons row 6 — lessons */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginTop: 8 }}>
+          <div onClick={() => toggle("lessons")} style={{
+            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
+            background: detail === "lessons" ? `${T_.green}12` : T_.bgInput,
+            border: `1px solid ${detail === "lessons" ? T_.green : T_.border}`, transition: "all .15s",
+          }}>
+            <div style={{ fontSize: 11, fontWeight: 700, color: T_.green }}>★ Five Lessons for a Credit Investor</div>
+            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Pari ranking ≠ equal recovery · watch redesignation rights · 24–36 month runway · own the new money or sell</div>
+          </div>
+        </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+      </div>{/* end org chart box */}
+      </div>{/* end org chart max-width wrapper */}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "Pari-Plus = pari lien rank + asymmetric sidecar collateral", color: T_.accent, summary: "The new tranche is technically pari-passu but receives exclusive collateral and guarantee enhancements that holdouts cannot reach.", detail: "The 'pari' leg is an intercompany loan from a new finance SPV to the existing TL borrowers, ranking pari-passu against the existing collateral pool. The 'plus' leg is layered separately: collateral support from an unrestricted-sub asset (Trinseo: Americas Styrenics JV), plus 'limited' or full foreign-sub guarantees, plus (in tightening rounds) redesignation of restricted-sub guarantors as unrestricted with exclusive pledge to the new tranche. Because lien rank in the existing collateral is unchanged, sacred-rights provisions are not triggered. The recovery math, however, is dominated by the 'plus' leg. The label describes lien rank; the economics are determined by which assets each cohort can reach." },
+          { label: "Unrestricted-Subsidiary Redesignation (the back door)", color: T_.red, summary: "Trinseo's Jan 2025 redesignation of Aristech + Altuglas was the structural innovation — guarantor assets shrank without lender consent.", detail: "Most credit agreements allow the borrower to designate a restricted subsidiary as unrestricted post-closing, subject to availability under specified investment baskets. Trinseo's Jan 2025 amendments redesignated Aristech Surfaces LLC and Altuglas LLC — both previously guarantors of the existing intercompany TL — as unrestricted. This released them as guarantors and allowed them to be re-pledged as exclusive collateral to the pari-plus tranche. Existing TL lenders had no consent right and no ability to block. Post-Trinseo, well-drafted credit agreements require existing-lender consent for any redesignation that releases a material guarantor, or impose hard EBITDA / asset-value caps on cumulative redesignation events." },
+          { label: "Asymmetric Foreign-Sub Guarantees", color: T_.amber, summary: "Foreign subs were 'limited' guarantors of the existing TL but 'fully secured' guarantors of the pari-plus — same entities, asymmetric exposure.", detail: "Foreign subsidiaries (Belgium, Germany, Indonesia, Taiwan, Trinseo Europe GmbH) were initially structured as 'limited' guarantors with carve-outs for §956 / CFC tax leakage. The Jan 2025 amendments converted them to fully secured guarantors of the pari-plus tranche only — without changing the existing TL's older 'limited' guarantee package. This created an asymmetric guarantee architecture: same legal entities, materially different recovery exposure across the two pari-passu tranches. The mechanic is portable to any credit doc that allows new tranches to take guarantor support not available to existing tranches — even when the new tranche is technically pari-passu." },
+          { label: "Maintenance-Test Removal as Plan-Negotiation Tool", color: T_.purple, summary: "Removing the 3.5x first lien net leverage maint test in Jan 2025 eliminated a future tripwire — buying ~12 more months of runway.", detail: "Trinseo's existing intercompany TL credit agreement carried a quarterly 3.5x first lien net leverage maintenance test. With FY2025 leverage tracking 10x+ that test would have triggered immediately, forcing a renegotiation or amendment with the existing TL group. The Jan 2025 amendments removed it. This is a quiet but important LME feature — eliminating maintenance covenants from impaired credits is often the difference between buying 12 months of runway versus buying 24-36 months. The pari-plus camp consented to this removal because they had collateral protection through the 'plus' leg; the existing TL camp was the consideration recipient (subordination of the $128.9M intercompany conduit went the other way as their compensation)." },
+          { label: "Anti-Cash-Hoarding + Min Liquidity Covenant Architecture", color: T_.blue, summary: "Superpriority RCF covenants force excess cash to flow first to the new senior tranche — economic priming via cash sweep.", detail: "The Jan 2025 superpriority RCF includes (1) $100M minimum liquidity tested last business day of each month, (2) anti-cash-hoarding paydown if loan parties hold >$100M cash or non-loan parties hold >$50M, (3) 1.5x superpriority lien net leverage ratio test when 30%+ of RCF capacity is drawn. Net effect: cash that builds in the borrower group flows first to the superpriority RCF, then to the pari-plus, then (last) to the existing TL. Even though the existing TL is technically pari-passu in lien rank, it is structurally last in line for any cash sweep. This is a textbook example of how covenant architecture can prime a tranche economically even without changing lien rank." },
+          { label: "Trinseo Europe GmbH — Asset-Specific Priority Splits", color: T_.purple, summary: "On the same legal entity's balance sheet, IP / licenses / inventory go pari-plus first; other assets go existing TL first.", detail: "Per Reorg article 348683, the collateral priority on Trinseo Europe GmbH's IP, license agreements, tolling agreements, and inventory (excluding Aristech/Altuglas IP) follows: (1) Superpriority RCF, (2) Pari-plus 1L TL, (3) Pari-plus 2L Notes, (4) Existing intercompany TL. But priority on Trinseo Europe GmbH's other assets follows: (1) Superpriority RCF, (2) Existing intercompany TL, (3) Pari-plus 1L TL, (4) Pari-plus 2L Notes. This kind of asset-by-asset priority asymmetry within a single legal entity is unique to pari-plus structures and is invisible from headline lien-rank tables. The IP and license stream — typically the most liquid / monetizable portion — was allocated to the pari-plus tranche; the harder-to-realize physical assets remained existing-TL-favored." },
+          { label: "Why Pari-Plus Replaced Uptier in 2023–2024", color: T_.red, summary: "Post-Serta legal risk made formal subordination via uptier dangerous; pari-plus achieves similar economics without sacred-rights challenge.", detail: "The Serta uptier (2020) was the canonical priming maneuver for impaired credits. After LCM Loan Opp Fund 16 v. Serta Simmons (NY appellate court reversal Dec 2024) and the in-bankruptcy uptier ruling against Serta in S.D. Tex. (Mar 2024), the uptier playbook became materially more legally fraught — sacred-rights doctrine plus pro-rata-sharing covenants gave non-participants real challenge tools. Pari-plus emerged as the substitute. Same economic effect (participating lenders end up better-collateralized than non-participants), much harder to challenge under sacred-rights theories because lien rank is unchanged. Mitel uptier (Mar 2022) was the last major uptier before issuers pivoted; Trinseo (Sept 2023) was the first canonical pari-plus." },
+          { label: "30-Point Trading Gap = Visible Value of the 'Plus'", color: T_.green, summary: "Pari-plus TL trades 72.5/75.3; existing intercompany TL trades 10/13. Same lien rank, same balance sheet, ~30 points apart.", detail: "Per Reorg / IHS Markit (mid-Jan 2026), the pari-plus 1L term loan due May 2028 was bid 72.5 / offer 75.3, while the existing intercompany TL was bid 10 / offer 13. Both tranches are technically pari-passu in lien rank against the existing collateral pool. The market's pricing of the 30-point gap is the visible value of the 'plus' leg — the JV stake, the foreign guarantor support, the Aristech/Altuglas exclusive collateral. Moody's relative recoveries (Caa3 on pari-plus TL vs C on existing TL) and S&P recovery ratings tell the same story. For underwriting purposes: the 30-point gap is a real-time market estimate of what the 'plus' leg is worth in this credit. In any pari-plus, the trading-level gap between the new and existing tranche is the cleanest single read on how much economic value was transferred." },
+          { label: "30-Month Pari-Plus → Default Pattern", color: T_.amber, summary: "Trinseo Sept 2023 LME → Mar 2026 default = 30 months. Mitel uptier 36 months. Wheel Pros double-dip 12 months. Pattern matters.", detail: "Octus's Feb 2025 retrospective explicitly called out the pattern: 'many of these transactions are ultimately followed by further LMT or a bankruptcy filing, resulting in downward pressure on recoveries.' Trinseo confirms the pattern: $1.077B raised in Sept 2023, consumed primarily by 2024–2025 cash burn (FY2025 FCF -$140M) rather than structural deleveraging, terminal default 30 months later. Compare to Mitel (Mar 2022 uptier → Mar 2025 Ch.11 = 36 months) and Wheel Pros (Sept 2023 double-dip → Sept 2024 Ch.11 = 12 months). The implication: pari-plus is the start of the restructuring, not a solution. New money disguised as deleveraging when end-market demand is the underlying issue does not prevent eventual Ch.11 — it shifts who bears the loss. Underwriters should treat any pari-plus as a 24-36 month timer to bankruptcy unless the issuer's underlying earnings clearly improve." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "2010", event: "Styron spun out of Dow Chemical (private). Initial cap structure: $1.4B 1L TL + sponsor equity (Bain Capital).", color: T_.textMid },
+          { date: "Jun 18, 2014", event: "Trinseo IPO on NYSE (TSE). Use of proceeds: debt paydown.", color: T_.textMid },
+          { date: "2021", event: "Pre-LME credit agreement signed: incremental pari-debt baskets + 'excluded contributions' investment basket + post-closing unrestricted-sub redesignation rights — the documentary infrastructure that enabled the 2023+2025 LMEs.", color: T_.amber },
+          { date: "Mid-2023", event: "Q2 2023 EBITDA collapse driven by Asian polymer oversupply + European cost disadvantage. Q3 2024 leverage will reach 12.2x (S&P projection at the time). $660M TL maturing May 2024 + $500M 5.375% SSNs maturing Sep 2025 — the maturity wall that triggered the LME.", color: T_.amber },
+          { date: "Sep 8, 2023", event: "★ ORIGINAL PARI-PLUS — $1.077B new-money 1L TL at SOFR+9.66% with PIK toggle, anchored by Oaktree, Angelo Gordon, Apollo. Issued by Trinseo LuxCo Finance SPV Sàrl + Trinseo NA Finance SPV LLC. $948.4M intercompany TL pari-passu w/ existing TL ('pari'); $128.9M routed as 'excluded contributions' to drop Americas Styrenics JV stake into Trinseo Finance SPV LLC ('plus'). Limited foreign-sub guarantees. Proceeds: redeem 2024 TL + ~75% of 2025 SSNs.", color: T_.amber },
+          { date: "2024", event: "FY2024 cash burn substantial; FCF deeply negative. Adj EBITDA below 2023 levels. Asian polymer overcapacity continues to redirect to North America + Europe.", color: T_.textMid },
+          { date: "Late 2024", event: "Trinseo and creditors begin negotiating follow-on transaction to address 2025 + 2029 unsec note maturities. Transaction Support Agreement (TSA) negotiated with majority unsec noteholder cohort.", color: T_.amber },
+          { date: "Jan 2025", event: "★ PARI-PLUS 2.0 — Three moves stacked: (1) 5.125% sr unsec notes due 2029 exchanged into 7.625% pari-plus 2L notes due 2029 at 15% discount → pari-plus claim upsized $948.4M → $1.443B; (2) Foreign sub guarantees converted limited → full secured for pari-plus only; (3) Aristech Surfaces + Altuglas redesignated unrestricted under existing TL, pledged exclusively to pari-plus. $300M superpriority RCF added (Feb 2028 maturity, S+225). 3.5x first lien net leverage maint test removed. $128.9M Luxco→Luxco intercompany conduit subordinated to existing TL.", color: T_.red },
+          { date: "Q1–Q3 2025", event: "Continued operating deterioration. ABS imports from S. Korea +18% YoY 1H25, +26% YoY Q2. PMMA imports from Asia surging into Europe. CEO Bozich frames as transitory or structural — uncertain.", color: T_.textMid },
+          { date: "Nov 2025", event: "S&P downgrade CCC → CCC+ → CCC. Trinseo Q3 2025 earnings: FCF -$38M; FY25 Adj EBITDA cut to $167–177M; FCF guide -$140M. Bozich: '10% volume increase = ~$100M EBITDA improvement.'", color: T_.red },
+          { date: "Dec 2025", event: "NYSE non-compliance notice received (continued listing standard).", color: T_.red },
+          { date: "Jan 6, 2026", event: "Compensation committee approves one-time conditional retention bonus awards for NEOs.", color: T_.purple },
+          { date: "Jan 16, 2026", event: "Reorg article 360937: Trinseo working with Latham & Watkins (legal), Centerview (financial), FTI (operational). Pari-plus lenders working with Paul Hastings + PJT Partners. Existing TL lenders working with Gibson Dunn + Lazard. Pari-plus TL bid 72.5/75.3; existing TL bid 10/13. Stock $0.55.", color: T_.amber },
+          { date: "Feb 23, 2026", event: "Bloomberg (via Reorg 367664): 'Trinseo Said to Be Considering Bankruptcy in Coming Weeks.' First public Ch.11 timeline reporting.", color: T_.red },
+          { date: "Mar 3, 2026", event: "NYSE delisting initiated (Reorg 369389). S&P SD on missed pari-plus interest.", color: T_.red },
+          { date: "Mar 13, 2026", event: "Going-concern 'substantial doubt' disclosed in 10-K (Reorg 371201).", color: T_.red },
+          { date: "Mar 19, 2026", event: "★ Trinseo elects not to make interest under pari-plus 1L TL + pari-plus 2L notes (Trinseo LuxCo Finance SPV S.à r.l.). Event of default; cross-defaults triggered. Limited waivers entered with lenders.", color: T_.red },
+          { date: "Apr 2, 2026", event: "★ Moody's downgrade CFR Caa2 → Ca; PDR Ca-PD/LD; SGL-3 → SGL-4. CIS-5 (very high governance risk). Trinseo Holding Sàrl 1L TL B2 → C; Trinseo LuxCo Finance SPV TL → Caa3; SPV 2L notes → Ca.", color: T_.red },
+          { date: "Apr 10, 2026", event: "★ $50M incremental superpriority RCF executed at SOFR+9% PIK / SOFR+8% base. Initial draw $10.4M. Apollo, Oaktree, Angelo Gordon are the consenting lenders (per signature page). 3.5% closing fee PIK; 0.375% unused line fee.", color: T_.amber },
+          { date: "Apr 13, 2026", event: "AR securitization advance rate reduced 92.5% → 90%; structuring fee 0.25%. Limited waiver to Apr 30 entered for AR sec facility.", color: T_.amber },
+          { date: "Apr 14, 2026", event: "★ Trinseo elects not to pay $38M of interest under Sept 8, 2023 credit agreement (the pari-plus 1L TL). Per 8-K: limited waivers of acceleration rights extended through April 30. 2L notes intercreditor agreement provides 180-day standstill on collateral collection action.", color: T_.red },
+          { date: "Apr 27, 2026", event: "Status today. 3 days until limited-waiver expiration. Reorg coverage active; 9fin coverage unverified due to expired session. Ch.11 expected near-term.", color: T_.amber },
+          { date: "Apr 30, 2026", event: "Limited waivers expire absent further extension. Acceleration rights revive on existing facilities; 2L notes 180-day standstill protects from collateral action.", color: T_.red },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 100, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Sources footer ── */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg / Octus — article 348683 (Nov 3, 2025: "Trinseo's Detailed Organizational Chart Now Available on Octus" — primary source for all org-chart details, guarantor lists, collateral priority tables, Sept 2023 + Jan 2025 mechanics, and explicit "pari-plus" labeling); article 360937 (Jan 16, 2026: Centerview / FTI / PJT advisor mandates, lender groups, stock at $0.55, pari-plus 72.5/75.3 vs existing TL 10/13 trading); article 350432 (Nov 7, 2025: Q3 2025 earnings analysis); article 374468 (Apr 2, 2026: Moody's Ca/LD ratings action, recovery commentary, end-2025 liquidity); article 375618 (Apr 13, 2026: $50M incremental superpriority RCF + AR sec waivers); article 375968 (Apr 15, 2026: $38M interest miss, 2L notes intercreditor 180-day standstill); article 367664 (Feb 23, 2026: Bloomberg Ch.11 timing); article 369389 (Mar 3, 2026: NYSE delisting); article 369463 (Mar 3, 2026: S&amp;P SD); article 371201 (Mar 13, 2026: going-concern); article 365529 (Feb 10, 2026: Trinseo weighing Ch.11) · Octus Feb 2025 retrospective on 7 drop-down LMEs (AMC, Del Monte, Trinseo, Instant Brands, Rackspace, Envision, U.S. Renal Care) — value-loss rankings · Trinseo SEC filings — 8-K disclosures (Jan 6, 2026 retention bonuses; Apr 10, 2026 incremental RCF; Apr 14, 2026 interest miss); FY2025 10-K (filed Mar 2026 with going-concern); Q3 2025 earnings call transcript (Frank Bozich, David Stasse) · Moody's ratings update (Apr 2, 2026 — full text in Reorg 374468) · S&amp;P Global Ratings commentary (Nov 2025 + Mar 3, 2026 SD) · IHS Markit + Solve trading-level marks (mid-Jan 2026) · Trinseo press releases for Sep 8, 2023 financing close + Jan 17, 2025 superpriority RCF + Apr 10, 2026 incremental RCF · CreditSights — "Trinseo: Live to Fight Another Day" (Sep 18, 2023 article 537221), "Chemicals 2025 Outlook: Styrene and Polystyrene" (Jan 30, 2025 article 627024), "U.S. Special Sits: 2026 Outlook &amp; 2025 Review" (Dec 9, 2025 article 686292), "Chemicals Weekly: Same Shock, Different Capture" (Apr 14, 2026 article 707390 — Marketperform reaffirmed). <strong style={{ color: T_.amber }}>Coverage gap:</strong> 9fin session expired during research (HTTP 401) — additional European-LME / term-sheet color may exist there. Third Bridge Forum session also expired — no Trinseo-specific expert call review available. Reorg + CreditSights coverage is sufficient for credit-investor-grade fact base. Ongoing case; all figures and characterizations current as of <strong>April 27, 2026</strong>.
+      </div>
+
+    </div>
+  );
+}
+
 function XeroxCase() {
   const [detail, setDetail] = useState(null);
   const toggle = (k) => setDetail(detail === k ? null : k);
@@ -4558,6 +5311,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "petsmart" && <PetSmartCase />}
       {activeCase === "incora" && <IncoraCase />}
       {activeCase === "caesars" && <CaesarsCase />}
+      {activeCase === "trinseo" && <TrinseoCase />}
       {activeCase === "xerox" && <XeroxCase />}
     </div>
   );
