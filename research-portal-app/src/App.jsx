@@ -25,6 +25,7 @@ import CipherDigitalReview from "./CipherDigitalReview";
 import TerawulfReview from "./TerawulfReview";
 import MicronReview from "./MicronReview";
 import OracleReview from "./OracleReview";
+import MetaReview from "./MetaReview";
 import GenericReview from "./GenericReview";
 const IndustryResearch = lazy(() => import("./IndustryResearch"));
 import {
@@ -208,6 +209,7 @@ function AppContent() {
       { id: "eq_msft", name: "Microsoft", sub: "" },
       { id: "eq_tsm", name: "TSMC", sub: "" },
       { id: "eq_orcl", name: "Oracle", sub: "" },
+      { id: "eq_meta", name: "Meta", sub: "" },
     ];
     if (equities.length === 0) {
       setEquities(SEED);
@@ -657,8 +659,11 @@ function AppContent() {
               {/* Oracle Review */}
               {eq.id === "eq_orcl" && <OracleReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
 
+              {/* Meta Review */}
+              {eq.id === "eq_meta" && <MetaReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+
               {/* Generic Review — for all equity names without dedicated reviews */}
-              {!["eq_micron", "eq_orcl"].includes(eq.id) && <GenericReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
+              {!["eq_micron", "eq_orcl", "eq_meta"].includes(eq.id) && <GenericReview companyId={eq.id} companyName={eq.name} curFields={eqFields} updateField={updateField} editingField={editingField} setEditingField={setEditingField} />}
             </div>
           );
         })()}

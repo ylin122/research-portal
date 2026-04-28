@@ -5,6 +5,7 @@ import { T_, FONT } from "./lib/theme";
 const AGENT_COLORS = {
   "refresh": { bg: "#3B82F622", color: "#3B82F6", border: "#3B82F644" },
   "code-review": { bg: "#10B98122", color: "#10B981", border: "#10B98144" },
+  "agent-review": { bg: "#A78BFA22", color: "#A78BFA", border: "#A78BFA44" },
   "fact-checker": { bg: "#F59E0B22", color: "#F59E0B", border: "#F59E0B44" },
   "fact-disputer": { bg: "#EF444422", color: "#EF4444", border: "#EF444444" },
   "fact-check-reconciler": { bg: "#A855F722", color: "#A855F7", border: "#A855F744" },

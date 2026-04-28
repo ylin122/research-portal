@@ -68,9 +68,6 @@ export default function Dashboard({ companies, setView }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10, marginBottom: 8 }}>
         <StatCard label="Wiki Articles" value={articles.length} color={T_.blue} />
         <StatCard label="Concepts" value={concepts.length} color={T_.green} />
-        <StatCard label="Ideas" value={ideas.length} color={T_.amber} sub={`${ideasByStatus("seed")} seed · ${ideasByStatus("thesis")} thesis`} />
-        <StatCard label="Q&A" value={qa.length} color={T_.text} sub={pendingQa > 0 ? `${pendingQa} pending` : "all answered"} />
-        <StatCard label="Alerts" value={alerts.length} color={T_.red} sub={`${activeAlerts} active`} />
         {companies?.length > 0 && <StatCard label="Companies" value={companies.length} color={T_.accent} />}
       </div>
 
