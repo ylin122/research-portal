@@ -20,9 +20,7 @@ const SKILLS_DIR = path.join(require('os').homedir(), '.claude', 'skills');
 // UI metadata — color, usage example, mode, sort order
 const UI_META = {
   'codeverifier':         { color: '#34d673', usage: '@codeverifier check the Restructuring.jsx changes', mode: 'Read-only', sort: 0 },
-  'fact-checker':         { color: '#70b0fa', usage: '@fact-checker check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 1 },
-  'fact-disputer':        { color: '#f87171', usage: '@fact-disputer check the PetSmart case in Restructuring.jsx', mode: 'Read-only', sort: 2 },
-  'fact-check-reconciler':{ color: '#f5a623', usage: '@fact-check-reconciler reconcile the results above', mode: 'Read-only. Runs after both fact agents return.', sort: 3 },
+  'fact-check-reconciler':{ color: '#818CF8', usage: '@fact-check-reconciler src/Restructuring.jsx', mode: 'Read-only. Single-agent thorough fact-check (extract → verify → dispute → reconcile).', sort: 1 },
   'deploy':               { color: '#06B6D4', usage: '@deploy ship the latest changes', mode: 'Read + Write (git operations)', sort: 4 },
   'whatif':               { color: '#F97316', usage: '@whatif massive delays in R100 launch date driven by supply chain shocks', mode: 'Read-only', sort: 5 },
   'refresh':              { color: '#14B8A6', usage: '@refresh update the AI Research tab', mode: 'Read + Write', sort: 6 },

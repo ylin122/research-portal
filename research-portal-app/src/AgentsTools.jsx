@@ -161,6 +161,12 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read-only",
   },
   {
+    name: "fact-check-reconciler", color: "#818CF8",
+    desc: "Comprehensive single-agent fact-checker. Extracts every checkable claim from a target, runs internal verify + dispute passes against multiple sources, cross-checks internal consistency / math / citations / recency, then issues per-claim verdicts (VERIFIED / LIKELY CORRECT / CONFLICT / LIKELY WRONG / MISATTRIBUTED / STALE / NEEDS REVIEW). Prioritizes thoroughness over speed. Read-only.",
+    usage: "@fact-check-reconciler src/Restructuring.jsx",
+    tools: "Read, Bash, Grep, Glob, WebSearch, WebFetch", mode: "Read-only",
+  },
+  {
     name: "sync-pull", color: "#A78BFA",
     desc: "Pull agent definitions from Supabase to local ~/.claude/agents/ files. Run after editing agents in the research portal UI.",
     usage: "@sync-pull",
