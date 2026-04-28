@@ -10,6 +10,7 @@
 - [user_tax_rates.md](user_tax_rates.md) — Tax rates: 45% short-term, 30% long-term (federal + state combined)
 - [user_wife_accounts.md](user_wife_accounts.md) — Willie Ni's accounts (Individual W, Roth W, Rollover W) and Individual Q — ETFs only, no single stocks
 - [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use Yahoo Finance API for live prices in portfolio analysis, not stale code values
+- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — PA dashboard: ETF/stock charts use price return, portfolio charts use total return, Sharpe/IR always TR
 - [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — Portfolio exposure line in research articles must be on its own separate line
 - [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
 - [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/research-portal/research-portal-app, never the PA dashboard

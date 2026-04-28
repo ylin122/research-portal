@@ -141,7 +141,11 @@
       "Bash(echo \"EXIT: $?\")",
       "WebFetch(domain:arxiv.org)",
       "WebFetch(domain:s10251.pcdn.co)",
-      "WebFetch(domain:metr.org)"
+      "WebFetch(domain:metr.org)",
+      "Bash(yarn *)",
+      "Bash(tee /tmp/vite-meta.log)",
+      "Bash(cat)",
+      "Bash(bash /tmp/verify.sh)"
     ]
   }
 }
