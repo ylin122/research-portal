@@ -12,9 +12,16 @@
 - [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use Yahoo Finance API for live prices in portfolio analysis, not stale code values
 - [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — Portfolio exposure line in research articles must be on its own separate line
 - [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
-- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/research-portal/research-portal-app, never the PA dashboard
+- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/projects/research-portal/research-portal-app, never the PA dashboard
 - [feedback_open_localhost.md](feedback_open_localhost.md) — Always auto-start vercel dev and open localhost when user begins working on either project
 - [feedback_credit_philosophy.md](feedback_credit_philosophy.md) — EV is the ultimate margin of safety in credit — think through-cycle, not just cash flow/debt service
 - [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the research portal
 - [user_investment_philosophy.md](user_investment_philosophy.md) — Investment philosophy: 90-day trading restriction, averaging-down, SPY as dry powder, software background not semi infra
 - [feedback_no_windows.md](feedback_no_windows.md) — Launch background processes hidden — no visible cmd/PowerShell windows
+- [feedback_commit_claude_commands.md](feedback_commit_claude_commands.md) — Custom .claude/commands should be committed to git repos so they sync across machines
+- [feedback_edgartools_financials_order.md](feedback_edgartools_financials_order.md) — edgartools financials display periods left-to-right earliest → latest
+- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — Which PA dashboard charts use total return (adjclose) vs price return (close-only)
+- [project_research_portal_vision.md](project_research_portal_vision.md) — Longer-term vision for research-portal as aggregated research hub (2026-04-21)
+- [reference_portfolio_dashboard.md](reference_portfolio_dashboard.md) — PA dashboard: Vercel project, GitHub repo, Supabase project, local path
+- [reference_research_portal.md](reference_research_portal.md) — Research portal: deployed at research-portal-one.vercel.app, ylin122/research-portal repo
+- [user_focus_projects.md](user_focus_projects.md) — User's two primary projects: portfolio-dashboard and research-portal — usage roles

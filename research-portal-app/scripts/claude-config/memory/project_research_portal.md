@@ -2,9 +2,9 @@
 name: Research Portal Project
 description: Vite + React + Supabase research portal for tracking software/tech companies — structure, DB patterns, and workflow
 type: project
+originSessionId: 5a8fbd21-1d4e-494c-96b4-5342a2923a64
 ---
-
-Research portal at ~/research-portal/research-portal-app (Vite + React + Supabase).
+Research portal at ~/projects/research-portal/research-portal-app (Vite + React + Supabase).
 
 **Why:** User is a portfolio manager building an investment research dashboard to track companies across software, IT services, healthcare IT, and other sectors.
 
