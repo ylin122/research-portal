@@ -59,7 +59,7 @@ export default function Dashboard({ companies, setView }) {
 
   return (
     <div style={{ padding: 0 }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>Dashboard</div>
+      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>Dashboard</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Overview of your research portal. {companies?.length > 0 && `Tracking ${companies.length} companies.`}
       </p>

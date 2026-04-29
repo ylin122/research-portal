@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 import { Section } from "./lib/Section";
+import TabBar from "./lib/TabBar";
 
 function CaseStudy({ cs }) {
   return (
@@ -249,14 +250,14 @@ const TOPICS = {
     icon: "\uD83D\uDCD6",
     type: "reference",
     category: "Key GAAP Standards",
-    color: "#8B5CF6",
+    color: T_.purple,
     tagline: "Quick reference for the ASC standards that matter most in credit and equity research",
   },
   revenueRecognition: {
     label: "Revenue Recognition",
     icon: "\uD83D\uDCCA",
     category: "ASC 606 / Top Line",
-    color: "#3B82F6",
+    color: T_.blue,
     tagline: "The single most common area of financial statement manipulation \u2014 when and how much revenue to recognize",
     theRule: "ASC 606 (effective 2018) established a 5-step model: (1) Identify the contract, (2) Identify performance obligations, (3) Determine the transaction price, (4) Allocate the price to obligations, (5) Recognize revenue when/as obligations are satisfied. Revenue is recognized when control transfers to the customer \u2014 either at a point in time or over time. The standard replaced industry-specific guidance with a single framework, but its principles-based nature creates significant room for judgment, especially around performance obligation identification, variable consideration estimates, and the over-time vs. point-in-time determination.",
     manipulation: "Companies manipulate revenue recognition by: (1) Recognizing revenue before performance obligations are satisfied \u2014 shipping products customers didn't order, booking revenue on unsigned contracts, or using aggressive percentage-of-completion estimates on long-duration contracts. (2) Channel stuffing \u2014 pushing excess inventory to distributors at quarter-end with side agreements (right of return, extended payment terms) that should preclude revenue recognition. (3) Bill-and-hold \u2014 recognizing revenue on goods that haven't shipped by claiming the customer requested delayed delivery. (4) Round-tripping \u2014 two companies sell to each other to inflate both top lines. (5) Gross vs. net \u2014 reporting the full transaction value instead of just the commission/fee when the company is acting as an agent rather than principal. (6) Contract modification abuse \u2014 restructuring contracts to accelerate recognition of deferred revenue.",
@@ -319,7 +320,7 @@ const TOPICS = {
     label: "Expense Capitalization",
     icon: "\uD83D\uDCC8",
     category: "CapEx vs OpEx",
-    color: "#8B5CF6",
+    color: T_.purple,
     tagline: "Moving expenses from the income statement to the balance sheet \u2014 instant margin improvement at the cost of future write-offs",
     theRule: "GAAP draws a clear line between capital expenditures (assets with future economic benefit, recognized on the balance sheet and depreciated/amortized over useful life) and operating expenses (period costs expensed immediately on the income statement). Key standards: ASC 350 (intangibles/goodwill), ASC 360 (PP&E), ASC 340-40 (contract costs including sales commissions), ASC 985/ASC 350-40 (software development costs). The judgment call is whether a cost creates a long-lived asset or is consumed in the current period. Capitalizing a cost improves current-period EBITDA, operating income, and net income \u2014 the expense is simply deferred to future periods via depreciation/amortization.",
     manipulation: "Companies aggressively capitalize by: (1) Capitalizing routine operating costs as assets \u2014 the WorldCom playbook of reclassifying line costs (network access fees paid to local phone companies) as capital expenditures. (2) Capitalizing excessive internal labor and overhead into PP&E or software projects. (3) Over-capitalizing software development costs by stretching the 'technological feasibility' or 'application development' stage definitions. (4) Capitalizing sales commissions under ASC 340-40 with inflated estimated contract lives (a $100K commission amortized over 7 years vs. the actual 3-year customer life). (5) Capitalizing interest costs on projects that don't qualify. (6) Treating maintenance/repair CapEx as growth CapEx to inflate 'organic growth' narratives while understating sustaining capital needs.",
@@ -372,7 +373,7 @@ const TOPICS = {
     label: "Margin Manipulation",
     icon: "\uD83C\uDFAD",
     category: "Cost Classification & Adjustments",
-    color: "#10B981",
+    color: T_.green,
     tagline: "Not all margin improvement is real \u2014 reclassifying costs between lines, abusing adjustments, and inflating non-GAAP metrics",
     theRule: "GAAP requires expenses to be classified by function: cost of revenue (direct costs of delivering goods/services), research & development, sales & marketing, and general & administrative. Gross margin = Revenue minus Cost of Revenue. Companies have discretion in classification \u2014 is a customer success engineer a cost of revenue or S&M expense? Is a cloud hosting cost COGS or R&D? This discretion is legitimate, but the boundary between reasonable judgment and manipulation is exploited frequently. Stock-based compensation (SBC) is an operating expense under GAAP (ASC 718) but is excluded from virtually all non-GAAP metrics despite being a real, recurring cost of doing business.",
     manipulation: "Companies manipulate margins by: (1) Shifting costs below the gross margin line \u2014 reclassifying implementation, hosting, or support costs from COGS to R&D or S&M to inflate gross margins (critical for SaaS companies where 75%+ gross margin is the benchmark). (2) SBC exclusion \u2014 reporting 'adjusted' margins that exclude stock-based compensation, which can be 15\u201340% of revenue for high-growth tech companies. SBC is real dilution paid by shareholders. (3) Restructuring charge abuse \u2014 taking large 'one-time' restructuring charges every year, moving ongoing operating costs into these buckets, and reporting 'adjusted' earnings that exclude them. (4) Acquisition-related cost exclusion \u2014 serial acquirers exclude integration costs, amortization of acquired intangibles, and deal costs from adjusted metrics despite acquisitions being their core growth strategy. (5) Vendor financing \u2014 offering financing to customers to pull forward revenue while burying the financing costs in a different line item.",
@@ -425,7 +426,7 @@ const TOPICS = {
     label: "Reserves & Cookie Jars",
     icon: "\uD83C\uDF6A",
     category: "Accrual Manipulation",
-    color: "#F59E0B",
+    color: T_.amber,
     tagline: "Over-reserve in good times, release in bad times \u2014 smoothing earnings to create an illusion of consistency",
     theRule: "GAAP requires companies to estimate and accrue liabilities for future obligations: warranty costs, legal settlements, restructuring, loan losses, insurance claims, pension benefits, and more. These estimates involve significant management judgment. ASC 450 (contingencies) requires accrual when a loss is 'probable' and 'estimable.' Pension accounting (ASC 715) requires assumptions about discount rates, expected return on plan assets, mortality, and salary growth. Insurance reserves require actuarial estimates of future claims. In all cases, the estimates directly impact reported earnings \u2014 higher reserves reduce current income, lower reserves increase it.",
     manipulation: "Cookie jar accounting works in two phases: (1) Over-reserve during strong periods \u2014 set aside more than is actually needed for warranties, restructuring, bad debts, or other accruals. This depresses earnings when the company is doing well (and nobody notices the conservative estimates). (2) Release the excess reserves during weak periods to boost earnings \u2014 reversing the accrual flows directly to the bottom line. This creates artificially smooth earnings that mask the business's true cyclicality. Specific techniques: taking 'big bath' restructuring charges that include provisions for future operating costs; using overly conservative pension assumptions in strong years and relaxing them when returns fall short; manipulating warranty or return provisions based on desired earnings rather than actual experience; and timing the recognition of legal accruals to smooth quarters.",
@@ -585,7 +586,7 @@ const TOPICS = {
     label: "Goodwill & Impairment",
     icon: "\uD83D\uDCA3",
     category: "Balance Sheet Overstatement",
-    color: "#EF4444",
+    color: T_.red,
     tagline: "Goodwill is management's promise that an acquisition was worth the premium \u2014 impairment is the admission that it wasn't",
     theRule: "When a company acquires another, the excess of purchase price over fair value of identifiable net assets is recorded as goodwill (ASC 805). Under GAAP, goodwill is not amortized (unlike IFRS, where companies can elect amortization) \u2014 instead, it is tested for impairment at least annually (ASC 350). Impairment occurs when the carrying value of a reporting unit exceeds its fair value. The fair value determination requires significant judgment: management chooses discount rates, terminal growth rates, comparable companies, and projected cash flows. Separately, purchase price allocation (PPA) determines how much of the acquisition price goes to goodwill vs. identifiable intangible assets (customer relationships, technology, trade names) \u2014 the allocation directly affects future amortization expense.",
     manipulation: "Goodwill and impairment manipulation takes several forms: (1) Purchase price allocation gaming \u2014 allocating more of the purchase price to goodwill (not amortized) vs. finite-lived intangibles (amortized) to minimize future amortization expense and protect operating earnings. (2) Impairment avoidance \u2014 using optimistic assumptions in annual goodwill impairment tests (high revenue growth, low discount rates, favorable terminal values) to avoid recognizing an impairment that would reduce earnings. Management has a strong incentive to avoid impairment because it signals the acquisition destroyed value. (3) 'Big bath' impairment \u2014 the opposite: writing down goodwill by more than necessary (often coinciding with a new CEO) to reset the earnings base lower, making future earnings growth easier. (4) Reporting unit definition \u2014 combining a struggling acquired business with a healthy existing unit for impairment testing purposes, so the healthy unit's value masks the acquired business's decline.",
@@ -895,24 +896,19 @@ export default function Accounting({ initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Tab bar */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
-        {TOPIC_ORDER.map(key => (
-          <button key={key} onClick={() => setActiveTopic(key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: activeTopic === key ? "#3B82F6" : "#111827",
-            color: activeTopic === key ? "#FFF" : "#94A3B8",
-            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{TOPICS[key].label}</button>
-        ))}
-      </div>
+      <TabBar
+        tabs={TOPIC_ORDER.map(key => ({ key, label: TOPICS[key].label }))}
+        active={activeTopic}
+        onChange={setActiveTopic}
+      />
 
       {/* TOPIC DETAIL */}
       {topic && topic.type === "reference" && (
         <div>
           <div style={{ marginBottom: 24 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>{topic.label}</div>
-              <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>{topic.category}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>{topic.label}</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{topic.category}</div>
             </div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{topic.tagline}</div>
           </div>
@@ -955,9 +951,9 @@ export default function Accounting({ initialTab }) {
                   <div style={{ fontSize: 12, fontWeight: 600, color: "#60A5FA", textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 8 }}>Impact Across Financial Statements</div>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 10 }}>
                     {[
-                      { label: "Income Statement", text: asc.financialImpact.incomeStatement, color: "#F59E0B" },
-                      { label: "Balance Sheet", text: asc.financialImpact.balanceSheet, color: "#8B5CF6" },
-                      { label: "Cash Flow Statement", text: asc.financialImpact.cashFlow, color: "#10B981" },
+                      { label: "Income Statement", text: asc.financialImpact.incomeStatement, color: T_.amber },
+                      { label: "Balance Sheet", text: asc.financialImpact.balanceSheet, color: T_.purple },
+                      { label: "Cash Flow Statement", text: asc.financialImpact.cashFlow, color: T_.green },
                     ].map(fs => (
                       <div key={fs.label} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: 14 }}>
                         <div style={{ fontSize: 11, fontWeight: 600, color: fs.color, textTransform: "uppercase", letterSpacing: 0.5, marginBottom: 6 }}>{fs.label}</div>
@@ -977,8 +973,8 @@ export default function Accounting({ initialTab }) {
         <div>
           <div style={{ marginBottom: 24 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>{topic.label}</div>
-              <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>{topic.category}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>{topic.label}</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{topic.category}</div>
             </div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{topic.tagline}</div>
           </div>

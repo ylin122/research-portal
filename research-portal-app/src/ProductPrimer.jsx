@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { T_, FONT } from "./lib/theme";
+import TabBar from "./lib/TabBar";
 
 const PRODUCT_PRIMERS = {
   gpu: {
@@ -6,38 +8,38 @@ const PRODUCT_PRIMERS = {
     tagline: "AI accelerator GPU — silicon at the heart of the AI buildout. ~$30-70K ASP, ~$200B+ market 2026, ~85% Nvidia / ~10% AMD share. The most supply-constrained product in the modern economy.",
     layers: [
       { label: "Finished Product", items: [
-        { name: "Nvidia AI GPU", sub: "B200 / B300 / Vera Rubin · ~85% mkt · $30-70K ASP", color: "#10B981", link: "NVDA" },
-        { name: "AMD Instinct", sub: "MI355X / MI455X · ~10% mkt · $20-30K ASP", color: "#EF4444", link: "AMD" },
+        { name: "Nvidia AI GPU", sub: "B200 / B300 / Vera Rubin · ~85% mkt · $30-70K ASP", color: T_.green, link: "NVDA" },
+        { name: "AMD Instinct", sub: "MI355X / MI455X · ~10% mkt · $20-30K ASP", color: T_.red, link: "AMD" },
       ]},
       { label: "Design & IP", items: [
-        { name: "NVIDIA (architect)", sub: "Hopper · Blackwell · Rubin · CUDA stack", color: "#10B981", link: "NVDA" },
-        { name: "AMD (architect)", sub: "CDNA 3/4/5 · ROCm", color: "#EF4444", link: "AMD" },
-        { name: "Synopsys (EDA)", sub: "~50% EDA mkt · simulation/verification", color: "#3B82F6", link: "SNPS", flag: "concentration" },
-        { name: "Cadence (EDA)", sub: "~30% EDA mkt · digital/analog flow", color: "#3B82F6", link: "CDNS", flag: "concentration" },
+        { name: "NVIDIA (architect)", sub: "Hopper · Blackwell · Rubin · CUDA stack", color: T_.green, link: "NVDA" },
+        { name: "AMD (architect)", sub: "CDNA 3/4/5 · ROCm", color: T_.red, link: "AMD" },
+        { name: "Synopsys (EDA)", sub: "~50% EDA mkt · simulation/verification", color: T_.blue, link: "SNPS", flag: "concentration" },
+        { name: "Cadence (EDA)", sub: "~30% EDA mkt · digital/analog flow", color: T_.blue, link: "CDNS", flag: "concentration" },
         { name: "ARM (CPU IP)", sub: "Neoverse V2/V3 — coherent CPU pairing for Grace/Vera", color: "#A855F7", link: "ARM" },
-        { name: "Mellanox / NVLink IP", sub: "Owned by Nvidia (acq. 2020) — internal IP", color: "#10B981", link: "NVDA" },
+        { name: "Mellanox / NVLink IP", sub: "Owned by Nvidia (acq. 2020) — internal IP", color: T_.green, link: "NVDA" },
       ]},
       { label: "Packaging & Memory", items: [
-        { name: "TSMC CoWoS", sub: "75K WPM Q1 26 → 130K target end-26 · sole supplier", color: "#8B5CF6", link: "TSM", flag: "bottleneck" },
+        { name: "TSMC CoWoS", sub: "75K WPM Q1 26 → 130K target end-26 · sole supplier", color: T_.purple, link: "TSM", flag: "bottleneck" },
         { name: "SK Hynix HBM", sub: "HBM3E leader · 50%+ share · 2026 sold out", color: "#A855F7", link: "000660.KS", flag: "bottleneck" },
-        { name: "Samsung HBM", sub: "HBM3E + HBM4 ramp · M16 mass prod Apr 2026", color: "#3B82F6", link: "005930.KS", flag: "bottleneck" },
-        { name: "Micron HBM", sub: "HBM3E ramping · 2026 sold out · HBM4 next", color: "#F59E0B", link: "MU", flag: "bottleneck" },
+        { name: "Samsung HBM", sub: "HBM3E + HBM4 ramp · M16 mass prod Apr 2026", color: T_.blue, link: "005930.KS", flag: "bottleneck" },
+        { name: "Micron HBM", sub: "HBM3E ramping · 2026 sold out · HBM4 next", color: T_.amber, link: "MU", flag: "bottleneck" },
         { name: "Ibiden (ABF substrate)", sub: "~25% global ABF · capacity tight", color: "#EC4899", flag: "concentration" },
         { name: "Shinko / Unimicron / AT&S", sub: "ABF + organic substrates · all capacity-tight", color: "#EC4899", flag: "concentration" },
       ]},
       { label: "Foundry / Logic", items: [
-        { name: "TSMC", sub: "N4P (B200) · N3 (B300/Rubin) · N2 (Rubin Ultra) · ~90% adv-node share", color: "#8B5CF6", link: "TSM", flag: "concentration" },
+        { name: "TSMC", sub: "N4P (B200) · N3 (B300/Rubin) · N2 (Rubin Ultra) · ~90% adv-node share", color: T_.purple, link: "TSM", flag: "concentration" },
         { name: "Intel Foundry", sub: "18A — yield issues · not used for merchant GPU yet", color: "#0EA5E9", link: "INTC" },
-        { name: "Samsung Foundry", sub: "Largely declined for AI logic — reserved for own use", color: "#3B82F6", link: "005930.KS" },
+        { name: "Samsung Foundry", sub: "Largely declined for AI logic — reserved for own use", color: T_.blue, link: "005930.KS" },
       ]},
       { label: "Fab Equipment", items: [
         { name: "ASML (litho)", sub: "EUV monopoly · 100% adv-node · multi-yr lead times", color: "#F97316", link: "ASML", flag: "bottleneck" },
-        { name: "Applied Materials", sub: "Deposition, etch, CMP, ion implant · ~25% mkt", color: "#F59E0B", link: "AMAT" },
-        { name: "Lam Research", sub: "Etch, deposition · ~20% mkt", color: "#F59E0B", link: "LRCX" },
-        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: "#F59E0B", link: "KLAC", flag: "concentration" },
-        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: "#F59E0B", flag: "concentration" },
-        { name: "BE Semi / ASMPT", sub: "Hybrid bonding for HBM stacking · near-monopoly", color: "#F59E0B", flag: "concentration" },
-        { name: "Teradyne / Advantest", sub: "Test equipment · duopoly", color: "#F59E0B", link: "TER" },
+        { name: "Applied Materials", sub: "Deposition, etch, CMP, ion implant · ~25% mkt", color: T_.amber, link: "AMAT" },
+        { name: "Lam Research", sub: "Etch, deposition · ~20% mkt", color: T_.amber, link: "LRCX" },
+        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: T_.amber, link: "KLAC", flag: "concentration" },
+        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: T_.amber, flag: "concentration" },
+        { name: "BE Semi / ASMPT", sub: "Hybrid bonding for HBM stacking · near-monopoly", color: T_.amber, flag: "concentration" },
+        { name: "Teradyne / Advantest", sub: "Test equipment · duopoly", color: T_.amber, link: "TER" },
       ]},
       { label: "Materials & Chemicals", items: [
         { name: "Photoresist (Japan)", sub: "JSR, TOK, Shin-Etsu, Fujifilm, Nissan · ~80% global", color: "#FACC15", flag: "concentration" },
@@ -52,9 +54,9 @@ const PRODUCT_PRIMERS = {
         { name: "Helium", sub: "~30% global from Iran/Qatar — disrupted Mar 2026", color: "#DC2626", flag: "bottleneck" },
         { name: "Naphtha → propylene", sub: "Iran-war driven · 92% spot-price spike Q1 2026", color: "#DC2626", flag: "bottleneck" },
         { name: "Rare earths (Ga, Ge, Ne)", sub: "China dominance ~85% · export controls active", color: "#DC2626", flag: "concentration" },
-        { name: "Power (Taiwan grid)", sub: "TSMC ~6% of Taiwan power · grid expansion lagging", color: "#F59E0B", flag: "concentration" },
-        { name: "Water (Taiwan/Korea)", sub: "Fab water-intensive · drought risk · ~10M gal/day per fab", color: "#F59E0B" },
-        { name: "Logistics", sub: "Sea + air freight · GPU shipped value ~$1M+/box", color: "#94A3B8" },
+        { name: "Power (Taiwan grid)", sub: "TSMC ~6% of Taiwan power · grid expansion lagging", color: T_.amber, flag: "concentration" },
+        { name: "Water (Taiwan/Korea)", sub: "Fab water-intensive · drought risk · ~10M gal/day per fab", color: T_.amber },
+        { name: "Logistics", sub: "Sea + air freight · GPU shipped value ~$1M+/box", color: T_.textDim },
       ]},
     ],
     drivers: [
@@ -82,40 +84,40 @@ const PRODUCT_PRIMERS = {
     layers: [
       { label: "Finished Product", items: [
         { name: "Intel Xeon", sub: "Granite Rapids · Sierra Forest · ~70% mkt share · $5-15K ASP", color: "#0EA5E9", link: "INTC" },
-        { name: "AMD EPYC", sub: "Turin (Zen 5) · Venice (Zen 6 H2 26) · ~30% rev share · $5-15K ASP", color: "#EF4444", link: "AMD" },
+        { name: "AMD EPYC", sub: "Turin (Zen 5) · Venice (Zen 6 H2 26) · ~30% rev share · $5-15K ASP", color: T_.red, link: "AMD" },
         { name: "ARM-based DC CPU", sub: "Graviton, Cobalt, Axion, Vera, AGI, AmpereOne · ~5-10% growing fast", color: "#A855F7" },
       ]},
       { label: "Design & IP", items: [
         { name: "Intel (architect)", sub: "P-cores (Redwood/Panther Cove) · E-cores (Crestmont/Darkmont) · AMX", color: "#0EA5E9", link: "INTC" },
-        { name: "AMD (architect)", sub: "Zen 5 / Zen 5c / Zen 6 · Infinity Fabric · CXL", color: "#EF4444", link: "AMD" },
+        { name: "AMD (architect)", sub: "Zen 5 / Zen 5c / Zen 6 · Infinity Fabric · CXL", color: T_.red, link: "AMD" },
         { name: "ARM Holdings (IP)", sub: "Neoverse V2/V3 · CSS-V3 · per-core royalty model", color: "#A855F7", link: "ARM" },
-        { name: "Hyperscaler design teams", sub: "AWS Annapurna · MSFT silicon · Google Axion · Alibaba Yitian", color: "#F59E0B" },
+        { name: "Hyperscaler design teams", sub: "AWS Annapurna · MSFT silicon · Google Axion · Alibaba Yitian", color: T_.amber },
         { name: "x86 ISA (cross-license)", sub: "Closed ISA · Intel + AMD only · key barrier vs Arm", color: "#0EA5E9", flag: "concentration" },
-        { name: "Synopsys (EDA)", sub: "~50% EDA mkt · simulation/verification", color: "#3B82F6", link: "SNPS", flag: "concentration" },
-        { name: "Cadence (EDA)", sub: "~30% EDA mkt · digital/analog flow", color: "#3B82F6", link: "CDNS", flag: "concentration" },
+        { name: "Synopsys (EDA)", sub: "~50% EDA mkt · simulation/verification", color: T_.blue, link: "SNPS", flag: "concentration" },
+        { name: "Cadence (EDA)", sub: "~30% EDA mkt · digital/analog flow", color: T_.blue, link: "CDNS", flag: "concentration" },
       ]},
       { label: "Packaging & Memory", items: [
         { name: "DDR5 DRAM", sub: "Micron, Samsung, SK Hynix · adequate but pricing rising", color: "#A855F7", link: "MU" },
         { name: "MRDIMM (high-BW)", sub: "1.6x DDR5 BW · MCR registered DIMM · niche supply", color: "#A855F7", flag: "concentration" },
         { name: "DIMM makers", sub: "Kingston, Crucial, Samsung, SK Hynix, Micron — merchant DIMMs", color: "#A855F7" },
         { name: "Intel Foveros (3D pkg)", sub: "Intel-internal advanced packaging for Granite Rapids+", color: "#0EA5E9", link: "INTC" },
-        { name: "AMD chiplet pkg", sub: "Multi-die EPYC via TSMC InFO/SoIC", color: "#EF4444", link: "AMD" },
+        { name: "AMD chiplet pkg", sub: "Multi-die EPYC via TSMC InFO/SoIC", color: T_.red, link: "AMD" },
         { name: "Ibiden (ABF substrate)", sub: "~25% global ABF · shared bottleneck w/ GPU", color: "#EC4899", flag: "concentration" },
         { name: "Shinko / Unimicron / AT&S", sub: "ABF + organic substrates · capacity-tight", color: "#EC4899", flag: "concentration" },
       ]},
       { label: "Foundry / Logic", items: [
-        { name: "TSMC", sub: "N3 (AMD Turin/Venice, Vera, AGI, Graviton5, Cobalt 200) · ~90% adv-node share", color: "#8B5CF6", link: "TSM", flag: "concentration" },
+        { name: "TSMC", sub: "N3 (AMD Turin/Venice, Vera, AGI, Graviton5, Cobalt 200) · ~90% adv-node share", color: T_.purple, link: "TSM", flag: "concentration" },
         { name: "Intel Foundry", sub: "Intel 7 (SPR/EMR) · Intel 3 (Granite/Sierra) · Intel 18A (yield issues)", color: "#0EA5E9", link: "INTC", flag: "bottleneck" },
-        { name: "Samsung Foundry", sub: "Rarely used for merchant DC CPUs", color: "#3B82F6", link: "005930.KS" },
-        { name: "GlobalFoundries", sub: "Mature-node I/O dies (12nm/14nm) for AMD chiplets", color: "#94A3B8", link: "GFS" },
+        { name: "Samsung Foundry", sub: "Rarely used for merchant DC CPUs", color: T_.blue, link: "005930.KS" },
+        { name: "GlobalFoundries", sub: "Mature-node I/O dies (12nm/14nm) for AMD chiplets", color: T_.textDim, link: "GFS" },
       ]},
       { label: "Fab Equipment", items: [
         { name: "ASML (litho)", sub: "EUV monopoly · 100% adv-node · multi-yr lead times", color: "#F97316", link: "ASML", flag: "bottleneck" },
-        { name: "Applied Materials", sub: "Deposition, etch, CMP, ion implant · ~25% mkt", color: "#F59E0B", link: "AMAT" },
-        { name: "Lam Research", sub: "Etch, deposition · ~20% mkt", color: "#F59E0B", link: "LRCX" },
-        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: "#F59E0B", link: "KLAC", flag: "concentration" },
-        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: "#F59E0B", flag: "concentration" },
-        { name: "Teradyne / Advantest", sub: "Test equipment · duopoly", color: "#F59E0B", link: "TER" },
+        { name: "Applied Materials", sub: "Deposition, etch, CMP, ion implant · ~25% mkt", color: T_.amber, link: "AMAT" },
+        { name: "Lam Research", sub: "Etch, deposition · ~20% mkt", color: T_.amber, link: "LRCX" },
+        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: T_.amber, link: "KLAC", flag: "concentration" },
+        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: T_.amber, flag: "concentration" },
+        { name: "Teradyne / Advantest", sub: "Test equipment · duopoly", color: T_.amber, link: "TER" },
       ]},
       { label: "Materials & Chemicals", items: [
         { name: "Photoresist (Japan)", sub: "JSR, TOK, Shin-Etsu, Fujifilm, Nissan · ~80% global", color: "#FACC15", flag: "concentration" },
@@ -130,9 +132,9 @@ const PRODUCT_PRIMERS = {
         { name: "Helium", sub: "~30% global from Iran/Qatar — disrupted Mar 2026", color: "#DC2626", flag: "bottleneck" },
         { name: "Naphtha → propylene", sub: "Iran-war driven · 92% spot-price spike Q1 2026", color: "#DC2626", flag: "bottleneck" },
         { name: "Rare earths (Ga, Ge, Ne)", sub: "China dominance ~85% · export controls active", color: "#DC2626", flag: "concentration" },
-        { name: "Power (Taiwan / Arizona grids)", sub: "TSMC + Intel Arizona fab loads · grid expansion lagging", color: "#F59E0B", flag: "concentration" },
-        { name: "Water (Taiwan / Korea / Arizona)", sub: "Fab water-intensive · drought risk · ~10M gal/day per fab", color: "#F59E0B" },
-        { name: "Logistics", sub: "Sea + air freight · CPU value $1-15K/unit", color: "#94A3B8" },
+        { name: "Power (Taiwan / Arizona grids)", sub: "TSMC + Intel Arizona fab loads · grid expansion lagging", color: T_.amber, flag: "concentration" },
+        { name: "Water (Taiwan / Korea / Arizona)", sub: "Fab water-intensive · drought risk · ~10M gal/day per fab", color: T_.amber },
+        { name: "Logistics", sub: "Sea + air freight · CPU value $1-15K/unit", color: T_.textDim },
       ]},
     ],
     drivers: [
@@ -161,41 +163,41 @@ const PRODUCT_PRIMERS = {
     layers: [
       { label: "Finished Product", items: [
         { name: "SK Hynix HBM", sub: "HBM3E leader · ~50%+ mkt share · M16 + M15X · 2026 sold out", color: "#A855F7", link: "000660.KS", flag: "bottleneck" },
-        { name: "Samsung HBM", sub: "HBM3E + HBM4 (M16 mass prod Apr 2026) · 2026 sold out", color: "#3B82F6", link: "005930.KS", flag: "bottleneck" },
-        { name: "Micron HBM", sub: "HBM3E ramp · HBM4 next · Boise + Hiroshima · 2026 sold out", color: "#F59E0B", link: "MU", flag: "bottleneck" },
+        { name: "Samsung HBM", sub: "HBM3E + HBM4 (M16 mass prod Apr 2026) · 2026 sold out", color: T_.blue, link: "005930.KS", flag: "bottleneck" },
+        { name: "Micron HBM", sub: "HBM3E ramp · HBM4 next · Boise + Hiroshima · 2026 sold out", color: T_.amber, link: "MU", flag: "bottleneck" },
       ]},
       { label: "Design & IP", items: [
-        { name: "JEDEC HBM standard", sub: "HBM3E (1.2 TB/s) → HBM4 (~1.6 TB/s) · industry-wide", color: "#94A3B8" },
+        { name: "JEDEC HBM standard", sub: "HBM3E (1.2 TB/s) → HBM4 (~1.6 TB/s) · industry-wide", color: T_.textDim },
         { name: "DRAM cell design (per-vendor)", sub: "1a / 1b / 1c node — proprietary; SK Hynix process leadership", color: "#A855F7", link: "000660.KS" },
         { name: "TSV / 3D-stack design IP", sub: "Through-silicon vias (1024+ per die) · per-vendor IP", color: "#A855F7" },
-        { name: "Logic base die design (HBM4)", sub: "First HBM gen with logic-class base die — TSMC N5/N3 fab for SK Hynix HBM4", color: "#8B5CF6", link: "TSM" },
-        { name: "Synopsys / Cadence (EDA)", sub: "DRAM design tools · same EDA stack as logic", color: "#3B82F6", link: "SNPS", flag: "concentration" },
+        { name: "Logic base die design (HBM4)", sub: "First HBM gen with logic-class base die — TSMC N5/N3 fab for SK Hynix HBM4", color: T_.purple, link: "TSM" },
+        { name: "Synopsys / Cadence (EDA)", sub: "DRAM design tools · same EDA stack as logic", color: T_.blue, link: "SNPS", flag: "concentration" },
       ]},
       { label: "Stacking & Assembly", items: [
-        { name: "Hybrid bonding (BE Semi + ASMPT)", sub: "Near-duopoly · multi-yr tool lead times · the binding HBM constraint", color: "#EF4444", flag: "bottleneck" },
-        { name: "TSV process", sub: "Through-silicon via etch + Cu fill · 1024+ per die at HBM3E", color: "#EF4444", flag: "bottleneck" },
-        { name: "Wafer thinning (Disco)", sub: "~70% global share · grinder + dicer · near-monopoly", color: "#EF4444", flag: "concentration" },
+        { name: "Hybrid bonding (BE Semi + ASMPT)", sub: "Near-duopoly · multi-yr tool lead times · the binding HBM constraint", color: T_.red, flag: "bottleneck" },
+        { name: "TSV process", sub: "Through-silicon via etch + Cu fill · 1024+ per die at HBM3E", color: T_.red, flag: "bottleneck" },
+        { name: "Wafer thinning (Disco)", sub: "~70% global share · grinder + dicer · near-monopoly", color: T_.red, flag: "concentration" },
         { name: "Stack height (8H → 12H → 16H)", sub: "Yield drops sharply with height · 16H HBM4e in dev", color: "#A855F7" },
         { name: "Underfill / molding (Resonac)", sub: "Resonac (Showa Denko), Sumitomo Bakelite · HBM-specific", color: "#EC4899", flag: "concentration" },
-        { name: "HBM wafer-level test", sub: "Advantest (~70% HBM test) · multi-month lead time bottleneck", color: "#EF4444", flag: "bottleneck" },
+        { name: "HBM wafer-level test", sub: "Advantest (~70% HBM test) · multi-month lead time bottleneck", color: T_.red, flag: "bottleneck" },
       ]},
       { label: "DRAM Manufacturing", items: [
         { name: "SK Hynix M16 (Icheon)", sub: "HBM4 mass prod started Apr 2026 · 1c node", color: "#A855F7", link: "000660.KS", flag: "bottleneck" },
         { name: "SK Hynix M15X (Cheongju)", sub: "First clean room ready May 2026 · HBM expansion", color: "#A855F7", link: "000660.KS" },
-        { name: "Samsung Pyeongtaek + Hwaseong", sub: "P3, M16 lines · HBM3E + HBM4 ramp · catching SK Hynix", color: "#3B82F6", link: "005930.KS" },
-        { name: "Micron Boise + Hiroshima", sub: "HBM3E ramp · HBM4 in dev · 1b → 1c transition", color: "#F59E0B", link: "MU" },
+        { name: "Samsung Pyeongtaek + Hwaseong", sub: "P3, M16 lines · HBM3E + HBM4 ramp · catching SK Hynix", color: T_.blue, link: "005930.KS" },
+        { name: "Micron Boise + Hiroshima", sub: "HBM3E ramp · HBM4 in dev · 1b → 1c transition", color: T_.amber, link: "MU" },
         { name: "1a / 1b / 1c DRAM nodes", sub: "~12-10nm-class · SK Hynix leads node migration", color: "#A855F7", flag: "bottleneck" },
-        { name: "TSMC (logic base die for HBM4)", sub: "New dependency · N5/N3 for HBM4 base die · SK Hynix outsourcing", color: "#8B5CF6", link: "TSM", flag: "concentration" },
+        { name: "TSMC (logic base die for HBM4)", sub: "New dependency · N5/N3 for HBM4 base die · SK Hynix outsourcing", color: T_.purple, link: "TSM", flag: "concentration" },
       ]},
       { label: "Fab Equipment", items: [
         { name: "ASML (litho)", sub: "EUV used for 1a/1b/1c DRAM nodes · multi-yr lead times", color: "#F97316", link: "ASML", flag: "bottleneck" },
-        { name: "Lam Research", sub: "Etch-heavy for DRAM · capacitor + TSV etch · ~50% DRAM equip", color: "#F59E0B", link: "LRCX", flag: "concentration" },
-        { name: "Applied Materials", sub: "Deposition + ion implant for DRAM", color: "#F59E0B", link: "AMAT" },
-        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: "#F59E0B", link: "KLAC", flag: "concentration" },
-        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: "#F59E0B", flag: "concentration" },
-        { name: "BE Semi / ASMPT", sub: "Hybrid bonding tools · the gating HBM equipment", color: "#F59E0B", flag: "bottleneck" },
-        { name: "Disco (wafer thinning)", sub: "~70% global share · TSV-thinning + dicing", color: "#F59E0B", flag: "concentration" },
-        { name: "Advantest (HBM test)", sub: "~70% HBM test mkt · long test cycle a key throughput bottleneck", color: "#F59E0B", flag: "bottleneck" },
+        { name: "Lam Research", sub: "Etch-heavy for DRAM · capacitor + TSV etch · ~50% DRAM equip", color: T_.amber, link: "LRCX", flag: "concentration" },
+        { name: "Applied Materials", sub: "Deposition + ion implant for DRAM", color: T_.amber, link: "AMAT" },
+        { name: "KLA", sub: "Inspection / metrology · ~85% market", color: T_.amber, link: "KLAC", flag: "concentration" },
+        { name: "Tokyo Electron (TEL)", sub: "Coater/developer + etch · ~85% lithography track", color: T_.amber, flag: "concentration" },
+        { name: "BE Semi / ASMPT", sub: "Hybrid bonding tools · the gating HBM equipment", color: T_.amber, flag: "bottleneck" },
+        { name: "Disco (wafer thinning)", sub: "~70% global share · TSV-thinning + dicing", color: T_.amber, flag: "concentration" },
+        { name: "Advantest (HBM test)", sub: "~70% HBM test mkt · long test cycle a key throughput bottleneck", color: T_.amber, flag: "bottleneck" },
       ]},
       { label: "Materials & Chemicals", items: [
         { name: "Photoresist (Japan)", sub: "JSR, TOK, Shin-Etsu, Fujifilm, Nissan · ~80% global", color: "#FACC15", flag: "concentration" },
@@ -209,10 +211,10 @@ const PRODUCT_PRIMERS = {
       { label: "Resources & Utilities", items: [
         { name: "Helium", sub: "~30% global from Iran/Qatar — disrupted Mar 2026 · DRAM-critical", color: "#DC2626", flag: "bottleneck" },
         { name: "Naphtha → propylene", sub: "Iran-war driven · 92% spot-price spike · hits Korean fabs first", color: "#DC2626", flag: "bottleneck" },
-        { name: "Power (Korean grid)", sub: "Samsung + SK Hynix concentrated in Korea · ~5%+ of grid", color: "#F59E0B", flag: "concentration" },
-        { name: "Water (Korea)", sub: "Korean fabs water-intensive · drought risk · ~10M gal/day per fab", color: "#F59E0B", flag: "concentration" },
+        { name: "Power (Korean grid)", sub: "Samsung + SK Hynix concentrated in Korea · ~5%+ of grid", color: T_.amber, flag: "concentration" },
+        { name: "Water (Korea)", sub: "Korean fabs water-intensive · drought risk · ~10M gal/day per fab", color: T_.amber, flag: "concentration" },
         { name: "Rare earths (Ga, Ge)", sub: "China dominance · DRAM uses gallium for compound layers", color: "#DC2626", flag: "concentration" },
-        { name: "Logistics", sub: "HBM ships to TSMC CoWoS for GPU integration · time-sensitive", color: "#94A3B8" },
+        { name: "Logistics", sub: "HBM ships to TSMC CoWoS for GPU integration · time-sensitive", color: T_.textDim },
       ]},
     ],
     drivers: [
@@ -238,7 +240,7 @@ const PRODUCT_PRIMERS = {
 };
 
 const productList = [
-  { key: "gpu", label: "GPU", color: "#10B981" },
+  { key: "gpu", label: "GPU", color: T_.green },
   { key: "cpu", label: "CPU", color: "#0EA5E9" },
   { key: "hbm", label: "HBM", color: "#A855F7" },
 ];
@@ -248,81 +250,77 @@ export default function ProductPrimer() {
   const [bottleneckOnly, setBottleneckOnly] = useState(false);
 
   const product = PRODUCT_PRIMERS[activeProduct] || PRODUCT_PRIMERS.gpu;
-  const flagColor = (f) => f === "bottleneck" ? "#EF4444" : f === "concentration" ? "#F59E0B" : null;
+  const flagColor = (f) => f === "bottleneck" ? T_.red : f === "concentration" ? T_.amber : null;
   const flagLabel = (f) => f === "bottleneck" ? "BOTTLENECK" : f === "concentration" ? "CONCENTRATED" : "";
-  const driverColor = (s) => s === "constrained" ? "#EF4444" : s === "tight" ? "#F59E0B" : "#10B981";
+  const driverColor = (s) => s === "constrained" ? T_.red : s === "tight" ? T_.amber : T_.green;
 
   const filteredLayers = bottleneckOnly
     ? product.layers.map(l => ({ ...l, items: l.items.filter(it => it.flag === "bottleneck" || it.flag === "concentration") })).filter(l => l.items.length > 0)
     : product.layers;
 
   return (
-    <div style={{ fontFamily: "'DM Sans', 'Segoe UI', sans-serif", background: "#0B0F19", color: "#E2E8F0", minHeight: "100vh", padding: "24px 28px" }}>
-      <div style={{ marginBottom: 24, borderBottom: "1px solid #1E293B", paddingBottom: 18 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Product / Service Primer</div>
-        <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 5 }}>Trace any product upstream to its inputs. Find where the bottlenecks are. Identify what gates output.</div>
+    <div style={{ fontFamily: FONT, background: T_.bg, color: T_.textMid, minHeight: "100vh", padding: "36px 52px" }}>
+      <div style={{ marginBottom: 24, borderBottom: `1px solid ${T_.border}`, paddingBottom: 18 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Product / Service Primer</div>
+        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Trace any product upstream to its inputs. Find where the bottlenecks are. Identify what gates output.</div>
       </div>
 
-      <div style={{ display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 20, width: "fit-content" }}>
-        {productList.map(p => (
-          <button key={p.key} onClick={() => setActiveProduct(p.key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer", border: "none",
-            background: activeProduct === p.key ? p.color : "#111827",
-            color: activeProduct === p.key ? "#FFF" : "#94A3B8",
-            transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{p.label}</button>
-        ))}
-        <div style={{ padding: "8px 18px", fontSize: 12, color: "#475569", fontStyle: "italic", display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>more products coming: CoWoS, networking, optical, data center…</div>
-      </div>
+      <TabBar
+        tabs={productList.map(p => ({ key: p.key, label: p.label, color: p.color }))}
+        active={activeProduct}
+        onChange={setActiveProduct}
+        marginBottom={20}
+        trailing={<div style={{ padding: "8px 18px", fontSize: 12, color: "#475569", fontStyle: "italic", display: "flex", alignItems: "center", whiteSpace: "nowrap" }}>more products coming: CoWoS, networking, optical, data center…</div>}
+      />
 
-      <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 18, marginBottom: 20 }}>
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 18, marginBottom: 20 }}>
         <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{product.tagline}</div>
       </div>
 
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14, flexWrap: "wrap", gap: 12 }}>
-        <div style={{ display: "flex", gap: 16, fontSize: 11, color: "#94A3B8", alignItems: "center", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textDim, alignItems: "center", flexWrap: "wrap" }}>
           <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ width: 8, height: 8, borderRadius: 2, background: "#EF4444" }} /> Bottleneck (currently supply-constrained)
+            <span style={{ width: 8, height: 8, borderRadius: 2, background: T_.red }} /> Bottleneck (currently supply-constrained)
           </span>
           <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-            <span style={{ width: 8, height: 8, borderRadius: 2, background: "#F59E0B" }} /> Concentration risk (≥80% single-source / single-country)
+            <span style={{ width: 8, height: 8, borderRadius: 2, background: T_.amber }} /> Concentration risk (≥80% single-source / single-country)
           </span>
         </div>
         <button onClick={() => setBottleneckOnly(p => !p)} style={{
           padding: "6px 14px", fontSize: 11, fontWeight: 600, cursor: "pointer",
-          border: `1px solid ${bottleneckOnly ? "#EF4444" : "#334155"}`,
+          border: `1px solid ${bottleneckOnly ? T_.red : T_.borderStrong}`,
           background: bottleneckOnly ? "rgba(239,68,68,0.12)" : "#0B0F19",
-          color: bottleneckOnly ? "#EF4444" : "#94A3B8",
+          color: bottleneckOnly ? T_.red : T_.textDim,
           borderRadius: 6, whiteSpace: "nowrap",
         }}>{bottleneckOnly ? "✓ Showing bottlenecks/concentration only" : "Show bottlenecks/concentration only"}</button>
       </div>
 
-      <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>{product.label} Supply Chain &amp; Input Map</div>
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>{product.label} Supply Chain &amp; Input Map</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
           {filteredLayers.map((layer, li) => (
             <div key={li}>
               {li > 0 && (
                 <div style={{ display: "flex", justifyContent: "center", padding: "4px 0" }}>
-                  <svg width="24" height="18" viewBox="0 0 24 18"><path d="M12 0 L12 12 M6 8 L12 14 L18 8" stroke="#334155" strokeWidth="2" fill="none"/></svg>
+                  <svg width="24" height="18" viewBox="0 0 24 18"><path d="M12 0 L12 12 M6 8 L12 14 L18 8" stroke={T_.borderStrong} strokeWidth="2" fill="none"/></svg>
                 </div>
               )}
               <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{ width: 130, flexShrink: 0, fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.8px", textAlign: "right" }}>{layer.label}</div>
+                <div style={{ width: 130, flexShrink: 0, fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.8px", textAlign: "right" }}>{layer.label}</div>
                 <div style={{ flex: 1, display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {layer.items.map((item, ii) => {
                     const fc = flagColor(item.flag);
                     return (
                     <div key={ii} style={{
                       background: item.flag === "bottleneck" ? "rgba(239,68,68,0.06)" : item.flag === "concentration" ? "rgba(245,158,11,0.04)" : "#0B0F19",
-                      border: `1px solid ${fc || "#1E293B"}`,
+                      border: `1px solid ${fc || T_.border}`,
                       borderRadius: 8, padding: "10px 14px", minWidth: 170, flex: "1 1 170px", maxWidth: 280,
                       borderLeft: `3px solid ${item.color}`,
                       position: "relative",
                     }}>
                       {item.flag && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: fc, fontWeight: 700, letterSpacing: "0.5px" }}>● {flagLabel(item.flag)}</div>}
-                      <div style={{ fontSize: 13, fontWeight: 700, color: "#E2E8F0" }}>{item.name}{item.link ? <span style={{ fontSize: 10, color: "#64748B", marginLeft: 6, fontWeight: 500 }}>· {item.link}</span> : null}</div>
-                      <div style={{ fontSize: 11, color: "#94A3B8", marginTop: 3, lineHeight: 1.4 }}>{item.sub}</div>
+                      <div style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.name}{item.link ? <span style={{ fontSize: 10, color: T_.textGhost, marginLeft: 6, fontWeight: 500 }}>· {item.link}</span> : null}</div>
+                      <div style={{ fontSize: 11, color: T_.textDim, marginTop: 3, lineHeight: 1.4 }}>{item.sub}</div>
                     </div>
                     );
                   })}
@@ -331,61 +329,61 @@ export default function ProductPrimer() {
             </div>
           ))}
         </div>
-        <div style={{ fontSize: 10, color: "#64748B", marginTop: 14, fontStyle: "italic" }}>Reads top-down: finished product at top, raw inputs at bottom. Arrows indicate dependency direction (each layer depends on the layers below).</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 14, fontStyle: "italic" }}>Reads top-down: finished product at top, raw inputs at bottom. Arrows indicate dependency direction (each layer depends on the layers below).</div>
       </div>
 
-      <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Drivers of Output — what gates {product.label} supply</div>
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Drivers of Output — what gates {product.label} supply</div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid #1E293B" }}>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
               {["Driver", "Current", "Target / Trajectory", "Status", "Note"].map(h => (
-                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {product.drivers.map((d, i) => (
               <tr key={i} style={{ borderBottom: "1px solid #0B0F19" }}>
-                <td style={{ padding: "8px 10px", color: "#E2E8F0", fontWeight: 700, whiteSpace: "nowrap" }}>{d.metric}</td>
-                <td style={{ padding: "8px 10px", color: "#F8FAFC", fontWeight: 600, whiteSpace: "nowrap" }}>{d.current}</td>
-                <td style={{ padding: "8px 10px", color: "#94A3B8", whiteSpace: "nowrap" }}>{d.target}</td>
+                <td style={{ padding: "8px 10px", color: T_.textMid, fontWeight: 700, whiteSpace: "nowrap" }}>{d.metric}</td>
+                <td style={{ padding: "8px 10px", color: T_.text, fontWeight: 600, whiteSpace: "nowrap" }}>{d.current}</td>
+                <td style={{ padding: "8px 10px", color: T_.textDim, whiteSpace: "nowrap" }}>{d.target}</td>
                 <td style={{ padding: "8px 10px", whiteSpace: "nowrap" }}>
                   <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${driverColor(d.status)}20`, color: driverColor(d.status) }}>
                     {d.status === "constrained" ? "● CONSTRAINED" : d.status === "tight" ? "◐ TIGHT" : "○ OK"}
                   </span>
                 </td>
-                <td style={{ padding: "8px 10px", color: "#94A3B8", fontSize: 11 }}>{d.note}</td>
+                <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11 }}>{d.note}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      <div style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Bottleneck Watch — what's stuck and who benefits when it loosens</div>
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Bottleneck Watch — what's stuck and who benefits when it loosens</div>
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
           <thead>
-            <tr style={{ borderBottom: "1px solid #1E293B" }}>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
               {["Node", "Layer", "Supplier(s)", "Lead Time", "What Relieves It", "Beneficiaries / Read-Through"].map(h => (
-                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: "#64748B", textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
             {product.bottlenecks.map((b, i) => (
               <tr key={i} style={{ borderBottom: "1px solid #0B0F19" }}>
-                <td style={{ padding: "8px 10px", color: "#EF4444", fontWeight: 700, whiteSpace: "nowrap" }}>● {b.node}</td>
-                <td style={{ padding: "8px 10px", color: "#94A3B8", whiteSpace: "nowrap", fontSize: 11 }}>{b.layer}</td>
-                <td style={{ padding: "8px 10px", color: "#E2E8F0", fontSize: 11 }}>{b.supplier}</td>
-                <td style={{ padding: "8px 10px", color: "#F59E0B", fontWeight: 600, whiteSpace: "nowrap", fontSize: 11 }}>{b.leadTime}</td>
-                <td style={{ padding: "8px 10px", color: "#94A3B8", fontSize: 11 }}>{b.relief}</td>
-                <td style={{ padding: "8px 10px", color: "#10B981", fontWeight: 600, fontSize: 11 }}>{b.beneficiaries}</td>
+                <td style={{ padding: "8px 10px", color: T_.red, fontWeight: 700, whiteSpace: "nowrap" }}>● {b.node}</td>
+                <td style={{ padding: "8px 10px", color: T_.textDim, whiteSpace: "nowrap", fontSize: 11 }}>{b.layer}</td>
+                <td style={{ padding: "8px 10px", color: T_.textMid, fontSize: 11 }}>{b.supplier}</td>
+                <td style={{ padding: "8px 10px", color: T_.amber, fontWeight: 600, whiteSpace: "nowrap", fontSize: 11 }}>{b.leadTime}</td>
+                <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11 }}>{b.relief}</td>
+                <td style={{ padding: "8px 10px", color: T_.green, fontWeight: 600, fontSize: 11 }}>{b.beneficiaries}</td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div style={{ fontSize: 10, color: "#64748B", marginTop: 12, fontStyle: "italic" }}>Sources: TSMC IR, SK Hynix / Samsung / Micron earnings, ASML guidance, TrendForce, SemiAnalysis, Marathon Fund research notes.</div>
+        <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>Sources: TSMC IR, SK Hynix / Samsung / Micron earnings, ASML guidance, TrendForce, SemiAnalysis, Marathon Fund research notes.</div>
       </div>
     </div>
   );

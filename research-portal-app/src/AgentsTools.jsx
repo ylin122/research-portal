@@ -14,7 +14,7 @@ const MCP_SERVERS = [
     tools: ["create_entities", "create_relations", "add_observations", "delete_entities", "delete_relations", "delete_observations", "read_graph", "search_nodes", "open_nodes"],
   },
   {
-    name: "sequential-thinking", provider: "npm", status: "connected", color: "#F59E0B",
+    name: "sequential-thinking", provider: "npm", status: "connected", color: T_.amber,
     desc: "Dynamic, reflective reasoning tool for complex problem-solving with branching and revision.",
     tools: ["sequentialthinking"],
   },
@@ -125,7 +125,7 @@ const AGENTS = [
     tools: "Read, Grep, Glob, Bash, Agent", mode: "Read-only",
   },
   {
-    name: "security-reviewer", color: "#EF4444",
+    name: "security-reviewer", color: T_.red,
     desc: "Audits MCP servers, skills, subagents, and plugins for supply chain, prompt injection, and data exfiltration risk. Periodic or pre-install.",
     usage: "@security-reviewer audit all installed MCPs",
     tools: "Read, Grep, Glob, Bash", mode: "Read-only",
@@ -137,7 +137,7 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read-only",
   },
   {
-    name: "pa-refresh", color: "#10B981",
+    name: "pa-refresh", color: T_.green,
     desc: "Full PA dashboard data refresh — pulls live Yahoo Finance for all tickers, updates hardcoded blocks (prices, P/E, PEG, beta, returns, ETF sensitivity, news), triggers API refreshes.",
     usage: "@pa-refresh update all data",
     tools: "Bash, Read, Edit, Write, Grep, Glob, WebFetch", mode: "Read + Write",
@@ -203,7 +203,7 @@ function PromptBody({ row, color, copied, onCopy }) {
         onClick={(e) => { e.stopPropagation(); onCopy(); }}
         style={{
           position: "absolute", top: 6, right: 6, zIndex: 1,
-          background: copied ? `${color}25` : "#1E293B", border: `1px solid ${color}40`,
+          background: copied ? `${color}25` : T_.border, border: `1px solid ${color}40`,
           color, fontSize: 10, fontFamily: "monospace", padding: "2px 8px",
           borderRadius: 4, cursor: "pointer", letterSpacing: 0.3,
         }}
@@ -249,8 +249,8 @@ export default function AgentsTools() {
   }, []);
 
   return (
-    <div style={{ padding: "36px 44px", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Agents / Tools</div>
+    <div style={{ padding: "36px 52px", fontFamily: FONT }}>
+      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Agents / Tools</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
         Claude Code agents, skills, MCP servers, and installed tools. Agents: <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span> &nbsp; Skills: <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>
       </p>
@@ -292,15 +292,15 @@ export default function AgentsTools() {
                   {CLI_TOOLS.map(tool => (
                     <div key={tool.name} style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, padding: "10px 14px", marginBottom: 6 }}>
                       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-                        <span style={{ fontSize: 12, fontWeight: 700, color: "#E2E8F0" }}>{tool.name}</span>
+                        <span style={{ fontSize: 12, fontWeight: 700, color: T_.textMid }}>{tool.name}</span>
                         <span style={{ fontSize: 10, color: T_.textGhost, fontFamily: "monospace" }}>{tool.path}</span>
                       </div>
-                      <div style={{ fontSize: 11, color: "#94A3B8", marginBottom: 6 }}>{tool.desc}</div>
+                      <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 6 }}>{tool.desc}</div>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: "3px 14px" }}>
                         {tool.cmds.map(c => (
-                          <span key={c.cmd} style={{ fontSize: 11, color: "#94A3B8" }}>
-                            <code style={{ color: "#E2E8F0", fontFamily: "monospace", fontSize: 11 }}>{c.cmd}</code>
-                            <span style={{ color: "#64748B" }}> — {c.desc}</span>
+                          <span key={c.cmd} style={{ fontSize: 11, color: T_.textDim }}>
+                            <code style={{ color: T_.textMid, fontFamily: "monospace", fontSize: 11 }}>{c.cmd}</code>
+                            <span style={{ color: T_.textGhost }}> — {c.desc}</span>
                           </span>
                         ))}
                       </div>
@@ -364,9 +364,9 @@ export default function AgentsTools() {
                 <span style={{ fontSize: 13, fontWeight: 700, color: mcp.color, fontFamily: "monospace" }}>{mcp.name}</span>
                 <span style={{
                   fontSize: 9, fontWeight: 600, padding: "1px 6px", borderRadius: 3, letterSpacing: 0.5,
-                  background: mcp.status === "connected" ? "#22c55e18" : "#f59e0b18",
-                  color: mcp.status === "connected" ? "#22c55e" : "#f59e0b",
-                  border: `1px solid ${mcp.status === "connected" ? "#22c55e30" : "#f59e0b30"}`,
+                  background: mcp.status === "connected" ? "#22c55e18" : `${T_.amber}18`,
+                  color: mcp.status === "connected" ? "#22c55e" : T_.amber,
+                  border: `1px solid ${mcp.status === "connected" ? "#22c55e30" : `${T_.amber}30`}`,
                 }}>{mcp.status === "connected" ? "CONNECTED" : "NEEDS AUTH"}</span>
                 <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{mcp.desc}</span>
                 {mcp.tools.length > 0 && (

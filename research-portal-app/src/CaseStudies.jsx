@@ -32,7 +32,7 @@ function ConceptAccordion({ items }) {
    ═══════════════════════════════════════════════════════ */
 
 const CASES = [
-  { key: "fluor", label: "Fluor Corporation", sector: "E&C / Engineering", year: "2019", color: "#3B82F6" },
+  { key: "fluor", label: "Fluor Corporation", sector: "E&C / Engineering", year: "2019", color: T_.blue },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -470,8 +470,8 @@ export default function CaseStudies({ initialTab }) {
   const [activeCase, setActiveCase] = useState(initialTab || "fluor");
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: "100%", fontFamily: FONT }}>
-      <h1 style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>Case Studies</h1>
+    <div style={{ padding: "36px 52px", maxWidth: "100%", fontFamily: FONT }}>
+      <h1 style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>Case Studies</h1>
       <p style={{ fontSize: 12, color: T_.textDim, marginBottom: 20 }}>Investment situations worth studying — for interviews, investment history, or learning.</p>
 
       {/* Tab buttons */}
@@ -480,7 +480,7 @@ export default function CaseStudies({ initialTab }) {
           <button key={c.key} onClick={() => setActiveCase(c.key)} style={{
             padding: "6px 14px", borderRadius: 6, border: `1px solid ${activeCase === c.key ? c.color : T_.border}`,
             background: activeCase === c.key ? `${c.color}18` : T_.bgPanel,
-            color: activeCase === c.key ? c.color : "#94A3B8",
+            color: activeCase === c.key ? c.color : T_.textDim,
             fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: FONT, transition: "all .15s",
           }}>
             {c.label} <span style={{ fontSize: 10, color: T_.textGhost, marginLeft: 4 }}>{c.sector} · {c.year}</span>

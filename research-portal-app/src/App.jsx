@@ -937,7 +937,7 @@ const s = {
   navAdd: { padding: "6px 18px 6px 38px", fontSize: 12, color: T_.textGhost, cursor: "pointer", fontFamily: FONT },
   main: { flex: 1, display: "flex", flexDirection: "column", minWidth: 0, position: "relative", background: T_.bg },
   page: { flex: 1, padding: "36px 52px", overflowY: "auto" },
-  pageTitle: { fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", margin: "0 0 6px", fontFamily: FONT },
+  pageTitle: { fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", margin: "0 0 6px", fontFamily: FONT },
   pageSub: { fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.7, fontFamily: FONT },
   breadcrumb: { fontSize: 13, color: T_.textGhost, marginBottom: 12, display: "flex", gap: 8, alignItems: "center", cursor: "pointer", fontFamily: FONT },
   section: { marginBottom: 36 },

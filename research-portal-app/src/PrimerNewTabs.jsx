@@ -12,7 +12,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "comms") {
     const SUBS = {
-      wireless: { name: "Wireless Carriers", fullName: "Mobile Network Operators (MNOs)", category: "Network Operators", color: "#3B82F6",
+      wireless: { name: "Wireless Carriers", fullName: "Mobile Network Operators (MNOs)", category: "Network Operators", color: T_.blue,
         tam: "$950B+ (2025, global)", growth: "~3-5% CAGR", icon: "📱",
         desc: "Operators of licensed mobile spectrum providing voice, data, and messaging services to consumers and enterprises. Capital-intensive, oligopolistic market structure in most countries.",
         whatTheySell: "Postpaid and prepaid wireless plans, device financing, mobile hotspot, IoT connectivity, private 5G networks, wholesale MVNO access",
@@ -20,7 +20,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["T-Mobile US", "Verizon", "AT&T", "Deutsche Telekom", "Vodafone", "China Mobile", "Reliance Jio", "Bharti Airtel"],
         trends: "5G monetization still elusive for consumers. Fixed wireless access (FWA) as broadband substitute. MVNO growth (Mint, Visible). T-Mobile gaining share post-Sprint merger. Enterprise 5G/private networks as growth vector",
       },
-      wireline: { name: "Wireline / Fiber", fullName: "Wireline Telecom & Fiber-to-the-Home (FTTH)", category: "Network Operators", color: "#10B981",
+      wireline: { name: "Wireline / Fiber", fullName: "Wireline Telecom & Fiber-to-the-Home (FTTH)", category: "Network Operators", color: T_.green,
         tam: "$280B+ (2025, global)", growth: "~2-4% CAGR", icon: "🔌",
         desc: "Fixed-line telecommunications delivering broadband, voice, and data services over copper and fiber-optic networks. Fiber overbuilds are driving a multi-year investment cycle.",
         whatTheySell: "Fiber broadband (1-10 Gbps), legacy DSL, enterprise Ethernet, MPLS/SD-WAN connectivity, voice (VoIP/POTS), wholesale dark fiber",
@@ -28,7 +28,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["AT&T (fiber)", "Lumen Technologies", "Frontier Fiber", "Altice/Optimum", "Brightspeed", "Consolidated Communications", "BT Group", "Orange"],
         trends: "Massive FTTH build-out ($100B+ US investment). BEAD program funding rural fiber. Legacy copper revenue declining. Fiber net adds accelerating. PE-backed fiber overbuilders (Lumos, Ziply)",
       },
-      cable: { name: "Cable / Broadband", fullName: "Cable Operators & Broadband Providers", category: "Network Operators", color: "#8B5CF6",
+      cable: { name: "Cable / Broadband", fullName: "Cable Operators & Broadband Providers", category: "Network Operators", color: T_.purple,
         tam: "$300B+ (2025, US + Europe)", growth: "~1-3% CAGR", icon: "📺",
         desc: "Operators of hybrid fiber-coax (HFC) networks providing broadband internet, video, and voice services. Broadband is the core profit driver as video declines.",
         whatTheySell: "High-speed internet (DOCSIS 3.1/4.0), video/TV packages, voice, mobile (MVNO), enterprise connectivity, WiFi solutions",
@@ -36,7 +36,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Comcast (Xfinity)", "Charter (Spectrum)", "Cox Communications", "Altice USA", "Rogers (Canada)", "Liberty Global (Europe)", "Telenet"],
         trends: "Broadband subscriber losses to FWA and fiber overbuilders. DOCSIS 4.0 upgrade cycle. Video cord-cutting accelerating. Cable MVNO wireless bundles growing. Mid-split/high-split upgrades for more upstream bandwidth",
       },
-      towers: { name: "Tower Companies / Infrastructure", fullName: "Wireless Tower & Small Cell Infrastructure", category: "Infrastructure", color: "#F59E0B",
+      towers: { name: "Tower Companies / Infrastructure", fullName: "Wireless Tower & Small Cell Infrastructure", category: "Infrastructure", color: T_.amber,
         tam: "$60B+ (2025, global)", growth: "~5-7% CAGR", icon: "🗼",
         desc: "Owners and operators of wireless tower sites leased to mobile carriers. Toll-booth business model with long-term contracts, built-in escalators, and high recurring revenue.",
         whatTheySell: "Tower leases (macro towers), small cells, rooftop sites, in-building DAS, fiber backhaul, edge computing colocation",
@@ -52,7 +52,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["SpaceX (Starlink — dominant LEO)", "Viasat", "SES", "Eutelsat (OneWeb)", "Iridium", "Globalstar (Apple partner)", "Amazon (Kuiper — launching)"],
         trends: "Starlink at 9M+ subscribers (late 2025), dominant in LEO. Direct-to-device (D2D) partnerships with carriers. Amazon Kuiper launching 2025-2026. GEO operators consolidating (SES-Intelsat). Government/defense as growth market",
       },
-      ucaas: { name: "Unified Communications / CPaaS", fullName: "UCaaS, CCaaS & Communications Platform as a Service", category: "Services & Applications", color: "#EF4444",
+      ucaas: { name: "Unified Communications / CPaaS", fullName: "UCaaS, CCaaS & Communications Platform as a Service", category: "Services & Applications", color: T_.red,
         tam: "$80B+ (2025)", growth: "~12-15% CAGR", icon: "💬",
         desc: "Cloud-based voice, video, messaging, and contact center platforms replacing legacy PBX systems. CPaaS provides programmable communications APIs for developers.",
         whatTheySell: "UCaaS (voice/video/messaging), CCaaS (cloud contact center), CPaaS (SMS/voice/video APIs), SIP trunking, SD-WAN, team collaboration",
@@ -70,27 +70,27 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "operators", label: "Network Operators", color: "#3B82F6", icon: "📡", children: ["wireless", "wireline", "cable"] },
-      { key: "infra", label: "Infrastructure", color: "#F59E0B", icon: "🗼", children: ["towers", "satellite"] },
-      { key: "services", label: "Services & Applications", color: "#EF4444", icon: "💬", children: ["ucaas"] },
+      { key: "operators", label: "Network Operators", color: T_.blue, icon: "📡", children: ["wireless", "wireline", "cable"] },
+      { key: "infra", label: "Infrastructure", color: T_.amber, icon: "🗼", children: ["towers", "satellite"] },
+      { key: "services", label: "Services & Applications", color: T_.red, icon: "💬", children: ["ucaas"] },
       { key: "content", label: "Content & Media", color: "#EC4899", icon: "🎬", children: ["media"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Communication Services & Telecom Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Wireless, broadband, towers, satellite, UCaaS, and media — the connectivity value chain</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Communication Services & Telecom Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Wireless, broadband, towers, satellite, UCaaS, and media — the connectivity value chain</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Telecom & Media — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Infrastructure underpins network operators, who deliver connectivity to service providers and content platforms, which serve end users. ~$1.8T global industry.</div>
         <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           {[
-            { label: "Infrastructure", color: "#F59E0B", icon: "🗼", desc: "Physical assets & spectrum",
+            { label: "Infrastructure", color: T_.amber, icon: "🗼", desc: "Physical assets & spectrum",
               rows: [{ sub: "Towers", ex: "American Tower, Crown Castle, SBA" }, { sub: "Fiber", ex: "Lumen, Zayo, Uniti, Crown Fiber" }, { sub: "Satellite", ex: "SpaceX Starlink, Viasat, SES" }, { sub: "Spectrum", ex: "Licensed by FCC auction" }],
               buyers: "Carriers, ISPs, governments" },
-            { label: "Network Operators", color: "#3B82F6", icon: "📡", desc: "Build & run the networks",
+            { label: "Network Operators", color: T_.blue, icon: "📡", desc: "Build & run the networks",
               rows: [{ sub: "Wireless", ex: "T-Mobile, Verizon, AT&T" }, { sub: "Cable", ex: "Comcast, Charter, Cox" }, { sub: "Fiber ISP", ex: "AT&T Fiber, Frontier, Lumen" }],
               buyers: "Consumers, enterprises, MVNOs" },
-            { label: "Service Providers", color: "#10B981", icon: "💬", desc: "Applications over networks",
+            { label: "Service Providers", color: T_.green, icon: "💬", desc: "Applications over networks",
               rows: [{ sub: "UCaaS", ex: "Microsoft Teams, Zoom, RingCentral" }, { sub: "CCaaS", ex: "Five9, NICE, Genesys" }, { sub: "CPaaS", ex: "Twilio, Vonage, Bandwidth" }],
               buyers: "Enterprise IT, developers, SMBs" },
             { label: "Content & Apps", color: "#EC4899", icon: "🎬", desc: "Media & streaming",
@@ -160,13 +160,13 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How telecom and media companies generate revenue. The industry spans from infrastructure leasing (highest quality) to advertising (most cyclical).</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Subscription (Postpaid Wireless & Broadband)", color: "#3B82F6", icon: "🔄",
+            { name: "Subscription (Postpaid Wireless & Broadband)", color: T_.blue, icon: "🔄",
               how: "Customers pay a fixed monthly fee for wireless or broadband service. Postpaid wireless includes device installment plans. Broadband priced by speed tier. Multi-year implicit relationships with low voluntary churn",
               economics: "Wireless ARPU: $48-55/mo (US postpaid). Broadband ARPU: $60-80/mo. Churn: 0.8-1.2% monthly for wireless, lower for broadband. Gross margins: 55-65%. Massive fixed-cost networks mean incremental subscribers are highly profitable",
               examples: "T-Mobile postpaid ($55 ARPU), Verizon wireless, Comcast Xfinity Internet ($85+ ARPU), AT&T Fiber",
               valuation: "6-8x EBITDA for wireless carriers. Broadband-heavy cable at 7-9x. Market rewards subscriber growth, low churn, and ARPU expansion. T-Mobile trades at premium due to growth",
               transition: "Mature model with pricing power limited by competition. Growth comes from ARPU expansion (premium tiers, add-ons) rather than net new subscribers in developed markets. Converged bundles (wireless + broadband) increasing" },
-            { name: "Usage-Based (Metered Data & Overage)", color: "#10B981", icon: "📊",
+            { name: "Usage-Based (Metered Data & Overage)", color: T_.green, icon: "📊",
               how: "Revenue scales with consumption — per GB of data, per minute of voice, per message sent. Common in prepaid wireless, international roaming, enterprise metered circuits, and CPaaS (per API call)",
               economics: "Highly variable margins depending on segment. CPaaS: 45-55% gross margin on per-message/call pricing. Prepaid wireless: lower ARPU ($25-35) but minimal acquisition cost. Enterprise metered: negotiated rates",
               examples: "Twilio (per SMS/voice API call), prepaid wireless (T-Mobile Prepaid, Tracfone), international roaming charges, enterprise metered bandwidth",
@@ -184,7 +184,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
               examples: "YouTube ($35B+ annual ad revenue), Netflix ad tier, Disney+/Hulu advertising, Comcast/NBC linear + Peacock ads, Meta (social), The Trade Desk (programmatic)",
               valuation: "Digital ad platforms at 8-15x revenue. Legacy linear TV assets at 5-7x EBITDA and declining. Market rewards digital scale and targeting capability. Connected TV (CTV) ads command premium CPMs",
               transition: "Massive shift from linear to digital/CTV. Streaming ad tiers (Netflix, Disney+) creating new inventory. Retail media networks growing. AI-personalized ad targeting. Linear TV ad spend declining irreversibly" },
-            { name: "Infrastructure Leasing (Towers & Fiber)", color: "#F59E0B", icon: "🗼",
+            { name: "Infrastructure Leasing (Towers & Fiber)", color: T_.amber, icon: "🗼",
               how: "Tower companies own physical sites and lease antenna space to wireless carriers under long-term contracts (5-10 year initial terms with 5-year renewals). Built-in annual rent escalators of 3%. Multiple tenants per tower share fixed costs",
               economics: "Gross margins: 70-80%. Tower tenancy: each additional tenant on a tower is ~80% incremental margin (fixed costs already covered). Average US tower has 2-3 tenants. Churn is <2% annually. AFFO margins: 50-60%",
               examples: "American Tower (~150K global towers, post-India divestiture), Crown Castle (40K US towers + fiber), SBA Communications (39K towers), Cellnex (115K European towers)",
@@ -235,7 +235,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["LVMH", "Nike", "Hermès", "Kering (Gucci)", "Inditex (Zara)", "TJX Companies", "Lululemon", "Tapestry (Coach)", "Ralph Lauren", "VF Corp"],
         trends: "Luxury resilient despite macro concerns. Athletic/athleisure still growing. DTC shift (Nike pulled back from wholesale). Off-price (TJX, Ross) gaining share. Resale market growing 15%+. China luxury demand volatile",
       },
-      auto: { name: "Automotive", fullName: "Automotive OEMs & Dealers", category: "Automotive", color: "#3B82F6",
+      auto: { name: "Automotive", fullName: "Automotive OEMs & Dealers", category: "Automotive", color: T_.blue,
         tam: "$2.5T+ (2025, global)", growth: "~3-4% CAGR", icon: "🚗",
         desc: "Vehicle manufacturers (OEMs), auto dealers, and the broader automotive ecosystem including parts, financing, and aftermarket services.",
         whatTheySell: "New vehicles (ICE, hybrid, EV), used vehicles, parts and accessories, financing/leasing, service and maintenance, fleet management",
@@ -243,7 +243,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Toyota", "Volkswagen Group", "GM", "Ford", "Stellantis", "BYD", "Tesla", "Hyundai/Kia", "BMW", "AutoNation", "Penske Auto", "Lithia Motors"],
         trends: "EV adoption slowing vs expectations (hybrids surging). Chinese OEMs (BYD) gaining global share. Software-defined vehicles. Dealer consolidation. Used car market normalized post-COVID. Average new vehicle price ~$48K",
       },
-      homebuilders: { name: "Homebuilders & Home Improvement", fullName: "Homebuilders, Building Products & Home Improvement Retail", category: "Housing", color: "#10B981",
+      homebuilders: { name: "Homebuilders & Home Improvement", fullName: "Homebuilders, Building Products & Home Improvement Retail", category: "Housing", color: T_.green,
         tam: "$600B+ (2025, US new construction + remodel)", growth: "~3-6% CAGR", icon: "🏠",
         desc: "Companies that build new homes, manufacture building products, or sell home improvement materials and services. Highly cyclical, tied to interest rates and housing starts.",
         whatTheySell: "New single-family and multi-family homes, building products (roofing, insulation, windows), home improvement retail, renovation services",
@@ -251,7 +251,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["D.R. Horton", "Lennar", "NVR", "PulteGroup", "Home Depot", "Lowe's", "Masco", "Fortune Brands (Moen)", "Builders FirstSource"],
         trends: "Structural housing underbuilt by 3-5M units in US. High rates locked in existing homeowners (rate lock-in effect). Builders buying down mortgage rates. Home Depot/Lowe's pro business growing. Aging housing stock driving repair/remodel",
       },
-      restaurants: { name: "Restaurants & Food Service", fullName: "Restaurants, QSR & Food Service", category: "Food & Dining", color: "#F59E0B",
+      restaurants: { name: "Restaurants & Food Service", fullName: "Restaurants, QSR & Food Service", category: "Food & Dining", color: T_.amber,
         tam: "$1T+ (2025, US)", growth: "~4-6% CAGR", icon: "🍔",
         desc: "Quick-service (QSR), fast-casual, casual dining, and fine dining restaurants. Franchise-heavy model dominates QSR. Delivery and digital ordering transforming the industry.",
         whatTheySell: "Food and beverages (dine-in, takeout, delivery), franchise licenses and royalties, catering, branded consumer products (CPG crossover)",
@@ -259,7 +259,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["McDonald's", "Starbucks", "Chick-fil-A", "Chipotle", "Yum! Brands (Taco Bell, KFC, Pizza Hut)", "Restaurant Brands (Burger King, Tim Hortons)", "Darden (Olive Garden)", "Wingstop"],
         trends: "Value wars intensifying (consumers trading down). Digital ordering now 35-40% of sales. Delivery via DoorDash/Uber Eats. QSR outperforming casual dining. Labor costs rising. Menu price inflation moderating. Drive-thru innovation",
       },
-      travel: { name: "Travel & Leisure", fullName: "Hotels, Cruise Lines, OTAs & Leisure", category: "Travel", color: "#8B5CF6",
+      travel: { name: "Travel & Leisure", fullName: "Hotels, Cruise Lines, OTAs & Leisure", category: "Travel", color: T_.purple,
         tam: "$800B+ (2025, US travel)", growth: "~5-8% CAGR", icon: "✈️",
         desc: "Hotels, cruise lines, online travel agencies (OTAs), theme parks, and leisure experiences. Asset-light franchise models dominate lodging. Strong post-COVID recovery.",
         whatTheySell: "Hotel rooms (managed/franchised), cruise berths, flight/hotel bookings (OTAs), theme park admissions, vacation rentals, travel insurance",
@@ -267,7 +267,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Marriott", "Hilton", "Airbnb", "Booking Holdings", "Expedia", "Royal Caribbean", "Carnival", "Disney Parks", "IHG", "Hyatt"],
         trends: "Experiences over things (secular tailwind). Asset-light hotel models dominant (Marriott/Hilton 98%+ franchised). Loyalty programs as profit centers. Cruise demand exceeding pre-COVID. Business travel recovered ~85%. OTA vs direct booking tension",
       },
-      specialty: { name: "Retail (Specialty)", fullName: "Specialty Retail & Department Stores", category: "Retail", color: "#EF4444",
+      specialty: { name: "Retail (Specialty)", fullName: "Specialty Retail & Department Stores", category: "Retail", color: T_.red,
         tam: "$500B+ (2025, US specialty retail)", growth: "~2-4% CAGR", icon: "🛍️",
         desc: "Focused retail concepts in specific categories — electronics, pet, auto parts, sporting goods, beauty. Winners have strong category expertise and omnichannel capabilities.",
         whatTheySell: "Category-specific merchandise (electronics, pet supplies, auto parts, sporting goods, beauty), services (Geek Squad, grooming), loyalty programs",
@@ -286,28 +286,28 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
     };
     const TAX = [
       { key: "brands", label: "Brands & Fashion", color: "#EC4899", icon: "👗", children: ["apparel"] },
-      { key: "auto", label: "Automotive", color: "#3B82F6", icon: "🚗", children: ["auto"] },
-      { key: "housing", label: "Housing", color: "#10B981", icon: "🏠", children: ["homebuilders"] },
-      { key: "food", label: "Food & Dining", color: "#F59E0B", icon: "🍔", children: ["restaurants"] },
-      { key: "travel", label: "Travel", color: "#8B5CF6", icon: "✈️", children: ["travel"] },
-      { key: "retail", label: "Retail & E-Commerce", color: "#EF4444", icon: "🛍️", children: ["specialty", "ecommerce"] },
+      { key: "auto", label: "Automotive", color: T_.blue, icon: "🚗", children: ["auto"] },
+      { key: "housing", label: "Housing", color: T_.green, icon: "🏠", children: ["homebuilders"] },
+      { key: "food", label: "Food & Dining", color: T_.amber, icon: "🍔", children: ["restaurants"] },
+      { key: "travel", label: "Travel", color: T_.purple, icon: "✈️", children: ["travel"] },
+      { key: "retail", label: "Retail & E-Commerce", color: T_.red, icon: "🛍️", children: ["specialty", "ecommerce"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Consumer Discretionary Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Apparel, auto, housing, restaurants, travel, and retail — spending on wants, not needs</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Consumer Discretionary Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Apparel, auto, housing, restaurants, travel, and retail — spending on wants, not needs</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Consumer Discretionary — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From raw materials through brands and distribution to the end consumer. Each stage adds margin and brand value.</div>
         <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           {[
-            { label: "Raw Materials / Mfg", color: "#64748B", icon: "🏭", desc: "Sourcing & production",
+            { label: "Raw Materials / Mfg", color: T_.textGhost, icon: "🏭", desc: "Sourcing & production",
               rows: [{ sub: "Textiles", ex: "Cotton, synthetics, leather" }, { sub: "Auto Parts", ex: "Steel, aluminum, batteries" }, { sub: "Building Materials", ex: "Lumber, cement, glass" }, { sub: "Food Supply", ex: "Proteins, produce, grains" }],
               buyers: "Brands, OEMs, builders" },
             { label: "Brands / Design", color: "#EC4899", icon: "✨", desc: "Create desirability & IP",
               rows: [{ sub: "Luxury / Apparel", ex: "LVMH, Nike, Lululemon" }, { sub: "Auto OEM", ex: "Toyota, GM, Tesla, BYD" }, { sub: "Restaurant Brands", ex: "McDonald's, Starbucks, Chipotle" }, { sub: "Homebuilders", ex: "D.R. Horton, Lennar, NVR" }],
               buyers: "Distributors, retailers, consumers" },
-            { label: "Distribution / Retail", color: "#10B981", icon: "🏪", desc: "Get products to market",
+            { label: "Distribution / Retail", color: T_.green, icon: "🏪", desc: "Get products to market",
               rows: [{ sub: "Physical Retail", ex: "Home Depot, Best Buy, Ulta" }, { sub: "Auto Dealers", ex: "AutoNation, Penske, Lithia" }, { sub: "E-Commerce", ex: "Amazon, Shopify, DTC sites" }, { sub: "Franchise Ops", ex: "McDonald's franchisees" }],
               buyers: "End consumers" },
             { label: "Consumer", color: "#6366F1", icon: "👥", desc: "End buyer / spender",
@@ -380,13 +380,13 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
               examples: "Nike DTC (now ~45% of revenue), Lululemon (95%+ DTC), LVMH boutiques, Home Depot/Lowe's retail, TJX off-price stores",
               valuation: "Branded DTC at 3-8x revenue. Traditional retail at 0.5-2x revenue or 6-12x EBITDA. Market rewards brands with pricing power, high DTC mix, and strong same-store sales growth. Off-price retailers (TJX) command premium multiples",
               transition: "Shift from wholesale-dependent to DTC. Nike pulled back from wholesale, then partially reversed. Pure DTC brands struggling with CAC (acquisition costs). Omnichannel (stores + online) emerging as the winning model" },
-            { name: "Franchise Model", color: "#F59E0B", icon: "🏪",
+            { name: "Franchise Model", color: T_.amber, icon: "🏪",
               how: "Franchisor licenses its brand, systems, and supply chain to independent operators (franchisees). Revenue from initial franchise fees plus ongoing royalties (4-6% of sales). Franchisor owns the brand; franchisee owns the operation and bears most capital costs",
               economics: "Royalty revenue is nearly 100% margin. Franchise systems have 80-90% gross margins. Capital-light — franchisees fund unit growth. McDonald's: 95% franchised, ~$25B system-wide sales generates ~$14B franchisor revenue at 65%+ operating margin",
               examples: "McDonald's (95% franchised), Marriott/Hilton (98%+ franchised), Yum! Brands, Restaurant Brands International, Wingstop (98% franchised), Planet Fitness",
               valuation: "20-30x EBITDA for high-quality franchisors. Among the highest multiples in consumer. Market rewards the capital-light, high-margin, royalty-based model. Wingstop at 50x+ EBITDA due to unit growth and digital mix",
               transition: "Most asset-heavy operators are moving to franchise/asset-light models. Hilton and Marriott completed this transition in hotels. Restaurant chains refranchising. The trade-off: franchise revenue is lower nominal revenue but far higher quality" },
-            { name: "Subscription / Membership", color: "#10B981", icon: "🔄",
+            { name: "Subscription / Membership", color: T_.green, icon: "🔄",
               how: "Customers pay recurring fees for access to products, services, or experiences. Includes gym memberships, warehouse clubs, subscription boxes, loyalty programs with paid tiers. Revenue recognized ratably",
               economics: "Retention rates: 70-90% annually depending on category. Costco membership renewal: 93%. Amazon Prime: 97%+ estimated. Membership fees often near-100% margin that subsidize low-margin product sales",
               examples: "Costco ($65-130 annual membership), Amazon Prime ($139/yr), Planet Fitness ($15-25/mo), Stitch Fix (styling subscription), Peloton (content subscription)",
@@ -434,7 +434,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "consumerstaples") {
     const SUBS = {
-      food: { name: "Packaged Food & Beverage", fullName: "Packaged Food, Snacks & Beverages", category: "Branded CPG", color: "#F59E0B",
+      food: { name: "Packaged Food & Beverage", fullName: "Packaged Food, Snacks & Beverages", category: "Branded CPG", color: T_.amber,
         tam: "$900B+ (2025, US)", growth: "~3-5% CAGR", icon: "🥤",
         desc: "Branded food and beverage products sold through retail channels. Stable demand regardless of economic cycle. Growth driven by pricing power, innovation, and emerging market expansion.",
         whatTheySell: "Snacks, cereals, condiments, frozen meals, beverages (soft drinks, water, juice, sports drinks), dairy, confectionery, pet food",
@@ -442,7 +442,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Nestlé", "PepsiCo", "Coca-Cola", "Mondelēz", "General Mills", "Kraft Heinz", "Kellanova (Mars acquired)", "Conagra", "Campbell's (Sovos)"],
         trends: "Pricing fatigue (consumers trading down after 2022-2024 inflation). GLP-1/weight loss drugs impacting snack volume. Private label gaining share. Better-for-you and functional beverages growing. Energy drinks still outperforming (Celsius, Monster)",
       },
-      household: { name: "Household & Personal Care", fullName: "Household Products & Personal Care", category: "Branded CPG", color: "#3B82F6",
+      household: { name: "Household & Personal Care", fullName: "Household Products & Personal Care", category: "Branded CPG", color: T_.blue,
         tam: "$250B+ (2025, US)", growth: "~3-5% CAGR", icon: "🧴",
         desc: "Cleaning products, laundry, personal hygiene, skincare, and beauty products. Highly defensive — consumers maintain spending on essentials even in recessions.",
         whatTheySell: "Laundry detergent, cleaning supplies, diapers, paper products, shampoo/conditioner, skincare, oral care, deodorant, feminine care",
@@ -450,7 +450,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Procter & Gamble", "Unilever", "Colgate-Palmolive", "Church & Dwight", "Henkel", "Reckitt", "Kimberly-Clark", "Estée Lauder", "L'Oréal"],
         trends: "Premiumization in skincare/beauty. P&G dominating through innovation and marketing. Sustainability/refill models. DTC beauty brands gaining share online. Private label gaining in commoditized categories (paper, cleaning)",
       },
-      tobacco: { name: "Tobacco & Alcohol", fullName: "Tobacco, Alcohol & Cannabis", category: "Sin Stocks", color: "#EF4444",
+      tobacco: { name: "Tobacco & Alcohol", fullName: "Tobacco, Alcohol & Cannabis", category: "Sin Stocks", color: T_.red,
         tam: "$350B+ (2025, US tobacco + alcohol)", growth: "~1-3% CAGR (volume decline, price growth)", icon: "🍷",
         desc: "Cigarettes, reduced-risk products (vaping, heated tobacco, nicotine pouches), beer, wine, spirits, and legal cannabis. Volume declining in tobacco; premiumization in alcohol.",
         whatTheySell: "Cigarettes, heated tobacco (IQOS), nicotine pouches (Zyn), vaping, beer, wine, spirits, hard seltzer, cannabis products",
@@ -466,7 +466,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Archer Daniels Midland (ADM)", "Bunge", "Cargill (private)", "Louis Dreyfus (private)", "Ingredion", "Kerry Group", "IFF", "Givaudan"],
         trends: "Specialty ingredients growing faster than commodity trading. Plant-based proteins, alternative sweeteners. Supply chain disruptions (weather, trade wars). ADM/Bunge under margin pressure as commodity cycle normalizes. Precision agriculture",
       },
-      grocery: { name: "Grocery & Drug Retail", fullName: "Grocery Chains, Drug Stores & Mass Retail", category: "Retail", color: "#10B981",
+      grocery: { name: "Grocery & Drug Retail", fullName: "Grocery Chains, Drug Stores & Mass Retail", category: "Retail", color: T_.green,
         tam: "$1.3T+ (2025, US grocery + drug)", growth: "~2-4% CAGR", icon: "🏬",
         desc: "Physical and online retail of food, beverages, household products, health & beauty, and pharmacy. Low-margin, high-volume business with thin operating margins.",
         whatTheySell: "Groceries, pharmacy/prescriptions, health & beauty, household essentials, prepared foods, fuel, financial services (money orders)",
@@ -474,7 +474,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Walmart (grocery leader)", "Kroger", "Costco", "Albertsons", "Ahold Delhaize (Stop & Shop, Food Lion)", "Publix", "Aldi", "Walgreens", "CVS Health"],
         trends: "Walmart dominance expanding. Kroger-Albertsons merger dynamics. Hard discount (Aldi, Lidl) gaining share. Online grocery ~12% of sales and growing. Pharmacy under pressure (PBM reimbursement, store closures). Dollar stores serving food deserts",
       },
-      privatelabel: { name: "Private Label", fullName: "Private Label / Store Brand Manufacturing", category: "Manufacturing", color: "#8B5CF6",
+      privatelabel: { name: "Private Label", fullName: "Private Label / Store Brand Manufacturing", category: "Manufacturing", color: T_.purple,
         tam: "$230B+ (2025, US private label)", growth: "~5-7% CAGR", icon: "🏷️",
         desc: "Products manufactured for retailers under the retailer's own brand (store brands). Growing share as consumers trade down from national brands and retailers seek higher margins.",
         whatTheySell: "Store-brand food, beverages, household products, health & beauty, OTC medicines — manufactured to retailer specifications by contract manufacturers",
@@ -484,15 +484,15 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "cpg", label: "Branded CPG", color: "#F59E0B", icon: "🥤", children: ["food", "household"] },
-      { key: "sin", label: "Tobacco & Alcohol", color: "#EF4444", icon: "🍷", children: ["tobacco"] },
+      { key: "cpg", label: "Branded CPG", color: T_.amber, icon: "🥤", children: ["food", "household"] },
+      { key: "sin", label: "Tobacco & Alcohol", color: T_.red, icon: "🍷", children: ["tobacco"] },
       { key: "upstream", label: "Upstream / Ingredients", color: "#84CC16", icon: "🌾", children: ["agri"] },
-      { key: "retail", label: "Retail & Distribution", color: "#10B981", icon: "🏬", children: ["grocery"] },
-      { key: "pl", label: "Private Label", color: "#8B5CF6", icon: "🏷️", children: ["privatelabel"] },
+      { key: "retail", label: "Retail & Distribution", color: T_.green, icon: "🏬", children: ["grocery"] },
+      { key: "pl", label: "Private Label", color: T_.purple, icon: "🏷️", children: ["privatelabel"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Consumer Staples Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Packaged food, household products, grocery, and the defensive consumer — spending on needs, not wants</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Consumer Staples Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Packaged food, household products, grocery, and the defensive consumer — spending on needs, not wants</div></div>
       {/* Value Chain */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Consumer Staples — Value Chain</div>
@@ -502,16 +502,16 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
             { label: "Agriculture / Ingredients", color: "#84CC16", icon: "🌾", desc: "Raw materials & processing",
               rows: [{ sub: "Commodity Trading", ex: "ADM, Bunge, Cargill" }, { sub: "Ingredients", ex: "IFF, Givaudan, Ingredion" }, { sub: "Packaging", ex: "Ball Corp, Amcor, Berry" }],
               buyers: "CPG companies, food manufacturers" },
-            { label: "Processing / Mfg", color: "#64748B", icon: "🏭", desc: "Transform into products",
+            { label: "Processing / Mfg", color: T_.textGhost, icon: "🏭", desc: "Transform into products",
               rows: [{ sub: "Food Processing", ex: "Nestlé, General Mills, Conagra" }, { sub: "Beverage Mfg", ex: "Coca-Cola bottlers, AB InBev" }, { sub: "Contract Mfg", ex: "TreeHouse Foods, Perrigo" }],
               buyers: "Brands (own mfg) or retailers (private label)" },
-            { label: "Brands / CPG", color: "#F59E0B", icon: "✨", desc: "Market & distribute",
+            { label: "Brands / CPG", color: T_.amber, icon: "✨", desc: "Market & distribute",
               rows: [{ sub: "Food & Snacks", ex: "PepsiCo, Mondelēz, Kraft Heinz" }, { sub: "Household", ex: "P&G, Colgate, Church & Dwight" }, { sub: "Tobacco/Alcohol", ex: "Philip Morris, Diageo, AB InBev" }],
               buyers: "Retailers, distributors, foodservice" },
             { label: "Distribution", color: "#0EA5E9", icon: "🚛", desc: "Wholesale & logistics",
               rows: [{ sub: "Broadline", ex: "Sysco, US Foods, PFGC" }, { sub: "Specialty", ex: "UNFI (natural/organic)" }, { sub: "DSD", ex: "PepsiCo, Coca-Cola (direct store)" }],
               buyers: "Retailers, restaurants, institutions" },
-            { label: "Retail", color: "#10B981", icon: "🏬", desc: "Sell to consumers",
+            { label: "Retail", color: T_.green, icon: "🏬", desc: "Sell to consumers",
               rows: [{ sub: "Grocery", ex: "Walmart, Kroger, Albertsons" }, { sub: "Club/Mass", ex: "Costco, Target, BJ's" }, { sub: "Drug/Dollar", ex: "CVS, Walgreens, Dollar General" }],
               buyers: "End consumers" },
             { label: "Consumer", color: "#6366F1", icon: "👥", desc: "Eat, drink, clean, repeat",
@@ -578,13 +578,13 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How staples companies make money. The battle is between branded pricing power and private label value.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Branded CPG Sales", color: "#F59E0B", icon: "✨",
+            { name: "Branded CPG Sales", color: T_.amber, icon: "✨",
               how: "Branded consumer packaged goods companies sell through retailers (grocery, mass, club, convenience). Revenue = volume x price. Trade spend (promotions, slotting fees, coupons) reduces gross-to-net revenue by 20-30%. Brands fight for shelf space and consumer mindshare",
               economics: "Gross margins: 45-65% (P&G at 52%, Coca-Cola at 60%). Operating margins: 18-30%. Revenue growth typically 3-6% (1-2% volume + 2-4% pricing). Trade spend is 15-25% of gross revenue. A&P (advertising & promotion) is 8-15% of net revenue. Scale is the moat — P&G spends $8B/yr on advertising",
               examples: "P&G ($84B revenue), Coca-Cola ($46B), PepsiCo ($92B), Nestlé ($100B+ CHF), Mondelēz ($36B), Colgate ($20B)",
               valuation: "18-28x P/E for staples leaders. 12-16x EBITDA. Market rewards consistent organic growth, pricing power, and margin expansion. Dividend yield matters — staples are bond proxies. P&G consistently commands premium",
               transition: "Facing private label share gains and consumer trade-down. Responding with premiumization (P&G Pampers Premium, Coca-Cola mini cans at higher per-oz pricing), innovation, and DTC channels. GLP-1 drugs creating new headwind for snack/beverage companies" },
-            { name: "Private Label Manufacturing", color: "#8B5CF6", icon: "🏷️",
+            { name: "Private Label Manufacturing", color: T_.purple, icon: "🏷️",
               how: "Contract manufacturers produce products to retailer specifications under the retailer's brand (Walmart Great Value, Costco Kirkland, Kroger store brands). Revenue comes from manufacturing contracts with retailers — lower margin per unit but predictable volume",
               economics: "Gross margins: 18-28% (vs 45-65% for branded). Operating margins: 5-10%. Volume is more predictable (contracted with major retailers). Lower marketing costs (zero consumer advertising). Working capital intensive. Scale and cost efficiency are critical",
               examples: "TreeHouse Foods (largest US private label food company), Perrigo (OTC/personal care), Cott/Primo Water (beverages), Greencore (UK sandwiches/convenience)",
@@ -639,7 +639,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "financials") {
     const SUBS = {
-      combanking: { name: "Commercial Banking", fullName: "Commercial & Retail Banking", category: "Banking", color: "#3B82F6",
+      combanking: { name: "Commercial Banking", fullName: "Commercial & Retail Banking", category: "Banking", color: T_.blue,
         tam: "$2.2T+ (2025, global banking revenue)", growth: "~4-6% CAGR", icon: "🏦",
         desc: "Traditional deposit-taking and lending institutions serving consumers and businesses. The backbone of the financial system. Net interest income (NII) from the spread between lending and deposit rates is the primary revenue driver.",
         whatTheySell: "Checking/savings accounts, mortgages, auto loans, credit cards, commercial loans, lines of credit, treasury management, trade finance",
@@ -647,7 +647,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["JPMorgan Chase", "Bank of America", "Wells Fargo", "Citigroup", "US Bancorp", "PNC Financial", "Truist", "HSBC", "Goldman Sachs (Marcus)"],
         trends: "Higher-for-longer rates benefiting NII but pressuring deposit costs. Deposit migration to money markets. CRE exposure concerns (office). JPMorgan dominant and gaining share. Regional bank stress post-SVB. Digital banking expectations rising",
       },
-      ib: { name: "Investment Banking & Capital Markets", fullName: "Investment Banking, Advisory & Sales/Trading", category: "Capital Markets", color: "#10B981",
+      ib: { name: "Investment Banking & Capital Markets", fullName: "Investment Banking, Advisory & Sales/Trading", category: "Capital Markets", color: T_.green,
         tam: "$400B+ (2025, global IB + trading revenue)", growth: "~5-8% CAGR (cyclical)", icon: "📈",
         desc: "Advisory services (M&A, restructuring), capital raising (equity and debt underwriting), and sales & trading (FICC, equities). Highly cyclical — revenue swings 30-50% with market conditions.",
         whatTheySell: "M&A advisory, IPO underwriting, debt capital markets (DCM), equity capital markets (ECM), leveraged finance, sales & trading, research, prime brokerage",
@@ -655,7 +655,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Goldman Sachs", "Morgan Stanley", "JPMorgan", "Evercore", "Centerview", "Lazard", "Moelis", "PJT Partners", "Jefferies", "Houlihan Lokey"],
         trends: "2025 M&A recovery underway (PE exits normalizing). IPO market reopening. Leveraged finance activity strong. AI transforming research and trading. Fee compression in execution services. Boutiques gaining advisory share from bulge bracket",
       },
-      insurance: { name: "Insurance (P&C, Life)", fullName: "Property & Casualty, Life & Health Insurance", category: "Insurance", color: "#EF4444",
+      insurance: { name: "Insurance (P&C, Life)", fullName: "Property & Casualty, Life & Health Insurance", category: "Insurance", color: T_.red,
         tam: "$1.5T+ (2025, US premiums)", growth: "~5-7% CAGR", icon: "🛡️",
         desc: "Risk transfer through insurance policies. P&C (auto, home, commercial) is cyclical with hard/soft market pricing. Life insurance provides death benefits and savings products. Underwriting profit + investment income = total return.",
         whatTheySell: "Auto insurance, homeowners, commercial property, general liability, workers comp, life/annuities, health insurance, reinsurance, specialty lines (cyber, E&O)",
@@ -663,7 +663,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Berkshire Hathaway (GEICO)", "State Farm", "Progressive", "Allstate", "Chubb", "AIG", "MetLife", "Prudential", "Travelers", "Munich Re", "Swiss Re"],
         trends: "Hard P&C market — rates still rising in casualty and property after years of losses. Climate risk repricing homeowners. Auto insurance profitability recovering. Private credit allocation by insurers growing. Insurtech impact modest so far",
       },
-      am: { name: "Asset Management", fullName: "Asset Management & Wealth Management", category: "Asset Management", color: "#8B5CF6",
+      am: { name: "Asset Management", fullName: "Asset Management & Wealth Management", category: "Asset Management", color: T_.purple,
         tam: "$500B+ (2025, global AM revenue)", growth: "~5-8% CAGR", icon: "💼",
         desc: "Investment management of pooled capital — mutual funds, ETFs, separately managed accounts, and alternatives. Revenue is primarily a percentage of AUM (assets under management). Fee compression in passive; growth in alternatives.",
         whatTheySell: "Mutual funds, ETFs, separately managed accounts (SMAs), alternative investments (PE, hedge funds, real estate, credit), financial planning/advisory",
@@ -671,7 +671,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["BlackRock ($14T+ AUM)", "Vanguard ($9T+)", "Fidelity", "State Street Global", "T. Rowe Price", "PIMCO (Allianz)", "Capital Group (American Funds)", "Invesco"],
         trends: "Passive crushing active (ETFs now $10T+ AUM globally). Fee compression (equity fund avg fee: 40bps → 20bps). Alternatives growing (PE, private credit, real assets). BlackRock dominant and diversifying. Model portfolios gaining adoption. Direct indexing growing",
       },
-      privatecredit: { name: "Private Credit & Alt Lending", fullName: "Private Credit, Direct Lending & Alternative Lending Platforms", category: "Alternative Lending", color: "#F59E0B",
+      privatecredit: { name: "Private Credit & Alt Lending", fullName: "Private Credit, Direct Lending & Alternative Lending Platforms", category: "Alternative Lending", color: T_.amber,
         tam: "$1.7T+ (2025, private credit AUM)", growth: "~15-20% CAGR", icon: "💰",
         desc: "Non-bank lending to businesses — direct loans, mezzanine, distressed debt, asset-based lending. Fastest-growing segment in financial services as banks retreat from middle-market lending post-regulation.",
         whatTheySell: "Direct loans (senior secured, unitranche), mezzanine debt, distressed/special situations, asset-based lending (ABL), real estate debt, infrastructure debt, NAV lending",
@@ -689,16 +689,16 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "banking", label: "Banking", color: "#3B82F6", icon: "🏦", children: ["combanking"] },
-      { key: "cm", label: "Capital Markets", color: "#10B981", icon: "📈", children: ["ib"] },
-      { key: "ins", label: "Insurance", color: "#EF4444", icon: "🛡️", children: ["insurance"] },
-      { key: "am", label: "Asset Management", color: "#8B5CF6", icon: "💼", children: ["am"] },
-      { key: "altlend", label: "Alternative Lending", color: "#F59E0B", icon: "💰", children: ["privatecredit"] },
+      { key: "banking", label: "Banking", color: T_.blue, icon: "🏦", children: ["combanking"] },
+      { key: "cm", label: "Capital Markets", color: T_.green, icon: "📈", children: ["ib"] },
+      { key: "ins", label: "Insurance", color: T_.red, icon: "🛡️", children: ["insurance"] },
+      { key: "am", label: "Asset Management", color: T_.purple, icon: "💼", children: ["am"] },
+      { key: "altlend", label: "Alternative Lending", color: T_.amber, icon: "💰", children: ["privatecredit"] },
       { key: "pay", label: "Payments", color: "#0EA5E9", icon: "💳", children: ["payments"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Financials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Banking, capital markets, insurance, asset management, private credit, and payments</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Financials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Banking, capital markets, insurance, asset management, private credit, and payments</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Financials — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>Capital flows from sources through intermediaries and distributors to end clients. The financial system intermediates risk and allocates capital.</div>
@@ -707,10 +707,10 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
             { label: "Capital Sources", color: "#84CC16", icon: "💵", desc: "Where money originates",
               rows: [{ sub: "Depositors", ex: "Consumer & business deposits" }, { sub: "Central Banks", ex: "Fed, ECB, BOJ (monetary policy)" }, { sub: "Capital Markets", ex: "Bond markets, equity markets" }, { sub: "Policyholders", ex: "Insurance premiums" }],
               buyers: "Banks, insurers, asset managers" },
-            { label: "Financial Intermediaries", color: "#3B82F6", icon: "🏦", desc: "Transform & allocate capital",
+            { label: "Financial Intermediaries", color: T_.blue, icon: "🏦", desc: "Transform & allocate capital",
               rows: [{ sub: "Banks", ex: "JPMorgan, BofA, Wells Fargo" }, { sub: "Insurers", ex: "Berkshire, Progressive, Chubb" }, { sub: "Asset Managers", ex: "BlackRock, Vanguard, Apollo" }, { sub: "Private Credit", ex: "Apollo, Ares, Blue Owl" }],
               buyers: "Borrowers, investors, policyholders" },
-            { label: "Distribution", color: "#F59E0B", icon: "🔗", desc: "Reach end clients",
+            { label: "Distribution", color: T_.amber, icon: "🔗", desc: "Reach end clients",
               rows: [{ sub: "Branches", ex: "30K+ US bank branches" }, { sub: "Wealth Advisors", ex: "Morgan Stanley WM, UBS, RIAs" }, { sub: "Brokers/Agents", ex: "Insurance agents, mortgage brokers" }, { sub: "Digital", ex: "Apps, robo-advisors, neobanks" }],
               buyers: "End clients (consumers, businesses)" },
             { label: "End Clients", color: "#6366F1", icon: "👥", desc: "Users of financial services",
@@ -777,19 +777,19 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How financial institutions make money. The model defines the risk profile and valuation framework.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Net Interest Income (NII)", color: "#3B82F6", icon: "🏦",
+            { name: "Net Interest Income (NII)", color: T_.blue, icon: "🏦",
               how: "Banks earn the spread between interest received on loans/securities and interest paid on deposits/borrowings. NII = interest income - interest expense. The larger the balance sheet and wider the spread, the more NII. Sensitive to rate environment and yield curve shape",
               economics: "Net interest margin (NIM): 2.5-3.5% for most banks. JPMorgan NII: ~$90B annually. NII is ~55-65% of total bank revenue. Rising rates help NII (loans reprice faster than deposits) up to a point, then deposit costs catch up. Inverted yield curve compresses NIM",
               examples: "JPMorgan ($90B+ NII), Bank of America ($56B), Wells Fargo ($52B), US Bancorp ($17B), PNC ($14B)",
               valuation: "Banks valued on P/TBV (price to tangible book value): 1.0-2.5x for well-run banks. JPMorgan at ~2.5x TBV. ROE is the key driver — banks earning >15% ROE trade at premium to book. Below 10% ROE trades at discount",
               transition: "NII is cyclical — it expanded dramatically in 2022-2023 as rates rose, now normalizing as deposit costs catch up. Banks diversifying toward fee income to reduce NII sensitivity. Digital banking reducing branch costs" },
-            { name: "Fee-Based (Advisory / AUM)", color: "#10B981", icon: "📊",
+            { name: "Fee-Based (Advisory / AUM)", color: T_.green, icon: "📊",
               how: "Revenue from advisory services (M&A, restructuring), asset management fees (% of AUM), wealth management fees, and transaction fees. Non-interest income provides diversification from NII. Typically 35-45% of total bank revenue for diversified banks",
               economics: "Advisory fees: $5-50M+ per M&A deal. AUM fees: 15-50bps for passive, 50-100bps for active, 150-200bps for alternatives. Wealth management: 75-100bps on AUM. Asset management is scalable — marginal cost of managing an additional $1B is low",
               examples: "Goldman Sachs (advisory + trading), BlackRock ($14T AUM, ~25bps avg fee), Morgan Stanley Wealth Management, Evercore (pure advisory), Apollo (alternatives)",
               valuation: "Asset managers: 10-20x earnings. Alternatives managers (Apollo, Ares, KKR) at 15-25x due to locked-up capital and performance fees. Advisory boutiques at 10-15x. Market rewards fee-related earnings (FRE) which are predictable and recurring",
               transition: "Passive displacing active in traditional asset management. Alternatives (PE, credit, real estate) growing as the high-fee replacement. Every major bank is investing in wealth management. Advisory fees are cyclical but command premium multiples" },
-            { name: "Insurance Premiums", color: "#EF4444", icon: "🛡️",
+            { name: "Insurance Premiums", color: T_.red, icon: "🛡️",
               how: "Insurers collect premiums upfront and pay claims later — the 'float' (premiums collected before claims paid) can be invested. Underwriting profit = premiums - claims - expenses. Combined ratio below 100% = underwriting profit. Investment income on the float adds to total returns",
               economics: "P&C combined ratios: 95-105% (95% = 5% underwriting profit). Life insurance: premiums invested over decades. Berkshire Hathaway float: $170B+ invested in stocks/bonds. Progressive combined ratio: ~91% (among best). Investment income: 3-5% yield on float",
               examples: "Berkshire Hathaway (GEICO + reinsurance), Progressive ($66B premiums), Chubb, AIG, Allstate, MetLife (life), Prudential (life)",
@@ -838,7 +838,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "fintech") {
     const SUBS = {
-      digipay: { name: "Digital Payments", fullName: "Digital Payments & Mobile Wallets", category: "Payments", color: "#3B82F6",
+      digipay: { name: "Digital Payments", fullName: "Digital Payments & Mobile Wallets", category: "Payments", color: T_.blue,
         tam: "$150B+ (2025, fintech payments revenue)", growth: "~12-15% CAGR", icon: "💳",
         desc: "Digital-first payment solutions including mobile wallets, payment gateways, peer-to-peer transfers, and checkout experiences. Enabling the shift from cash and cards to digital-native payments.",
         whatTheySell: "Payment gateway/checkout, mobile wallets, P2P payments, BNPL, payment orchestration, cross-border payments, crypto on/off ramps",
@@ -846,7 +846,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Stripe", "Adyen", "Block (Square/Cash App)", "PayPal/Venmo", "Checkout.com", "Klarna (BNPL)", "Affirm", "Wise (cross-border)"],
         trends: "Stripe dominant in developer/e-commerce payments (~$1T+ TPV). BNPL growth moderating post-hype. Embedded payments in SaaS platforms. Real-time payments growing. Cross-border payments being disrupted by Wise, Remitly. Stablecoin payments emerging",
       },
-      neobank: { name: "Neobanking & BaaS", fullName: "Neobanks, Challenger Banks & Banking-as-a-Service", category: "Digital Banking", color: "#10B981",
+      neobank: { name: "Neobanking & BaaS", fullName: "Neobanks, Challenger Banks & Banking-as-a-Service", category: "Digital Banking", color: T_.green,
         tam: "$30B+ (2025, neobank + BaaS revenue)", growth: "~20-25% CAGR", icon: "📱",
         desc: "Digital-only banks (no physical branches) and BaaS platforms that enable non-banks to embed banking products. Neobanks serve consumers and SMBs with lower fees and better UX.",
         whatTheySell: "Digital checking/savings accounts, debit cards, early wage access, SMB banking, BaaS APIs (ledgering, card issuing, compliance), embedded banking",
@@ -854,7 +854,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Chime (largest US neobank, 22M+ customers)", "Nubank (Brazil, 100M+ customers)", "Revolut (UK/global)", "SoFi", "Mercury (SMB)", "Unit (BaaS)", "Column (BaaS)", "Synapse (failed — cautionary tale)"],
         trends: "Profitability now the focus (Nubank profitable, Chime approaching). BaaS under regulatory scrutiny after Synapse collapse. Sponsor bank model being tightened. Neobanks expanding beyond banking (investing, crypto, insurance). SMB neobanking growing fast (Mercury, Brex)",
       },
-      lendplat: { name: "Lending Platforms", fullName: "Digital Lending & Marketplace Lending", category: "Lending", color: "#F59E0B",
+      lendplat: { name: "Lending Platforms", fullName: "Digital Lending & Marketplace Lending", category: "Lending", color: T_.amber,
         tam: "$50B+ (2025, fintech lending revenue)", growth: "~10-14% CAGR", icon: "🏠",
         desc: "Technology-enabled lending platforms for personal loans, mortgages, SMB lending, and student loans. AI-powered underwriting and digital-first origination processes.",
         whatTheySell: "Personal loans, SMB loans/lines, mortgage origination, student loan refinancing, auto lending, BNPL, revenue-based financing, invoice factoring",
@@ -862,7 +862,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["SoFi", "LendingClub", "Upstart (AI underwriting)", "Better Mortgage", "Kabbage (AmEx)", "Fundbox", "OnDeck (Enova)", "Pagaya"],
         trends: "AI underwriting improving credit decisioning. Higher rates compressed origination volumes 2022-2024, recovering now. Embedded lending (lend at point of sale). Institutional capital fueling marketplace lending. Mortgage fintech consolidating",
       },
-      insurtech: { name: "InsurTech", fullName: "Insurance Technology", category: "Insurance", color: "#EF4444",
+      insurtech: { name: "InsurTech", fullName: "Insurance Technology", category: "Insurance", color: T_.red,
         tam: "$15B+ (2025, insurtech revenue)", growth: "~15-20% CAGR", icon: "🛡️",
         desc: "Technology-driven insurance distribution, underwriting, and claims management. Most insurtechs are MGAs (managing general agents) or embedded insurance platforms rather than full-stack carriers.",
         whatTheySell: "Digital insurance distribution, AI underwriting, parametric insurance, embedded insurance (at point of sale), claims automation, insurance APIs",
@@ -870,7 +870,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Lemonade", "Root Insurance", "Hippo", "Coalition (cyber)", "Pie Insurance (workers comp)", "Newfront", "Corvus (cyber)", "Bolttech"],
         trends: "Most full-stack insurtechs (Lemonade, Root) have struggled with loss ratios. MGA model more capital-efficient. Cyber insurance fastest-growing line. Embedded insurance gaining traction. AI for claims processing showing ROI. Incumbents adopting insurtech tools",
       },
-      wealthtech: { name: "WealthTech & Robo-Advisory", fullName: "Digital Wealth Management & Robo-Advisors", category: "Investing", color: "#8B5CF6",
+      wealthtech: { name: "WealthTech & Robo-Advisory", fullName: "Digital Wealth Management & Robo-Advisors", category: "Investing", color: T_.purple,
         tam: "$20B+ (2025, wealthtech revenue)", growth: "~12-16% CAGR", icon: "📊",
         desc: "Digital platforms for investing, portfolio management, and financial planning. Robo-advisors automate asset allocation. Trading platforms democratized market access.",
         whatTheySell: "Robo-advisory, self-directed trading, crypto trading, alternative investment access, financial planning tools, portfolio analytics, retirement accounts",
@@ -896,32 +896,32 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "pay", label: "Payments", color: "#3B82F6", icon: "💳", children: ["digipay"] },
-      { key: "bank", label: "Digital Banking", color: "#10B981", icon: "📱", children: ["neobank"] },
-      { key: "lend", label: "Lending", color: "#F59E0B", icon: "🏠", children: ["lendplat"] },
-      { key: "ins", label: "InsurTech", color: "#EF4444", icon: "🛡️", children: ["insurtech"] },
-      { key: "invest", label: "Investing", color: "#8B5CF6", icon: "📊", children: ["wealthtech"] },
+      { key: "pay", label: "Payments", color: T_.blue, icon: "💳", children: ["digipay"] },
+      { key: "bank", label: "Digital Banking", color: T_.green, icon: "📱", children: ["neobank"] },
+      { key: "lend", label: "Lending", color: T_.amber, icon: "🏠", children: ["lendplat"] },
+      { key: "ins", label: "InsurTech", color: T_.red, icon: "🛡️", children: ["insurtech"] },
+      { key: "invest", label: "Investing", color: T_.purple, icon: "📊", children: ["wealthtech"] },
       { key: "infra", label: "Infrastructure", color: "#0EA5E9", icon: "📋", children: ["regtech"] },
       { key: "crypto", label: "Crypto", color: "#F97316", icon: "🔗", children: ["crypto"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Fintech Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Digital payments, neobanking, lending platforms, insurtech, wealthtech, regtech, and crypto infrastructure</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Fintech Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Digital payments, neobanking, lending platforms, insurtech, wealthtech, regtech, and crypto infrastructure</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Fintech — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From banking infrastructure through middleware platforms to consumer-facing applications. Each layer enables the one to its right.</div>
         <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           {[
-            { label: "Banking Infrastructure", color: "#64748B", icon: "🏦", desc: "Regulated core systems",
+            { label: "Banking Infrastructure", color: T_.textGhost, icon: "🏦", desc: "Regulated core systems",
               rows: [{ sub: "Sponsor Banks", ex: "Cross River, Evolve, Column" }, { sub: "Card Networks", ex: "Visa, Mastercard" }, { sub: "Core Banking", ex: "FIS, Fiserv, Jack Henry" }, { sub: "ACH / RTP", ex: "Fed, The Clearing House" }],
               buyers: "Fintechs, BaaS platforms" },
             { label: "Platform / Middleware", color: "#0EA5E9", icon: "🔗", desc: "APIs connecting infra to apps",
               rows: [{ sub: "BaaS", ex: "Unit, Column, Treasury Prime" }, { sub: "Payments API", ex: "Stripe, Adyen, Checkout.com" }, { sub: "Identity / KYC", ex: "Alloy, Persona, Jumio" }, { sub: "Data Aggregation", ex: "Plaid, MX, Finicity" }],
               buyers: "Fintech apps, enterprises" },
-            { label: "Application Layer", color: "#3B82F6", icon: "📱", desc: "Consumer & SMB products",
+            { label: "Application Layer", color: T_.blue, icon: "📱", desc: "Consumer & SMB products",
               rows: [{ sub: "Neobanks", ex: "Chime, Revolut, Nubank" }, { sub: "Lending", ex: "SoFi, Upstart, Affirm" }, { sub: "Investing", ex: "Robinhood, Wealthfront" }, { sub: "InsurTech", ex: "Lemonade, Coalition, Root" }],
               buyers: "Consumers, SMBs" },
-            { label: "Distribution", color: "#F59E0B", icon: "🌐", desc: "How products reach users",
+            { label: "Distribution", color: T_.amber, icon: "🌐", desc: "How products reach users",
               rows: [{ sub: "Mobile Apps", ex: "App Store, Google Play" }, { sub: "Embedded Finance", ex: "Shopify Capital, Uber debit" }, { sub: "Marketplaces", ex: "NerdWallet, Bankrate" }],
               buyers: "End users (consumers, businesses)" },
             { label: "End User", color: "#6366F1", icon: "👥", desc: "Consumers & businesses",
@@ -988,31 +988,31 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How fintech companies monetize. The best models combine transaction-based revenue with recurring software fees.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Transaction Fees (Take Rate)", color: "#3B82F6", icon: "💳",
+            { name: "Transaction Fees (Take Rate)", color: T_.blue, icon: "💳",
               how: "A percentage or fixed fee per transaction processed. Revenue scales linearly with payment volume. Stripe charges ~2.9% + $0.30 per online transaction. Adyen charges interchange++ (interchange + scheme fees + small markup). Revenue = TPV x take rate",
               economics: "Take rates: 0.1-0.3% (wholesale/Adyen) to 2.9% (Stripe SMB). Gross margins on payments: 40-55% after interchange. Stripe processes $1T+ TPV. Adyen ~$1T+. Revenue is highly predictable and grows with e-commerce/digital payments. Scale improves margins (fixed cost leverage)",
               examples: "Stripe (~$2B+ net revenue), Adyen ($1.8B), Block/Square ($7B gross profit), PayPal ($30B revenue), Affirm (merchant fees on BNPL)",
               valuation: "10-25x revenue for high-growth payment companies. Adyen at ~15x. Stripe private at ~$65B valuation. Market rewards TPV growth, take rate stability, and net revenue retention. Declining take rates (competition) compress multiples",
               transition: "Take rates under pressure from competition and scale. Fintechs adding software and financial services to increase revenue per customer beyond pure transaction fees. Embedded payments (Shopify, Toast) capturing share from standalone processors" },
-            { name: "SaaS Subscription", color: "#10B981", icon: "🔄",
+            { name: "SaaS Subscription", color: T_.green, icon: "🔄",
               how: "Monthly or annual subscription for fintech software — compliance, analytics, treasury management, banking tools. Priced per user, per entity, or platform fee. Predictable recurring revenue stream",
               economics: "Gross margins: 70-85%. Annual contract values: $10K-500K+ for B2B fintech SaaS. Net dollar retention: 110-130%+ for best-in-class. Lower acquisition costs than consumer fintech. Example: Plaid charges banks/fintechs per API call + platform fees",
               examples: "Plaid (data connectivity), Alloy (identity/KYC), nCino (banking software), Q2 Holdings (digital banking platform), Finastra, MX Technologies",
               valuation: "8-15x ARR for fintech SaaS. Premium for mission-critical compliance and banking infrastructure. nCino at ~8x revenue. Q2 Holdings at ~6x. Market rewards high retention and regulatory moat (compliance software is sticky)",
               transition: "The highest-quality revenue stream in fintech. Companies pivoting from pure transaction models to hybrid SaaS + transaction. Stripe expanding into billing, invoicing, tax — all SaaS revenue. Compliance SaaS growing as regulation increases" },
-            { name: "Interchange / Payment Processing", color: "#F59E0B", icon: "🔀",
+            { name: "Interchange / Payment Processing", color: T_.amber, icon: "🔀",
               how: "Revenue from interchange fees earned on debit/credit card transactions. Neobanks and fintech card issuers earn interchange when customers swipe their cards. Interchange rates: 1.5-2.5% credit, 0.5-1.0% debit (set by card networks, paid by merchant's bank to issuer's bank)",
               economics: "Debit interchange: ~$0.21 + 5bps (Durbin-regulated) or ~1% (exempt under $10B assets). Credit interchange: 1.5-2.5%. Chime earns interchange on every Cash App/debit swipe. Revenue per active user: $100-200/yr from interchange alone. Margins: 80%+ on interchange revenue",
               examples: "Chime (primary revenue = debit interchange), Cash App, Robinhood Gold card, Brex corporate cards, Ramp (corporate cards), Marqeta (card issuing platform)",
               valuation: "Interchange-dependent models valued lower than diversified fintechs. Risk: Durbin amendment expansion could cut interchange. Chime private at ~$25B includes this risk. Card issuing platforms (Marqeta) at 8-12x revenue",
               transition: "Neobanks diversifying beyond interchange to subscription fees (Chime, SoFi), lending, and wealth management. Pure interchange models are vulnerable to regulatory changes. Marqeta powers card issuing for many fintechs — the 'picks and shovels' play" },
-            { name: "Platform / Marketplace", color: "#8B5CF6", icon: "🏪",
+            { name: "Platform / Marketplace", color: T_.purple, icon: "🏪",
               how: "Fintech platforms connecting borrowers with lenders, insurance seekers with carriers, or investors with investment opportunities. Revenue from origination fees, referral fees, or marketplace spreads. Two-sided network effects",
               economics: "Origination fees: 1-5% of loan amount. Referral fees: $50-500 per qualified lead. Marketplace spreads vary. Revenue is volume-dependent and cyclical. Loan marketplace gross margins: 50-70%. Key metric: conversion rate of traffic to funded loans/policies",
               examples: "LendingClub (marketplace + balance sheet lending), Pagaya (AI credit marketplace), Lemonade (insurance marketplace), NerdWallet/Bankrate (financial product marketplace), Upstart (AI lending marketplace)",
               valuation: "3-8x revenue for lending marketplaces. Premium for AI-driven platforms with proven credit performance. Upstart highly volatile (5x revenue to 1x to 5x). NerdWallet at ~3x revenue. Market rewards volume growth and credit quality track record",
               transition: "Pure marketplace models (asset-light) vs hybrid (marketplace + balance sheet). Most lending fintechs have added balance sheet to stabilize revenue. Insurance marketplaces more capital-efficient than full-stack carriers" },
-            { name: "Lending Spread (Net Interest Income)", color: "#EF4444", icon: "💰",
+            { name: "Lending Spread (Net Interest Income)", color: T_.red, icon: "💰",
               how: "Fintech lenders earn the spread between their cost of funds and the interest rate charged to borrowers — same as traditional banking NII but with technology-driven origination and underwriting. Revenue = outstanding loans x net interest margin",
               economics: "Fintech lending NIM: 5-15% (higher than banks due to unsecured/subprime). Default rates: 3-8% for personal loans. Revenue per loan: $500-3,000 over loan life. Cost of funds: 4-8% (securitization, warehouse lines). SoFi NIM: ~6%. LendingClub NIM: ~7-8%",
               examples: "SoFi (student refi, personal loans, mortgages), LendingClub (personal loans), Upstart (personal loans via bank partners), Affirm (BNPL — effectively lending), Oportun (subprime personal loans)",
@@ -1055,7 +1055,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "industrials") {
     const SUBS = {
-      machinery: { name: "Machinery & Equipment", fullName: "Industrial Machinery & Heavy Equipment", category: "Machinery", color: "#F59E0B",
+      machinery: { name: "Machinery & Equipment", fullName: "Industrial Machinery & Heavy Equipment", category: "Machinery", color: T_.amber,
         tam: "$600B+ (2025, global)", growth: "~4-6% CAGR", icon: "🔩",
         desc: "Manufacturers of industrial machinery, heavy equipment, and machine tools used in manufacturing, mining, construction, and agriculture. Long product cycles with significant aftermarket revenue.",
         whatTheySell: "Construction equipment (excavators, loaders), mining equipment, agricultural machinery, industrial compressors, pumps, machine tools, material handling, HVAC industrial",
@@ -1063,7 +1063,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Caterpillar", "John Deere", "Komatsu", "Volvo CE", "AGCO", "Parker Hannifin", "Illinois Tool Works (ITW)", "Dover", "Danaher"],
         trends: "Electrification of equipment (electric excavators, autonomous tractors). Precision agriculture driving Deere investment. Aftermarket/services growing as % of revenue (higher margin). Reshoring driving US industrial investment. Equipment rental growing vs ownership",
       },
-      electrical: { name: "Electrical Equipment & Automation", fullName: "Electrical Equipment, Power Management & Industrial Automation", category: "Electrical & Automation", color: "#3B82F6",
+      electrical: { name: "Electrical Equipment & Automation", fullName: "Electrical Equipment, Power Management & Industrial Automation", category: "Electrical & Automation", color: T_.blue,
         tam: "$400B+ (2025, global)", growth: "~6-9% CAGR", icon: "⚡",
         desc: "Electrical distribution equipment, power management systems, industrial automation, and robotics. Critical infrastructure for electrification, data centers, and factory automation.",
         whatTheySell: "Electrical panels/switchgear, transformers, UPS systems, PLCs, industrial robots, drives/motors, building automation, grid infrastructure",
@@ -1071,7 +1071,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Eaton", "Schneider Electric", "ABB", "Siemens", "Emerson Electric", "Rockwell Automation", "Honeywell", "Vertiv (data center power)"],
         trends: "Data center power demand surging (AI). Grid modernization ($100B+ US investment). EV charging infrastructure. Factory automation accelerating (labor shortages). Eaton and Vertiv as data center power plays. Transformer shortage (2-3 year backlogs)",
       },
-      buildprod: { name: "Building Products", fullName: "Building Products & Materials", category: "Building Products", color: "#10B981",
+      buildprod: { name: "Building Products", fullName: "Building Products & Materials", category: "Building Products", color: T_.green,
         tam: "$300B+ (2025, US)", growth: "~4-6% CAGR", icon: "🏗️",
         desc: "Products used in residential and commercial construction — roofing, insulation, windows, doors, siding, plumbing, HVAC. Replacement/repair demand provides cyclical stability.",
         whatTheySell: "Roofing (shingles, commercial), insulation, windows/doors, siding, plumbing fixtures, HVAC systems, flooring, lighting, water heaters",
@@ -1095,7 +1095,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Waste Management", "Republic Services", "GFL Environmental", "Waste Connections", "Clean Harbors (hazardous)", "Casella Waste", "US Ecology (Republic)"],
         trends: "Pricing power from consolidated market (WM + Republic = ~50% of US market). Sustainability mandates driving recycling investment. Landfill gas-to-energy (renewable natural gas). M&A continues in fragmented segments. PFAS remediation as emerging growth area",
       },
-      transport: { name: "Transportation & Logistics", fullName: "Freight, Logistics & Supply Chain Services", category: "Transportation", color: "#8B5CF6",
+      transport: { name: "Transportation & Logistics", fullName: "Freight, Logistics & Supply Chain Services", category: "Transportation", color: T_.purple,
         tam: "$1T+ (2025, US freight + logistics)", growth: "~3-5% CAGR (cyclical)", icon: "🚛",
         desc: "Movement of goods by truck, rail, air, and ocean, plus logistics services (brokerage, warehousing, last-mile). Highly cyclical — tied to industrial production and consumer spending.",
         whatTheySell: "Truckload/LTL freight, rail transport, air cargo, ocean shipping, freight brokerage, warehousing/3PL, last-mile delivery, supply chain management",
@@ -1103,7 +1103,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["UPS", "FedEx", "Union Pacific", "BNSF (Berkshire)", "XPO Logistics", "Old Dominion (LTL)", "C.H. Robinson", "J.B. Hunt", "Maersk"],
         trends: "Freight recession 2022-2024 ending, recovery underway. E-commerce driving last-mile investment. Autonomous trucking in early deployment. LTL consolidation (Yellow bankruptcy redistributed share). Rail precision scheduling. Nearshoring benefiting cross-border trucking",
       },
-      ec: { name: "Engineering & Construction", fullName: "Engineering, Procurement & Construction (EPC)", category: "Engineering & Construction", color: "#EF4444",
+      ec: { name: "Engineering & Construction", fullName: "Engineering, Procurement & Construction (EPC)", category: "Engineering & Construction", color: T_.red,
         tam: "$250B+ (2025, US E&C)", growth: "~5-8% CAGR", icon: "🏗️",
         desc: "Engineering, procurement, and construction services for large infrastructure projects — power plants, data centers, LNG facilities, transportation, and water systems. Project-based with multi-year backlogs.",
         whatTheySell: "Engineering design, procurement management, construction management, EPC turnkey projects, environmental services, maintenance services, program management",
@@ -1113,29 +1113,29 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "mach", label: "Machinery", color: "#F59E0B", icon: "🔩", children: ["machinery"] },
-      { key: "elec", label: "Electrical & Automation", color: "#3B82F6", icon: "⚡", children: ["electrical"] },
-      { key: "build", label: "Building Products", color: "#10B981", icon: "🏗️", children: ["buildprod"] },
+      { key: "mach", label: "Machinery", color: T_.amber, icon: "🔩", children: ["machinery"] },
+      { key: "elec", label: "Electrical & Automation", color: T_.blue, icon: "⚡", children: ["electrical"] },
+      { key: "build", label: "Building Products", color: T_.green, icon: "🏗️", children: ["buildprod"] },
       { key: "dist", label: "Distribution", color: "#0EA5E9", icon: "📦", children: ["distribution"] },
       { key: "env", label: "Environmental Services", color: "#84CC16", icon: "♻️", children: ["waste"] },
-      { key: "trans", label: "Transportation", color: "#8B5CF6", icon: "🚛", children: ["transport"] },
-      { key: "ec", label: "Engineering & Construction", color: "#EF4444", icon: "🏗️", children: ["ec"] },
+      { key: "trans", label: "Transportation", color: T_.purple, icon: "🚛", children: ["transport"] },
+      { key: "ec", label: "Engineering & Construction", color: T_.red, icon: "🏗️", children: ["ec"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Industrials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Machinery, electrical equipment, building products, distribution, waste, transportation, and E&C</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Industrials Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Machinery, electrical equipment, building products, distribution, waste, transportation, and E&C</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Industrials — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From raw materials through manufacturing and distribution to end markets. The industrial economy is cyclical but increasingly benefiting from electrification, reshoring, and infrastructure investment.</div>
         <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           {[
-            { label: "Raw Materials", color: "#64748B", icon: "⛏️", desc: "Metals, chemicals, energy",
+            { label: "Raw Materials", color: T_.textGhost, icon: "⛏️", desc: "Metals, chemicals, energy",
               rows: [{ sub: "Steel / Metals", ex: "Nucor, Steel Dynamics, Alcoa" }, { sub: "Chemicals", ex: "Dow, BASF, Linde" }, { sub: "Energy", ex: "Oil, gas, electricity" }],
               buyers: "Manufacturers, builders" },
-            { label: "Components / Mfg", color: "#F59E0B", icon: "🔩", desc: "Parts & sub-assemblies",
+            { label: "Components / Mfg", color: T_.amber, icon: "🔩", desc: "Parts & sub-assemblies",
               rows: [{ sub: "Machinery Parts", ex: "Parker Hannifin, Roper, ITW" }, { sub: "Electrical", ex: "Eaton, Schneider, ABB" }, { sub: "Building Products", ex: "Carrier, Trane, Owens Corning" }],
               buyers: "OEMs, contractors, end users" },
-            { label: "Assembly / OEM", color: "#3B82F6", icon: "🏭", desc: "Final equipment production",
+            { label: "Assembly / OEM", color: T_.blue, icon: "🏭", desc: "Final equipment production",
               rows: [{ sub: "Heavy Equipment", ex: "Caterpillar, Deere, Komatsu" }, { sub: "Automation", ex: "Rockwell, Fanuc, Keyence" }, { sub: "Vehicles", ex: "PACCAR, Daimler Truck" }],
               buyers: "Distributors, end users" },
             { label: "Distribution", color: "#0EA5E9", icon: "📦", desc: "Wholesale & logistics",
@@ -1205,13 +1205,13 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How industrial companies make money. The best businesses combine equipment sales with high-margin aftermarket revenue.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Equipment Sales + Aftermarket", color: "#F59E0B", icon: "🔩",
+            { name: "Equipment Sales + Aftermarket", color: T_.amber, icon: "🔩",
               how: "Sell capital equipment (machinery, vehicles, HVAC) upfront, then earn recurring revenue from parts, service, and maintenance over the equipment's 10-20+ year life. The 'razor and blade' of industrials. Aftermarket revenue is 3-5x the initial equipment sale over product life",
               economics: "Equipment gross margins: 25-35%. Aftermarket gross margins: 45-65%. Aftermarket as % of revenue: 30-50% for best-in-class (Caterpillar ~55%, Deere ~35%). Installed base of millions of machines creates decades of parts demand. Aftermarket is less cyclical than new equipment",
               examples: "Caterpillar (equipment + Cat parts/service), John Deere (equipment + precision ag subscriptions), Carrier/Trane (HVAC equipment + service contracts), Parker Hannifin (motion/control components + aftermarket)",
               valuation: "15-25x EBITDA for high-aftermarket industrials. Caterpillar at ~17x. Companies with >40% aftermarket/services mix command premium. Pure equipment companies (no aftermarket): 8-12x. The aftermarket mix is the single most important valuation driver in industrials",
               transition: "Every industrial company is growing aftermarket and services. Connected equipment (IoT/telematics) enables predictive maintenance and parts ordering. Deere's precision ag subscription model is the gold standard. Equipment-as-a-service (rental/leasing) also growing" },
-            { name: "Service Contracts (Recurring)", color: "#10B981", icon: "🔄",
+            { name: "Service Contracts (Recurring)", color: T_.green, icon: "🔄",
               how: "Multi-year contracts for maintenance, monitoring, and operations of installed equipment or systems. Revenue recognized ratably. Provides predictable recurring revenue stream and customer lock-in. Common in HVAC, elevator, fire/security, and building automation",
               economics: "Gross margins: 40-55%. Contract retention: 90-95%. Revenue visibility: 2-5 year contracts. Service revenue per technician: $200-400K. The installed base grows as new equipment is sold — creating a compounding annuity. Elevator service is the classic example (Otis generates 60% of revenue from service)",
               examples: "Otis Elevator (60% service revenue, 95%+ retention), Carrier (building services), Trane Technologies (HVAC service), Honeywell Building Solutions, EMCOR (facility services)",
@@ -1223,13 +1223,13 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
               examples: "Fastenal ($7.5B, fasteners/safety), Grainger ($17B, MRO), MSC Industrial ($4B, metalworking), Wesco ($22B, electrical), Applied Industrial ($4.5B, bearings/power transmission)",
               valuation: "15-22x EBITDA for leading distributors. Fastenal at ~30x earnings (premium for execution). Market rewards share gainers with high incremental margins. The thesis: distribution is consolidating, large players gain share from thousands of small distributors",
               transition: "E-commerce disruption is slower than feared — customers value technical expertise and same-day availability. Vending machines (Fastenal has 120K+) and VMI (vendor-managed inventory) create switching costs. Amazon Business is a long-term threat but hasn't materially impacted leaders" },
-            { name: "Project-Based / EPC", color: "#EF4444", icon: "🏗️",
+            { name: "Project-Based / EPC", color: T_.red, icon: "🏗️",
               how: "Engineering and construction companies execute large-scale projects on cost-plus, fixed-price, or lump-sum contracts. Revenue recognized over project life (percentage of completion). Projects range from $10M to $10B+ and last 1-5+ years",
               economics: "Gross margins: 8-15% (construction). Operating margins: 4-8% for E&C firms. Fixed-price contracts carry margin risk (cost overruns). Cost-plus is safer but lower margin. Backlog provides revenue visibility (1-3 years typically). Labor productivity is the key margin driver",
               examples: "Quanta Services ($23B, power/utility E&C), Fluor ($16B, diversified E&C), AECOM ($16B, infrastructure), MasTec ($13B, infrastructure), EMCOR ($14B, mechanical/electrical)",
               valuation: "10-16x EBITDA for E&C firms. Premium for specialty niches (Quanta in power, EMCOR in mechanical). Discount for cost-overrun prone fixed-price heavy civil. Backlog quality (funded, probability-weighted) matters. Market rewards margin consistency over growth",
               transition: "Electrification and grid modernization driving multi-year demand cycle. Data center construction is the fastest-growing end market. IIJA ($1.2T) and IRA (clean energy) creating secular demand. Skilled labor shortage is the binding constraint — companies with strong labor forces have competitive advantage" },
-            { name: "Fleet / Leasing", color: "#8B5CF6", icon: "🚛",
+            { name: "Fleet / Leasing", color: T_.purple, icon: "🚛",
               how: "Companies own and lease equipment fleets — trucks, trailers, containers, construction equipment — to customers who prefer operating expense over capital expenditure. Revenue from lease payments, maintenance, and asset disposition. Capital-intensive but predictable",
               economics: "Utilization rate is the key metric (target: 70-85% for equipment, 90%+ for trucks). Lease terms: 3-7 years typically. Residual value risk on owned assets. ROA: 5-10%. Revenue = monthly lease rate x fleet size x utilization. Maintenance and fuel add ancillary revenue",
               examples: "United Rentals ($15B, equipment rental), Penske Truck Leasing, Ryder System, GATX (railcar leasing), Triton (container leasing), Herc Holdings (equipment rental)",
@@ -1271,7 +1271,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════════════════
   if (subTab === "aerodefense") {
     const SUBS = {
-      primes: { name: "Defense Primes", fullName: "Large Defense Prime Contractors", category: "Defense", color: "#3B82F6",
+      primes: { name: "Defense Primes", fullName: "Large Defense Prime Contractors", category: "Defense", color: T_.blue,
         tam: "$450B+ (2025, US defense spending)", growth: "~4-6% CAGR", icon: "🎖️",
         desc: "The largest defense contractors serving as prime system integrators for major weapons programs — fighter jets, missiles, naval vessels, satellites, and command systems. Deep government relationships and security clearances create enormous barriers to entry.",
         whatTheySell: "Fighter aircraft (F-35, F/A-18), missiles and munitions, naval combat systems, satellites, C4ISR systems, missile defense, ground vehicles, nuclear deterrence",
@@ -1279,7 +1279,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Lockheed Martin", "RTX (Raytheon)", "Northrop Grumman", "General Dynamics", "Boeing Defense", "L3Harris Technologies", "BAE Systems"],
         trends: "Defense budgets rising globally (Ukraine, China/Taiwan threat). Munitions stockpile replenishment ($30B+ multi-year). F-35 sustainment is the largest program ($1.7T lifecycle). AUKUS driving allied procurement. Space and cyber fastest-growing domains",
       },
-      commercialoem: { name: "Commercial Aerospace OEM", fullName: "Commercial Aircraft & Engine OEMs", category: "Commercial Aerospace", color: "#10B981",
+      commercialoem: { name: "Commercial Aerospace OEM", fullName: "Commercial Aircraft & Engine OEMs", category: "Commercial Aerospace", color: T_.green,
         tam: "$350B+ (2025, commercial aerospace)", growth: "~6-8% CAGR", icon: "✈️",
         desc: "Manufacturers of commercial aircraft and jet engines. Boeing-Airbus duopoly in large aircraft. Engine market is a triopoly (GE Aerospace, Pratt & Whitney, Rolls-Royce). Multi-year production backlogs.",
         whatTheySell: "Narrow-body aircraft (737 MAX, A320neo), wide-body aircraft (787, A350), regional jets, jet engines (LEAP, GTF, GE9X), avionics, landing gear",
@@ -1287,7 +1287,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Airbus", "Boeing", "GE Aerospace (engines)", "RTX/Pratt & Whitney (engines)", "Rolls-Royce (engines)", "Embraer", "Bombardier"],
         trends: "Boeing in crisis (quality issues, production limits, FAA scrutiny). Airbus winning market share (massive backlog: 8,600+ aircraft). Engine OEMs thriving — LEAP and GTF programs driving aftermarket. Aircraft demand exceeds supply through 2030+. Single-aisle production ramp is the key bottleneck",
       },
-      aerostructures: { name: "Aerostructures & Components", fullName: "Aerostructures, Systems & Components", category: "Supply Chain", color: "#F59E0B",
+      aerostructures: { name: "Aerostructures & Components", fullName: "Aerostructures, Systems & Components", category: "Supply Chain", color: T_.amber,
         tam: "$120B+ (2025, global aerostructures + components)", growth: "~6-8% CAGR", icon: "🔧",
         desc: "Tier 1-3 suppliers making fuselages, wings, nacelles, landing gear, avionics, actuators, and other aircraft components. Supply chain health is critical — Boeing's issues trace partly to supplier quality.",
         whatTheySell: "Fuselage sections, wing components, nacelles, landing gear, flight controls, actuators, avionics, wiring harnesses, interiors (seats, galleys, lavatories)",
@@ -1295,7 +1295,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Spirit AeroSystems (Boeing acquired)", "Safran", "TransDigm", "HEICO", "Howmet Aerospace", "Moog", "Ducommun", "Triumph Group"],
         trends: "TransDigm and HEICO dominant in proprietary aftermarket parts (sole-source pricing power). Supply chain recovery still underway post-COVID. Labor shortages in manufacturing. Sole-source parts command 50-70% gross margins. Boeing supply chain quality under intense scrutiny",
       },
-      defenseelec: { name: "Defense Electronics & C4ISR", fullName: "Defense Electronics, Sensors & Command Systems", category: "Defense Technology", color: "#EF4444",
+      defenseelec: { name: "Defense Electronics & C4ISR", fullName: "Defense Electronics, Sensors & Command Systems", category: "Defense Technology", color: T_.red,
         tam: "$100B+ (2025, global)", growth: "~5-8% CAGR", icon: "📡",
         desc: "Electronic warfare, radar, communications, intelligence/surveillance/reconnaissance (ISR), and command-and-control systems. The 'brains' of modern military operations — increasingly software-defined.",
         whatTheySell: "Radar systems, electronic warfare (EW), ISR sensors, tactical communications, satellite ground systems, cybersecurity, mission computing, GPS/PNT",
@@ -1303,7 +1303,7 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["L3Harris", "Northrop Grumman (sensors)", "RTX (radar, EW)", "Elbit Systems", "BAE Systems (EW)", "Mercury Systems", "CACI International", "Leidos"],
         trends: "Software-defined everything (open architecture, MOSA). JADC2 (Joint All-Domain Command and Control) driving network investment. Electronic warfare as growth domain. Autonomous systems and AI for ISR. Space-based ISR growing. Cyber as fastest-growing defense budget line",
       },
-      mro: { name: "MRO & Aftermarket", fullName: "Maintenance, Repair & Overhaul + Aftermarket Parts", category: "Aftermarket", color: "#8B5CF6",
+      mro: { name: "MRO & Aftermarket", fullName: "Maintenance, Repair & Overhaul + Aftermarket Parts", category: "Aftermarket", color: T_.purple,
         tam: "$90B+ (2025, commercial MRO)", growth: "~5-7% CAGR", icon: "🔧",
         desc: "Maintenance, repair, and overhaul of commercial aircraft and engines, plus proprietary aftermarket parts distribution. MRO is the recurring revenue stream of aerospace — airlines must maintain aircraft regardless of economic conditions.",
         whatTheySell: "Engine overhaul, airframe heavy maintenance, component repair, line maintenance, PMA parts, DER repairs, avionics upgrades, modifications",
@@ -1321,31 +1321,31 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const TAX = [
-      { key: "defense", label: "Defense", color: "#3B82F6", icon: "🎖️", children: ["primes"] },
-      { key: "commaero", label: "Commercial Aerospace", color: "#10B981", icon: "✈️", children: ["commercialoem"] },
-      { key: "supply", label: "Supply Chain", color: "#F59E0B", icon: "🔧", children: ["aerostructures"] },
-      { key: "deftech", label: "Defense Technology", color: "#EF4444", icon: "📡", children: ["defenseelec"] },
-      { key: "after", label: "Aftermarket / MRO", color: "#8B5CF6", icon: "🔧", children: ["mro"] },
+      { key: "defense", label: "Defense", color: T_.blue, icon: "🎖️", children: ["primes"] },
+      { key: "commaero", label: "Commercial Aerospace", color: T_.green, icon: "✈️", children: ["commercialoem"] },
+      { key: "supply", label: "Supply Chain", color: T_.amber, icon: "🔧", children: ["aerostructures"] },
+      { key: "deftech", label: "Defense Technology", color: T_.red, icon: "📡", children: ["defenseelec"] },
+      { key: "after", label: "Aftermarket / MRO", color: T_.purple, icon: "🔧", children: ["mro"] },
       { key: "space", label: "Space", color: "#06B6D4", icon: "🚀", children: ["space"] },
     ];
     return (
     <div>
-      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Aerospace & Defense Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Defense primes, commercial OEMs, aerostructures, defense electronics, MRO, and space</div></div>
+      <div style={{ marginBottom: 24 }}><div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Aerospace & Defense Primer</div><div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Defense primes, commercial OEMs, aerostructures, defense electronics, MRO, and space</div></div>
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 24 }}>
         <div style={{ fontSize: 18, fontWeight: 600, color: T_.text, marginBottom: 6 }}>Aerospace & Defense — Value Chain</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>From R&D through manufacturing and integration to operations and sustainment. Both defense and commercial aerospace follow this pattern, with different funding sources and timelines.</div>
         <div style={{ display: "flex", alignItems: "stretch", gap: 0 }}>
           {[
-            { label: "R&D / Design", color: "#3B82F6", icon: "🔬", desc: "Concept to prototype",
+            { label: "R&D / Design", color: T_.blue, icon: "🔬", desc: "Concept to prototype",
               rows: [{ sub: "Defense R&D", ex: "DARPA, prime IR&D, SBIRs" }, { sub: "Commercial R&D", ex: "Boeing, Airbus, GE Aerospace" }, { sub: "Space R&D", ex: "SpaceX, NASA, NRO" }],
               buyers: "DoD, NASA, OEMs (self-funded)" },
-            { label: "Manufacturing", color: "#F59E0B", icon: "🏭", desc: "Build components & systems",
+            { label: "Manufacturing", color: T_.amber, icon: "🏭", desc: "Build components & systems",
               rows: [{ sub: "Aerostructures", ex: "Spirit, Safran, Howmet" }, { sub: "Engines", ex: "GE Aerospace, Pratt & Whitney" }, { sub: "Electronics", ex: "L3Harris, Northrop, RTX" }, { sub: "Components", ex: "TransDigm, HEICO, Moog" }],
               buyers: "OEMs, primes, airlines" },
-            { label: "Systems Integration", color: "#10B981", icon: "🔗", desc: "Assemble & test",
+            { label: "Systems Integration", color: T_.green, icon: "🔗", desc: "Assemble & test",
               rows: [{ sub: "Defense Primes", ex: "Lockheed, Northrop, GD" }, { sub: "Aircraft OEM", ex: "Boeing, Airbus, Embraer" }, { sub: "Space Systems", ex: "SpaceX, ULA, Northrop" }],
               buyers: "DoD, airlines, lessors, NASA" },
-            { label: "Operations / MRO", color: "#8B5CF6", icon: "🔧", desc: "Sustain & maintain",
+            { label: "Operations / MRO", color: T_.purple, icon: "🔧", desc: "Sustain & maintain",
               rows: [{ sub: "Engine MRO", ex: "GE, Pratt, Lufthansa Technik" }, { sub: "Airframe MRO", ex: "ST Engineering, AAR Corp" }, { sub: "Parts/Aftermarket", ex: "TransDigm, HEICO" }],
               buyers: "Airlines, military operators" },
             { label: "End Customer", color: "#6366F1", icon: "👥", desc: "Operators & end users",
@@ -1412,25 +1412,25 @@ export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FO
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 20 }}>How A&D companies make money. Defense is government-funded (cost-plus or fixed-price contracts). Commercial aerospace is market-driven with the aftermarket generating the highest margins.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
           {[
-            { name: "Government Cost-Plus Contracts", color: "#3B82F6", icon: "📋",
+            { name: "Government Cost-Plus Contracts", color: T_.blue, icon: "📋",
               how: "The government reimburses the contractor for allowable costs plus a negotiated fee (profit margin). Used for R&D, complex development programs, and early production. Contractor bears minimal cost risk — if costs increase, the government pays more. Fee is typically 8-12% of costs",
               economics: "Operating margins: 8-12% (fee on top of costs). Revenue is highly predictable (funded by appropriations). Risk is low but margins are capped. Cost-plus represents ~30-40% of defense prime revenue. The contractor is incentivized to maximize cost (misaligned incentive) — mitigated by DCMA auditing",
               examples: "Lockheed Martin F-35 development (SDD phase was cost-plus), Northrop Grumman B-21 Raider early phase, major satellite development programs, NASA contracts (James Webb Telescope — massive cost overruns)",
               valuation: "Cost-plus revenue valued at 10-14x EBITDA. Lower than commercial/aftermarket due to capped margins. But highly predictable — the government almost never cancels major programs. Investors view cost-plus as 'bond-like' revenue",
               transition: "DoD shifting toward fixed-price for production to control costs. But complex development programs will remain cost-plus (too much technical risk for fixed-price). The margin opportunity is in transitioning from cost-plus development to fixed-price production as programs mature" },
-            { name: "Fixed-Price Production", color: "#10B981", icon: "🏭",
+            { name: "Fixed-Price Production", color: T_.green, icon: "🏭",
               how: "Contractor delivers a defined product at a fixed price. If costs come in below the fixed price, the contractor keeps the profit. If costs overrun, the contractor absorbs the loss. Used for production lots once design is mature. Variants include firm-fixed-price (FFP) and fixed-price-incentive (FPI)",
               economics: "Operating margins: 10-15% target (but can range from -5% to 20% depending on execution). Revenue is predictable (funded lots). Risk is higher than cost-plus — cost overruns destroy margins. Learning curve: each successive production lot should cost less (80-85% learning curve). LRIP has lower margins than FRP",
               examples: "Lockheed Martin F-35 LRIP/FRP lots ($80M-90M per aircraft), RTX Patriot missile production, General Dynamics Abrams tank production, Boeing KC-46 tanker (fixed-price loss program)",
               valuation: "Fixed-price production valued at 12-16x EBITDA — higher than cost-plus due to margin expansion potential. Market rewards programs on the learning curve (margins improve each lot). Penalizes programs with cost overruns (Boeing KC-46, SNC Gorgon Stare)",
               transition: "The profitable sweet spot is mature production programs with decades of backlog (F-35 will produce through 2040+). The risk is taking on fixed-price contracts before design is fully mature — Boeing's KC-46 and fixed-price MQ-25 demonstrate this risk. DoD increasingly mandating fixed-price" },
-            { name: "Aftermarket / MRO", color: "#8B5CF6", icon: "🔧",
+            { name: "Aftermarket / MRO", color: T_.purple, icon: "🔧",
               how: "Revenue from maintaining, repairing, and overhauling aircraft, engines, and defense systems throughout their 20-40 year operational lives. Includes proprietary spare parts, engine overhauls, airframe maintenance, modifications, and sustainment contracts. Often sole-source (only the OEM can provide parts)",
               economics: "Gross margins: 50-70% for proprietary aftermarket parts (TransDigm at 59%). Engine MRO margins: 20-30%. Defense sustainment margins: 10-15%. Aftermarket is recurring — aircraft fly for 30+ years. Each engine shop visit costs $3-8M. TransDigm's model: acquire companies with sole-source parts and raise prices",
               examples: "GE Aerospace (engine aftermarket ~60% of revenue), TransDigm ($7B+ revenue, 59% gross margin from sole-source parts), HEICO (PMA alternative parts), RTX/Pratt & Whitney engine MRO, Lockheed F-35 sustainment ($15B/yr)",
               valuation: "25-40x EBITDA for aftermarket-heavy businesses. TransDigm at ~30x. HEICO at ~45x. Premium for sole-source pricing power, recurring demand, and non-discretionary nature (FAA mandates maintenance). The highest-quality revenue stream in A&D",
               transition: "Aftermarket is the value creation engine in A&D. Every new aircraft or engine sold creates 20-40 years of aftermarket revenue. GE Aerospace sells engines at low/negative margin to capture the aftermarket annuity. TransDigm/HEICO acquisition model: buy companies with sole-source IP" },
-            { name: "Commercial OEM Sales", color: "#F59E0B", icon: "✈️",
+            { name: "Commercial OEM Sales", color: T_.amber, icon: "✈️",
               how: "Sale of new commercial aircraft and engines to airlines and lessors. Aircraft priced at list ($100-450M+ per aircraft) but typically sold at 40-60% discount. Engines often sold at or below cost to capture aftermarket. Multi-year backlogs (Airbus: 8,600+ aircraft)",
               economics: "Aircraft OEM margins: 8-12% operating (Boeing targeting 10%+ recovery). Engine OEM margins on new sales: 0-5% (loss leader for aftermarket). Airbus delivers ~735 aircraft/year (targeting 75/month). Boeing: ~400-500 (production limited). Revenue recognized on delivery. Progress payments from airlines fund production",
               examples: "Airbus A320neo family ($110M list, $50-60M typical), Boeing 737 MAX ($120M list), GE LEAP engine ($15M list), Pratt & Whitney GTF engine",

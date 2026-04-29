@@ -72,7 +72,7 @@ export default function ApiDirectory() {
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>APIs & Integrations</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>APIs & Integrations</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>All APIs powering the Research Portal and Portfolio Dashboard.</div>
       </div>
 

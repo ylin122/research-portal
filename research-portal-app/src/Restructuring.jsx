@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 import { VLine, VLineLabel, Box, DetailPanel } from "./lib/orgChart";
+import TabBar from "./lib/TabBar";
 
 function ConceptAccordion({ items }) {
   const [open, setOpen] = useState(null);
@@ -33,16 +34,16 @@ function ConceptAccordion({ items }) {
    ═══════════════════════════════════════════════════════ */
 
 const CASES = [
-  { key: "windstream", label: "Windstream Holdings", sector: "Telecom", year: "2019", color: "#3B82F6" },
-  { key: "envision", label: "Envision Healthcare", sector: "Healthcare", year: "2023", color: "#8B5CF6" },
-  { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: "#10B981" },
-  { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: "#F59E0B" },
+  { key: "windstream", label: "Windstream Holdings", sector: "Telecom", year: "2019", color: T_.blue },
+  { key: "envision", label: "Envision Healthcare", sector: "Healthcare", year: "2023", color: T_.purple },
+  { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: T_.green },
+  { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: T_.amber },
   { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
   { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
   { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
   { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
   { key: "trinseo", label: "Trinseo plc", sector: "Specialty Chemicals · ONGOING", year: "2023-26", color: "#F472B6" },
-  { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: "#EF4444" },
+  { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: T_.red },
 ];
 
 function WindstreamCase() {
@@ -5286,22 +5287,13 @@ export default function Restructuring({ initialTab }) {
   }, [initialTab]);
 
   return (
-    <div style={{ padding: "36px 44px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
+    <div style={{ padding: "36px 52px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Restructuring</div>
-        <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>Case studies in distressed debt, liability management, and Chapter 11</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Restructuring</div>
+        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Case studies in distressed debt, liability management, and Chapter 11</div>
       </div>
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
-        {CASES.map(c => (
-          <button key={c.key} onClick={() => setActiveCase(c.key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: activeCase === c.key ? "#3B82F6" : "#111827",
-            color: activeCase === c.key ? "#FFF" : "#94A3B8",
-            transition: "all 0.15s", whiteSpace: "nowrap", fontFamily: FONT,
-          }}>{c.label}</button>
-        ))}
-      </div>
+      <TabBar tabs={CASES} active={activeCase} onChange={setActiveCase} />
 
       {activeCase === "windstream" && <WindstreamCase />}
       {activeCase === "envision" && <EnvisionCase />}

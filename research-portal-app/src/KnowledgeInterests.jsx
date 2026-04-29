@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import TabBar from "./lib/TabBar";
 
 const TABS = [
   { key: "concepts", label: "Concepts" },
@@ -412,19 +413,10 @@ export default function KnowledgeInterests() {
   return (
     <div style={{ padding: 0 }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Knowledge / Interests</div>
-        <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>Learn, explore, and save interesting things.</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", fontFamily: FONT }}>Knowledge / Interests</div>
+        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, fontFamily: FONT }}>Learn, explore, and save interesting things.</div>
       </div>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
-        {TABS.map(t => (
-          <button key={t.key} onClick={() => setActiveTab(t.key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: activeTab === t.key ? "#3B82F6" : "#111827",
-            color: activeTab === t.key ? "#FFF" : "#94A3B8",
-            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{t.label}</button>
-        ))}
-      </div>
+      <TabBar tabs={TABS} active={activeTab} onChange={setActiveTab} />
       {activeTab === "concepts" && <ConceptsTab />}
       {activeTab === "deepDives" && <DeepDivesTab />}
     </div>

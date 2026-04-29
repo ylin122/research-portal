@@ -3,11 +3,11 @@ import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 
 const AGENT_COLORS = {
-  "refresh": { bg: "#3B82F622", color: "#3B82F6", border: "#3B82F644" },
-  "code-review": { bg: "#10B98122", color: "#10B981", border: "#10B98144" },
+  "refresh": { bg: `${T_.blue}22`, color: T_.blue, border: `${T_.blue}44` },
+  "code-review": { bg: `${T_.green}22`, color: T_.green, border: `${T_.green}44` },
   "agent-review": { bg: "#A78BFA22", color: "#A78BFA", border: "#A78BFA44" },
-  "fact-checker": { bg: "#F59E0B22", color: "#F59E0B", border: "#F59E0B44" },
-  "fact-disputer": { bg: "#EF444422", color: "#EF4444", border: "#EF444444" },
+  "fact-checker": { bg: `${T_.amber}22`, color: T_.amber, border: `${T_.amber}44` },
+  "fact-disputer": { bg: `${T_.red}22`, color: T_.red, border: `${T_.red}44` },
   "fact-check-reconciler": { bg: "#A855F722", color: "#A855F7", border: "#A855F744" },
   "research-ingest": { bg: "#38BDF822", color: "#38BDF8", border: "#38BDF844" },
   "deploy": { bg: "#6EE7B722", color: "#6EE7B7", border: "#6EE7B744" },
@@ -15,7 +15,7 @@ const AGENT_COLORS = {
   "portfolio-verifier": { bg: "#14B8A622", color: "#14B8A6", border: "#14B8A644" },
   "consistency": { bg: "#818CF822", color: "#818CF8", border: "#818CF844" },
 };
-const DEFAULT_COLOR = { bg: "#64748B22", color: "#94A3B8", border: "#64748B44" };
+const DEFAULT_COLOR = { bg: `${T_.textGhost}22`, color: T_.textDim, border: `${T_.textGhost}44` };
 
 function fmtDate(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
 function fmtTime(d) { return new Date(d).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); }
@@ -59,9 +59,9 @@ export default function AuditLog() {
   const totalIssuesFixed = runs.reduce((s, r) => s + (r.issues_fixed || 0), 0);
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: "none", fontFamily: FONT }}>
+    <div style={{ padding: "36px 52px", maxWidth: "none", fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Agent Run Log</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Agent Run Log</div>
         <button style={{
           padding: "8px 16px", fontSize: 12, borderRadius: 6, cursor: "pointer",
           background: T_.accent, color: "#000", border: "none", fontFamily: FONT, fontWeight: 500,
@@ -86,7 +86,7 @@ export default function AuditLog() {
           );
         })}
         {totalIssuesFound > 0 && (
-          <div style={{ padding: "6px 12px", borderRadius: 6, fontSize: 12, fontFamily: FONT, background: "#F59E0B15", color: "#F59E0B", border: "1px solid #F59E0B33" }}>
+          <div style={{ padding: "6px 12px", borderRadius: 6, fontSize: 12, fontFamily: FONT, background: `${T_.amber}15`, color: T_.amber, border: `1px solid ${T_.amber}33` }}>
             Issues: {totalIssuesFixed}/{totalIssuesFound} fixed
           </div>
         )}
@@ -132,7 +132,7 @@ export default function AuditLog() {
                   </span>
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                     {run.issues_found != null && (
-                      <span style={{ fontSize: 11, color: run.issues_fixed === run.issues_found ? T_.green : "#F59E0B" }}>
+                      <span style={{ fontSize: 11, color: run.issues_fixed === run.issues_found ? T_.green : T_.amber }}>
                         {run.issues_fixed || 0}/{run.issues_found} fixed
                       </span>
                     )}
@@ -153,7 +153,7 @@ export default function AuditLog() {
                         {files.map(f => (
                           <span key={f} style={{
                             fontSize: 11, padding: "2px 8px", borderRadius: 4, fontFamily: "monospace",
-                            background: "#1E293B", color: "#94A3B8", border: "1px solid #334155",
+                            background: T_.border, color: T_.textDim, border: `1px solid ${T_.borderStrong}`,
                           }}>{f}</span>
                         ))}
                       </div>

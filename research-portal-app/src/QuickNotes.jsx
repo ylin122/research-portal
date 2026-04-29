@@ -34,8 +34,8 @@ export default function QuickNotes() {
   };
 
   return (
-    <div style={{ padding: "36px 44px", maxWidth: "none", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Notes</div>
+    <div style={{ padding: "36px 52px", maxWidth: "none", fontFamily: FONT }}>
+      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Notes</div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
         Jot things down from anywhere. Run <span style={{ color: T_.accent }}>"process my notes"</span> in Claude Code to sort them into the right places.
       </p>

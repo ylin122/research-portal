@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 import { Section } from "./lib/Section";
+import TabBar from "./lib/TabBar";
 
 function MetricCard({ label, value, sub, color }) {
   return (
@@ -71,7 +72,7 @@ const MODELS = {
     label: "Aircraft Leasing",
     icon: "\u2708\uFE0F",
     category: "Asset-Heavy / Leasing",
-    color: "#3B82F6",
+    color: T_.blue,
     tagline: "Buy planes, lease to airlines, earn the spread between financing cost and lease rate",
     howItWorks: "Aircraft lessors purchase new or used aircraft from manufacturers (Boeing, Airbus) and lease them to airlines on long-term operating leases (typically 6-12 years). Revenue = monthly lease rental payments. The lessor owns the asset, bears residual value risk, and manages transitions between lessees. At lease end, the aircraft is either re-leased, sold, or parted out. Lessors finance purchases with a mix of unsecured bonds, bank debt, ABS, and equity — the spread between lease yield (~10-12% on invested capital) and borrowing cost (~4-6%) drives profit.",
     economics: "Lease yields: 10-12% of aircraft value annually. Cost of debt: 4-6% (investment-grade lessors). Net spread: 4-7%. Depreciation: 20-25 year useful life. Residual value at lease end is the key variable — narrowbody aircraft (A320neo, 737 MAX) hold value better than widebody. Fleet utilization: 97-99% for top lessors. Maintenance reserves collected from lessees offset redelivery costs. SG&A is minimal — AerCap runs ~$72B total assets with ~730 employees.",
@@ -112,7 +113,7 @@ const MODELS = {
     label: "GPU / Compute Leasing",
     icon: "\uD83D\uDDA5\uFE0F",
     category: "Asset-Heavy / Leasing",
-    color: "#8B5CF6",
+    color: T_.purple,
     tagline: "Finance and lease GPU clusters to AI companies, earn the spread on high-demand compute assets",
     howItWorks: "GPU lessors acquire NVIDIA (H100/B200) and other AI accelerators, build them into data center clusters, and lease compute capacity to AI companies, startups, and enterprises. Contracts range from months to 3+ years. Revenue = contracted lease payments or usage-based fees. The model mirrors aircraft leasing but with faster depreciation (3-5 years vs 20-25 for planes) and higher utilization demand. Some operate as cloud providers (CoreWeave), others as pure financing vehicles. Capital is raised through equity, debt, and structured finance (GPU-backed ABS).",
     economics: "GPU cost: $25-40K per H100 chip, $30-40K per B200. Cluster build cost: $500M-2B+ for large deployments. Lease yields: 30-50%+ annualized (current demand-supply imbalance). Depreciation: 3-5 years (aggressive — next-gen chips obsolete prior gen). Power costs: significant (50-100MW+ per large cluster). Utilization: 85-95% when contracted. Net margins: potentially 20-40%+ at scale. The key risk is technology obsolescence — unlike planes, GPUs can lose value rapidly when next-gen ships.",
@@ -195,7 +196,7 @@ const MODELS = {
     label: "SaaS / Subscription",
     icon: "\uD83D\uDD04",
     category: "Recurring Revenue",
-    color: "#10B981",
+    color: T_.green,
     tagline: "Sell cloud software on recurring subscriptions — high margins, predictable revenue, compounding growth through land-and-expand",
     howItWorks: "Software-as-a-Service (SaaS) companies deliver cloud-hosted applications accessed via browser or API, charged on a recurring basis (monthly/annual). Customers never own the software — they rent access. Revenue is recognized ratably over the subscription period. The model creates a 'flywheel': acquire customers (high upfront CAC), retain them (low churn), expand them (upsell more seats/modules), and compound recurring revenue. The transition from perpetual licensing to SaaS was the defining business model shift of 2010-2025.",
     economics: "Gross margins: 70-85% (no physical COGS). Net dollar retention (NDR): 110-130% for best-in-class (existing customers spend more each year). Gross retention: 90-95%. CAC payback: 12-18 months target. LTV/CAC: 3-5x for healthy SaaS. Revenue per employee: $200-500K. Free cash flow margins: 20-40% at scale. The 'Rule of 40' (revenue growth % + FCF margin %) measures overall health — above 40% is good, above 60% is elite.",
@@ -236,7 +237,7 @@ const MODELS = {
     label: "Payment Take Rates",
     icon: "\uD83D\uDCB3",
     category: "Toll / Take-Rate",
-    color: "#F59E0B",
+    color: T_.amber,
     tagline: "Sit in the flow of money — take a small cut of every transaction processed, at massive volume",
     howItWorks: "Payment companies insert themselves into the transaction flow between buyer and seller. For every card swipe, online checkout, or money transfer, multiple parties take a fee: card networks (Visa/Mastercard ~0.13-0.15%), issuing banks (interchange ~1.5-2.0%), acquirers/processors (~0.2-0.5%), and payment facilitators (Stripe, Square ~0.3-0.5% above interchange). Total merchant discount rate: 2.0-3.5% of transaction value. Revenue scales linearly with total payment volume (TPV) — as the economy grows and cash shifts to digital, volume compounds.",
     economics: "Visa/Mastercard (networks): 65-70% operating margins. They don't take credit risk — pure toll model. Revenue = assessments + transaction fees on $17T+ annual volume. Processors (FIS, Fiserv): 30-40% margins, more operational complexity. Fintechs (Stripe, Adyen): 50-60% gross margins, still scaling. Interchange (bank revenue): ~$100B+ annually in the US alone. The key insight: payment companies earn more revenue as prices inflate (% of a larger transaction), making them natural inflation hedges.",
@@ -278,7 +279,7 @@ const MODELS = {
     label: "Marketplace / Platform",
     icon: "\uD83C\uDFEA",
     category: "Toll / Take-Rate",
-    color: "#EF4444",
+    color: T_.red,
     tagline: "Connect buyers and sellers, take a cut of each transaction — network effects create winner-take-most dynamics",
     howItWorks: "Marketplace platforms match supply (sellers, service providers, hosts) with demand (buyers, consumers, guests) and charge a take rate on each transaction. Revenue = Gross Merchandise Value (GMV) \u00D7 take rate. The platform doesn't hold inventory or deliver the service — it facilitates the connection and handles trust, payment, and discovery. Network effects are the key: more buyers attract more sellers, which attracts more buyers. Once a marketplace achieves liquidity, it becomes very hard to displace. Monetization expands through advertising, fintech (payments, lending), and premium tools for sellers.",
     economics: "Take rates: 5-30% depending on category. Airbnb: ~13.5% (host + guest fees). Uber: ~25-30% (driver + rider). DoorDash: ~15-20%. Etsy: ~22% (fees + ads + payments). Booking.com: ~14.5%. Gross margins: 50-75%. The 'holy grail' is a marketplace with high take rate, high frequency, and strong network effects. Contribution margin per transaction increases over time as CAC amortizes and repeat usage grows. At scale, marketplaces can achieve 25-40% EBITDA margins.",
@@ -657,9 +658,9 @@ const MODELS = {
 const MODEL_ORDER = ["aircraft", "gpu", "equipment", "saas", "payments", "marketplace", "ads", "reits", "utilities", "banks", "franchise", "royalties", "datainfo", "specialty"];
 
 const CATEGORIES = [
-  { label: "Asset-Heavy / Leasing", keys: ["aircraft", "gpu", "equipment"], color: "#3B82F6" },
-  { label: "Recurring Revenue", keys: ["saas"], color: "#10B981" },
-  { label: "Toll / Take-Rate", keys: ["payments", "marketplace"], color: "#F59E0B" },
+  { label: "Asset-Heavy / Leasing", keys: ["aircraft", "gpu", "equipment"], color: T_.blue },
+  { label: "Recurring Revenue", keys: ["saas"], color: T_.green },
+  { label: "Toll / Take-Rate", keys: ["payments", "marketplace"], color: T_.amber },
   { label: "Attention / Intent Marketplace", keys: ["ads"], color: "#F97316" },
   { label: "Yield / Spread", keys: ["reits", "utilities", "banks", "specialty"], color: "#06B6D4" },
   { label: "Asset-Light", keys: ["franchise", "royalties", "datainfo"], color: "#A855F7" },
@@ -674,24 +675,19 @@ export default function BusinessModels({ initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Tab bar */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
-        {MODEL_ORDER.map(key => (
-          <button key={key} onClick={() => setActiveModel(key)} style={{
-            padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: activeModel === key ? "#3B82F6" : "#111827",
-            color: activeModel === key ? "#FFF" : "#94A3B8",
-            fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
-          }}>{MODELS[key].label}</button>
-        ))}
-      </div>
+      <TabBar
+        tabs={MODEL_ORDER.map(key => ({ key, label: MODELS[key].label }))}
+        active={activeModel}
+        onChange={setActiveModel}
+      />
 
       {/* MODEL DETAIL */}
       {model && (
         <div>
           <div style={{ marginBottom: 24 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>{model.label}</div>
-              <div style={{ fontSize: 14, color: "#94A3B8", marginTop: 4 }}>{model.category}</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>{model.label}</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{model.category}</div>
             </div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{model.tagline}</div>
           </div>

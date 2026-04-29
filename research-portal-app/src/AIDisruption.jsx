@@ -4,7 +4,7 @@ import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 
 const SECTORS = [
   {
-    key: "software", label: "Software", icon: "S", color: "#3B82F6",
+    key: "software", label: "Software", icon: "S", color: T_.blue,
     subsectors: [
       { name: "ERP & Core Business Software", risk: "Low-Medium", timeline: "3-5+ years",
         thesis: "AI enhances ERP (smarter forecasting, anomaly detection, natural language queries) but won't replace core systems of record. Switching costs enormous, data mission-critical, regulatory requirements demand auditability. AI is an upsell opportunity for incumbents, not a disruption threat",
@@ -129,7 +129,7 @@ const SECTORS = [
     ],
   },
   {
-    key: "itservices", label: "IT Services", icon: "IT", color: "#10B981",
+    key: "itservices", label: "IT Services", icon: "IT", color: T_.green,
     subsectors: [
       { name: "Application Development & Maintenance", risk: "High", timeline: "2-4 years",
         thesis: "AI code generation compressing labor hours. Offshore labor arbitrage under structural pressure. Developer with AI tools does 2-3x the work. Fewer billable hours per project, not zero developers",
@@ -229,7 +229,7 @@ const SECTORS = [
     ],
   },
   {
-    key: "healthcare", label: "Healthcare IT", icon: "H", color: "#8B5CF6",
+    key: "healthcare", label: "Healthcare IT", icon: "H", color: T_.purple,
     subsectors: [
       { name: "Clinical Documentation & Coding", risk: "High (Positive Disruption)", timeline: "1-3 years",
         thesis: "Ambient AI scribes among fastest-adopted AI in healthcare — 93% of health systems projecting moderate-to-deep adoption. Reduces physician burnout, improves documentation. Medical coding highly automatable. CRITICAL CAVEAT: Epic launched AI Charting in Feb 2026, entering the ambient scribe market natively. Epic controls 38%+ of US hospitals. If Epic builds ambient AI natively into the EHR, standalone scribe vendors (Abridge at $5.3B valuation, Suki, Nabla) face the same platform-absorbs-feature risk as standalone AppSec tools face from Cursor/Copilot. Abridge has deep health system relationships (Mayo, Kaiser, MSK) but Epic's distribution advantage is existential. This is the biggest open question in healthcare AI",
@@ -288,7 +288,7 @@ const SECTORS = [
     ],
   },
   {
-    key: "internet", label: "Internet & Digital", icon: "I", color: "#F59E0B",
+    key: "internet", label: "Internet & Digital", icon: "I", color: T_.amber,
     subsectors: [
       { name: "Search & Information Retrieval", risk: "Very High", timeline: "1-3 years",
         thesis: "AI answers (Perplexity, ChatGPT, Google AI Overviews) fundamentally changing information discovery. Traditional search disrupted. Google challenged first time in 20 years. Search traffic declining for informational queries, threatening SEO/content/ad ecosystem",
@@ -435,7 +435,7 @@ const TOP_BENEFITED_CO = [
 
 // Legacy hardcoded moat data - kept as reference only. Live data reads from Supabase.
 const _MOAT_GROUPS_LEGACY = [
-  { key: "software", label: "Software", icon: "S", color: "#3B82F6", companies: [
+  { key: "software", label: "Software", icon: "S", color: T_.blue, companies: [
     { name: "Adeia", scores: [2,1,1,2,1,2,1,1,1] },
     { name: "Applied Systems", scores: [2,3,3,2,2,2,2,1,1] },
     { name: "Avalara", scores: [2,3,2,3,2,2,2,1,1] },
@@ -518,7 +518,7 @@ const _MOAT_GROUPS_LEGACY = [
     { name: "Zywave", scores: [2,2,2,2,1,2,1,1,1] },
     { name: "Caliper (Sympler)", scores: [1,2,2,2,2,2,1,1,1] },
   ]},
-  { key: "healthcare", label: "Healthcare IT", icon: "H", color: "#8B5CF6", companies: [
+  { key: "healthcare", label: "Healthcare IT", icon: "H", color: T_.purple, companies: [
     { name: "AthenaHealth", scores: [2,3,3,3,3,2,2,1,1] },
     { name: "CCC Intelligent Solutions", scores: [3,3,3,2,2,2,2,1,1] },
     { name: "Cotiviti", scores: [3,3,3,3,3,3,2,1,1] },
@@ -533,7 +533,7 @@ const _MOAT_GROUPS_LEGACY = [
     { name: "Waystar", scores: [2,3,2,3,3,2,2,1,1] },
     { name: "WellSky", scores: [2,3,3,3,3,2,2,1,1] },
   ]},
-  { key: "itservices", label: "IT Services", icon: "IT", color: "#10B981", companies: [
+  { key: "itservices", label: "IT Services", icon: "IT", color: T_.green, companies: [
     { name: "Ahead DB", scores: [1,2,2,1,2,2,1,1,2] },
     { name: "Ensono", scores: [1,2,2,1,2,2,1,1,2] },
     { name: "Insight Enterprises", scores: [1,2,1,1,1,2,1,1,2] },
@@ -569,7 +569,7 @@ const _MOAT_GROUPS_LEGACY = [
     { name: "Skillsoft", scores: [1,1,1,1,1,1,1,1,1] },
     { name: "Spring Education", scores: [1,1,2,3,2,2,2,3,1] },
   ]},
-  { key: "internet", label: "Internet & Digital", icon: "I", color: "#F59E0B", companies: [
+  { key: "internet", label: "Internet & Digital", icon: "I", color: T_.amber, companies: [
     { name: "CommerceHub (Rithum)", scores: [2,3,2,1,1,2,1,1,1] },
     { name: "GoDaddy", scores: [1,2,2,1,2,1,3,1,2] },
     { name: "Internet Brands", scores: [2,1,2,1,1,1,2,1,1] },
@@ -621,11 +621,11 @@ const MOAT_MAX = 45; // 2*3*3 + 3*2*3 + 3*1*3
 
 // Map DB sector to moat group
 const SECTOR_TO_GROUP = {
-  software: { key: "software", label: "Software", icon: "S", color: "#3B82F6" },
-  healthcare: { key: "healthcare", label: "Healthcare IT", icon: "H", color: "#8B5CF6" },
-  itservices: { key: "itservices", label: "IT Services", icon: "IT", color: "#10B981" },
+  software: { key: "software", label: "Software", icon: "S", color: T_.blue },
+  healthcare: { key: "healthcare", label: "Healthcare IT", icon: "H", color: T_.purple },
+  itservices: { key: "itservices", label: "IT Services", icon: "IT", color: T_.green },
   education: { key: "education", label: "Education", icon: "E", color: "#0EA5E9" },
-  internet: { key: "internet", label: "Internet & Digital", icon: "I", color: "#F59E0B" },
+  internet: { key: "internet", label: "Internet & Digital", icon: "I", color: T_.amber },
   hardware: { key: "hardware", label: "Hardware & Infrastructure", icon: "HW", color: "#F97316" },
   aidigital: { key: "hardware", label: "Hardware & Infrastructure", icon: "HW", color: "#F97316" },
 };
@@ -663,11 +663,11 @@ export default function AIDisruption({ companies, initialTab }) {
   const isExp = (key) => !!expanded[key];
 
   const riskColor = (risk) => {
-    if (risk.includes("Very High")) return "#EF4444";
+    if (risk.includes("Very High")) return T_.red;
     if (risk.includes("High") && risk.includes("Positive")) return "#34d673";
     if (risk.includes("High")) return "#F97316";
     if (risk.includes("Medium") && risk.includes("Positive")) return "#34d673";
-    if (risk.includes("Medium")) return "#F59E0B";
+    if (risk.includes("Medium")) return T_.amber;
     if (risk.includes("Low") && risk.includes("Positive")) return "#34d673";
     if (risk.includes("Low")) return "#FBBF24";
     return T_.textDim;
@@ -676,12 +676,12 @@ export default function AIDisruption({ companies, initialTab }) {
   return (
     <div style={{ flex: 1, padding: "36px 52px", overflowY: "auto", fontFamily: FONT }}>
       {/* Sub-tabs */}
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: "1px solid #1E293B", marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid ${T_.border}`, marginBottom: 24, width: "fit-content", maxWidth: "100%" }}>
         {[{ key: "disruption", label: "Disruption Map" }, { key: "moats", label: "Moat vs AI" }, { key: "diffusion", label: "AI Diffusion" }, { key: "jevons", label: "Jevons' Paradox" }].map(t => (
           <button key={t.key} onClick={() => setSubTab(t.key)} style={{
             padding: "8px 22px", fontSize: 13, fontWeight: 600, cursor: "pointer",
-            border: "none", background: subTab === t.key ? "#3B82F6" : "#111827",
-            color: subTab === t.key ? "#FFF" : "#94A3B8",
+            border: "none", background: subTab === t.key ? T_.blue : T_.bgPanel,
+            color: subTab === t.key ? "#FFF" : T_.textDim,
             fontFamily: FONT, transition: "all 0.15s", whiteSpace: "nowrap",
           }}>{t.label}</button>
         ))}
@@ -690,10 +690,10 @@ export default function AIDisruption({ companies, initialTab }) {
       {/* ─── MOAT ANALYSIS TAB ─── */}
       {subTab === "moats" && (() => {
         const scoreLabel = ["", "Weak", "Med", "Strong"];
-        const scoreBg = (v) => ["", "#EF444433", "#F59E0B33", "#34d67333"][v];
-        const scoreColor = (v) => ["", "#EF4444", "#F59E0B", "#34d673"][v];
-        const totalColor = (t) => t >= 33 ? "#34d673" : t >= 21 ? "#F59E0B" : "#EF4444";
-        const tierColor = { 1: "#34d673", 2: "#F59E0B", 3: T_.textGhost };
+        const scoreBg = (v) => ["", `${T_.red}33`, `${T_.amber}33`, "#34d67333"][v];
+        const scoreColor = (v) => ["", T_.red, T_.amber, "#34d673"][v];
+        const totalColor = (t) => t >= 33 ? "#34d673" : t >= 21 ? T_.amber : T_.red;
+        const tierColor = { 1: "#34d673", 2: T_.amber, 3: T_.textGhost };
         const colHeaders = [
           { key: "name", label: "Company" },
           ...MOAT_DEFS.map(d => ({ key: d.key, label: d.label, tier: d.tier, weight: d.weight })),
@@ -713,14 +713,14 @@ export default function AIDisruption({ companies, initialTab }) {
         return (
         <div>
           <div style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Moat vs AI</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Moat vs AI</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How protected is each portfolio company from AI disruption? Eight moats weighted by structural importance (T1: 3x, T2: 2x, T3: 1x)</div>
           </div>
 
           {/* Legend */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "12px 20px", marginBottom: 16, display: "flex", gap: 16, alignItems: "center", flexWrap: "wrap" }}>
             <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>MOAT STRENGTH:</div>
-            {[{ l: "Strong", c: "#34d673" }, { l: "Medium", c: "#F59E0B" }, { l: "Weak", c: "#EF4444" }].map(r => (
+            {[{ l: "Strong", c: "#34d673" }, { l: "Medium", c: T_.amber }, { l: "Weak", c: T_.red }].map(r => (
               <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 5 }}>
                 <div style={{ width: 10, height: 10, borderRadius: 3, background: r.c }} />
                 <span style={{ fontSize: 11, color: T_.textMid }}>{r.l}</span>
@@ -728,7 +728,7 @@ export default function AIDisruption({ companies, initialTab }) {
             ))}
             <div style={{ width: 1, height: 16, background: T_.border, margin: "0 4px" }} />
             <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>TIERS:</div>
-            {[{ l: "T1 (3x)", c: "#34d673" }, { l: "T2 (2x)", c: "#F59E0B" }, { l: "T3 (1x)", c: T_.textGhost }].map(r => (
+            {[{ l: "T1 (3x)", c: "#34d673" }, { l: "T2 (2x)", c: T_.amber }, { l: "T3 (1x)", c: T_.textGhost }].map(r => (
               <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 2, background: r.c }} />
                 <span style={{ fontSize: 11, color: T_.textMid }}>{r.l}</span>
@@ -736,7 +736,7 @@ export default function AIDisruption({ companies, initialTab }) {
             ))}
             <div style={{ width: 1, height: 16, background: T_.border, margin: "0 4px" }} />
             <div style={{ fontSize: 12, color: T_.textGhost, fontWeight: 600 }}>RESILIENCE (/{MOAT_MAX}):</div>
-            {[{ l: "33+ Strong", c: "#34d673" }, { l: "21-32 Medium", c: "#F59E0B" }, { l: "<21 Weak", c: "#EF4444" }].map(r => (
+            {[{ l: "33+ Strong", c: "#34d673" }, { l: "21-32 Medium", c: T_.amber }, { l: "<21 Weak", c: T_.red }].map(r => (
               <div key={r.l} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                 <div style={{ width: 8, height: 8, borderRadius: 2, background: r.c }} />
                 <span style={{ fontSize: 11, color: T_.textMid }}>{r.l}</span>
@@ -825,7 +825,7 @@ export default function AIDisruption({ companies, initialTab }) {
       {subTab === "jevons" && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Jevons' Paradox & AI</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Jevons' Paradox & AI</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>When AI collapses the cost of producing X and demand for X is elastic, total consumption of X explodes. The question for every sector: was demand previously supply-constrained or price-constrained?</div>
           </div>
 
@@ -993,7 +993,7 @@ export default function AIDisruption({ companies, initialTab }) {
       {subTab === "disruption" && (
         <div>
           <div style={{ marginBottom: 24 }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Disruption Map</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>AI Disruption Map</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How AI reshapes each sector I cover. Risk levels, timelines, winners, losers, and what to watch</div>
           </div>
 
@@ -1001,9 +1001,9 @@ export default function AIDisruption({ companies, initialTab }) {
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 24px", marginBottom: 24, display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
         <div style={{ fontSize: 13, color: T_.textGhost, fontWeight: 600 }}>DISRUPTION RISK:</div>
         {[
-          { label: "Very High", color: "#EF4444" },
+          { label: "Very High", color: T_.red },
           { label: "High", color: "#F97316" },
-          { label: "Medium", color: "#F59E0B" },
+          { label: "Medium", color: T_.amber },
           { label: "Low", color: "#FBBF24" },
           { label: "Positive Disruption", color: "#34d673" },
         ].map(l => (
@@ -1017,10 +1017,10 @@ export default function AIDisruption({ companies, initialTab }) {
       {/* Top 5 Dashboard */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#EF4444", marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.5 }}>Top 5 Most Disrupted</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: T_.red, marginBottom: 14, textTransform: "uppercase", letterSpacing: 0.5 }}>Top 5 Most Disrupted</div>
           {TOP_DISRUPTED.map((item, i) => (
             <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: i < 4 ? `1px solid ${T_.borderLight}` : "none" }}>
-              <div style={{ width: 22, height: 22, borderRadius: 6, background: "#EF444422", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: "#EF4444", flexShrink: 0 }}>{i + 1}</div>
+              <div style={{ width: 22, height: 22, borderRadius: 6, background: `${T_.red}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: T_.red, flexShrink: 0 }}>{i + 1}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ fontSize: 13, fontWeight: 500, color: T_.text }}>{item.name}</div>
                 <div style={{ fontSize: 11, color: T_.textGhost }}>{item.sector}</div>
@@ -1047,11 +1047,11 @@ export default function AIDisruption({ companies, initialTab }) {
       {/* Top 10 Companies Dashboard */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20, marginBottom: 24 }}>
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "#EF4444", marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>10 Most Disrupted Companies</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: T_.red, marginBottom: 4, textTransform: "uppercase", letterSpacing: 0.5 }}>10 Most Disrupted Companies</div>
           <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 14 }}>Based on current business model — assuming no adaptation</div>
           {TOP_DISRUPTED_CO.map((co, i) => (
             <div key={i} onClick={() => toggle("dco_" + i)} style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "8px 0", borderBottom: i < 9 ? `1px solid ${T_.borderLight}` : "none", cursor: "pointer" }}>
-              <div style={{ width: 22, height: 22, borderRadius: 6, background: "#EF444422", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: "#EF4444", flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
+              <div style={{ width: 22, height: 22, borderRadius: 6, background: `${T_.red}22`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, fontWeight: 700, color: T_.red, flexShrink: 0, marginTop: 1 }}>{i + 1}</div>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                   <span style={{ fontSize: 13, fontWeight: 600, color: T_.text }}>{co.name}</span>
@@ -1175,7 +1175,7 @@ export default function AIDisruption({ companies, initialTab }) {
 
 const DIFFUSION_LAYERS = [
   { key: "research", label: "Research & Models", color: "#a78bfa" },
-  { key: "consumer", label: "Consumer Adoption", color: "#3B82F6" },
+  { key: "consumer", label: "Consumer Adoption", color: T_.blue },
   { key: "enterprise", label: "Enterprise Production", color: "#f5a623" },
   { key: "infrastructure", label: "Infrastructure", color: "#34d673" },
   { key: "regulation", label: "Regulation & Policy", color: "#f87171" },
@@ -1364,7 +1364,7 @@ function AIDiffusionTab() {
     <div>
       {/* Header */}
       <div style={{ marginBottom: 28 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>AI Diffusion Timeline</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>AI Diffusion Timeline</div>
         <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, lineHeight: 1.6 }}>
           How AI adoption is spreading across research, consumer, enterprise, infrastructure, and regulation — tracked on S-curves over time.
         </div>

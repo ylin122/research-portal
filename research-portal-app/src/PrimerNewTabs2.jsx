@@ -9,7 +9,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "healthpharma") {
     const HP_SUBS = {
-      bigpharma: { name: "Big Pharma & Specialty", fullName: "Pharmaceutical — Large Cap & Specialty Pharma", category: "Pharmaceutical", color: "#3B82F6",
+      bigpharma: { name: "Big Pharma & Specialty", fullName: "Pharmaceutical — Large Cap & Specialty Pharma", category: "Pharmaceutical", color: T_.blue,
         tam: "$650B+ (2025)", growth: "~5-7% CAGR", icon: "💊",
         desc: "Large diversified pharmaceutical companies with broad therapeutic portfolios, global commercial infrastructure, and deep pipelines. Revenue driven by patented branded drugs with limited competition during patent life.",
         whatTheySell: "Patented branded drugs across oncology, immunology, cardiovascular, neuroscience, rare disease, vaccines. Also OTC/consumer health in some cases.",
@@ -17,7 +17,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Pfizer", "Johnson & Johnson (Innovative Medicine)", "Roche", "Novartis", "Merck & Co", "AbbVie", "Eli Lilly", "AstraZeneca", "Novo Nordisk", "Sanofi"],
         trends: "GLP-1 blockbusters reshaping market (Lilly, Novo). Oncology remains largest therapeutic area (~$220B). Patent cliffs ahead for Humira, Keytruda. M&A to fill pipelines. AI in drug discovery accelerating.",
       },
-      biotech: { name: "Biotechnology", fullName: "Biotechnology — Emerging & Mid-Cap Biotech", category: "Biotechnology", color: "#8B5CF6",
+      biotech: { name: "Biotechnology", fullName: "Biotechnology — Emerging & Mid-Cap Biotech", category: "Biotechnology", color: T_.purple,
         tam: "$180B+ (2025)", growth: "~8-12% CAGR", icon: "🧬",
         desc: "Companies developing biologic therapies (antibodies, gene/cell therapies, mRNA, ADCs) often with focused pipelines. High-risk/high-reward profile with binary clinical trial outcomes.",
         whatTheySell: "Biologic drugs (monoclonal antibodies, bispecifics, ADCs, gene therapies, cell therapies, mRNA therapeutics, RNAi). Many are pre-revenue with pipeline value.",
@@ -25,7 +25,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Amgen", "Gilead Sciences", "Regeneron", "Vertex Pharmaceuticals", "Moderna", "BioNTech", "Alnylam", "Seagen (Pfizer)", "Argenx"],
         trends: "ADCs (antibody-drug conjugates) booming. Gene therapy moving from rare to common diseases. GLP-1/obesity pipeline expanding. Biotech M&A wave as big pharma buys innovation. XBI index recovery in 2025.",
       },
-      meddev: { name: "Medical Devices & Equipment", fullName: "Medical Devices, Diagnostics & Equipment", category: "Medical Devices", color: "#10B981",
+      meddev: { name: "Medical Devices & Equipment", fullName: "Medical Devices, Diagnostics & Equipment", category: "Medical Devices", color: T_.green,
         tam: "$550B+ (2025)", growth: "~5-7% CAGR", icon: "🩺",
         desc: "Companies manufacturing surgical instruments, implants, diagnostic equipment, imaging systems, and monitoring devices used in hospitals and ambulatory settings.",
         whatTheySell: "Surgical robots, orthopedic implants, cardiac devices (pacemakers, stents), in-vitro diagnostics (IVD), imaging (MRI, CT, ultrasound), patient monitoring, diabetes devices (CGM, pumps).",
@@ -33,7 +33,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Medtronic", "Abbott Laboratories", "Boston Scientific", "Intuitive Surgical", "Stryker", "Becton Dickinson", "Edwards Lifesciences", "Dexcom", "Siemens Healthineers", "GE HealthCare"],
         trends: "Robotic surgery expanding beyond da Vinci (Medtronic Hugo, J&J Ottava). CGM market growing 20%+ (Dexcom, Abbott). AI-powered diagnostics. Procedure volumes recovered and growing post-COVID.",
       },
-      cro: { name: "Contract Research (CRO)", fullName: "Contract Research Organizations", category: "Services", color: "#F59E0B",
+      cro: { name: "Contract Research (CRO)", fullName: "Contract Research Organizations", category: "Services", color: T_.amber,
         tam: "$85B+ (2025)", growth: "~7-10% CAGR", icon: "🔬",
         desc: "Outsourced providers of clinical trial management, bioanalytical testing, regulatory consulting, and pharmacovigilance. Essential partners for pharma/biotech R&D.",
         whatTheySell: "Phase I-IV clinical trial management, site management, data management/biostatistics, regulatory submissions, real-world evidence, pharmacovigilance, central lab services.",
@@ -41,7 +41,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["IQVIA", "Charles River Laboratories", "Labcorp Drug Development", "PPD (Thermo Fisher)", "ICON plc", "Syneos Health", "Medpace", "Parexel"],
         trends: "Biotech funding recovery driving CRO demand. Decentralized clinical trials (DCTs). AI for patient recruitment and site selection. FSP (functional service provider) model growing vs full-service.",
       },
-      cdmo: { name: "Contract Manufacturing (CDMO)", fullName: "Contract Development & Manufacturing Organizations", category: "Services", color: "#F59E0B",
+      cdmo: { name: "Contract Manufacturing (CDMO)", fullName: "Contract Development & Manufacturing Organizations", category: "Services", color: T_.amber,
         tam: "$120B+ (2025)", growth: "~8-11% CAGR", icon: "🏭",
         desc: "Outsourced drug substance and drug product manufacturing for pharma/biotech. Includes process development, scale-up, and commercial supply across small molecule, biologics, and cell/gene therapy.",
         whatTheySell: "API synthesis (small molecule), biologics manufacturing (mAbs, ADCs), cell/gene therapy manufacturing, fill-finish, formulation development, sterile injectables.",
@@ -67,23 +67,23 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const HP_TAX = [
-      { key: "pharma", label: "Pharmaceutical", color: "#3B82F6", icon: "💊", children: ["bigpharma"] },
-      { key: "biotech", label: "Biotechnology", color: "#8B5CF6", icon: "🧬", children: ["biotech"] },
-      { key: "devices", label: "Medical Devices", color: "#10B981", icon: "🩺", children: ["meddev"] },
-      { key: "services", label: "CRO & CDMO Services", color: "#F59E0B", icon: "🔬", children: ["cro", "cdmo"] },
+      { key: "pharma", label: "Pharmaceutical", color: T_.blue, icon: "💊", children: ["bigpharma"] },
+      { key: "biotech", label: "Biotechnology", color: T_.purple, icon: "🧬", children: ["biotech"] },
+      { key: "devices", label: "Medical Devices", color: T_.green, icon: "🩺", children: ["meddev"] },
+      { key: "services", label: "CRO & CDMO Services", color: T_.amber, icon: "🔬", children: ["cro", "cdmo"] },
       { key: "animal", label: "Animal Health", color: "#84CC16", icon: "🐾", children: ["animalhealth"] },
       { key: "generics", label: "Generics & Biosimilars", color: "#6366F1", icon: "💉", children: ["generics"] },
     ];
     const HP_VALUE_CHAIN = [
-      { label: "Discovery / R&D", color: "#8B5CF6", icon: "🧪", desc: "Target ID & lead optimization", rows: [{ sub: "Target Discovery", ex: "Academic labs, AI platforms" }, { sub: "Lead Optimization", ex: "Medicinal chemistry, CADD" }, { sub: "Preclinical", ex: "Charles River, Covance" }], buyers: "Pharma R&D, biotech, academic centers" },
-      { label: "Clinical Trials / CRO", color: "#F59E0B", icon: "🔬", desc: "Phase I-III human testing", rows: [{ sub: "Phase I (Safety)", ex: "IQVIA, Medpace, ICON" }, { sub: "Phase II (Efficacy)", ex: "PPD, Parexel, Syneos" }, { sub: "Phase III (Pivotal)", ex: "IQVIA, Labcorp, ICON" }], buyers: "Pharma/biotech sponsors" },
-      { label: "Regulatory / Approval", color: "#EF4444", icon: "📋", desc: "FDA/EMA review & approval", rows: [{ sub: "NDA / BLA Filing", ex: "FDA CDER, CBER" }, { sub: "510(k) / PMA", ex: "FDA CDRH (devices)" }, { sub: "EMA / ROW", ex: "EMA, PMDA, NMPA" }], buyers: "Pharma, biotech, medtech companies" },
-      { label: "Manufacturing / CDMO", color: "#10B981", icon: "🏭", desc: "Drug substance & product mfg", rows: [{ sub: "Small Molecule", ex: "Lonza, Catalent, Patheon" }, { sub: "Biologics", ex: "Samsung Bio, WuXi, Fujifilm" }, { sub: "Cell & Gene", ex: "Lonza, Catalent, AGC" }], buyers: "Pharma companies, biotech" },
+      { label: "Discovery / R&D", color: T_.purple, icon: "🧪", desc: "Target ID & lead optimization", rows: [{ sub: "Target Discovery", ex: "Academic labs, AI platforms" }, { sub: "Lead Optimization", ex: "Medicinal chemistry, CADD" }, { sub: "Preclinical", ex: "Charles River, Covance" }], buyers: "Pharma R&D, biotech, academic centers" },
+      { label: "Clinical Trials / CRO", color: T_.amber, icon: "🔬", desc: "Phase I-III human testing", rows: [{ sub: "Phase I (Safety)", ex: "IQVIA, Medpace, ICON" }, { sub: "Phase II (Efficacy)", ex: "PPD, Parexel, Syneos" }, { sub: "Phase III (Pivotal)", ex: "IQVIA, Labcorp, ICON" }], buyers: "Pharma/biotech sponsors" },
+      { label: "Regulatory / Approval", color: T_.red, icon: "📋", desc: "FDA/EMA review & approval", rows: [{ sub: "NDA / BLA Filing", ex: "FDA CDER, CBER" }, { sub: "510(k) / PMA", ex: "FDA CDRH (devices)" }, { sub: "EMA / ROW", ex: "EMA, PMDA, NMPA" }], buyers: "Pharma, biotech, medtech companies" },
+      { label: "Manufacturing / CDMO", color: T_.green, icon: "🏭", desc: "Drug substance & product mfg", rows: [{ sub: "Small Molecule", ex: "Lonza, Catalent, Patheon" }, { sub: "Biologics", ex: "Samsung Bio, WuXi, Fujifilm" }, { sub: "Cell & Gene", ex: "Lonza, Catalent, AGC" }], buyers: "Pharma companies, biotech" },
       { label: "Distribution", color: "#0EA5E9", icon: "🚚", desc: "Wholesale & specialty distribution", rows: [{ sub: "Wholesale", ex: "McKesson, AmerisourceBergen" }, { sub: "Specialty", ex: "ASD (AmerisourceBergen)" }, { sub: "PBM", ex: "CVS Caremark, Express Scripts, OptumRx" }], buyers: "Pharmacies, hospitals, payers" },
       { label: "Providers / Patients", color: "#6366F1", icon: "🏥", desc: "Prescribing & consumption", rows: [{ sub: "Hospitals", ex: "HCA, CommonSpirit, Ascension" }, { sub: "Physicians", ex: "Oncologists, PCPs, specialists" }, { sub: "Pharmacies", ex: "CVS, Walgreens, Amazon Pharmacy" }], buyers: "Patients, health systems" },
     ];
     const HP_REV_MODELS = [
-      { name: "Branded Drug Sales (Patent-Protected)", color: "#3B82F6", icon: "💊",
+      { name: "Branded Drug Sales (Patent-Protected)", color: T_.blue, icon: "💊",
         how: "Revenue from patented drugs with market exclusivity. Pricing power is high during patent life (typically 10-15 years from filing, ~7-10 years of commercial life). Revenue recognized on product shipment. Gross-to-net deductions for rebates, chargebacks, and co-pay assistance can be 40-60% of list price.",
         economics: "Gross margins: 80-90%. R&D investment: 15-25% of revenue. Sales & marketing: 20-30%. Peak sales for blockbusters: $5-20B+ annually (Humira peaked at $21B). Patent cliff creates sharp revenue decline at LOE.",
         examples: "Keytruda (Merck, ~$25B), Ozempic/Wegovy (Novo Nordisk, ~$30B), Humira (AbbVie, peaked $21B), Eliquis (BMS/Pfizer, ~$12B), Dupixent (Sanofi/Regeneron, ~$13B)",
@@ -97,21 +97,21 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         valuation: "Lower multiples: 6-10x EBITDA. Market values portfolio breadth and pipeline of upcoming LOE opportunities. Biosimilar-focused companies command premium to pure generics. Specialty/complex generics valued higher.",
         transition: "Generics companies increasingly pivoting to biosimilars and complex generics for better margins. Consolidation continues. Vertical integration (API + finished dosage) improves economics.",
       },
-      { name: "Medical Device Sales + Service", color: "#10B981", icon: "🩺",
+      { name: "Medical Device Sales + Service", color: T_.green, icon: "🩺",
         how: "Capital equipment (imaging, surgical robots) sold upfront plus recurring revenue from consumables, instruments, and service contracts. Razor/razorblade model: place the capital equipment, profit from consumables. Service contracts are 15-20% of installed base annually.",
         economics: "Gross margins: 60-70% (devices), 80%+ (consumables). Service margins: 50-60%. Recurring consumables/service can be 60-70% of total revenue. Long sales cycles for capital (6-18 months). Procedure volume drives consumable pull-through.",
         examples: "Intuitive Surgical (da Vinci robot + instruments), Abbott (FreeStyle Libre CGM sensors), Medtronic (implants + monitoring), Stryker (orthopedic implants + navigation), Siemens Healthineers (imaging + service)",
         valuation: "15-25x forward P/E for medtech leaders. Higher multiples for companies with high recurring/consumable mix. Robotic surgery and CGM command premium valuations. Procedure volume growth is key metric.",
         transition: "Capital → recurring model shift. Companies adding digital health, AI diagnostics, and remote monitoring. Hospital budget pressures favor value-based purchasing. ASC shift benefits procedure-volume-driven companies.",
       },
-      { name: "CRO / CDMO Fee-for-Service", color: "#F59E0B", icon: "🔬",
+      { name: "CRO / CDMO Fee-for-Service", color: T_.amber, icon: "🔬",
         how: "Revenue from contracted R&D services (CRO) or manufacturing services (CDMO). Typically structured as cost-plus or fixed-fee per study/project. Backlog-driven with multi-year visibility. Revenue recognition over the project lifecycle.",
         economics: "Gross margins: 30-40% (CRO), 25-35% (CDMO). EBITDA margins: 18-28% (CRO), 20-30% (CDMO). High labor content in CRO. Capital-intensive for CDMO. Book-to-bill ratio and backlog are key leading indicators.",
         examples: "IQVIA ($15B+ backlog), Charles River (discovery + safety), Lonza (biologics CDMO), Samsung Biologics (large-scale mAb), Catalent (fill-finish + gene therapy), Medpace (mid-cap CRO)",
         valuation: "CRO: 15-25x EBITDA for quality players. CDMO: 12-20x EBITDA. Backlog visibility supports premium. Market rewards therapeutic area diversification and customer concentration reduction. Biotech funding cycles impact CRO demand.",
         transition: "Outsourcing penetration still growing — pharma outsources ~50%+ of R&D, 30%+ of manufacturing. Trend toward strategic partnerships vs transactional. CDMOs adding development capabilities (D in CDMO). Biologics CDMO growing faster than small molecule.",
       },
-      { name: "Royalty / Licensing", color: "#8B5CF6", icon: "📜",
+      { name: "Royalty / Licensing", color: T_.purple, icon: "📜",
         how: "Revenue from licensing IP (drug compounds, platform technology, patents) to other companies. Royalties typically 5-15% of net sales. Upfront payments + milestones + running royalties. Pure-play royalty companies aggregate streams.",
         economics: "Near 100% gross margin (no manufacturing or commercial costs). Highly predictable once drug is approved. Revenue scales with underlying drug sales. Risk: patent expiry and genericization of royalty-bearing products.",
         examples: "Royalty Pharma ($2B+ revenue from 35+ royalty streams), XOMA (anti-IL-6 royalties), academic institutions licensing to pharma, platform licensors (mRNA from Moderna/BioNTech to partners)",
@@ -130,7 +130,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Healthcare & Pharma Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Healthcare & Pharma Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Pharmaceuticals, biotech, medical devices, CRO/CDMO, and life sciences value chain</div>
         </div>
 
@@ -327,7 +327,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "healthservices") {
     const HS_SUBS = {
-      hospitalsystems: { name: "Hospital & Health Systems", fullName: "Hospital Systems & Integrated Delivery Networks", category: "Provider Organizations", color: "#3B82F6",
+      hospitalsystems: { name: "Hospital & Health Systems", fullName: "Hospital Systems & Integrated Delivery Networks", category: "Provider Organizations", color: T_.blue,
         tam: "$1.3T+ (2025, US)", growth: "~4-6% CAGR", icon: "🏥",
         desc: "Large integrated delivery networks (IDNs) and hospital systems that provide inpatient, outpatient, and emergency care. Consolidation continues as scale drives payer leverage and operational efficiency.",
         whatTheySell: "Inpatient acute care, surgical services, emergency departments, outpatient clinics, imaging, lab services, employed physician practices.",
@@ -335,7 +335,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["HCA Healthcare (largest for-profit — 186 hospitals)", "CommonSpirit Health", "Ascension", "Kaiser Permanente", "Trinity Health", "Tenet Healthcare", "Universal Health Services"],
         trends: "Ongoing consolidation — top 10 systems operate 25%+ of US beds. Shift to outpatient/ASC settings. Margin pressure from labor costs. Revenue cycle complexity growing. AI for clinical documentation.",
       },
-      ambulatory: { name: "Ambulatory / Outpatient", fullName: "Ambulatory Surgery Centers & Outpatient Care", category: "Provider Organizations", color: "#3B82F6",
+      ambulatory: { name: "Ambulatory / Outpatient", fullName: "Ambulatory Surgery Centers & Outpatient Care", category: "Provider Organizations", color: T_.blue,
         tam: "$300B+ (2025, US)", growth: "~7-9% CAGR", icon: "🩹",
         desc: "Ambulatory surgery centers (ASCs), urgent care clinics, freestanding imaging/lab centers, and outpatient specialty practices. The secular shift from hospital to lower-cost ambulatory settings.",
         whatTheySell: "Outpatient surgical procedures, urgent care visits, diagnostic imaging, physical therapy, dialysis, infusion services.",
@@ -343,7 +343,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["United Surgical Partners (Tenet)", "SCA Health (UnitedHealth/Optum)", "AmSurg/Envision (KKR)", "DaVita (dialysis)", "Fresenius Medical Care", "Concentra (urgent care)"],
         trends: "Procedures migrating from hospital to ASC (~55% of eligible procedures now outpatient). Total joint replacement in ASCs growing fast. Payer-provider vertical integration (UNH/Optum owns SCA Health).",
       },
-      managedcare: { name: "Managed Care (Health Insurers)", fullName: "Managed Care Organizations & Health Insurers", category: "Payer", color: "#10B981",
+      managedcare: { name: "Managed Care (Health Insurers)", fullName: "Managed Care Organizations & Health Insurers", category: "Payer", color: T_.green,
         tam: "$1.2T+ (2025, US premiums)", growth: "~5-8% CAGR", icon: "🛡️",
         desc: "Health insurance companies that manage risk, negotiate provider rates, and administer benefits for employer-sponsored, Medicare Advantage, Medicaid managed care, and individual/exchange populations.",
         whatTheySell: "Health insurance plans (employer, individual, Medicare Advantage, Medicaid managed care), pharmacy benefits (PBM), care management, analytics, and increasingly provider services.",
@@ -351,7 +351,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["UnitedHealth Group (largest — $400B+ revenue)", "Elevance Health (Anthem)", "CVS Health (Aetna)", "Cigna Group", "Humana", "Centene (Medicaid)", "Molina Healthcare"],
         trends: "Medicare Advantage enrollment growing (~50%+ of eligible Medicare beneficiaries). Vertical integration (UNH into care delivery, CVS into primary care). Star Ratings driving MA economics. V28 risk model changes pressuring MA margins.",
       },
-      rcm: { name: "Revenue Cycle Management", fullName: "Revenue Cycle Management (RCM)", category: "Healthcare IT", color: "#F59E0B",
+      rcm: { name: "Revenue Cycle Management", fullName: "Revenue Cycle Management (RCM)", category: "Healthcare IT", color: T_.amber,
         tam: "$50B+ (2025)", growth: "~10-12% CAGR", icon: "💰",
         desc: "Software and services to manage the financial lifecycle of patient encounters — from scheduling and registration through coding, billing, claims submission, denial management, and collections.",
         whatTheySell: "Patient registration/eligibility, charge capture, medical coding (ICD-10, CPT), claims submission, denial management, patient billing, analytics/reporting.",
@@ -359,7 +359,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["R1 RCM (largest pure-play)", "Waystar", "Ensemble Health Partners", "Optum (Change Healthcare)", "nThrive/FinThrive", "Experian Health", "Availity"],
         trends: "AI for automated coding and denial prediction. Change Healthcare cyberattack (2024) highlighted criticality. Prior authorization automation. Shift from on-prem to cloud-based RCM. End-to-end outsourcing growing.",
       },
-      vbc: { name: "Population Health & VBC", fullName: "Population Health Management & Value-Based Care", category: "Healthcare IT", color: "#8B5CF6",
+      vbc: { name: "Population Health & VBC", fullName: "Population Health Management & Value-Based Care", category: "Healthcare IT", color: T_.purple,
         tam: "$25B+ (2025)", growth: "~15-18% CAGR", icon: "📊",
         desc: "Platforms and services enabling the shift from fee-for-service to value-based care — risk stratification, care coordination, quality measurement, and shared savings/risk arrangements.",
         whatTheySell: "Risk stratification analytics, care gap identification, care management platforms, quality measure reporting, ACO management tools, social determinants of health (SDOH) data.",
@@ -391,7 +391,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Acadia Healthcare (largest pure-play)", "Universal Health Services (behavioral)", "LifeStance Health (outpatient)", "Talkspace", "Cerebral", "BASS/Sequel Youth Services"],
         trends: "Mental health parity enforcement increasing coverage. Youth mental health crisis driving demand. PE investment in behavioral platforms. Virtual therapy adoption sticky post-COVID. ABA therapy for autism remains supply-constrained.",
       },
-      postacute: { name: "Post-Acute & Home Health", fullName: "Post-Acute Care, Home Health & Hospice", category: "Specialty Services", color: "#EF4444",
+      postacute: { name: "Post-Acute & Home Health", fullName: "Post-Acute Care, Home Health & Hospice", category: "Specialty Services", color: T_.red,
         tam: "$150B+ (2025, US)", growth: "~6-8% CAGR", icon: "🏠",
         desc: "Skilled nursing facilities (SNFs), home health agencies, hospice care, and rehabilitation facilities. Care delivered after acute hospital stays or for chronic conditions at home.",
         whatTheySell: "Skilled nursing care, home health nursing/therapy, hospice/palliative care, inpatient rehabilitation, long-term acute care (LTAC).",
@@ -401,43 +401,43 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const HS_TAX = [
-      { key: "providers", label: "Provider Organizations", color: "#3B82F6", icon: "🏥", children: ["hospitalsystems", "ambulatory"] },
-      { key: "payer", label: "Payer / Managed Care", color: "#10B981", icon: "🛡️", children: ["managedcare"] },
-      { key: "healthit", label: "Healthcare IT", color: "#F59E0B", icon: "💰", children: ["rcm", "vbc"] },
+      { key: "providers", label: "Provider Organizations", color: T_.blue, icon: "🏥", children: ["hospitalsystems", "ambulatory"] },
+      { key: "payer", label: "Payer / Managed Care", color: T_.green, icon: "🛡️", children: ["managedcare"] },
+      { key: "healthit", label: "Healthcare IT", color: T_.amber, icon: "💰", children: ["rcm", "vbc"] },
       { key: "digital", label: "Digital Health", color: "#0EA5E9", icon: "📱", children: ["telehealth"] },
       { key: "workforce", label: "Healthcare Workforce", color: "#84CC16", icon: "👩‍⚕️", children: ["staffing"] },
       { key: "specialty", label: "Specialty Services", color: "#F97316", icon: "🧠", children: ["behavioral", "postacute"] },
     ];
     const HS_VALUE_CHAIN = [
-      { label: "Health Plans / Payers", color: "#10B981", icon: "🛡️", desc: "Insurance & risk management", rows: [{ sub: "Commercial", ex: "UNH, Elevance, Cigna, Aetna" }, { sub: "Medicare Advantage", ex: "UNH, Humana, CVS/Aetna" }, { sub: "Medicaid MCO", ex: "Centene, Molina, Elevance" }], buyers: "Employers, individuals, CMS, states" },
-      { label: "Provider Organizations", color: "#3B82F6", icon: "🏥", desc: "Care delivery entities", rows: [{ sub: "Hospital Systems", ex: "HCA, CommonSpirit, Kaiser" }, { sub: "Physician Groups", ex: "Optum Care, Privia, agilon" }, { sub: "ASCs / Ambulatory", ex: "USPI, SCA Health, DaVita" }], buyers: "Patients (via insurance), payers" },
-      { label: "Health IT Systems", color: "#F59E0B", icon: "💻", desc: "Technology infrastructure", rows: [{ sub: "EHR / PM", ex: "Epic, Oracle Health, athena" }, { sub: "RCM", ex: "R1 RCM, Waystar, FinThrive" }, { sub: "Analytics", ex: "Health Catalyst, Innovaccer" }], buyers: "Health systems, practices, payers" },
-      { label: "Care Delivery", color: "#8B5CF6", icon: "🩺", desc: "Clinical workflows & services", rows: [{ sub: "Inpatient", ex: "Acute care, surgical, ICU" }, { sub: "Outpatient", ex: "Clinics, ASCs, imaging" }, { sub: "Virtual", ex: "Teladoc, Amwell, Hims" }], buyers: "Patients, families, caregivers" },
+      { label: "Health Plans / Payers", color: T_.green, icon: "🛡️", desc: "Insurance & risk management", rows: [{ sub: "Commercial", ex: "UNH, Elevance, Cigna, Aetna" }, { sub: "Medicare Advantage", ex: "UNH, Humana, CVS/Aetna" }, { sub: "Medicaid MCO", ex: "Centene, Molina, Elevance" }], buyers: "Employers, individuals, CMS, states" },
+      { label: "Provider Organizations", color: T_.blue, icon: "🏥", desc: "Care delivery entities", rows: [{ sub: "Hospital Systems", ex: "HCA, CommonSpirit, Kaiser" }, { sub: "Physician Groups", ex: "Optum Care, Privia, agilon" }, { sub: "ASCs / Ambulatory", ex: "USPI, SCA Health, DaVita" }], buyers: "Patients (via insurance), payers" },
+      { label: "Health IT Systems", color: T_.amber, icon: "💻", desc: "Technology infrastructure", rows: [{ sub: "EHR / PM", ex: "Epic, Oracle Health, athena" }, { sub: "RCM", ex: "R1 RCM, Waystar, FinThrive" }, { sub: "Analytics", ex: "Health Catalyst, Innovaccer" }], buyers: "Health systems, practices, payers" },
+      { label: "Care Delivery", color: T_.purple, icon: "🩺", desc: "Clinical workflows & services", rows: [{ sub: "Inpatient", ex: "Acute care, surgical, ICU" }, { sub: "Outpatient", ex: "Clinics, ASCs, imaging" }, { sub: "Virtual", ex: "Teladoc, Amwell, Hims" }], buyers: "Patients, families, caregivers" },
       { label: "Patient Outcomes", color: "#6366F1", icon: "📊", desc: "Quality, cost, satisfaction", rows: [{ sub: "Quality Metrics", ex: "HEDIS, Star Ratings, CMS" }, { sub: "Value-Based", ex: "Shared savings, bundled pay" }, { sub: "Patient Experience", ex: "HCAHPS, NPS, access" }], buyers: "CMS, payers, employers, patients" },
     ];
     const HS_REV_MODELS = [
-      { name: "Fee-for-Service (FFS)", color: "#3B82F6", icon: "🧾",
+      { name: "Fee-for-Service (FFS)", color: T_.blue, icon: "🧾",
         how: "Providers paid per service rendered — per office visit, per procedure, per test. Each service has a CPT code with an associated reimbursement rate. Volume-driven: more procedures = more revenue. Still ~60% of US healthcare spending.",
         economics: "Hospital operating margins: 2-8% (thin). Physician practice margins: 10-20%. Revenue scales with volume/acuity. Case mix index (CMI) measures patient complexity. DRG reimbursement for inpatient is the largest single payer mechanism.",
         examples: "HCA Healthcare (inpatient FFS), Tenet Healthcare (surgical volume), physician groups (E&M visit codes), labs (per-test CPT billing), imaging centers (per-scan)",
         valuation: "Hospital systems: 8-12x EBITDA. Physician practices: 10-15x EBITDA (platform), 6-8x (add-on). Volume growth and payer mix (commercial vs Medicare vs Medicaid) are key drivers. Labor costs are the largest expense (50-60% of revenue).",
         transition: "Slow shift toward value-based. CMS targeting 100% of Medicare in VBC arrangements by 2030. Commercial payers following. FFS will persist for surgical/procedural specialties but declining for primary care.",
       },
-      { name: "Value-Based / Capitation", color: "#8B5CF6", icon: "📊",
+      { name: "Value-Based / Capitation", color: T_.purple, icon: "📊",
         how: "Providers paid a fixed amount per patient per period (capitation) or share in savings/risk versus a cost benchmark. Rewards efficiency and prevention over volume. Partial risk (upside only) → full risk (upside + downside).",
         economics: "Margins improve with better patient outcomes and lower utilization. Risk-bearing entities can earn 3-8% operating margin. Requires investment in care management, analytics, and population health infrastructure. Revenue more predictable than FFS.",
         examples: "Kaiser Permanente (fully integrated capitation), agilon health (Medicare Advantage capitation), Aledade (ACO shared savings), Privia Health (partial risk contracts), ChenMed (seniors, full risk)",
         valuation: "VBC enablers: 15-25x EBITDA for fast growers. Premium for 'lives under management' growth. Investors value total medical spend under management and trend in medical cost ratio. High multiple but capital-light models.",
         transition: "CMS targeting all Medicare beneficiaries in accountable care by 2030. MA penetration (~52% of eligible seniors) naturally shifts more spend to capitation. Primary care is first to transition; specialty care slower.",
       },
-      { name: "Insurance Premiums (MLR-based)", color: "#10B981", icon: "🛡️",
+      { name: "Insurance Premiums (MLR-based)", color: T_.green, icon: "🛡️",
         how: "Health insurers collect premiums and pay medical claims. The difference (after admin/SGA) is profit. Medical Loss Ratio (MLR) = medical costs / premium revenue. ACA requires MLR of 80-85%+ (rebates if below). Revenue recognized as premiums earned.",
         economics: "MLR: 82-88% for managed care (higher for Medicaid, lower for commercial). Admin ratio: 10-15%. Operating margin: 3-6%. Scale matters — UNH earns $30B+ operating income on $400B+ revenue. Investment income on premium float adds margin.",
         examples: "UnitedHealth Group (largest — $400B revenue), Elevance Health, CVS/Aetna, Cigna Group, Humana (Medicare Advantage focused), Centene (Medicaid focused), Molina Healthcare (Medicaid)",
         valuation: "12-18x forward P/E for managed care. Premium growth and MLR trend are key metrics. Medicare Advantage Star Ratings drive bonus payments. Vertical integration (Optum for UNH, Evernorth for Cigna) drives incremental value.",
         transition: "MCOs becoming care delivery companies. UNH owns 90K+ physicians, pharmacies, home health. Vertical integration blurs payer-provider line. Government scrutiny on MA coding practices and prior authorization growing.",
       },
-      { name: "SaaS (Health IT)", color: "#F59E0B", icon: "💻",
+      { name: "SaaS (Health IT)", color: T_.amber, icon: "💻",
         how: "Recurring subscription fees for healthcare IT platforms — EHR, RCM, population health, analytics. Priced per provider, per bed, per member, or per transaction. Cloud-hosted with regular updates. Implementation services revenue upfront.",
         economics: "Gross margins: 65-80% (lower than pure software due to services component). Net retention: 105-115%. Implementation cycles: 6-18 months. Switching costs extremely high (especially EHR — Epic implementations take years). Long-term contracts (5-10 years for EHR).",
         examples: "Epic Systems (private — dominant hospital EHR), Veeva Systems (life sciences CRM), Health Catalyst (analytics), Waystar (RCM SaaS), Phreesia (patient access), Evolent (VBC platform)",
@@ -470,7 +470,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Healthcare IT & Services Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Healthcare IT & Services Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Health systems, managed care, healthIT, digital health, and healthcare services value chain</div>
         </div>
 
@@ -667,7 +667,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "energy") {
     const EN_SUBS = {
-      oilgas: { name: "Oil & Gas (Upstream/Midstream/Downstream)", fullName: "Integrated & Independent Oil & Gas", category: "Oil & Gas", color: "#F59E0B",
+      oilgas: { name: "Oil & Gas (Upstream/Midstream/Downstream)", fullName: "Integrated & Independent Oil & Gas", category: "Oil & Gas", color: T_.amber,
         tam: "$3T+ (2025, global)", growth: "~2-4% CAGR (volume)", icon: "🛢️",
         desc: "Exploration & production (upstream), transportation & storage (midstream), and refining & marketing (downstream) of crude oil and natural gas. Cyclical, commodity-price-driven industry with massive capital intensity.",
         whatTheySell: "Crude oil, natural gas, NGLs, refined products (gasoline, diesel, jet fuel), petrochemical feedstocks, LNG.",
@@ -675,7 +675,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["ExxonMobil", "Chevron", "Shell", "BP", "TotalEnergies", "ConocoPhillips", "EOG Resources", "Pioneer (ExxonMobil)", "Enterprise Products (midstream)", "Kinder Morgan"],
         trends: "US shale maturation (Permian Basin dominance). LNG export boom. M&A consolidation (Exxon/Pioneer, Chevron/Hess). Capital discipline post-2020. Energy security driving investment. ESG pressures easing as pragmatism prevails.",
       },
-      renewables: { name: "Renewable Energy (Solar/Wind)", fullName: "Renewable Energy Generation — Solar & Wind", category: "Renewables", color: "#10B981",
+      renewables: { name: "Renewable Energy (Solar/Wind)", fullName: "Renewable Energy Generation — Solar & Wind", category: "Renewables", color: T_.green,
         tam: "$500B+ (2025, global investment)", growth: "~12-15% CAGR", icon: "☀️",
         desc: "Utility-scale and distributed solar PV, onshore and offshore wind power generation. Fastest-growing energy source globally, driven by cost declines, policy support (IRA), and corporate decarbonization targets.",
         whatTheySell: "Solar panels (modules), wind turbines, utility-scale power plants, distributed/rooftop solar, renewable energy certificates (RECs), clean electricity via PPAs.",
@@ -683,7 +683,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["NextEra Energy (largest renewable operator)", "Brookfield Renewable", "Enphase Energy (microinverters)", "First Solar (US panels)", "Vestas (wind turbines)", "Orsted (offshore wind)", "SunPower", "Canadian Solar"],
         trends: "IRA providing 10-year tax credit visibility. Solar costs down 90%+ over 15 years. Interconnection queue backlog (2,600 GW in US queue). Offshore wind facing cost inflation. Utility-scale solar LCOE now cheapest new-build generation in most markets.",
       },
-      storage: { name: "Energy Storage & Batteries", fullName: "Energy Storage Systems & Battery Technology", category: "Renewables", color: "#10B981",
+      storage: { name: "Energy Storage & Batteries", fullName: "Energy Storage Systems & Battery Technology", category: "Renewables", color: T_.green,
         tam: "$60B+ (2025)", growth: "~25-30% CAGR", icon: "🔋",
         desc: "Lithium-ion batteries, grid-scale energy storage, and emerging battery technologies enabling renewable energy integration and EV adoption.",
         whatTheySell: "Battery cells (EV, grid), battery energy storage systems (BESS), power electronics/inverters, battery management systems, recycling services.",
@@ -717,34 +717,34 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const EN_TAX = [
-      { key: "oilgas", label: "Oil & Gas", color: "#F59E0B", icon: "🛢️", children: ["oilgas"] },
-      { key: "renew", label: "Renewable Energy", color: "#10B981", icon: "☀️", children: ["renewables", "storage"] },
+      { key: "oilgas", label: "Oil & Gas", color: T_.amber, icon: "🛢️", children: ["oilgas"] },
+      { key: "renew", label: "Renewable Energy", color: T_.green, icon: "☀️", children: ["renewables", "storage"] },
       { key: "materials", label: "Mining & Materials", color: "#6366F1", icon: "⛏️", children: ["mining", "chemicals"] },
       { key: "cleantech", label: "Carbon Capture & Cleantech", color: "#84CC16", icon: "🌿", children: ["carboncapture"] },
     ];
     const EN_VALUE_CHAIN = [
-      { label: "Exploration / Extraction", color: "#F59E0B", icon: "⛏️", desc: "Finding & producing resources", rows: [{ sub: "O&G E&P", ex: "ExxonMobil, ConocoPhillips, EOG" }, { sub: "Mining", ex: "BHP, Rio Tinto, Freeport" }, { sub: "Renewables Dev", ex: "NextEra, Orsted, Brookfield" }], buyers: "Resource owners, governments (leases)" },
-      { label: "Processing / Refining", color: "#EF4444", icon: "🏭", desc: "Transforming raw to usable form", rows: [{ sub: "Refining", ex: "Valero, Marathon Petroleum" }, { sub: "Gas Processing", ex: "ONEOK, DCP Midstream" }, { sub: "Smelting/Processing", ex: "Alcoa, Nucor, Freeport" }], buyers: "Upstream producers (offtake)" },
-      { label: "Transport / Midstream", color: "#3B82F6", icon: "🚚", desc: "Pipelines, shipping, storage", rows: [{ sub: "Pipelines", ex: "Enterprise Products, Kinder Morgan" }, { sub: "LNG Shipping", ex: "Cheniere, Tellurian" }, { sub: "Storage", ex: "Magellan, Plains All American" }], buyers: "Producers, refiners, utilities" },
-      { label: "Distribution", color: "#8B5CF6", icon: "📦", desc: "Wholesale & retail delivery", rows: [{ sub: "Fuel Distribution", ex: "Sunoco LP, World Fuel" }, { sub: "Commodity Trading", ex: "Vitol, Trafigura, Glencore" }, { sub: "Utility Delivery", ex: "Local distribution companies" }], buyers: "End-market consumers, retailers" },
+      { label: "Exploration / Extraction", color: T_.amber, icon: "⛏️", desc: "Finding & producing resources", rows: [{ sub: "O&G E&P", ex: "ExxonMobil, ConocoPhillips, EOG" }, { sub: "Mining", ex: "BHP, Rio Tinto, Freeport" }, { sub: "Renewables Dev", ex: "NextEra, Orsted, Brookfield" }], buyers: "Resource owners, governments (leases)" },
+      { label: "Processing / Refining", color: T_.red, icon: "🏭", desc: "Transforming raw to usable form", rows: [{ sub: "Refining", ex: "Valero, Marathon Petroleum" }, { sub: "Gas Processing", ex: "ONEOK, DCP Midstream" }, { sub: "Smelting/Processing", ex: "Alcoa, Nucor, Freeport" }], buyers: "Upstream producers (offtake)" },
+      { label: "Transport / Midstream", color: T_.blue, icon: "🚚", desc: "Pipelines, shipping, storage", rows: [{ sub: "Pipelines", ex: "Enterprise Products, Kinder Morgan" }, { sub: "LNG Shipping", ex: "Cheniere, Tellurian" }, { sub: "Storage", ex: "Magellan, Plains All American" }], buyers: "Producers, refiners, utilities" },
+      { label: "Distribution", color: T_.purple, icon: "📦", desc: "Wholesale & retail delivery", rows: [{ sub: "Fuel Distribution", ex: "Sunoco LP, World Fuel" }, { sub: "Commodity Trading", ex: "Vitol, Trafigura, Glencore" }, { sub: "Utility Delivery", ex: "Local distribution companies" }], buyers: "End-market consumers, retailers" },
       { label: "End Markets", color: "#6366F1", icon: "🏠", desc: "Final consumption", rows: [{ sub: "Transportation", ex: "~28% of US energy (gasoline, jet)" }, { sub: "Industrial", ex: "~33% (manufacturing, mining)" }, { sub: "Residential/Comm", ex: "~22% (heating, electricity)" }, { sub: "Power Generation", ex: "~17% (utilities, grid)" }], buyers: "Consumers, businesses, utilities" },
     ];
     const EN_REV_MODELS = [
-      { name: "Commodity Sales (Price-Taker)", color: "#F59E0B", icon: "🛢️",
+      { name: "Commodity Sales (Price-Taker)", color: T_.amber, icon: "🛢️",
         how: "Revenue = volume produced x commodity price. Companies are price-takers for oil, gas, metals, and bulk chemicals. Prices set by global supply/demand on exchanges (WTI, Brent, Henry Hub, LME). Hedging programs smooth but don't eliminate price risk.",
         economics: "Margins highly variable with commodity cycles. Oil: breakeven $30-50/bbl (US shale), $15-25 (Saudi). Mining: cash costs vary by asset quality. Gross margins can swing from 20% to 60%+ within a cycle. Capital intensity: 30-50% of revenue in capex.",
         examples: "ExxonMobil (oil/gas), ConocoPhillips (pure-play E&P), Freeport-McMoRan (copper), Newmont (gold), Dow (commodity chemicals), Nucor (steel)",
         valuation: "Cyclicals valued on mid-cycle earnings, EV/EBITDA (4-8x for diversified), P/NAV (upstream). Reserve life, cost curve position, and free cash flow yield are key metrics. Market often misprices cyclical troughs as structural declines.",
         transition: "Integrated majors diversifying into renewables and hydrogen. Mining companies positioning as 'critical minerals' suppliers for energy transition. Capital discipline era: returns to shareholders > growth capex.",
       },
-      { name: "Midstream Toll / Fee-Based", color: "#3B82F6", icon: "🔧",
+      { name: "Midstream Toll / Fee-Based", color: T_.blue, icon: "🔧",
         how: "Revenue from transporting, storing, and processing commodities — charged per unit volume or capacity reserved. Take-or-pay contracts provide revenue floor regardless of throughput. Typically structured as MLPs or C-corps with high distribution yields.",
         economics: "Gross margins: 50-70% (low variable cost once built). EBITDA margins: 40-55%. 85-95% of revenue fee-based or hedged. Capital recycling: build asset → contract → drop down. Distribution coverage ratio target: 1.2-1.5x. Debt/EBITDA: 3.5-4.5x typical.",
         examples: "Enterprise Products Partners ($55B+ market cap), Kinder Morgan, Williams Companies (natgas pipelines), ONEOK, Energy Transfer, MPLX, Targa Resources",
         valuation: "8-12x EV/EBITDA. Yield-focused investors value distribution growth and coverage. Premium for long-duration contracts and investment-grade balance sheets. MLP structure provides tax-advantaged distributions.",
         transition: "MLPs converting to C-corps for broader investor base. Midstream pivoting to CO2 pipelines for CCUS and hydrogen transport. Natural gas infrastructure benefiting from LNG export growth and data center power demand.",
       },
-      { name: "Contracted PPA (Renewables)", color: "#10B981", icon: "☀️",
+      { name: "Contracted PPA (Renewables)", color: T_.green, icon: "☀️",
         how: "Revenue from long-term Power Purchase Agreements (PPAs) — fixed or escalating price per MWh for 10-25 years. Provides revenue visibility similar to infrastructure assets. Also earn tax credits (ITC/PTC) and Renewable Energy Certificates (RECs).",
         economics: "Unlevered returns: 6-10% (utility-scale solar), 8-12% (onshore wind). IRA tax credits (PTC: $27.50/MWh, ITC: 30%) significantly improve economics. LCOE: solar $30-50/MWh, onshore wind $25-50/MWh. Contracted cash flows support 60-70% project leverage.",
         examples: "NextEra Energy Partners (contracted renewables), Brookfield Renewable, Clearway Energy, AES Corporation, Pattern Energy, corporate PPAs (Google, Amazon, Microsoft)",
@@ -758,7 +758,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         valuation: "12-18x EBITDA for specialty chemicals (vs 6-8x commodity). Market rewards pricing power, through-cycle stability, and organic growth. M&A-driven roll-up strategies (Danaher model). Margin expansion from portfolio mix shift.",
         transition: "Commodity chemical companies divesting low-margin segments to become 'specialty' (DuPont strategy). Electronic chemicals growing with semiconductor capex. Sustainability reformulation (water-based coatings, bio-based chemicals). Industrial gas business model considered best-in-class (take-or-pay, on-site).",
       },
-      { name: "Royalty / Mineral Rights", color: "#8B5CF6", icon: "📜",
+      { name: "Royalty / Mineral Rights", color: T_.purple, icon: "📜",
         how: "Revenue from owning mineral rights beneath the surface — landowner receives a royalty (typically 12.5-25%) on production without bearing any operating costs or capital expenditure. Pure revenue participation with zero cost basis.",
         economics: "100% gross margin (no operating costs). Revenue = production x commodity price x royalty rate. Zero capex obligation. No environmental liability. Valued on reserves/resources and decline rate. Extremely capital-efficient model.",
         examples: "Texas Pacific Land (largest private landowner in Permian), Viper Energy (Diamondback subsidiary), Freehold Royalties, Black Stone Minerals, Brigham Minerals (Sitio Royalties)",
@@ -778,7 +778,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Energy & Materials Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Energy & Materials Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Oil & gas, renewables, mining, chemicals, and the energy transition value chain</div>
         </div>
 
@@ -975,7 +975,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "realestate") {
     const RE_SUBS = {
-      reitoffice: { name: "Office REITs", fullName: "Office Real Estate Investment Trusts", category: "REITs", color: "#3B82F6",
+      reitoffice: { name: "Office REITs", fullName: "Office Real Estate Investment Trusts", category: "REITs", color: T_.blue,
         tam: "$250B+ (2025, US office REIT equity)", growth: "~0-2% CAGR", icon: "🏢",
         desc: "REITs owning and operating office buildings — CBD high-rises, suburban office parks, and life science/lab buildings. Post-COVID work-from-home has structurally impaired traditional office demand.",
         whatTheySell: "Office space leased to tenants (5-10 year leases), building services, parking, conference facilities. Life science/lab space commands premium rents.",
@@ -983,7 +983,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Boston Properties (BXP)", "Vornado Realty Trust", "SL Green Realty", "Kilroy Realty", "Alexandria Real Estate (life science)", "Healthpeak (life science)"],
         trends: "National office vacancy ~20%+ (highest in decades). Work-from-home structural headwind. Flight to quality (Class A trophy assets outperform). Life science/lab space much healthier (~5-8% vacancy). Conversions to residential accelerating.",
       },
-      reitindustrial: { name: "Industrial REITs", fullName: "Industrial & Logistics Real Estate Investment Trusts", category: "REITs", color: "#10B981",
+      reitindustrial: { name: "Industrial REITs", fullName: "Industrial & Logistics Real Estate Investment Trusts", category: "REITs", color: T_.green,
         tam: "$600B+ (2025, global industrial REIT equity)", growth: "~5-7% CAGR", icon: "🏗️",
         desc: "REITs owning warehouses, distribution centers, fulfillment facilities, and cold storage. E-commerce structural tailwind driving demand. Best-performing REIT sector over the past decade.",
         whatTheySell: "Warehouse/logistics space (3-7 year leases), last-mile distribution facilities, cold storage, data center-adjacent logistics.",
@@ -991,7 +991,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Prologis (largest — $110B+ market cap, ~1.2B sq ft)", "Duke Realty (Prologis)", "Rexford Industrial", "EastGroup Properties", "STAG Industrial", "Lineage (cold storage)"],
         trends: "E-commerce penetration driving warehouse demand (~3x sq ft vs brick-and-mortar per $1 of sales). Supply normalizing after 2021-2022 construction boom. Nearshoring/reshoring creating new demand. Mark-to-market rent spreads 40-60%+ for in-place leases.",
       },
-      reitretail: { name: "Retail REITs", fullName: "Retail Real Estate Investment Trusts", category: "REITs", color: "#F59E0B",
+      reitretail: { name: "Retail REITs", fullName: "Retail Real Estate Investment Trusts", category: "REITs", color: T_.amber,
         tam: "$200B+ (2025, US retail REIT equity)", growth: "~2-4% CAGR", icon: "🛒",
         desc: "REITs owning shopping centers, malls, outlets, and net lease retail properties. Bifurcated market: open-air grocery-anchored performing well, enclosed malls struggling.",
         whatTheySell: "Retail space leased to tenants, percentage rent (share of tenant sales), common area maintenance (CAM) fees, advertising/sponsorships.",
@@ -999,7 +999,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Simon Property Group (malls/outlets)", "Realty Income (net lease)", "Kimco Realty (open-air)", "Regency Centers (grocery-anchored)", "NNN REIT (net lease)", "Agree Realty"],
         trends: "Open-air/grocery-anchored at 95%+ occupancy. Enclosed malls bifurcated: A-malls survive, B/C malls converting. Net lease (NNN) REITs growing via sale-leaseback acquisitions. Limited new retail construction supporting rent growth.",
       },
-      reitresidential: { name: "Residential REITs", fullName: "Residential & Apartment Real Estate Investment Trusts", category: "REITs", color: "#8B5CF6",
+      reitresidential: { name: "Residential REITs", fullName: "Residential & Apartment Real Estate Investment Trusts", category: "REITs", color: T_.purple,
         tam: "$250B+ (2025, US residential REIT equity)", growth: "~3-5% CAGR", icon: "🏠",
         desc: "REITs owning multifamily apartments, manufactured housing communities, and single-family rental homes. Benefits from housing affordability crisis limiting homeownership.",
         whatTheySell: "Apartment units (12-month leases), manufactured home sites, single-family rental homes, student housing, senior housing.",
@@ -1015,7 +1015,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Equinix (largest — $80B+ market cap, 260+ data centers)", "Digital Realty", "CyrusOne (KKR — private)", "QTS (Blackstone — private)", "CoreWeave (AI-focused)", "Switch"],
         trends: "AI driving unprecedented power demand (GPUs need 3-5x more power than traditional servers). Primary markets at <3% vacancy. Power availability is the bottleneck, not space. Multi-year lease commitments with 2-3% annual escalators. Nuclear/renewable power sourcing becoming competitive advantage.",
       },
-      reithealthcare: { name: "Healthcare REITs", fullName: "Healthcare Real Estate Investment Trusts", category: "REITs", color: "#EF4444",
+      reithealthcare: { name: "Healthcare REITs", fullName: "Healthcare Real Estate Investment Trusts", category: "REITs", color: T_.red,
         tam: "$120B+ (2025, US healthcare REIT equity)", growth: "~3-5% CAGR", icon: "🏥",
         desc: "REITs owning medical office buildings, senior housing, skilled nursing facilities, hospitals, and life science buildings. Aging demographics provide long-term demand tailwind.",
         whatTheySell: "Medical office space, senior housing (operating and NNN), skilled nursing facilities, hospital buildings, post-acute care facilities.",
@@ -1057,7 +1057,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const RE_TAX = [
-      { key: "reits", label: "REITs", color: "#3B82F6", icon: "🏢", children: ["reitoffice", "reitindustrial", "reitretail", "reitresidential", "reitdatacenter", "reithealthcare"] },
+      { key: "reits", label: "REITs", color: T_.blue, icon: "🏢", children: ["reitoffice", "reitindustrial", "reitretail", "reitresidential", "reitdatacenter", "reithealthcare"] },
       { key: "builders", label: "Homebuilders", color: "#84CC16", icon: "🏡", children: ["homebuilders"] },
       { key: "services", label: "CRE Services", color: "#0EA5E9", icon: "📋", children: ["creservices"] },
       { key: "tech", label: "PropTech", color: "#F97316", icon: "💻", children: ["proptech"] },
@@ -1065,13 +1065,13 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     ];
     const RE_VALUE_CHAIN = [
       { label: "Land / Development", color: "#84CC16", icon: "🌍", desc: "Land acquisition & entitlement", rows: [{ sub: "Land Banks", ex: "D.R. Horton, Lennar, NVR" }, { sub: "Developers", ex: "Brookfield, Hines, Related" }, { sub: "Entitlement", ex: "Zoning, permits, approvals" }], buyers: "Developers, homebuilders, investors" },
-      { label: "Construction", color: "#F59E0B", icon: "🏗️", desc: "Building & delivering assets", rows: [{ sub: "General Contractors", ex: "Turner, Bechtel, AECOM" }, { sub: "Homebuilders", ex: "D.R. Horton, Lennar, PulteGroup" }, { sub: "Materials", ex: "Vulcan, Martin Marietta, CRH" }], buyers: "Developers, property owners" },
-      { label: "Ownership / REIT", color: "#3B82F6", icon: "🏢", desc: "Asset ownership & capital structure", rows: [{ sub: "Public REITs", ex: "Prologis, Equinix, Welltower" }, { sub: "Private RE Funds", ex: "Blackstone, Brookfield, Starwood" }, { sub: "Direct Owners", ex: "Institutions, family offices" }], buyers: "Investors (equity + debt)" },
-      { label: "Property Management", color: "#8B5CF6", icon: "🔧", desc: "Operating & maintaining assets", rows: [{ sub: "CRE Services", ex: "CBRE, JLL, Cushman" }, { sub: "Residential PM", ex: "Greystar, Lincoln Property" }, { sub: "PropTech", ex: "Yardi, RealPage, AppFolio" }], buyers: "Property owners, REITs" },
+      { label: "Construction", color: T_.amber, icon: "🏗️", desc: "Building & delivering assets", rows: [{ sub: "General Contractors", ex: "Turner, Bechtel, AECOM" }, { sub: "Homebuilders", ex: "D.R. Horton, Lennar, PulteGroup" }, { sub: "Materials", ex: "Vulcan, Martin Marietta, CRH" }], buyers: "Developers, property owners" },
+      { label: "Ownership / REIT", color: T_.blue, icon: "🏢", desc: "Asset ownership & capital structure", rows: [{ sub: "Public REITs", ex: "Prologis, Equinix, Welltower" }, { sub: "Private RE Funds", ex: "Blackstone, Brookfield, Starwood" }, { sub: "Direct Owners", ex: "Institutions, family offices" }], buyers: "Investors (equity + debt)" },
+      { label: "Property Management", color: T_.purple, icon: "🔧", desc: "Operating & maintaining assets", rows: [{ sub: "CRE Services", ex: "CBRE, JLL, Cushman" }, { sub: "Residential PM", ex: "Greystar, Lincoln Property" }, { sub: "PropTech", ex: "Yardi, RealPage, AppFolio" }], buyers: "Property owners, REITs" },
       { label: "Tenants / Buyers", color: "#6366F1", icon: "👥", desc: "End users of real estate", rows: [{ sub: "Corporate", ex: "Office, retail, industrial tenants" }, { sub: "Residential", ex: "Renters, homebuyers" }, { sub: "Specialized", ex: "Data centers, healthcare, storage" }], buyers: "Consumers, businesses" },
     ];
     const RE_REV_MODELS = [
-      { name: "Rental Income (NOI)", color: "#3B82F6", icon: "🏢",
+      { name: "Rental Income (NOI)", color: T_.blue, icon: "🏢",
         how: "Revenue from leasing property to tenants. Net Operating Income (NOI) = rental revenue + other property income - operating expenses (property taxes, insurance, maintenance, utilities). NOI is the fundamental building block of real estate valuation.",
         economics: "NOI margins: 60-75% (varies by property type). Cap rates: 4-8% (NOI / property value). Same-store NOI growth: 2-5% for healthy REITs. Lease structures: triple net (NNN — tenant pays all expenses), gross, modified gross. Long lease terms provide visibility.",
         examples: "Prologis (industrial — 97% occupancy, 60%+ mark-to-market), Equinix (data center — $6B+ revenue, ~50% NOI margin), Realty Income (NNN retail — 99%+ occupancy), AvalonBay (apartments — 95%+ occupancy)",
@@ -1099,14 +1099,14 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         valuation: "Originators: 1-3x book value (cyclical). Servicers: value of MSR portfolio + platform. Mortgage REITs: 0.8-1.2x book value, valued on dividend yield and book value stability. GSE reform remains wildcard.",
         transition: "Digital mortgage experience improving (Rocket pioneered). Non-bank lenders dominant (70%+ market share). Rising rates shift value to servicing. Potential for GSE reform (Fannie/Freddie privatization) under future administrations. AI for underwriting automation.",
       },
-      { name: "Property Management Fees", color: "#8B5CF6", icon: "🔧",
+      { name: "Property Management Fees", color: T_.purple, icon: "🔧",
         how: "Revenue from managing properties on behalf of owners — typically 2-5% of collected rent for residential, 1-4% of revenue for commercial. Includes leasing, maintenance, tenant relations, and financial reporting. Recurring and scalable.",
         economics: "Fee margins: 15-25% (labor-intensive). Revenue per unit: $50-200/month (residential), varies widely for commercial. Scale advantages: technology and centralized services improve margins at scale. Ancillary revenue from maintenance, insurance programs, and vendor rebates.",
         examples: "Greystar (largest apartment manager — 800K+ units), CBRE (largest commercial PM), Lincoln Property Company, RealPage/Yardi (tech-enabled PM), AppFolio (SMB PM software)",
         valuation: "PM businesses valued at 10-15x EBITDA. Premium for technology-enabled platforms and recurring contract base. Key metric: units/properties under management and retention rate. PropTech companies valued at higher SaaS multiples (5-10x revenue).",
         transition: "Technology transforming PM — AI for maintenance prediction, automated leasing, smart building management. Consolidation as tech-enabled managers gain share. Resident experience apps becoming expected. ESG/sustainability reporting requirements growing.",
       },
-      { name: "REIT Distribution Model", color: "#F59E0B", icon: "💰",
+      { name: "REIT Distribution Model", color: T_.amber, icon: "💰",
         how: "REITs must distribute 90%+ of taxable income to shareholders as dividends. In exchange, REITs avoid corporate-level taxation. Investors receive income (dividends) plus potential capital appreciation from NAV growth. FFO (Funds from Operations) replaces earnings as the key profitability metric.",
         economics: "REIT dividend yields: 3-6% (varies by sector). Payout ratio: 60-80% of AFFO (adjusted FFO) is sustainable. Internal growth funded by retained cash flow + external capital (equity issuance, debt). Cost of capital discipline: only issue equity above NAV.",
         examples: "Realty Income (monthly dividend, 55+ year track record), Prologis (industrial REIT, ~2.5% yield + growth), Equinix (data center REIT, ~2% yield + 10%+ growth), Simon Property (mall REIT, ~5% yield)",
@@ -1125,7 +1125,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Real Estate Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Real Estate Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>REITs, homebuilders, CRE services, PropTech, and real estate value chain</div>
         </div>
 
@@ -1322,7 +1322,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "utilities") {
     const UT_SUBS = {
-      regelectric: { name: "Regulated Electric Utilities", fullName: "Regulated Electric Utility Companies", category: "Regulated Utilities", color: "#F59E0B",
+      regelectric: { name: "Regulated Electric Utilities", fullName: "Regulated Electric Utility Companies", category: "Regulated Utilities", color: T_.amber,
         tam: "$500B+ (2025, US electric utility revenue)", growth: "~4-6% CAGR", icon: "⚡",
         desc: "Vertically integrated or transmission/distribution-only electric utilities operating under state regulatory commissions. Earn an allowed return on equity (ROE) on invested capital (rate base). The classic regulated utility model.",
         whatTheySell: "Electricity delivery (generation, transmission, distribution), grid reliability, customer service, energy efficiency programs, EV charging infrastructure.",
@@ -1330,7 +1330,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["NextEra Energy (largest US utility by market cap — $160B+)", "Duke Energy", "Southern Company", "Dominion Energy", "American Electric Power (AEP)", "Xcel Energy", "Entergy"],
         trends: "Data center load growth creating unprecedented demand (5-7% annual growth vs historic 0-1%). Grid modernization/hardening investment. Renewable portfolio standards driving clean energy capex. Rate base growth of 6-8% supporting earnings growth. Wildfire risk management (California).",
       },
-      reggas: { name: "Regulated Gas Utilities", fullName: "Regulated Natural Gas Distribution Utilities", category: "Regulated Utilities", color: "#3B82F6",
+      reggas: { name: "Regulated Gas Utilities", fullName: "Regulated Natural Gas Distribution Utilities", category: "Regulated Utilities", color: T_.blue,
         tam: "$80B+ (2025, US gas utility revenue)", growth: "~3-5% CAGR", icon: "🔥",
         desc: "Local distribution companies (LDCs) delivering natural gas to residential, commercial, and industrial customers through regulated pipeline networks.",
         whatTheySell: "Natural gas delivery (not the commodity itself — gas cost is a pass-through), pipeline safety upgrades, meter/service installation, energy efficiency programs.",
@@ -1346,7 +1346,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["American Water Works (largest — 14M+ people served)", "Essential Utilities (Aqua America)", "California Water Service", "SJW Group", "York Water (oldest US utility — 1816)", "Middlesex Water"],
         trends: "Municipal system acquisitions driving consolidation (fair market value legislation in 15+ states). Lead pipe replacement mandated by EPA. PFAS treatment requirements creating investment need. Rate base growth 7-9% for acquirers. Most defensive utility subsector.",
       },
-      ipp: { name: "Independent Power Producers (IPPs)", fullName: "Independent Power Producers & Competitive Generators", category: "Competitive Generation", color: "#EF4444",
+      ipp: { name: "Independent Power Producers (IPPs)", fullName: "Independent Power Producers & Competitive Generators", category: "Competitive Generation", color: T_.red,
         tam: "$150B+ (2025, US competitive gen revenue)", growth: "~3-5% CAGR", icon: "🏭",
         desc: "Unregulated power generators selling electricity into competitive wholesale markets or via bilateral contracts. Own nuclear, gas, coal, and renewable assets. Revenue driven by power prices, capacity payments, and ancillary services.",
         whatTheySell: "Wholesale electricity (energy market), capacity payments (reliability), ancillary services (frequency regulation, reserves), clean energy attributes (RECs, carbon-free credits).",
@@ -1354,7 +1354,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Vistra Corp (largest competitive gen)", "Constellation Energy (largest nuclear fleet — 32 GW)", "NRG Energy", "Talen Energy", "AES Corporation"],
         trends: "Nuclear renaissance driven by AI/data center demand for 24/7 carbon-free power. Constellation stock 5x'd in 2024 on nuclear re-rating. Power prices elevated in deregulated markets. Capacity market reforms. Coal retirements tightening supply-demand. Data centers signing 10-20 year nuclear PPAs.",
       },
-      cleandev: { name: "Renewable / Clean Energy Developers", fullName: "Renewable Energy Development & YieldCos", category: "Clean Energy", color: "#10B981",
+      cleandev: { name: "Renewable / Clean Energy Developers", fullName: "Renewable Energy Development & YieldCos", category: "Clean Energy", color: T_.green,
         tam: "$100B+ (2025, global renewable project equity)", growth: "~12-15% CAGR", icon: "☀️",
         desc: "Companies developing, building, and operating utility-scale solar, wind, and battery storage projects. Revenue from long-term PPAs and merchant sales. Includes YieldCos that own operating contracted assets.",
         whatTheySell: "Utility-scale solar and wind generation (via PPAs), battery storage services, renewable energy certificates (RECs), development pipeline, operating assets via YieldCos.",
@@ -1362,7 +1362,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["NextEra Energy Resources (NextEra's unregulated arm)", "Brookfield Renewable Partners", "Clearway Energy", "AES Clean Energy", "Invenergy (private)", "Orsted (offshore wind)", "Pattern Energy (CPPIB)"],
         trends: "IRA providing 10-year PTC/ITC visibility. Solar + storage co-location standard. Interconnection delays (4-5 year queue in some regions). Offshore wind cost resets (Orsted writedowns). Corporate PPA demand exceeding supply. Battery storage economics improving rapidly.",
       },
-      multiutil: { name: "Multi-Utility Holding Companies", fullName: "Diversified Multi-Utility Holding Companies", category: "Diversified", color: "#8B5CF6",
+      multiutil: { name: "Multi-Utility Holding Companies", fullName: "Diversified Multi-Utility Holding Companies", category: "Diversified", color: T_.purple,
         tam: "$300B+ (2025, US multi-utility market cap)", growth: "~4-6% CAGR", icon: "🏛️",
         desc: "Holding companies owning regulated electric, gas, and sometimes water utilities plus unregulated businesses (generation, trading, midstream). Diversification provides earnings stability.",
         whatTheySell: "Bundled utility services across multiple commodities (electric + gas), regulated T&D, competitive generation, energy trading, midstream/pipeline operations.",
@@ -1372,34 +1372,34 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const UT_TAX = [
-      { key: "regulated", label: "Regulated Utilities", color: "#F59E0B", icon: "⚡", children: ["regelectric", "reggas", "water"] },
-      { key: "competitive", label: "Competitive Generation", color: "#EF4444", icon: "🏭", children: ["ipp"] },
-      { key: "clean", label: "Clean Energy", color: "#10B981", icon: "☀️", children: ["cleandev"] },
-      { key: "diversified", label: "Diversified Multi-Utility", color: "#8B5CF6", icon: "🏛️", children: ["multiutil"] },
+      { key: "regulated", label: "Regulated Utilities", color: T_.amber, icon: "⚡", children: ["regelectric", "reggas", "water"] },
+      { key: "competitive", label: "Competitive Generation", color: T_.red, icon: "🏭", children: ["ipp"] },
+      { key: "clean", label: "Clean Energy", color: T_.green, icon: "☀️", children: ["cleandev"] },
+      { key: "diversified", label: "Diversified Multi-Utility", color: T_.purple, icon: "🏛️", children: ["multiutil"] },
     ];
     const UT_VALUE_CHAIN = [
-      { label: "Generation", color: "#EF4444", icon: "🏭", desc: "Power production", rows: [{ sub: "Nuclear", ex: "Constellation, Southern, Duke" }, { sub: "Natural Gas", ex: "Vistra, NRG, Calpine" }, { sub: "Renewables", ex: "NextEra, Brookfield, AES" }, { sub: "Coal (declining)", ex: "AEP, Duke (retiring)" }], buyers: "Grid operators, utilities, C&I" },
-      { label: "Transmission", color: "#F59E0B", icon: "⚡", desc: "High-voltage bulk transport", rows: [{ sub: "Regulated T&D", ex: "AEP, Eversource, Entergy" }, { sub: "Merchant Tx", ex: "ITC Holdings, MidAmerican" }, { sub: "Grid Operators", ex: "PJM, ERCOT, CAISO, MISO" }], buyers: "Distribution utilities, large users" },
-      { label: "Distribution", color: "#3B82F6", icon: "🔌", desc: "Local delivery to customers", rows: [{ sub: "Electric LDC", ex: "Duke, Southern, Xcel" }, { sub: "Gas LDC", ex: "Atmos, Spire, NJR" }, { sub: "Water", ex: "American Water, Essential" }], buyers: "End-use residential/C&I customers" },
-      { label: "Retail / Customer", color: "#10B981", icon: "🏠", desc: "Billing, metering, programs", rows: [{ sub: "Regulated Retail", ex: "Bundled utility service" }, { sub: "Competitive Retail", ex: "TXU, Constellation, NRG" }, { sub: "DER / Rooftop", ex: "Sunrun, SunPower, Tesla" }], buyers: "Consumers, businesses" },
-      { label: "Regulation / Rate Setting", color: "#8B5CF6", icon: "⚖️", desc: "Oversight & rate approval", rows: [{ sub: "State PUCs", ex: "CPUC, NYPSC, PUCT" }, { sub: "FERC", ex: "Interstate transmission/gas" }, { sub: "EPA / Emissions", ex: "Clean Air Act, PFAS rules" }], buyers: "Utilities (compliance), ratepayers" },
+      { label: "Generation", color: T_.red, icon: "🏭", desc: "Power production", rows: [{ sub: "Nuclear", ex: "Constellation, Southern, Duke" }, { sub: "Natural Gas", ex: "Vistra, NRG, Calpine" }, { sub: "Renewables", ex: "NextEra, Brookfield, AES" }, { sub: "Coal (declining)", ex: "AEP, Duke (retiring)" }], buyers: "Grid operators, utilities, C&I" },
+      { label: "Transmission", color: T_.amber, icon: "⚡", desc: "High-voltage bulk transport", rows: [{ sub: "Regulated T&D", ex: "AEP, Eversource, Entergy" }, { sub: "Merchant Tx", ex: "ITC Holdings, MidAmerican" }, { sub: "Grid Operators", ex: "PJM, ERCOT, CAISO, MISO" }], buyers: "Distribution utilities, large users" },
+      { label: "Distribution", color: T_.blue, icon: "🔌", desc: "Local delivery to customers", rows: [{ sub: "Electric LDC", ex: "Duke, Southern, Xcel" }, { sub: "Gas LDC", ex: "Atmos, Spire, NJR" }, { sub: "Water", ex: "American Water, Essential" }], buyers: "End-use residential/C&I customers" },
+      { label: "Retail / Customer", color: T_.green, icon: "🏠", desc: "Billing, metering, programs", rows: [{ sub: "Regulated Retail", ex: "Bundled utility service" }, { sub: "Competitive Retail", ex: "TXU, Constellation, NRG" }, { sub: "DER / Rooftop", ex: "Sunrun, SunPower, Tesla" }], buyers: "Consumers, businesses" },
+      { label: "Regulation / Rate Setting", color: T_.purple, icon: "⚖️", desc: "Oversight & rate approval", rows: [{ sub: "State PUCs", ex: "CPUC, NYPSC, PUCT" }, { sub: "FERC", ex: "Interstate transmission/gas" }, { sub: "EPA / Emissions", ex: "Clean Air Act, PFAS rules" }], buyers: "Utilities (compliance), ratepayers" },
     ];
     const UT_REV_MODELS = [
-      { name: "Regulated Rate Base (Cost-of-Service)", color: "#F59E0B", icon: "⚖️",
+      { name: "Regulated Rate Base (Cost-of-Service)", color: T_.amber, icon: "⚖️",
         how: "Revenue determined by regulators to cover prudently incurred costs plus an allowed return on invested capital (rate base). Formula: Revenue Requirement = Operating Expenses + Depreciation + Taxes + (Rate Base x Allowed ROE). Rate cases filed every 2-4 years to reset rates. Between rate cases, earnings can lag if costs rise faster than rates.",
         economics: "Allowed ROE: 9.0-10.5% (currently ~9.8% national average). Rate base growth: 6-9% for capex-intensive utilities. Earned ROE often 50-100bp below allowed. Regulatory lag: 6-18 months between spending and rate recovery. Equity ratio: 48-52% of capital structure (regulatory determination).",
         examples: "NextEra (FPL subsidiary — $35B+ rate base), Duke Energy ($65B+ rate base across states), Southern Company ($50B+ rate base), American Water Works ($15B+ rate base, 7-9% growth)",
         valuation: "P/E: 16-22x forward (premium for high rate base growth). EV/Rate Base: 1.3-1.8x. Market rewards predictable earnings growth (5-8% EPS CAGR target). Regulatory jurisdiction quality (constructive vs hostile) impacts premium. Dividend yield: 3-4%.",
         transition: "Data center demand creating unprecedented load growth opportunity. Grid modernization and hardening ($100B+ needed). EV charging infrastructure as new rate base. Performance-based ratemaking mechanisms evolving. Decoupling revenues from sales volume to reduce weather sensitivity.",
       },
-      { name: "PPA / Contracted Generation", color: "#10B981", icon: "☀️",
+      { name: "PPA / Contracted Generation", color: T_.green, icon: "☀️",
         how: "Revenue from long-term Power Purchase Agreements (10-25 years) at fixed or escalating prices per MWh. Provides revenue certainty independent of volatile wholesale markets. Counterparty credit risk matters — investment-grade utility or corporate offtaker preferred.",
         economics: "Contract prices: $30-60/MWh (solar), $25-50/MWh (onshore wind), plus IRA tax credits (PTC $27.50/MWh, ITC 30%). Project-level unlevered returns: 6-10%. Tax equity financing captures ITC/PTC value. Contracted cash flows support 60-75% project-level debt.",
         examples: "NextEra Energy Resources (~25 GW contracted portfolio), Clearway Energy (8 GW+), AES Clean Energy, corporate PPAs (Microsoft, Google, Amazon, Meta collectively the largest clean energy buyers globally)",
         valuation: "YieldCo: 8-12x CAFD (cash available for distribution). Development premium for pipeline. Key metrics: contracted backlog (GW + $), average PPA remaining life, re-contracting risk. Interest rate sensitivity as duration assets.",
         transition: "PPAs evolving from flat to escalating structures. 24/7 matching (hourly clean energy) becoming new corporate standard. Storage-paired PPAs growing. Merchant tail risk at PPA expiry. Repowering older wind/solar assets extends useful life.",
       },
-      { name: "Market-Based Wholesale", color: "#EF4444", icon: "📈",
+      { name: "Market-Based Wholesale", color: T_.red, icon: "📈",
         how: "Revenue from selling electricity into competitive wholesale markets (day-ahead and real-time). Price set by supply/demand fundamentals — marginal cost of the last generator dispatched. Nuclear and renewables are infra-marginal (lowest cost, always dispatched). Revenue streams: energy, capacity, ancillary services.",
         economics: "Power prices: $30-80/MWh (varies by region and time). Capacity payments: $30-150/MW-day (PJM, ISO-NE). Nuclear all-in cost: $25-35/MWh (lowest among dispatchable). Gas peaker margins: highly volatile. Spark spread (gas) and dark spread (coal) drive dispatch economics.",
         examples: "Constellation Energy (32 GW nuclear fleet — highest margins in competitive gen), Vistra Corp (diverse fleet + retail), NRG Energy (gas + retail), Talen Energy (nuclear + gas)",
@@ -1413,7 +1413,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         valuation: "REC revenue is incremental margin. Policy risk: REC programs are state-determined and can change. States with aggressive RPS targets (CA, NJ, NY, MA) have highest-value RECs. Nuclear zero-emission credits (ZECs) saved multiple plants from closure.",
         transition: "Clean Energy Standards replacing RPS in some states (technology-neutral, including nuclear). 24/7 hourly matching devaluing annual RECs. EAC (Energy Attribute Certificate) standards evolving globally. Carbon pricing would increase clean energy attribute value.",
       },
-      { name: "Rate Case Mechanism", color: "#8B5CF6", icon: "📋",
+      { name: "Rate Case Mechanism", color: T_.purple, icon: "📋",
         how: "The formal regulatory process through which utilities request rate changes. General rate case: comprehensive review every 2-4 years. Interim mechanisms: riders, trackers, formula rates, and decoupling allow more frequent adjustments. The quality of regulatory mechanisms directly impacts earnings growth and investor returns.",
         economics: "Rate case duration: 6-18 months. Filing frequency: every 2-4 years. Forward-looking test years (vs historic) reduce regulatory lag. Capital trackers allow immediate cost recovery for specific programs (grid hardening, pipeline replacement). Constructive jurisdictions earn closer to allowed ROE.",
         examples: "NextEra/FPL (constructive FL regulation — settlement-based), Duke Energy (multi-state, varying quality), American Water (formula rates in IL), Atmos Energy (capex trackers in multiple states), AEP (TX wires investment)",
@@ -1433,7 +1433,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>Utilities Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Utilities Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Regulated utilities, competitive generation, clean energy, and the power value chain</div>
         </div>
 
@@ -1630,7 +1630,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
   // ═══════════════════════════════════════════════════════
   if (subTab === "itbpo") {
     const BP_SUBS = {
-      bpo: { name: "Business Process Outsourcing (BPO)", fullName: "Business Process Outsourcing — General", category: "BPO", color: "#3B82F6",
+      bpo: { name: "Business Process Outsourcing (BPO)", fullName: "Business Process Outsourcing — General", category: "BPO", color: T_.blue,
         tam: "$280B+ (2025, global)", growth: "~8-10% CAGR", icon: "🏢",
         desc: "Outsourcing of non-core business processes to third-party providers — includes customer service, back-office operations, procurement, and supply chain management. Driven by labor arbitrage, process expertise, and increasingly automation.",
         whatTheySell: "Customer care/contact center operations, order management, claims processing, procurement/P2P, supply chain operations, content moderation, trust & safety, data entry/processing.",
@@ -1638,7 +1638,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Accenture (BPO division)", "Cognizant", "Genpact", "WNS Holdings", "EXL Service", "Concentrix", "Teleperformance", "Conduent"],
         trends: "AI/automation transforming BPO (RPA + GenAI reducing manual tasks 20-40%). Shift from FTE-based to outcome-based pricing. Nearshoring growth (LatAm, Eastern Europe). GCCs (captive centers) competing with third-party BPO. Platform BPO (tech + services) commanding premium.",
       },
-      kpo: { name: "Knowledge Process Outsourcing (KPO)", fullName: "Knowledge Process Outsourcing — Analytics & Research", category: "KPO", color: "#8B5CF6",
+      kpo: { name: "Knowledge Process Outsourcing (KPO)", fullName: "Knowledge Process Outsourcing — Analytics & Research", category: "KPO", color: T_.purple,
         tam: "$50B+ (2025, global)", growth: "~12-15% CAGR", icon: "🧠",
         desc: "Outsourcing of knowledge-intensive work — data analytics, financial research, actuarial services, investment research, clinical data management, and engineering services. Higher-value, higher-margin than traditional BPO.",
         whatTheySell: "Data analytics & insights, financial research/modeling, actuarial services, investment operations, clinical data management, engineering design services, legal research/review.",
@@ -1646,7 +1646,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["EXL Service (analytics-led)", "WNS (analytics)", "Mu Sigma", "LatentView Analytics", "ZS Associates", "Evalueserve"],
         trends: "AI augmenting (not replacing) knowledge workers. Demand for advanced analytics/AI/ML talent. Financial services KPO growing with regulatory complexity. Clinical research KPO benefiting from pharma R&D spend. Blurring line between KPO and consulting.",
       },
-      contactcenter: { name: "Contact Center / CX", fullName: "Contact Center & Customer Experience (CX) Services", category: "Customer Experience", color: "#10B981",
+      contactcenter: { name: "Contact Center / CX", fullName: "Contact Center & Customer Experience (CX) Services", category: "Customer Experience", color: T_.green,
         tam: "$120B+ (2025, global)", growth: "~7-9% CAGR", icon: "📞",
         desc: "Outsourced customer service, technical support, sales, and omnichannel customer experience management. The largest segment of BPO, undergoing rapid transformation with AI chatbots and digital channels.",
         whatTheySell: "Inbound/outbound voice support, chat/messaging support, email management, social media customer service, technical support, sales/retention campaigns, omnichannel orchestration.",
@@ -1654,7 +1654,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Teleperformance (largest — 500K+ employees)", "Concentrix (post-Webhelp merger)", "TTEC Holdings", "Foundever (Sitel + Synnex)", "Alorica", "TaskUs (digital-native)", "Majorel (Teleperformance)"],
         trends: "GenAI chatbots handling 30-40% of interactions (up from 15% pre-GPT). Agent-assist AI improving AHT and CSAT. Digital channels (chat, messaging) surpassing voice. Work-from-home model permanent for 30-40% of agents. Trust & safety/content moderation growing fast (social media platforms).",
       },
-      fao: { name: "Finance & Accounting Outsourcing (FAO)", fullName: "Finance & Accounting Outsourcing", category: "F&A", color: "#F59E0B",
+      fao: { name: "Finance & Accounting Outsourcing (FAO)", fullName: "Finance & Accounting Outsourcing", category: "F&A", color: T_.amber,
         tam: "$55B+ (2025, global)", growth: "~9-11% CAGR", icon: "💰",
         desc: "Outsourcing of finance and accounting processes — accounts payable, accounts receivable, general ledger, financial reporting, tax preparation, and treasury operations. Growing as CFOs seek efficiency and talent in tight labor market.",
         whatTheySell: "Accounts payable (P2P), accounts receivable (O2C), general ledger/close, financial planning & analysis (FP&A), tax compliance, treasury operations, audit support, intercompany accounting.",
@@ -1662,7 +1662,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
         keyPlayers: ["Genpact (strongest F&A brand)", "Accenture", "WNS", "EXL Service", "Infosys BPM", "Wipro", "HCLTech", "DXC Technology"],
         trends: "Automation of AP/AR (touchless invoice processing 60-80%). AI for anomaly detection in GL close. CFO talent shortage driving outsourcing. Controllership-as-a-service model emerging for mid-market. ESG reporting creating new compliance outsourcing demand.",
       },
-      hro: { name: "HR Outsourcing (HRO)", fullName: "Human Resources Outsourcing", category: "HR", color: "#EF4444",
+      hro: { name: "HR Outsourcing (HRO)", fullName: "Human Resources Outsourcing", category: "HR", color: T_.red,
         tam: "$40B+ (2025, global)", growth: "~7-9% CAGR", icon: "👥",
         desc: "Outsourcing of HR functions — payroll administration, benefits management, recruitment process outsourcing (RPO), employee onboarding, compliance, and HR shared services.",
         whatTheySell: "Payroll processing (multi-country), benefits administration, recruitment process outsourcing (RPO), employee lifecycle management, HR compliance, learning administration, HR analytics.",
@@ -1688,51 +1688,51 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
       },
     };
     const BP_TAX = [
-      { key: "genbpo", label: "General BPO", color: "#3B82F6", icon: "🏢", children: ["bpo"] },
-      { key: "kpo", label: "Knowledge Process Outsourcing", color: "#8B5CF6", icon: "🧠", children: ["kpo"] },
-      { key: "cx", label: "Customer Experience", color: "#10B981", icon: "📞", children: ["contactcenter"] },
-      { key: "fa", label: "Finance & Accounting", color: "#F59E0B", icon: "💰", children: ["fao"] },
-      { key: "hr", label: "HR Outsourcing", color: "#EF4444", icon: "👥", children: ["hro"] },
+      { key: "genbpo", label: "General BPO", color: T_.blue, icon: "🏢", children: ["bpo"] },
+      { key: "kpo", label: "Knowledge Process Outsourcing", color: T_.purple, icon: "🧠", children: ["kpo"] },
+      { key: "cx", label: "Customer Experience", color: T_.green, icon: "📞", children: ["contactcenter"] },
+      { key: "fa", label: "Finance & Accounting", color: T_.amber, icon: "💰", children: ["fao"] },
+      { key: "hr", label: "HR Outsourcing", color: T_.red, icon: "👥", children: ["hro"] },
       { key: "health", label: "Healthcare BPO", color: "#06B6D4", icon: "🏥", children: ["healthbpo"] },
       { key: "legal", label: "Legal Process Outsourcing", color: "#84CC16", icon: "⚖️", children: ["lpo"] },
     ];
     const BP_VALUE_CHAIN = [
-      { label: "Client Business Processes", color: "#3B82F6", icon: "🏢", desc: "Core & non-core operations", rows: [{ sub: "Front Office", ex: "Customer service, sales support" }, { sub: "Middle Office", ex: "Claims, compliance, operations" }, { sub: "Back Office", ex: "F&A, HR, procurement, IT" }], buyers: "Internal stakeholders, end customers" },
-      { label: "Process Design / Consulting", color: "#8B5CF6", icon: "📋", desc: "Assessment & optimization", rows: [{ sub: "Process Mining", ex: "Celonis, UiPath Process Mining" }, { sub: "Consulting", ex: "Accenture, McKinsey, Deloitte" }, { sub: "Benchmarking", ex: "SSON, Everest Group, HFS" }], buyers: "C-suite, transformation offices" },
-      { label: "Transition / Migration", color: "#F59E0B", icon: "🔄", desc: "Knowledge transfer & ramp-up", rows: [{ sub: "KT (Knowledge Transfer)", ex: "6-12 week transition periods" }, { sub: "Hiring & Training", ex: "Domain + process training" }, { sub: "Tech Setup", ex: "Workflow tools, RPA, telephony" }], buyers: "BPO providers (investment phase)" },
-      { label: "Steady-State Operations", color: "#10B981", icon: "⚙️", desc: "Ongoing service delivery", rows: [{ sub: "Delivery Centers", ex: "India, Philippines, LatAm, EE" }, { sub: "Quality Mgmt", ex: "SLA tracking, CSAT, Six Sigma" }, { sub: "Workforce Mgmt", ex: "Scheduling, attrition mgmt" }], buyers: "Client operations teams" },
-      { label: "Continuous Improvement", color: "#EF4444", icon: "📈", desc: "Automation & optimization", rows: [{ sub: "RPA/Automation", ex: "UiPath, Automation Anywhere" }, { sub: "GenAI", ex: "Copilots, chatbots, agents" }, { sub: "Analytics", ex: "Process insights, predictive" }], buyers: "Client + provider (shared value)" },
+      { label: "Client Business Processes", color: T_.blue, icon: "🏢", desc: "Core & non-core operations", rows: [{ sub: "Front Office", ex: "Customer service, sales support" }, { sub: "Middle Office", ex: "Claims, compliance, operations" }, { sub: "Back Office", ex: "F&A, HR, procurement, IT" }], buyers: "Internal stakeholders, end customers" },
+      { label: "Process Design / Consulting", color: T_.purple, icon: "📋", desc: "Assessment & optimization", rows: [{ sub: "Process Mining", ex: "Celonis, UiPath Process Mining" }, { sub: "Consulting", ex: "Accenture, McKinsey, Deloitte" }, { sub: "Benchmarking", ex: "SSON, Everest Group, HFS" }], buyers: "C-suite, transformation offices" },
+      { label: "Transition / Migration", color: T_.amber, icon: "🔄", desc: "Knowledge transfer & ramp-up", rows: [{ sub: "KT (Knowledge Transfer)", ex: "6-12 week transition periods" }, { sub: "Hiring & Training", ex: "Domain + process training" }, { sub: "Tech Setup", ex: "Workflow tools, RPA, telephony" }], buyers: "BPO providers (investment phase)" },
+      { label: "Steady-State Operations", color: T_.green, icon: "⚙️", desc: "Ongoing service delivery", rows: [{ sub: "Delivery Centers", ex: "India, Philippines, LatAm, EE" }, { sub: "Quality Mgmt", ex: "SLA tracking, CSAT, Six Sigma" }, { sub: "Workforce Mgmt", ex: "Scheduling, attrition mgmt" }], buyers: "Client operations teams" },
+      { label: "Continuous Improvement", color: T_.red, icon: "📈", desc: "Automation & optimization", rows: [{ sub: "RPA/Automation", ex: "UiPath, Automation Anywhere" }, { sub: "GenAI", ex: "Copilots, chatbots, agents" }, { sub: "Analytics", ex: "Process insights, predictive" }], buyers: "Client + provider (shared value)" },
     ];
     const BP_REV_MODELS = [
-      { name: "FTE-Based Pricing", color: "#3B82F6", icon: "👤",
+      { name: "FTE-Based Pricing", color: T_.blue, icon: "👤",
         how: "Revenue based on the number of full-time equivalent (FTE) resources deployed for the client. Client pays a monthly rate per FTE that covers salary, infrastructure, management overhead, and provider margin. The traditional BPO pricing model. Most transparent but least aligned with outcomes.",
         economics: "FTE cost (offshore India): $15-25K/year fully loaded. Bill rate: $25-50K/year (1.5-2.5x markup). Gross margin: 35-50%. EBITDA margin: 12-18%. Revenue scales linearly with headcount. Margin expansion from pyramid optimization (junior-heavy mix) and utilization improvement.",
         examples: "Teleperformance (contact center FTE), Genpact (F&A FTE teams), Cognizant (healthcare BPO FTEs), Infosys BPM (diverse FTE contracts), traditional IT outsourcing deals (Wipro, TCS)",
         valuation: "8-12x EBITDA for FTE-heavy BPO. Market discounts linear revenue models. Investors watch revenue per FTE, attrition rate, and utilization. Premium for companies demonstrating shift from FTE to outcome-based. PE targets this sector for operational improvement.",
         transition: "FTE model under structural pressure from AI/automation. Clients demanding productivity improvements (same output with fewer FTEs). Providers transitioning to hybrid models (base FTE + automation savings sharing). Pure FTE pricing declining from ~70% to ~50% of total BPO contracts.",
       },
-      { name: "Transaction-Based Pricing", color: "#10B981", icon: "📊",
+      { name: "Transaction-Based Pricing", color: T_.green, icon: "📊",
         how: "Revenue per unit of work completed — per claim processed, per invoice handled, per ticket resolved, per transaction adjudicated. Aligns payment with actual volume of work. More predictable for providers as pricing is pre-determined per unit.",
         economics: "Per-claim processing: $3-15 per claim. Per-invoice: $1-5 per invoice. Per-call: $5-25 per interaction. Margins improve with automation (reduce cost per unit while maintaining price per unit). Volume variability is risk — recession reduces transaction volumes.",
         examples: "Conduent (toll collection per transaction), Maximus (government claims per case), Omega Healthcare (per-chart medical coding), payment processors (Fiserv per-transaction), claims administrators",
         valuation: "10-14x EBITDA. Market values predictability of transaction flows and margin expansion potential from automation. Key risk: volume concentration in cyclical industries. Premium for high-volume, embedded transaction processing (similar to toll booth model).",
         transition: "Growing model as clients prefer variable cost structure. AI increasing per-unit margins (lower cost to process but price maintained). Risk: dramatic volume reduction from automation at client end. Some providers combining transaction pricing with minimum volume commitments.",
       },
-      { name: "Outcome-Based / Gainsharing", color: "#8B5CF6", icon: "🎯",
+      { name: "Outcome-Based / Gainsharing", color: T_.purple, icon: "🎯",
         how: "Revenue tied to business outcomes achieved — cost savings delivered, revenue recovered, customer satisfaction improvement, cycle time reduction. Provider shares in the value created. Higher risk for provider but higher margin potential. Requires robust measurement and baseline.",
         economics: "Gainsharing split: 50/50 to 70/30 (client/provider). Margins: 20-35% (if outcomes achieved). Revenue less predictable but aligned with value. Requires upfront investment in analytics and automation. Payback period: 6-18 months on technology investment.",
         examples: "EXL Service (collections recovery — paid % of recovered amounts), R1 RCM (RCM outcome fees — % of revenue improvement), Genpact (cost savings sharing), WNS (procurement savings sharing)",
         valuation: "Premium multiples: 12-18x EBITDA for outcome-based BPO. Market rewards value alignment and margin expansion potential. Key risk: outcome measurement disputes and baseline gaming. Most attractive model for sophisticated investors.",
         transition: "Growing rapidly but still ~15-20% of total BPO contracts. GenAI accelerating outcome-based feasibility (providers can deliver more with less). Client sophistication increasing demand for outcome alignment. Hybrid models (base FTE + outcome bonus) most common transition path.",
       },
-      { name: "Managed Services (SLA-Based)", color: "#F59E0B", icon: "📋",
+      { name: "Managed Services (SLA-Based)", color: T_.amber, icon: "📋",
         how: "Fixed monthly fee for managing an entire process or function to agreed service levels (SLAs). Provider takes responsibility for staffing, technology, and process management. Client pays for the output, not the input. Revenue is predictable and contractually committed.",
         economics: "Contract values: $5M-100M+ annually. Contract duration: 3-7 years. Margins: 15-25% EBITDA. Revenue visibility from long-term contracts. SLA penalties can reduce margin (typically 10-15% at risk). Rebid/renewal risk at contract expiry. Transition costs amortized over contract life.",
         examples: "Accenture (managed operations for F&A, procurement), Concentrix (managed CX programs), HCLTech (managed IT + BPO), DXC Technology (managed services), Unisys (managed workplace services)",
         valuation: "10-15x EBITDA. Market values contract backlog, renewal rates, and margin trajectory. Premium for long-duration contracts with blue-chip clients. Total Contract Value (TCV) and Annual Contract Value (ACV) are key booking metrics.",
         transition: "Replacing both FTE and project-based models. Managed services allow provider to optimize delivery (automation investment → margin expansion). Clients prefer single point of accountability. Multi-tower managed services (IT + BPO + consulting) growing. Cloud-based delivery platforms enabling new managed service models.",
       },
-      { name: "Platform BPO (Tech + Services)", color: "#EF4444", icon: "💻",
+      { name: "Platform BPO (Tech + Services)", color: T_.red, icon: "💻",
         how: "Revenue from providing a technology platform combined with process operations — software-enabled BPO. The platform (workflow, analytics, automation) is core to the delivery model and creates switching costs. Hybrid between SaaS and services. Higher margins than pure FTE BPO.",
         economics: "Revenue per FTE: 2-3x traditional BPO (technology leverage). Gross margins: 45-60%. EBITDA margins: 20-30%. Platform licensing + services creates recurring revenue base. Client switching costs higher (technology + process dependency). Implementation cycle: 3-6 months.",
         examples: "EXL Service (analytics platform + operations), WNS (EXPIRIUS platform), TaskUs (digital AI platform + human delivery), Genpact (Cora AI platform), R1 RCM (technology-enabled RCM)",
@@ -1752,7 +1752,7 @@ export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FO
     return (
       <div>
         <div style={{ marginBottom: 24 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px" }}>IT Services & BPO Primer</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>IT Services & BPO Primer</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Business process outsourcing, knowledge services, contact centers, and BPO value chain</div>
         </div>
 
