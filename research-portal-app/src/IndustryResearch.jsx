@@ -4,7 +4,7 @@ import { T_, FONT } from "./lib/theme";
 import TabBar from "./lib/TabBar";
 import { tooltipStyle, tooltipStyleSm } from "./lib/chartTheme";
 
-// Updated 2026-04-18
+// Updated 2026-04-29 (hyperscaler Q1 2026 prints)
 const fmt = (n) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
 const fmtPct = (n) => (n * 100).toFixed(1) + "%";
 const fmtShares = (n) => n % 1 === 0 ? n.toLocaleString() : n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 3 });
@@ -21,7 +21,7 @@ const AI_LABS_DATA = {
       { year: 2026, value: 50, est: true }, { year: 2027, value: 100, est: true }, { year: 2028, value: 150, est: true },
       { year: 2029, value: 200, est: true }, { year: 2030, value: 280, est: true },
     ],
-    arrCurrent: { value: "$25B+ ARR", date: "Apr 2026", source: "Bloomberg (Mar 31). $2B/mo revenue. $122B round closed at $852B val. 900M WAU, 50M paying subs." },
+    arrCurrent: { value: "~$24-25B ARR", date: "Apr 2026", source: "Bloomberg (Mar 31). $2B/mo revenue → ~$24B run-rate. $122B round closed at $852B val. 900M WAU, 50M paying subs. Surpassed by Anthropic at $30B in Apr (OpenAI disputes basis — claims net Anthropic ~$22B)." },
     arrSource: "2023-2025: CFO Sarah Friar (Jan 2026 blog). 2027E: Altman ($100B). 2030E: CNBC ($280B high).",
     compute: [
       { year: 2023, value: 0.2 }, { year: 2024, value: 0.6 }, { year: 2025, value: 1.9 },
@@ -42,15 +42,15 @@ const AI_LABS_DATA = {
     burn: "$14B projected loss 2026 \u00b7 Cash flow positive ~2030",
     equity: [
       { ticker: "MSFT", name: "Microsoft", exposure: "~27% equity stake (post-restructuring Oct 2025), $250B Azure deal, board seat", color: T_.blue },
-      { ticker: "AMZN", name: "Amazon", exposure: "$50B investor, $138B AWS deal, 2 GW Trainium", color: T_.amber },
+      { ticker: "AMZN", name: "Amazon", exposure: "$50B investor, $38B 7-yr AWS GB200/GB300 deal (Nov 2025), Trainium ramping", color: T_.amber },
       { ticker: "NVDA", name: "Nvidia", exposure: "$30B investor, primary GPU supplier, Vera Rubin commitment", color: T_.green },
       { ticker: "ORCL", name: "Oracle", exposure: "~$300B Stargate cloud deal (2027-2031), ~$60B/yr", color: T_.red },
       { ticker: "9984.T", name: "SoftBank", exposure: "$30B investor, Stargate co-founder", color: T_.purple },
     ],
     ecosystem: [
-      { category: "Cloud", partners: "Microsoft Azure ($250B), AWS ($138B), Oracle (~$300B), CoreWeave ($22.4B, GB200/GB300)", color: T_.blue },
+      { category: "Cloud", partners: "Microsoft Azure ($250B thru 2032), AWS ($38B 7-yr Nov 2025), Oracle (~$300B Stargate), CoreWeave ($22.4B, GB200/GB300)", color: T_.blue },
       { category: "Chips", partners: "Nvidia (Vera Rubin), Broadcom (custom ASIC via TSMC), Cerebras (WSE-3), AMD (6 GW)", color: T_.amber },
-      { category: "Power", partners: "Stargate: 10 GW across 6+ US sites (Abilene TX, OH, WI, TX)", color: T_.green },
+      { category: "Power", partners: "Stargate: ~7-8 GW planned, $400B+ committed (Abilene TX 1.2 GW live + MI 1.4 GW Saline Twp, WI 'Lighthouse'/Vantage, WY, PA, more TX). 10 GW / $500B target by 2029.", color: T_.green },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD GPU HBM packaging", color: "#A855F7" },
       { category: "Distribution", partners: "ChatGPT (900M WAU), Copilot (via MSFT), Apple Siri (in talks)", color: T_.red },
     ],
@@ -71,8 +71,8 @@ const AI_LABS_DATA = {
       { year: 2026, value: 1.5, est: true }, { year: 2027, value: 3, est: true }, { year: 2028, value: 5, est: true },
       { year: 2029, value: 7, est: true }, { year: 2030, value: 10, est: true },
     ],
-    computeCurrent: { value: "~1 GW (scaling to ~3.5 GW)", date: "Apr 2026", source: "1 GW live (2026) + 3.5 GW Google TPU via Broadcom (online 2027) + AWS + Azure" },
-    computeSource: "Apr 2026: Expanded Google/Broadcom deal — multi-GW next-gen TPU capacity (online 2027), US-sited. AWS Bedrock (Project Rainier), Azure ($30B compute deal). Total commitment largest in industry.",
+    computeCurrent: { value: "~1 GW (scaling to multi-GW)", date: "Apr 2026", source: "Project Rainier ~500K Trainium2 chips live + up to 5 GW AWS Trainium ramp + 3.5 GW Google TPU via Broadcom (online 2027) + Azure" },
+    computeSource: "Updated 2026-04-29: Apr 21 2026 AWS-Anthropic expansion — $100B over 10 yrs, up to 5 GW Trainium capacity (~1 GW Trn2+Trn3 online by YE 2026, multi-GW thereafter). Apr 2026: Expanded Google/Broadcom deal — multi-GW next-gen TPU capacity (online 2027). Azure ($30B Nov 2025 commitment). Largest aggregate compute commitment in industry.",
     users: { paying: "300K+ biz customers, 1,000+ at $1M+/yr (doubled from 500+ in Feb)", trend: "8 of Fortune 10 are Claude customers" },
     mau: [
       { q: "Q1 23", value: 0.1 }, { q: "Q2 23", value: 0.5 }, { q: "Q3 23", value: 1 }, { q: "Q4 23", value: 4 },
@@ -84,15 +84,15 @@ const AI_LABS_DATA = {
     mauSource: "Backlinko, Semrush, Similarweb. Includes claude.ai + app. Excludes embedded API reach (~300M).",
     burn: "Fastest to profitability \u00b7 FCF positive projected 2027-2028",
     equity: [
-      { ticker: "AMZN", name: "Amazon", exposure: "$8B+ invested, primary AWS Bedrock partner", color: T_.amber },
+      { ticker: "AMZN", name: "Amazon", exposure: "$13B+ invested ($5B added Apr 2026, option for up to $20B more), primary AWS partner — $100B 10-yr commit, up to 5 GW Trainium", color: T_.amber },
       { ticker: "GOOGL", name: "Google", exposure: "$3B invested, expanded TPU deal via Broadcom (1 GW live + 3.5 GW 2027), Vertex AI", color: T_.blue },
       { ticker: "MSFT", name: "Microsoft", exposure: "$5B invested, Azure compute ($30B)", color: T_.purple },
       { ticker: "NVDA", name: "Nvidia", exposure: "$10B invested, Grace Blackwell + Vera Rubin supply", color: T_.green },
     ],
     ecosystem: [
-      { category: "Cloud", partners: "AWS Bedrock (primary), Google Cloud (1 GW live + 3.5 GW via Broadcom 2027), Azure ($30B)", color: T_.blue },
-      { category: "Chips", partners: "Google TPU v7, AWS Trainium, Nvidia Grace Blackwell + Vera Rubin", color: T_.amber },
-      { category: "Power", partners: "Fluidstack ($50B own DCs — TX, NY), AWS Rainier (2.2 GW), Google TPU DCs", color: T_.green },
+      { category: "Cloud", partners: "AWS ($100B/10-yr, up to 5 GW Trainium — Apr 2026), Google Cloud (1 GW live + 3.5 GW via Broadcom 2027), Azure ($30B Nov 2025)", color: T_.blue },
+      { category: "Chips", partners: "AWS Trainium2/3 (>1M Trn2 chips today, ~1 GW combined Trn2+Trn3 by YE26), Google TPU v7, Nvidia Grace Blackwell + Vera Rubin", color: T_.amber },
+      { category: "Power", partners: "Fluidstack ($50B own DCs — TX, NY, sites online thru 2026), AWS Project Rainier (live, ~500K Trn2 chips), Google TPU DCs", color: T_.green },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via TPU/GPU from cloud partners", color: "#A855F7" },
       { category: "Distribution", partners: "Claude.ai, Claude Code ($2.5B ARR), API (300K+), Cowork. Opus 4.7 released Apr 17.", color: T_.red },
     ],
@@ -107,8 +107,8 @@ const AI_LABS_DATA = {
       { year: 2029, value: 148, est: true }, { year: 2030, value: 180, est: true },
     ],
     arrLabel: "Google Cloud ARR (Q4 × 4, $B)",
-    arrCurrent: { value: "$71B ARR (Q4 × 4)", date: "Q4 2025", source: "Alphabet Q4 2025 earnings — Q4 GCP rev $17.7B × 4. $240B backlog (+55% QoQ). Full-year 2025 GCP rev ~$58-62B." },
-    arrSource: "Alphabet 10-K Q4 annualized (2023-2025). 2026-2030E: Wall St. consensus ~25% CAGR from exit rate.",
+    arrCurrent: { value: "~$80B ARR (Q1 × 4)", date: "Q1 2026", source: "Updated 2026-04-29: Alphabet Q1 2026 earnings — GCP rev ~$20B (+63% YoY), Cloud op income $6.6B (32.9% margin, tripled YoY). Backlog $462B (~doubled QoQ from $240B). 'Compute constrained.' Just over 50% of backlog to convert in next 24 months." },
+    arrSource: "Alphabet 10-K Q4 annualized (2023-2025). Q1 2026 actual run-rate. 2026-2030E: Wall St. consensus ~25% CAGR from exit rate.",
     compute: [
       { year: 2023, value: 5 }, { year: 2024, value: 6 }, { year: 2025, value: 7.5 },
       { year: 2026, value: 10, est: true }, { year: 2027, value: 14, est: true }, { year: 2028, value: 18, est: true },
@@ -116,7 +116,7 @@ const AI_LABS_DATA = {
     ],
     computeLabel: "Total DC Fleet (GW, est.)",
     computeCurrent: { value: "~7.5 GW (total fleet)", date: "2025", source: "Analyst est. from $75B capex (2025)" },
-    computeSource: "Analyst est. from capex. Google does not disclose GW directly. $175-185B capex guided for 2026 (Q4 2025 earnings, Feb 5 2026).",
+    computeSource: "Analyst est. from capex. Google does not disclose GW directly. 2026 capex RAISED to $180-190B (Q1 2026 earnings, Apr 29 2026; up from prior $175-185B); 2027 to 'significantly increase.'",
     users: { paying: "Gemini 750M+ MAU, Cloud 15M+ biz, 120K+ enterprises", trend: "Gemini market share 5.7% to 21.5% in 12 mo" },
     mau: [
       { q: "Q1 23", value: 0 }, { q: "Q2 23", value: 0 }, { q: "Q3 23", value: 0 }, { q: "Q4 23", value: 7 },
@@ -133,7 +133,7 @@ const AI_LABS_DATA = {
     ecosystem: [
       { category: "Cloud", partners: "GCP $55B+ run rate, selling TPUs to Anthropic, Meta", color: T_.blue },
       { category: "Chips", partners: "TPU v7 Ironwood (custom), Nvidia GPUs (customers), Arm Axion CPU", color: T_.amber },
-      { category: "Power", partners: "$175-185B capex 2026 \u2014 nuclear SMR, solar PPAs, global DC expansion", color: T_.green },
+      { category: "Power", partners: "$180-190B capex 2026 (raised Apr 29) \u2014 nuclear SMR, solar PPAs, global DC expansion. 2027 capex to 'significantly increase'", color: T_.green },
       { category: "Memory", partners: "SK Hynix (HBM for TPUs), Samsung, Micron", color: "#A855F7" },
       { category: "Distribution", partners: "Search (8.5B queries/day), Android, YouTube, Apple Siri (Gemini, ~$5B)", color: T_.red },
     ],
@@ -191,15 +191,15 @@ const AI_LABS_DATA = {
       { year: 2029, value: 360, est: true }, { year: 2030, value: 410, est: true },
     ],
     arrLabel: "Total Revenue ($B)",
-    arrCurrent: { value: "$201B Rev", date: "2025", source: "META 10-K. FY2025 rev $201B (+22% YoY). AI-driven ad rev ~$10B ARR from video tools alone." },
-    arrSource: "SEC filings (2023-2025 actual). 2026-2030E: Wall St. consensus ~15% CAGR from AI-driven ad + commerce revenue.",
+    arrCurrent: { value: "$56.3B Q1 26 Rev (+33% YoY)", date: "Q1 2026", source: "Updated 2026-04-29: META Q1 2026 — Rev $56.31B (+33% YoY), net income $26.77B (incl $8.03B OBBBA tax benefit). FDAP +4%, ad impressions +19%, price/ad +12%. Q2 guide $58-61B. AI-driven ad rev ~$10B ARR from video tools alone." },
+    arrSource: "SEC filings (2023-2025 actual). Q1 2026 actual. 2026-2030E: Wall St. consensus ~15% CAGR from AI-driven ad + commerce revenue.",
     compute: [
       { year: 2023, value: 1.5 }, { year: 2024, value: 2.5 }, { year: 2025, value: 4 },
       { year: 2026, value: 7, est: true }, { year: 2027, value: 10, est: true }, { year: 2028, value: 14, est: true },
       { year: 2029, value: 18, est: true }, { year: 2030, value: 22, est: true },
     ],
     computeCurrent: { value: "~4 GW (est.)", date: "2025", source: "Analyst est. from $72B capex (2025). 30 DCs planned/operational." },
-    computeSource: "Analyst estimates from capex. Meta does not disclose GW directly. $115-135B capex guided for 2026.",
+    computeSource: "Updated 2026-04-29: Analyst estimates from capex. Meta does not disclose GW directly. 2026 capex RAISED to $125-145B (Q1 2026 earnings, Apr 29; from prior $115-135B), citing higher component prices + DC costs. Stock -7% AH on the raise.",
     users: { paying: "3.54B DAP, 1B+ Meta AI MAU", trend: "Meta AI hit 1B MAU by May 2025 (announced at May 28, 2025 annual shareholder meeting) — fastest AI platform growth ever" },
     mau: [
       { q: "Q1 23", value: 0 }, { q: "Q2 23", value: 0 }, { q: "Q3 23", value: 0 }, { q: "Q4 23", value: 0 },
@@ -219,7 +219,7 @@ const AI_LABS_DATA = {
     ecosystem: [
       { category: "Chips", partners: "Nvidia (millions of Blackwell/Rubin GPUs), AMD (6 GW Instinct), Google TPU (in talks), MTIA (custom inference)", color: T_.amber },
       { category: "Cloud", partners: "CoreWeave ($35.2B total, GB300, thru 2032 — expanded $21B Apr 2026), Nebius ($27B 5-yr, Vera Rubin), Google Cloud ($10B+ 6-yr), primarily on-prem DCs", color: T_.blue },
-      { category: "Power", partners: "Hyperion (Louisiana, 5 GW, nuclear-backed), 30 DCs (26 in US), $600B US investment by 2028", color: T_.green },
+      { category: "Power", partners: "Hyperion (Richland Parish LA, sized for 5 GW IT load — 7 new gas plants ~5.2 GW + 240mi of 500-kV transmission); Prometheus (New Albany OH, 1+ GW, online 2026); 6.6 GW nuclear via Vistra/Oklo/TerraPower (Jan 2026) + Constellation Clinton (Jun 2025, online 2027); 30 DCs (26 in US); $600B US investment by 2028", color: T_.green },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD HBM packaging", color: "#A855F7" },
       { category: "Distribution", partners: "Facebook (3B+), Instagram (2B+), WhatsApp (2.5B+), Threads, Meta AI (1.4B MAU)", color: T_.red },
     ],
@@ -227,8 +227,15 @@ const AI_LABS_DATA = {
 };
 
 // AI Labs Industry News — Update during refresh alongside dashNewsUpdates
+// Updated 2026-04-29
 const AI_LABS_NEWS = [
-  { date: "Apr 17", text: "Anthropic releases Claude Opus 4.7 — stronger coding, 3x image resolution (2,576px), cybersecurity safeguards. GA across API, Bedrock, Vertex, Foundry. Pricing unchanged ($5/$25 MTok). Claude Mythos remains restricted to enterprise/govt partners (CNBC, VentureBeat)." },
+  { date: "Apr 29", text: "META Q1 2026: Rev $56.31B (+33% YoY), net income $26.77B (incl $8.03B OBBBA tax benefit). FY26 capex RAISED to $125-145B (from $115-135B) citing higher component prices + DC costs. Q2 rev guide $58-61B. Declines specific 2027 capex guide but warns 'we have continued to underestimate compute needs.' Stock -7% AH (Fortune, CNBC)." },
+  { date: "Apr 29", text: "GOOGL Q1 2026: Rev $109.9B (+22% YoY), net income $62.57B (+81%). GCP rev ~$20B (+63%), Cloud op income $6.6B (32.9% margin, tripled YoY). Backlog $462B (~doubled QoQ from $240B). 2026 capex RAISED to $180-190B (from $175-185B); 2027 capex 'significantly higher.' Pichai: 'compute constrained' (CNBC, 9to5Google, TechCrunch)." },
+  { date: "Apr 29", text: "AMZN Q1 2026: Rev $181.5B (+17% YoY, vs $155.7B Q1 2025), beat $177.3B est by 2.4%; EPS $2.78 vs $1.63 est. AWS rev $37.6B (+28% YoY) — fastest growth in 15 quarters. AWS op income $14.2B. AI run rate >$15B, growing triple-digits. Chips business >$20B run rate (Graviton+Trainium+Nitro). 2026 capex ~$200B; Q1 cash capex $43.2B. Trn3 30-40% better price/perf vs Trn2, nearly fully subscribed (CNBC, Investing.com, Stocktitan)." },
+  { date: "Apr 29", text: "MSFT Q3 FY26: Rev $82.9B (+18%), EPS $4.27 vs $4.06 est. Azure +40% (39% cc, above 37-38% guide). Microsoft Cloud rev $54.5B (+29%, +25% cc). Capex $31.9B (below $34.9B est). FY26 capex now ~$190B (+61% YoY). Commercial RPO $627B (+99% YoY incl OpenAI; +26% ex-OpenAI). GM 67.6% — narrowest since 2022 on DC depreciation. AI run-rate $37B+ (+123% YoY) (CNBC, Investing.com, Microsoft IR)." },
+  { date: "Apr 21", text: "Anthropic-Amazon expand to $100B+ over 10 yrs — up to 5 GW Trainium capacity. Amazon adds $5B upfront equity (now $13B+ invested), with option for up to $20B more. Anthropic uses >1M Trainium2 chips today; ~1 GW combined Trn2+Trn3 by YE 2026 (Anthropic blog, Amazon, SemiAnalysis)." },
+  { date: "Apr 20", text: "AWS Project Rainier live — ~500K Trainium2 chips deployed (one of world's largest AI clusters). Anthropic running production workloads on cluster. Built in <12 months (AWS PR, DCD)." },
+  { date: "Apr 17", text: "Anthropic releases Claude Opus 4.7 — stronger coding (87.6% SWE-bench Verified, +7pts vs 4.6; GPT-5.4 sits at 58.7%), 3x image resolution (2,576px), cybersecurity safeguards. GA across API, Bedrock, Vertex, Foundry. Pricing unchanged ($5/$25 MTok); new tokenizer can produce up to 35% more tokens for the same input — partial 'stealth price hike' (CNBC, VentureBeat, Finout)." },
   { date: "Apr 16", text: "TSMC Q1 2026: Rev $35.9B (+41% YoY), GM 66.2%, OM 58.1% — 4th consecutive record quarter. HPC 61% of rev. FY2026 rev raised to ~$159B (+30%). Capex trending to high end ($52-56B). Q2 guide $39-40.2B. Warns Middle East conflict may impact profitability (CNBC, Tom's Hardware)." },
   { date: "Apr 14", text: "Anthropic facing user backlash over Claude performance decline — model failing instructions more on complex workflows. Connected to 'effort level' reduction to economize on tokens. Claude Mythos launch delayed (Fortune)." },
   { date: "Apr 9", text: "CoreWeave expands Meta deal by $21B — total commitment now $35.2B thru 2032. Revenue backlog surges to $88B. Anthropic deal also cemented. Stock +4% on announcement (CNBC, Motley Fool)." },
@@ -277,8 +284,11 @@ const GPU_ASIC_NEWS = [
 ];
 
 // Neocloud Industry News — Update during refresh
+// Updated 2026-04-29
 const NEOCLOUD_NEWS = [
-  { date: "Apr 16", text: "CoreWeave revenue backlog surges to $88B after $21B Meta expansion deal (thru 2032). Total Meta commitment now $35.2B. Anthropic also cements deal. 2026 rev guide $12-13B (+140% YoY). Stock rallying from lows (CNBC, Motley Fool)." },
+  { date: "Apr 23", text: "Applied Digital (APLD) +12% on $7.5B Delta Forge 1 lease — 15-yr, 300 MW, unnamed US-based 'high investment-grade' hyperscaler. Total contracted lease revenue lifts to >$23B. APLD shifts narrative from 'CoreWeave concentration' to multi-tenant infra (TheStreet, Stocktitan)." },
+  { date: "Apr 21", text: "Anthropic-AWS Trainium expansion: $100B over 10 yrs, up to 5 GW. AMZN adds $5B equity (now $13B+ invested), option for $20B more. AWS Project Rainier (~500K Trn2) live, Anthropic running production workloads (Anthropic, Amazon, SemiAnalysis)." },
+  { date: "Apr 16", text: "CoreWeave revenue backlog surges to ~$88B post-$21B Meta expansion deal (thru 2032). Total Meta commitment now $35.2B. Anthropic deal also cements. CoreWeave has now signed all four largest AI labs (Meta, Anthropic, OpenAI, Google). 2026 rev guide $12-13B (+140% YoY). Stock rallying from lows (CNBC, Motley Fool, Augment)." },
   { date: "Apr 14", text: "Nebius closes $4.34B convertible debt round — 'well-funded' for 2026 capex. Goldman raises PT to $205 after $27B Meta deal. In acquisition talks with AI21 Labs (Israel). NBIS +681% from 2025 lows. Short interest >20% (Goldman Sachs, TheStreet)." },
   { date: "Mar 2025 (historical)", text: "Microsoft declined $12B CoreWeave expansion — opted not to exercise option on additional DC capacity citing shifting cloud strategy. (Original event: Mar 2025, ahead of CRWV IPO; reported by Semafor + FT/Bloomberg.) Raised questions about demand concentration risk.", historical: true },
   { date: "Mar 29", text: "Pomerantz LLP files class action against CoreWeave on behalf of IPO investors. Alleges material misstatements re: customer concentration and Denton TX delays. Second major class action after Bleichmar Fonti (GlobeNewswire)." },
@@ -298,7 +308,13 @@ const NEOCLOUD_NEWS = [
 ];
 
 // Shell + Power Industry News — Update during refresh
+// Updated 2026-04-29
 const SHELL_POWER_NEWS = [
+  { date: "Apr 29", text: "Hyperscaler Q1 prints reaffirm power-supply scarcity: GOOGL 'compute constrained,' Cloud backlog $462B (~doubled QoQ); Meta capex raised to $125-145B citing higher DC + component costs; MSFT capex now ~$190B (+61%); AWS at $37.6B rev (+28%, fastest in 15 quarters). Aggregate top-5 hyperscaler 2026 capex now ~$760B (AMZN $200B + GOOGL $185B + MSFT $190B + META $135B + ORCL $50B mid-points; CreditSights, CNBC, Investing.com)." },
+  { date: "Apr 23", text: "Applied Digital signs 15-yr 300 MW lease at Delta Forge 1 with 'high investment-grade' hyperscaler — $7.5B contracted value. Total APLD contracted lease revenue >$23B. ND power campus model validates picks-and-shovels DC thesis (Stocktitan, TheStreet)." },
+  { date: "Apr 21", text: "Anthropic-AWS expand Trainium pact to $100B/5 GW over 10 yrs. AWS Project Rainier (~500K Trn2 chips) operational. Demonstrates ~1 GW combined Trn2+Trn3 capacity online by YE26 (AWS, Anthropic, SemiAnalysis)." },
+  { date: "Apr 20", text: "Microsoft Fairwater (Mt Pleasant, Wisconsin) AI data center goes live ahead of schedule — 'world's most powerful AI DC' linking hundreds of thousands of GB200/GB300 GPUs. Initial 3 buildings 1.2M sqft; total approved buildout ~9M sqft, total taxable value $13B+ (DCD, TheEnergyMag)." },
+  { date: "Mar 27", text: "Microsoft picks up Crusoe's 900 MW campus in Texas that OpenAI did not exercise — telling sign of MSFT-OpenAI drift post Oct 2025 restructure (Fortune, The Register)." },
   { date: "Mar 26", text: "Trump tells Iran 'get serious.' Brent surges +6.5% to ~$109. Gas $3.96/gal (23-day streak, +34% in a month). OECD warns US inflation above Fed targets. ECB's Lagarde: 'real shock' (CNBC, Bloomberg)." },
   { date: "Mar 25", text: "Iran rejects US 15-point ceasefire proposal (delivered via Pakistan). Lays out 5-point counterplan including Hormuz control. S&P +0.54% as markets bet on eventual deal (AP, NYT)." },
   { date: "Mar 23", text: "Oil crashes — Brent ~$120→~$100 on Trump-Iran 'productive talks.' 5-day pause on Iranian energy strikes. IEA considering additional releases beyond 400M barrel commitment (CNBC, AP)." },
@@ -314,6 +330,7 @@ const SHELL_POWER_NEWS = [
 ];
 
 // Sources: Company 10-K/10-Q filings, earnings guidance, CreditSights, Futurum, CNBC, Bloomberg, BofA
+// Updated 2026-04-29 — Hyperscaler Q1 2026 prints
 const AI_CAPEX_DATA = {
   top5: [
     { name: "Amazon (AWS)", ticker: "AMZN", color: T_.amber,
@@ -322,39 +339,39 @@ const AI_CAPEX_DATA = {
         { year: 2026, value: 200, est: true }, { year: 2027, value: 220, est: true }, { year: 2028, value: 200, est: true },
         { year: 2029, value: 185, est: true }, { year: 2030, value: 175, est: true },
       ],
-      spendingOn: "AWS data centers, Nvidia GPUs + Trainium 2 custom chips, Anthropic partnership, Project Kuiper, robotics",
-      news: "2026 guided at $200B (Q4 2025 earnings, Feb 6 2026). 2025 actual $131.8B (+59% YoY). AWS at $142B ARR, growing 24%. Shares fell 11% on guidance. FCF compressed to $7.7B from $32.9B. Capex consuming 94.5% of OCF.",
-      partners: "Nvidia (GPUs), Annapurna Labs/Trainium (custom), Anthropic ($8B+ invested), OpenAI ($38B 7-yr deal), CoreWeave",
+      spendingOn: "AWS data centers, Nvidia GPUs + Trainium 2/3 custom chips, Anthropic partnership ($100B/5GW), Project Kuiper, robotics",
+      news: "Q1 2026 (Apr 29): Total rev $181.5B (+17% YoY), EPS $2.78 vs $1.63 est. AWS rev $37.6B (+28% YoY) — fastest growth in 15 quarters; AWS op income $14.2B. AI run-rate >$15B (triple-digit growth). Chips business (Graviton+Trainium+Nitro) at >$20B run rate. 2026 capex ~$200B (reaffirmed); Q1 cash capex $43.2B. >$225B Trainium revenue commitments. Trn3 30-40% better price/perf vs Trn2, nearly fully subscribed.",
+      partners: "Nvidia (GPUs), Annapurna Labs/Trainium (custom), Anthropic ($13B+ invested incl Apr 2026 $5B add, option for $20B more; $100B/10-yr 5 GW Trainium), OpenAI ($38B 7-yr GB200/GB300 deal Nov 2025), CoreWeave",
     },
     { name: "Alphabet (Google)", ticker: "GOOGL", color: T_.blue,
       capex: [
         { year: 2022, value: 31 }, { year: 2023, value: 32 }, { year: 2024, value: 53 }, { year: 2025, value: 91 },
-        { year: 2026, value: 180, est: true }, { year: 2027, value: 200, est: true }, { year: 2028, value: 190, est: true },
-        { year: 2029, value: 175, est: true }, { year: 2030, value: 165, est: true },
+        { year: 2026, value: 185, est: true }, { year: 2027, value: 220, est: true }, { year: 2028, value: 215, est: true },
+        { year: 2029, value: 200, est: true }, { year: 2030, value: 185, est: true },
       ],
       spendingOn: "TPU v7 Ironwood fabs, global DC expansion, Nvidia GPUs for GCP customers, subsea cables, DeepMind compute",
-      news: "2026 capex guided $175-185B (Q4 2025 earnings, Feb 5 2026). Nearly double 2025's $91B. Cloud backlog surged to $240B. Supply-constrained per Pichai. Street expected $119B — guidance shocked at +50%.",
+      news: "Q1 2026 (Apr 29): Total rev $109.9B (+22% YoY), net income $62.57B (+81%). GCP rev ~$20B (+63% YoY), Cloud op income $6.6B (32.9% margin, tripled YoY). Backlog $462B (~doubled QoQ from $240B); ~50% to convert in next 24 months. 2026 capex RAISED to $180-190B (from $175-185B); 2027 to 'significantly increase.' Pichai: 'compute constrained.'",
       partners: "Broadcom (TPU co-design thru 2031, expanded Apr 2026 — multi-GW for Anthropic), TSMC (fab), Anthropic (3.5 GW TPU 2027), Meta (TPU lease talks), Apple (Gemini deal ~$5B)",
     },
     { name: "Microsoft (Azure)", ticker: "MSFT", color: T_.purple,
       capex: [
         { year: 2022, value: 24 }, { year: 2023, value: 28 }, { year: 2024, value: 44 }, { year: 2025, value: 78 },
-        { year: 2026, value: 120, est: true }, { year: 2027, value: 130, est: true }, { year: 2028, value: 125, est: true },
-        { year: 2029, value: 115, est: true }, { year: 2030, value: 110, est: true },
+        { year: 2026, value: 190, est: true }, { year: 2027, value: 200, est: true }, { year: 2028, value: 190, est: true },
+        { year: 2029, value: 175, est: true }, { year: 2030, value: 160, est: true },
       ],
-      spendingOn: "Azure AI DCs, Nvidia GPUs (GB200/Vera Rubin for OpenAI), Maia custom chips, OpenAI hosting",
-      news: "2026 capex tracking ~$120B+ (no full-year guide yet; Q2 FY2026 was $37.5B). Capital intensity at 45% of revenue. $250B Azure-OpenAI deal. $5B Anthropic investment. CoreWeave: ~$10B commitment but declined $12B expansion option (Mar 2025); signed $19.4B Nebius deal (Oct 2025). Diversifying away from CoreWeave dependency ($33B+ total neocloud commitments).",
-      partners: "OpenAI (~27% equity stake), Nvidia, Anthropic ($5B), AMD, Nebius ($19.4B 5-yr), CoreWeave (~$10B, declining), Lambda",
+      spendingOn: "Azure AI DCs (Fairwater Wisconsin live Apr 2026), Nvidia GPUs (GB200/Vera Rubin for OpenAI), Maia custom chips, OpenAI hosting",
+      news: "Q3 FY26 (Apr 29): Rev $82.9B (+18%), EPS $4.27 vs $4.06 est. Azure +40% (39% cc, above 37-38% guide). Microsoft Cloud rev $54.5B (+29%, +25% cc). Q3 capex $31.9B (below $34.9B est) but FY26 capex now ~$190B (+61% YoY); Hood cited $25B impact from higher component prices. Commercial RPO $627B (+99% YoY incl OpenAI; +26% ex-OpenAI). GM 67.6% — narrowest since 2022 on DC depreciation. AI run-rate $37B+ (+123% YoY). Wisconsin Fairwater DC live ahead of schedule (Apr 2026).",
+      partners: "OpenAI (~27% equity stake, $250B Azure commit thru 2032 post-Oct 2025 restructure), Nvidia, Anthropic ($5B + $30B Azure compute Nov 2025), AMD, Nebius ($19.4B 5-yr), CoreWeave (~$10B), Lambda",
     },
     { name: "Meta Platforms", ticker: "META", color: T_.red,
       capex: [
         { year: 2022, value: 32 }, { year: 2023, value: 28 }, { year: 2024, value: 39 }, { year: 2025, value: 72 },
-        { year: 2026, value: 125, est: true }, { year: 2027, value: 135, est: true }, { year: 2028, value: 130, est: true },
-        { year: 2029, value: 120, est: true }, { year: 2030, value: 115, est: true },
+        { year: 2026, value: 135, est: true }, { year: 2027, value: 155, est: true }, { year: 2028, value: 150, est: true },
+        { year: 2029, value: 135, est: true }, { year: 2030, value: 125, est: true },
       ],
-      spendingOn: "Llama training clusters, Nvidia GPUs, MTIA custom chips, global DC buildout, Reality Labs",
-      news: "2026 guided $115-135B (nearly double 2025's $72.2B). CoreWeave total $35.2B ($14.2B orig + $21B expansion Apr 2026 thru 2032). $27B Nebius deal (Vera Rubin, Mar 2026). Google TPU lease talks from 2027. $75B bond issuance Sept-Oct 2025. Q1 2026 rev guide $53.5-56.5B.",
-      partners: "Nvidia (primary GPU), CoreWeave ($35.2B total), Nebius ($27B Vera Rubin), Google (TPU talks), TSMC (MTIA fab)",
+      spendingOn: "Llama training clusters (Hyperion 5 GW, Prometheus 1+ GW), Nvidia GPUs, MTIA custom chips, global DC buildout, Reality Labs",
+      news: "Q1 2026 (Apr 29): Rev $56.31B (+33% YoY), net income $26.77B (+61%, includes $8B OBBBA tax benefit). 2026 capex RAISED to $125-145B (from $115-135B) — higher component pricing + DC costs; stock -7% AH. Q2 rev guide $58-61B. Declines specific 2027 capex but: 'we have continued to underestimate our compute needs.' CoreWeave total $35.2B ($14.2B orig + $21B expansion Apr 2026 thru 2032). $27B Nebius (Vera Rubin, Mar 2026). 6.6 GW nuclear (Vistra/Oklo/TerraPower Jan 2026 + Constellation Clinton 2027).",
+      partners: "Nvidia (primary GPU), CoreWeave ($35.2B total), Nebius ($27B Vera Rubin), Google (TPU talks), TSMC (MTIA fab), Vistra/Oklo/TerraPower/Constellation (nuclear)",
     },
     { name: "Oracle", ticker: "ORCL", color: T_.green,
       capex: [
@@ -362,9 +379,9 @@ const AI_CAPEX_DATA = {
         { year: 2026, value: 50, est: true }, { year: 2027, value: 60, est: true }, { year: 2028, value: 60, est: true },
         { year: 2029, value: 55, est: true }, { year: 2030, value: 50, est: true },
       ],
-      spendingOn: "Stargate DCs for OpenAI, OCI GPU clusters, Nvidia GB200 racks, land/power acquisition",
-      news: "~$300B Stargate deal with OpenAI (~$60B/yr for 5 yrs starting 2027). Capital intensity surged to 57% of revenue. 4.5 GW Stargate capacity with OpenAI.",
-      partners: "OpenAI/SoftBank (Stargate JV, $300B over 5 yrs), Nvidia, Arm, CoreWeave (some capacity)",
+      spendingOn: "Stargate DCs for OpenAI (Abilene 1.2 GW + MI/WI/WY/PA), OCI GPU clusters, Nvidia GB200/Vera Rubin racks, land/power acquisition",
+      news: "RPO $553B at end Q3 FY26 (+325% YoY) incl ~$30B/yr OpenAI deal + Meta + xAI. Stargate at ~7-8 GW planned, $400B+ investment, 5 new sites announced (MI 1.4 GW, WI 'Lighthouse', WY, PA, TX). Crusoe Abilene 1.2 GW campus serving Oracle/OpenAI live; full mid-2026. Most equipment funded by customer prepayments. CreditSights upgraded to Outperform Apr 7 2026.",
+      partners: "OpenAI/SoftBank (Stargate JV, ~$300B over 5 yrs), Nvidia, Arm, Crusoe (Abilene 1.2 GW), Vantage (WI 'Lighthouse'), Related Digital (MI 1+ GW)",
     },
   ],
   others: [
@@ -386,8 +403,8 @@ const AI_CAPEX_DATA = {
   ],
   aggregate: [
     { year: 2022, value: 190 }, { year: 2023, value: 195 }, { year: 2024, value: 270 }, { year: 2025, value: 516 },
-    { year: 2026, value: 866, est: true }, { year: 2027, value: 990, est: true }, { year: 2028, value: 940, est: true },
-    { year: 2029, value: 870, est: true }, { year: 2030, value: 820, est: true },
+    { year: 2026, value: 955, est: true }, { year: 2027, value: 1105, est: true }, { year: 2028, value: 1060, est: true },
+    { year: 2029, value: 985, est: true }, { year: 2030, value: 920, est: true },
   ],
   // Cloud/AI segment revenue ($B) + total company capex ($B) for Revenue vs Capex chart
   // Amazon = AWS segment, Alphabet = Google Cloud, Microsoft = Azure, Meta = total rev (no cloud segment), Oracle = Cloud rev
@@ -404,33 +421,33 @@ const AI_CAPEX_DATA = {
     ]},
     { name: "Alphabet (Google Cloud)", color: T_.blue, rev: [
       { year: 2022, value: 26 }, { year: 2023, value: 33 }, { year: 2024, value: 44 }, { year: 2025, value: 70 },
-      { year: 2026, value: 100, est: true }, { year: 2027, value: 130, est: true }, { year: 2028, value: 155, est: true }, { year: 2029, value: 175, est: true }, { year: 2030, value: 195, est: true },
+      { year: 2026, value: 110, est: true }, { year: 2027, value: 145, est: true }, { year: 2028, value: 175, est: true }, { year: 2029, value: 200, est: true }, { year: 2030, value: 220, est: true },
     ], margin: [
       { year: 2022, value: -8 }, { year: 2023, value: 5 }, { year: 2024, value: 14 }, { year: 2025, value: 18 },
-      { year: 2026, value: 20, est: true }, { year: 2027, value: 24, est: true }, { year: 2028, value: 27, est: true }, { year: 2029, value: 29, est: true }, { year: 2030, value: 30, est: true },
+      { year: 2026, value: 28, est: true }, { year: 2027, value: 30, est: true }, { year: 2028, value: 31, est: true }, { year: 2029, value: 31, est: true }, { year: 2030, value: 32, est: true },
     ], capex: [
       { year: 2022, value: 31 }, { year: 2023, value: 32 }, { year: 2024, value: 53 }, { year: 2025, value: 91 },
-      { year: 2026, value: 180, est: true }, { year: 2027, value: 200, est: true }, { year: 2028, value: 190, est: true }, { year: 2029, value: 175, est: true }, { year: 2030, value: 165, est: true },
+      { year: 2026, value: 185, est: true }, { year: 2027, value: 220, est: true }, { year: 2028, value: 215, est: true }, { year: 2029, value: 200, est: true }, { year: 2030, value: 185, est: true },
     ]},
     { name: "Microsoft (Azure)", color: T_.purple, rev: [
       { year: 2022, value: 75 }, { year: 2023, value: 88 }, { year: 2024, value: 105 }, { year: 2025, value: 125 },
-      { year: 2026, value: 160, est: true }, { year: 2027, value: 195, est: true }, { year: 2028, value: 225, est: true }, { year: 2029, value: 255, est: true }, { year: 2030, value: 280, est: true },
+      { year: 2026, value: 165, est: true }, { year: 2027, value: 205, est: true }, { year: 2028, value: 240, est: true }, { year: 2029, value: 270, est: true }, { year: 2030, value: 295, est: true },
     ], margin: [
       { year: 2022, value: 42 }, { year: 2023, value: 43 }, { year: 2024, value: 45 }, { year: 2025, value: 44 },
-      { year: 2026, value: 40, est: true }, { year: 2027, value: 42, est: true }, { year: 2028, value: 44, est: true }, { year: 2029, value: 45, est: true }, { year: 2030, value: 46, est: true },
+      { year: 2026, value: 38, est: true }, { year: 2027, value: 41, est: true }, { year: 2028, value: 43, est: true }, { year: 2029, value: 44, est: true }, { year: 2030, value: 45, est: true },
     ], capex: [
       { year: 2022, value: 24 }, { year: 2023, value: 28 }, { year: 2024, value: 44 }, { year: 2025, value: 78 },
-      { year: 2026, value: 120, est: true }, { year: 2027, value: 130, est: true }, { year: 2028, value: 125, est: true }, { year: 2029, value: 115, est: true }, { year: 2030, value: 110, est: true },
+      { year: 2026, value: 190, est: true }, { year: 2027, value: 200, est: true }, { year: 2028, value: 190, est: true }, { year: 2029, value: 175, est: true }, { year: 2030, value: 160, est: true },
     ]},
     { name: "Meta Platforms", color: T_.red, rev: [
       { year: 2022, value: 117 }, { year: 2023, value: 135 }, { year: 2024, value: 165 }, { year: 2025, value: 201 },
-      { year: 2026, value: 230, est: true }, { year: 2027, value: 265, est: true }, { year: 2028, value: 295, est: true }, { year: 2029, value: 320, est: true }, { year: 2030, value: 340, est: true },
+      { year: 2026, value: 240, est: true }, { year: 2027, value: 280, est: true }, { year: 2028, value: 315, est: true }, { year: 2029, value: 345, est: true }, { year: 2030, value: 365, est: true },
     ], margin: [
       { year: 2022, value: 80 }, { year: 2023, value: 81 }, { year: 2024, value: 82 }, { year: 2025, value: 82 },
       { year: 2026, value: 80, est: true }, { year: 2027, value: 80, est: true }, { year: 2028, value: 81, est: true }, { year: 2029, value: 81, est: true }, { year: 2030, value: 81, est: true },
     ], capex: [
       { year: 2022, value: 32 }, { year: 2023, value: 28 }, { year: 2024, value: 39 }, { year: 2025, value: 72 },
-      { year: 2026, value: 125, est: true }, { year: 2027, value: 135, est: true }, { year: 2028, value: 130, est: true }, { year: 2029, value: 120, est: true }, { year: 2030, value: 115, est: true },
+      { year: 2026, value: 135, est: true }, { year: 2027, value: 155, est: true }, { year: 2028, value: 150, est: true }, { year: 2029, value: 135, est: true }, { year: 2030, value: 125, est: true },
     ]},
     { name: "Oracle (Cloud)", color: T_.green, rev: [
       { year: 2022, value: 12 }, { year: 2023, value: 15 }, { year: 2024, value: 20 }, { year: 2025, value: 30 },
@@ -843,7 +860,7 @@ const NEOCLOUD_DATA = [
     revenue: "$5.1B FY2025 (+167% YoY). 2026 guide $12-13B. EBITDA $3.1B. 96% from long-term take-or-pay contracts.", investors: "NVIDIA ($5.3B equity + $6.3B capacity), OpenAI ($350M IPO), Magnetar, Coatue, Fidelity, Jane Street",
     locations: "43 data centers: NJ (Kenilworth 250MW), PA (Lancaster 300MW), TX (Denton 260MW, Plano 30MW), VA (Chester 148MW), OK (Muskogee 100MW), ND (Ellendale 400MW), UK (Crawley, London), Norway, Canada (Regina 300MW)",
     timeline: "GB200 NVL72 live Feb 2025 · GB300 NVL72 live Jul 2025 · 1.7 GW target YE2026 · 3.1 GW contracted by YE2027 · 5+ GW by 2030",
-    notes: "Platinum-tier SemiAnalysis rating. Only neocloud commanding premium pricing. $34B+ off-balance-sheet leases. $19.6B total debt. Capex $14.9B (2025), guided $30B (2026). $88B revenue backlog (Apr 2026). Revenue per MW ~$7.4M annualized. 55-65% GPU utilization (vs Azure 35-45%). Meta deal expanded $21B (Apr 2026), Anthropic deal cemented neocloud dominance.", color: T_.blue },
+    notes: "Updated 2026-04-29. Platinum-tier SemiAnalysis. Only neocloud commanding premium pricing. $34B+ off-balance-sheet leases. $19.6B total debt (after $3B raise alongside Meta deal). Capex $14.9B (2025), guided $30B (2026). ~$88B revenue backlog (Apr 2026, post-Meta+Anthropic). Revenue per MW ~$7.4M annualized. 55-65% GPU utilization (vs Azure 35-45%). Meta deal expanded +$21B Apr 2026 thru 2032. Now signed all four major AI labs (Meta, Anthropic, OpenAI, Google). No customer >35% of total sales.", color: T_.blue },
   { name: "Nebius", ticker: "NBIS", status: "Public (Nasdaq)", valuation: "$35B+", founded: 2024, hq: "Amsterdam, NL",
     power: { connected: "220 MW", contracted: "2.5 GW" }, gpus: "50K+ (H100/H200/B200)", backlog: "$49B+",
     keyClients: "Microsoft (5-yr GPU supply deal), Meta ($27B 5-yr), Mistral, Anthropic",
@@ -925,13 +942,13 @@ const SHELL_POWER_DATA = [
     revenue: "$7.2M HPC (Q3 2025, first recurring)", locations: "Lake Mariner NY (nuclear), Abernathy TX",
     timeline: "18 MW live · 168 MW TX online 2026 · 600 MW total contracted through 2026",
     ecosystem: "Google ($3.2B backstop, 14% equity stake — Dec 2025), Fluidstack ($9.5B JV), Core42/G42 ($1.1B 10-yr lease)", notes: "Zero-carbon power edge (nuclear/hydro). Ex-Bitcoin miner. Power-first model: owns the MW, leases to neoclouds. Google backstop is key credit enhancement.", color: T_.green },
-  { name: "Applied Digital", ticker: "APLD", status: "Public (Nasdaq)", valuation: "$5B+", founded: 2022, hq: "Dallas, TX",
-    power: { connected: "~100 MW", contracted: "~700 MW" }, powerType: "Grid + renewables",
-    keyClients: "CoreWeave (400 MW), investment-grade hyperscaler (200 MW)", backlog: "$16B (600 MW leased)",
-    contracts: "CoreWeave 400 MW (Polaris Forge 1-3) · 200 MW Polaris Forge 2 (hyperscaler 15-yr) · $16B aggregate lease revenue",
-    revenue: "$85M HPC hosting (Q2 FY26)", locations: "Ellendale ND (Polaris Forge 1), Harwood ND (Forge 2), Jamestown ND",
-    timeline: "100 MW live · 150 MW CY2026 · 150 MW CY2027 · 200 MW Forge 2 CY2026-2027",
-    ecosystem: "CoreWeave ($11B total lease revenue, 400 MW), investment-grade hyperscaler (200 MW, 15-yr). No direct equity from hyperscalers but CoreWeave is NVIDIA-backed", notes: "Data center design-build-operate for hyperscalers. Cool climate (Dakotas) advantage. $3B Forge 2 campus.", color: T_.blue },
+  { name: "Applied Digital", ticker: "APLD", status: "Public (Nasdaq)", valuation: "$8B+", founded: 2022, hq: "Dallas, TX",
+    power: { connected: "~100 MW", contracted: "~1 GW+" }, powerType: "Grid + renewables",
+    keyClients: "CoreWeave (400 MW), investment-grade hyperscaler (200 MW Polaris Forge 2 + 300 MW Delta Forge 1)", backlog: ">$23B (Apr 2026)",
+    contracts: "CoreWeave 400 MW (Polaris Forge 1-3, $11B) · 200 MW Polaris Forge 2 (hyperscaler 15-yr, $5.5B) · 300 MW Delta Forge 1 (15-yr 'high investment-grade' hyperscaler, $7.5B — Apr 23 2026) · Total >$23B aggregate lease revenue",
+    revenue: "$126.6M HPC (Q3 FY26, +139% YoY); adj EBITDA $44.1M", locations: "Ellendale ND (Polaris Forge 1), Harwood ND (Forge 2), Jamestown ND, Delta Forge 1 (430 MW campus)",
+    timeline: "100 MW live · 150 MW CY2026 · 150 MW CY2027 · 200 MW Forge 2 CY2026-2027 · 300 MW Delta Forge 1 ramping",
+    ecosystem: "CoreWeave ($11B total lease revenue, 400 MW), Polaris Forge 2 hyperscaler ($5.5B, 200 MW), Delta Forge 1 hyperscaler ($7.5B, 300 MW). No direct equity from hyperscalers. $5B Macquarie infra partnership.", notes: "Updated 2026-04-29. Data center design-build-operate for hyperscalers. Cool climate (Dakotas) advantage. APLD +12% on Apr 23 Delta Forge 1 announcement. Diversification from CoreWeave-only narrative.", color: T_.blue },
   { name: "Core Scientific", ticker: "CORZ", status: "Public (Nasdaq)", valuation: "$6B+", founded: 2017, hq: "Austin, TX",
     power: { connected: "~250 MW HPC", contracted: "~590 MW (CoreWeave)" }, powerType: "Grid (multi-state)",
     keyClients: "CoreWeave (590 MW contract)", backlog: "$10B+ (CoreWeave)",
@@ -1357,7 +1374,7 @@ export default function IndustryResearch({ initialTab }) {
             <tbody>
               {[
                 { metric: "Valuation", vals: ["$852B", "$380B", "GOOGL $3.76T", "$230B", "META $1.5T"], bold: true },
-                { metric: "Latest ARR", vals: ["$25B+ (Apr '26)", "$30B (Apr '26)", "$71B (Cloud)", "~$1B", "$201B (Rev)"], bold: true },
+                { metric: "Latest ARR", vals: ["~$24-25B (Apr '26)", "$30B (Apr '26)", "~$80B (Cloud Q1 '26)", "~$1B", "$56.3B Q1 '26 Rev"], bold: true },
                 { metric: "2026E ARR", vals: ["$50B", "$26B", "$78B (Cloud)", "$2B", "$220B (Rev)"], bold: false },
                 { metric: "MAU (Latest)", vals: ["~900M WAU", "~40M", "750M (Gemini)", "~35M (Grok)", "1.4B (Meta AI)"], bold: true },
                 { metric: "Paying Users", vals: ["50M+ subs", "300K+ biz", "120K+ enterprise", "X Premium", "3.54B DAP"], bold: false },
@@ -2178,16 +2195,17 @@ export default function IndustryResearch({ initialTab }) {
           {mc("2026E All Players", `$${AI_CAPEX_DATA.aggregate.find(a => a.year === 2026)?.value || 0}B`, "Top 5 + neoclouds + others", T_.green)}
         </div>
 
-        {/* Top 5 Trajectory Chart */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        {/* Top 5 Trajectory + Aggregate Bar — side by side */}
+        <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 0", minWidth: 360, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14, gap: 12, flexWrap: "wrap" }}>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>Top 5 Capex Trajectory ($B)</div>
               <div style={{ fontSize: 12, color: T_.textDim, marginTop: 3 }}>Dashed lines = estimates · Solid = reported actuals</div>
             </div>
-            <div style={{ display: "flex", gap: 16, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {AI_CAPEX_DATA.top5.map(co => (
-                <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
+                <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                   <div style={{ width: 12, height: 3, borderRadius: 1, background: co.color }} />
                   <span style={{ color: T_.textDim }}>{co.name.split(" (")[0]}</span>
                 </div>
@@ -2237,12 +2255,12 @@ export default function IndustryResearch({ initialTab }) {
         </div>
 
         {/* Aggregate Total Bar Chart */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+        <div style={{ flex: "1 1 0", minWidth: 360, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, display: "flex", flexDirection: "column" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Aggregate AI Infrastructure Capex ($B) — All Players</div>
-          <div style={{ display: "flex", alignItems: "flex-end", gap: 6, height: 180, padding: "0 8px" }}>
+          <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 6, minHeight: 340, padding: "0 8px" }}>
             {aggChartData.map((d) => {
               const maxVal = Math.max(...aggChartData.map(a => a.total));
-              const h = (d.total / maxVal) * 160;
+              const h = (d.total / maxVal) * 280;
               return (
                 <div key={d.year} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: d.est ? T_.textDim : T_.text }}>${d.total}B</div>
@@ -2252,13 +2270,13 @@ export default function IndustryResearch({ initialTab }) {
                     border: d.est ? `1px dashed ${T_.blue}` : "none",
                     transition: "height 0.3s",
                   }} />
-                  <div style={{ fontSize: 11, color: T_.textDim, marginTop: 2 }}>{d.year}</div>
-                  {d.est && <div style={{ fontSize: 9, color: T_.textDim }}>Est.</div>}
+                  <div style={{ fontSize: 11, color: T_.textDim, marginTop: 2, whiteSpace: "nowrap" }}>{d.year}{d.est ? " (est.)" : ""}</div>
                 </div>
               );
             })}
           </div>
           <div style={{ fontSize: 11, color: T_.textDim, marginTop: 12, fontStyle: "italic" }}>Sources: CreditSights, Goldman Sachs, BofA, company earnings guidance. Includes top 5 hyperscalers + neoclouds + other AI infra spenders.</div>
+        </div>
         </div>
 
         {/* Cloud Revenue, Margin & Capex Table */}
@@ -2687,7 +2705,7 @@ export default function IndustryResearch({ initialTab }) {
             {[
               { icon: "⏱️", title: "18-24 Month Capex-to-Supply Lag", text: "TSMC N2 capex in 2025 → volume production H1 2026. SK Hynix HBM4 equipment prep Q1 2026 → Union Fab production Q1 2027. Micron ID1 fab capex 2024-2026 → operational 2027+. This lag means today's capex signals supply availability 2 years out." },
               { icon: "🔧", title: "CoWoS Packaging is the Bottleneck", text: "TSMC allocating 10-20% of capex ($5-10B) to advanced packaging. CoWoS capacity target: 150K wafers/mo by end 2026 (4x late-2024). Nvidia secured ~70% of 2025 CoWoS-L capacity. Packaging, not transistors, is the binding constraint." },
-              { icon: "💾", title: "HBM Sold Out Through 2026", text: "All 3 memory vendors (SK Hynix 53%, Samsung 35%, Micron 11% share) report HBM sold out for 2026. HBM4 transition from HBM3E adds complexity. Wafer consumption ratio: HBM uses 2.5-3x more silicon than conventional DRAM." },
+              { icon: "💾", title: "HBM Sold Out Through 2026", text: "All 3 memory vendors (SK Hynix ~55%, Samsung ~22%, Micron ~21% share — Q3 2025; Samsung lost share to Micron over 2025) report HBM sold out for 2026. HBM4 transition from HBM3E adds complexity (Samsung HBM4 mass prod Sep 2025 at Pyeongtaek P3, NVDA-qualified). Wafer consumption ratio: HBM uses 2.5-3x more silicon than conventional DRAM." },
               { icon: "🏭", title: "Capex Shifting from Quantity to Quality", text: "DRAM capex growing only 14% YoY despite massive demand — limited by cleanroom availability. Investment shifting to process upgrades (1-gamma node), higher stacking (12-Hi → 16-Hi), and hybrid bonding rather than raw wafer capacity expansion." },
               { icon: "🌐", title: "Geographic Diversification Drives Cost Up", text: "TSMC Arizona (N3/N2), Samsung Taylor TX, Micron NY/Idaho, Intel Ohio — overseas fabs cost 30-50% more than Asian equivalents. TSMC's $17B Japan Kumamoto upgrade for 3nm. Trade deals and CHIPS Act subsidies offset some premium." },
               { icon: "📈", title: "Semi Capex Lags AI Capex by Design", text: "Hyperscaler AI capex ($780B in 2026) dwarfs semi capex ($145B) because semis are upstream inputs. Each $1 of semi capex enables ~$5 of downstream AI infrastructure spending. Semi companies are disciplined — memory vendors cut capex 30% in 2023 downturn." },

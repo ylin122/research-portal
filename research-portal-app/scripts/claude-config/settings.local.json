@@ -190,7 +190,13 @@
       "Bash(cp /c/Users/willi/.claude/settings.json /c/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.json)",
       "Bash(cp /c/Users/willi/.claude/settings.local.json /c/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/settings.local.json)",
       "Bash(cp /c/Users/willi/.claude/hooks/log-subagent-run.cjs /c/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/hooks/log-subagent-run.cjs)",
-      "Bash(cp '/c/Users/willi/.claude/projects/C--Users-willi/memory/*.md' /c/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/memory/)"
+      "Bash(cp '/c/Users/willi/.claude/projects/C--Users-willi/memory/*.md' /c/Users/willi/projects/research-portal/research-portal-app/scripts/claude-config/memory/)",
+      "Bash(ps -W)",
+      "Bash(tasklist /FI \"PID eq 10940\")",
+      "Bash(wmic process *)",
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5; \"STATUS=$\\($r.StatusCode\\)\" } catch { \"ERROR: $\\($_.Exception.Message\\)\" })",
+      "PowerShell(Start-Process 'chrome' 'http://localhost:5173')",
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5; $r.Content.Substring\\(0,[Math]::Min\\(800,$r.Content.Length\\)\\))"
     ]
   }
 }
