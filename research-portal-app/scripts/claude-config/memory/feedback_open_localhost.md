@@ -11,8 +11,8 @@ When the user says "work on PA dashboard" or "work on research portal", automati
 **Why:** User expects the app to be running and visible immediately when they start working. Don't wait for them to ask.
 
 **How to apply:**
-- PA dashboard: `cd ~/projects/portfolio-dashboard && npx vercel dev --listen 5173` → open http://localhost:5173
-- Research portal: `cd ~/projects/research-portal/research-portal-app && npx vercel dev --listen 5174` → open http://localhost:5174
+- PA dashboard: `cd ~/pa-dashboard && npx vercel dev --listen 5173` → open http://localhost:5173
+- Research portal: `cd ~/research-portal/research-portal-app && npx vercel dev --listen 5174` → open http://localhost:5174
 - Use dedicated ports: 5173 for PA dashboard, 5174 for research portal — never share
 - Kill any conflicting process on the target port first
 - Use PowerShell to open Chrome (not cmd.exe — see feedback_chrome_default.md)

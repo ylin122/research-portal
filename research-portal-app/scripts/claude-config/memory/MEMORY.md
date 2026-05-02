@@ -12,7 +12,7 @@
 - [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use Yahoo Finance API for live prices in portfolio analysis, not stale code values
 - [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — Portfolio exposure line in research articles must be on its own separate line
 - [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
-- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/projects/research-portal/research-portal-app, never the PA dashboard
+- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/research-portal/research-portal-app, never the PA dashboard
 - [feedback_open_localhost.md](feedback_open_localhost.md) — Always auto-start vercel dev and open localhost when user begins working on either project
 - [feedback_credit_philosophy.md](feedback_credit_philosophy.md) — EV is the ultimate margin of safety in credit — think through-cycle, not just cash flow/debt service
 - [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the research portal
