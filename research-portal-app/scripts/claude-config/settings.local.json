@@ -196,7 +196,14 @@
       "Bash(wmic process *)",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5; \"STATUS=$\\($r.StatusCode\\)\" } catch { \"ERROR: $\\($_.Exception.Message\\)\" })",
       "PowerShell(Start-Process 'chrome' 'http://localhost:5173')",
-      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5; $r.Content.Substring\\(0,[Math]::Min\\(800,$r.Content.Length\\)\\))"
+      "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:5173\" -UseBasicParsing -TimeoutSec 5; $r.Content.Substring\\(0,[Math]::Min\\(800,$r.Content.Length\\)\\))",
+      "WebFetch(domain:www.zacks.com)",
+      "WebFetch(domain:www.streetinsider.com)",
+      "WebFetch(domain:newsletter.semianalysis.com)",
+      "Bash(rm -f _refresh-fetch.mjs _refresh-fetch.json _refresh-fetch2.mjs _refresh-fetch2.json _refresh-history.mjs _refresh-history.json _refresh-compute.mjs _refresh-compute.json _refresh-aggregates.mjs _refresh-aggregates.json)",
+      "Bash(rm -rf _refresh-out)",
+      "WebFetch(domain:substack.com)",
+      "WebFetch(domain:damnang2.substack.com)"
     ]
   }
 }
