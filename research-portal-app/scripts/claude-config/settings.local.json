@@ -203,7 +203,14 @@
       "Bash(rm -f _refresh-fetch.mjs _refresh-fetch.json _refresh-fetch2.mjs _refresh-fetch2.json _refresh-history.mjs _refresh-history.json _refresh-compute.mjs _refresh-compute.json _refresh-aggregates.mjs _refresh-aggregates.json)",
       "Bash(rm -rf _refresh-out)",
       "WebFetch(domain:substack.com)",
-      "WebFetch(domain:damnang2.substack.com)"
+      "WebFetch(domain:damnang2.substack.com)",
+      "Bash(PYTHONIOENCODING=utf-8 python3 *)",
+      "Read(//c/c/Users/ylin1/pa-dashboard/api/**)",
+      "WebFetch(domain:semianalysis.com)",
+      "WebFetch(domain:www.google.com)",
+      "WebFetch(domain:www.silicondata.com)",
+      "WebFetch(domain:artificialanalysis.ai)",
+      "Bash(cp '/c/Users/ylin1/.claude/agents/*.md' /c/Users/ylin1/research-portal/research-portal-app/scripts/claude-config/agents/)"
     ]
   }
 }
