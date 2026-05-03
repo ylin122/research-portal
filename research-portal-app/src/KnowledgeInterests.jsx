@@ -100,11 +100,11 @@ function ConceptsTab() {
   const [concepts, setConcepts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
   const [expanded, setExpanded] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
   const [addTitle, setAddTitle] = useState("");
   const [addTopic, setAddTopic] = useState("ai");
+  const [collapsedTopics, setCollapsedTopics] = useState({});
 
   useEffect(() => {
     supabase.from("concepts").select("*").order("title", { ascending: true }).then(({ data }) => { setConcepts(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
@@ -123,18 +123,13 @@ function ConceptsTab() {
     setConcepts(prev => prev.filter(c => c.id !== id));
   };
 
-  const filtered = concepts.filter(c => {
-    if (filter !== "all" && c.topic !== filter) return false;
-    if (search) { const q = search.toLowerCase(); return (c.title || "").toLowerCase().includes(q) || (c.one_liner || "").toLowerCase().includes(q); }
-    return true;
-  });
+  const filtered = concepts.filter(c => filter === "all" || c.topic === filter);
 
   const inputStyle = { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
 
   return (
     <div>
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap" }}>
-        <input style={{ flex: 1, minWidth: 200, ...inputStyle, fontSize: 13, padding: "9px 14px" }} placeholder="Search concepts..." value={search} onChange={e => setSearch(e.target.value)} />
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
         <button onClick={() => setShowAdd(true)} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>+ Add</button>
       </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
@@ -145,10 +140,25 @@ function ConceptsTab() {
           }}>{t.label}{t.key !== "all" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>{concepts.filter(c => c.topic === t.key).length}</span>}</button>
         ))}
       </div>
-      <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}><span style={{ color: T_.text, fontWeight: 600 }}>{filtered.length}</span> concepts — A-Z. Click to expand.</div>
+      <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}><span style={{ color: T_.text, fontWeight: 600 }}>{filtered.length}</span> concepts grouped by topic. Click any topic header to collapse.</div>
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
         : filtered.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>{concepts.length === 0 ? "No concepts yet." : "No match."}</div>
-        : filtered.map(c => <ConceptRow key={c.id} concept={c} expanded={expanded === c.id} onToggle={() => setExpanded(expanded === c.id ? null : c.id)} onDelete={handleDelete} />)}
+        : TOPIC_FILTERS.filter(t => t.key !== "all").map(topic => {
+            const items = filtered.filter(c => c.topic === topic.key);
+            if (items.length === 0) return null;
+            const collapsed = collapsedTopics[topic.key];
+            return (
+              <div key={topic.key} style={{ marginBottom: 22 }}>
+                <div onClick={() => setCollapsedTopics(p => ({ ...p, [topic.key]: !p[topic.key] }))}
+                  style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 6, borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none" }}>
+                  <span style={{ fontSize: 10, color: T_.textDim, transition: "transform 0.15s", transform: collapsed ? "rotate(0)" : "rotate(90deg)", display: "inline-block" }}>&#9654;</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: T_.text, textTransform: "uppercase", letterSpacing: "0.8px" }}>{topic.label}</span>
+                  <span style={{ fontSize: 11, color: T_.textGhost }}>{items.length}</span>
+                </div>
+                {!collapsed && items.map(c => <ConceptRow key={c.id} concept={c} expanded={expanded === c.id} onToggle={() => setExpanded(expanded === c.id ? null : c.id)} onDelete={handleDelete} />)}
+              </div>
+            );
+          })}
       {showAdd && (
         <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setShowAdd(false)}>
           <div style={{ background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, padding: 28, width: 440 }} onClick={e => e.stopPropagation()}>
@@ -219,9 +229,9 @@ const STRATEGY_DIVES = [
       { title: "Beta Plus", content: "Add alpha on top of market beta. ~80% passive market exposure (index fund) + ~20% concentrated alpha overlay of high-conviction picks. You still rise and fall with the market, but the alpha sleeve targets 1-3% excess return per year. Common forms: enhanced indexing, 130/30, core + satellite. Tracking error 2-5%. Main risk: alpha sleeve underperforms and fees eat into modest edge." },
       { title: "Market Neutral", content: "Pure alpha, no market direction. Long stocks you like, short an equal dollar amount of stocks you don't — net beta near zero. Returns come entirely from the spread between your longs and shorts. Gross exposure 150-300%, target return 4-8%. Uncorrelated to markets by design. Main risks: short squeezes, borrow costs, and correlation spikes that cause both sides to move together." },
       { title: "Factor Neutral", content: "Strip all systematic factor risk — value, momentum, size, quality, volatility — leaving only idiosyncratic stock-picking alpha. Goes beyond market neutral by also hedging factor exposures to zero. Requires a multi-factor risk model (Barra, Axioma). Purest test of investment skill but hardest to generate returns — you're removing all the easy risk premia." },
-      { title: "Factor Strategies", content: "Harvest risk premia from persistent stock characteristics. Value (cheap vs expensive, ~2-4%/yr), momentum (winners keep winning, ~4-8%/yr), quality (profitable vs junk, ~2-3%/yr), size (small over large, ~1-3%/yr). Not alpha — compensation for bearing specific risks. Implemented via smart beta ETFs or long/short factor portfolios. Every factor has long drawdown periods (value: 2010-2020)." },
+      { title: "Factor Strategies", content: "Harvest risk premia from persistent stock characteristics. Value (cheap vs expensive, ~2-4%/yr), momentum (winners keep winning, ~4-8%/yr), quality (profitable vs junk, ~2-3%/yr), size (small over large, ~1-3%/yr). All ranges are long-term gross factor premia (academic / AQR-style); net-of-cost realized returns are typically 30-50% lower after implementation drag. Not alpha — compensation for bearing specific risks. Implemented via smart beta ETFs or long/short factor portfolios. Every factor has long drawdown periods (value: 2010-2020)." },
       { title: "Paired Trades", content: "Long one stock, short its closest peer within a sector — profit from the spread reverting to its historical norm. Classic pairs: Coke/Pepsi, Visa/Mastercard. Entry when spread deviates >2 standard deviations. Naturally hedged against market moves. Holding period days to weeks, win rate 55-65%. Main risk: structural divergence where the relationship breaks permanently." },
-      { title: "Statistical Arbitrage", content: "Systematic alpha from micro-inefficiencies across 1,000-3,000 stocks. Quantitative models combine mean reversion, earnings momentum, sentiment, and alt data signals. Positions are tiny (0.1-0.5% each), holding periods 1-10 days, turnover very high. Edge comes from the law of large numbers. Players: Renaissance, Two Sigma, DE Shaw. Key risks: crowding, alpha decay (signal half-life 6-18 months), and transaction costs." },
+      { title: "Statistical Arbitrage", content: "Systematic alpha from micro-inefficiencies across 1,000-3,000 stocks. Quantitative models combine mean reversion, earnings momentum, sentiment, and alt data signals. Positions are tiny (0.1-0.5% each), holding periods 1-10 days, turnover very high. Edge comes from the law of large numbers. Players: Renaissance, Two Sigma, DE Shaw. Key risks: crowding, alpha decay (signal half-life varies by frequency — medium-frequency signals 6-18 months, intraday signals seconds-to-hours), and transaction costs." },
       { title: "Convertible Arbitrage", content: "Buy a convertible bond (bond + embedded call option on the stock), short the underlying stock to delta-hedge. You earn the coupon (3-6% yield) plus convexity — if the stock moves big in either direction, the option gains more than the hedge loses. Profit from volatility via gamma scalping (rebalancing the hedge). Typical leverage 3-6x. Main risks: credit default, illiquidity in stress, short squeezes." },
       { title: "Merger Arbitrage", content: "When an acquisition is announced, buy the target at a discount to the deal price (typically 2-5% spread). Earn the spread when the deal closes in 2-6 months, annualizing to 6-12%. For stock deals, also short the acquirer. ~90% of deals close. Main risk: deal breaks send the target down 15-30%. Diversify across 15-30 deals. Edge comes from understanding regulatory, antitrust, and financing risk." },
       { title: "Relative Value Credit", content: "Exploit pricing inefficiencies between related credit instruments — same company's risk priced differently across bonds vs CDS, different maturities, or currencies. Long the cheap one, short the expensive one, profit when the spread normalizes. Credit markets are fragmented and less efficient than equities. Typical spread capture 50-200bp, leverage 3-8x. Main risks: illiquidity in credit crises, leverage amplifying losses." },
@@ -229,7 +239,7 @@ const STRATEGY_DIVES = [
       { title: "Multi-Strategy", content: "Multiple independent strategy pods (20-200+) under one risk umbrella — the dominant hedge fund model. Each pod specializes (stat arb, merger arb, credit, macro). Central platform provides capital, risk limits, tech. Pods compete for capital; underperformers get cut. Target: 10-15% net, Sharpe 2.0-3.0+. Examples: Citadel, Millennium, Balyasny. Main risks: high pass-through fees (5-8% of NAV), crowding across platforms." },
       { title: "Long/Short Equity", content: "The classic hedge fund strategy. Long best ideas, short worst ideas, maintain net long bias of 30-70%. Returns from both alpha (stock picking) and beta (market exposure). Flavors: Tiger Cubs (concentrated, growth-biased), sector specialists, activist L/S. Can dial net exposure up/down based on market view. Main risks: beta drag in bear markets, shorting is hard (borrow costs, unlimited loss), timing net exposure." },
       { title: "Risk Parity", content: "Allocate by risk contribution, not dollar amount. In 60/40, equities drive ~90% of risk. Risk parity equalizes each asset class's risk contribution (equities, bonds, commodities, TIPS), then levers up to target return. Better diversification and Sharpe than 60/40. Bridgewater All Weather is the famous example. Main risks: leverage costs, rising rates crush the heavy bond weight (2022), and correlation spikes in crisis." },
-      { title: "Trend Following / CTA", content: "Systematically go long rising prices, short falling prices across 50-100+ global futures markets. No fundamental view — follow price. Models use moving averages and breakout signals. Win rate only 35-45% but winners are much bigger than losers. Strong crisis alpha — profits from sustained crashes (2008, 2022: CTAs up 20-40%). Main risks: whipsaw in range-bound markets, extended drawdowns in trendless periods." },
+      { title: "Trend Following / CTA", content: "Systematically go long rising prices, short falling prices across 50-100+ global futures markets. No fundamental view — follow price. Models use moving averages and breakout signals. Win rate only 35-45% but winners are much bigger than losers. Strong crisis alpha — profits from sustained crashes (2008: SG CTA Index ~13%, top trend followers up to ~33%; 2022: SG Trend Index +27.3%, SG CTA Index +20.1%). Main risks: whipsaw in range-bound markets, extended drawdowns in trendless periods." },
       { title: "Core-Satellite", content: "60-80% cheap passive beta (index funds, ETFs) + 20-40% concentrated alpha satellites (hedge funds, active managers, thematic positions, alternatives). Fee-efficient — pay high fees only on the alpha portion. Core provides stability; satellites provide potential outperformance and diversification. Main risk: satellite selection — picking the wrong active managers wastes the alpha budget." },
     ] },
   { id: "strat_ls_pod_risk", title: "L/S Equity & Pod Shop Risk Framework", topic: "finance", _static: true,
@@ -344,18 +354,148 @@ const STRATEGY_DIVES = [
           { label: "Your Timing", value: "MWR − TWR" }
         ] }
     ] },
+  { id: "infra_gpu_tco", title: "GPU Cost of Ownership", topic: "infrastructure", _static: true,
+    summary: "How to think about total cost of ownership for AI accelerators — the capex/opex stack, why PUE is the hidden multiplier, what the right denominator is for TCO ratios, and a worked GB300 NVL72 example. Frames who in the AI value chain captures what.",
+    sections: [
+      { title: "The Skeleton Equation", content: "The full TCO of one GPU over its useful life is:\n\nTCO = Capex_amortized + Opex_power + Opex_other  (per unit time)\n\nWhat you actually want to know is TCO PER UNIT OF USEFUL WORK — that's the denominator that converts dollars into something investable:\n\n$/PFLOP-hour    = TCO_per_hour / (theoretical_FLOPS × utilization)\n$/M_tokens_out  = TCO_per_hour / (tokens_per_hour × cache_efficiency)\n\nThe first metric is what hardware analysts use; the second is what application economics actually run on. They diverge because of utilization, software efficiency, cache hit rates, and pricing markup — and that gap is where value capture happens.\n\nSemiAnalysis's '$0.28/PFLOP' for VR NVL72 is the first number; their '$0.99/M tokens for Opus 4.7 agentic workloads' is the second. The gap between them shows how much application-layer leverage exists on top of pure compute cost. As you go up the stack, every layer can mark up its share — but only if the layer below has not yet exercised its pricing power.",
+        key_numbers: [
+          { label: "Two Denominators", value: "Compute vs Tokens" },
+          { label: "VR NVL72 $/PFLOP", value: "$0.28" },
+          { label: "Opus 4.7 $/M Tokens", value: "$0.99" }
+        ] },
+      { title: "Capex — The Upfront Stack", content: "The GPU itself is only ~50-60% of the capex of a deployed system. The full bill of materials:\n\n• GPU die + HBM — ~50-60% of system capex. HBM share is rising as memory pricing inflects (HBM allocation pricing up 6x YoY in 1Q26 per SemiAnalysis; broader TrendForce contract benchmarks show ~20% YoY on HBM3E with allocation premiums driving the larger figure; SOCAMM heading toward $13/GB by end of 2026).\n• CPU host (Grace, Intel/AMD) — ~5-8%. Ratio of CPU:GPU has been falling.\n• NVLink switches + scale-up fabric — ~8-12%. The 'NVL72' magic — non-trivial cost.\n• Scale-out networking (InfiniBand, optics, switches) — ~10-15%. Co-packaged optics (CPO) reduces this in next gen.\n• Storage (NVMe, parallel FS — Vast, Weka, DDN) — ~3-5%. Often allocated, not co-located.\n• Server chassis, motherboard, PSU — ~5-8%.\n• Datacenter buildout (allocated) — $10-15M/MW shell + power. Amortized separately, often into $/kW-month.\n\nTwo non-obvious points:\n\n• THE NETWORKING LINE IS RISING. As clusters scale to 100K+ GPUs, the all-to-all bandwidth requirement explodes. This is why Broadcom is a co-beneficiary of every Nvidia generation, and why CPO matters — it cuts both capex and power on optics simultaneously.\n• HBM IS THE SWING FACTOR. When memory vendors capture pricing power (6x HBM, $13/GB SOCAMM), memory takes share of system capex from compute. That changes who in the stack benefits from the next $1B AI capex order — even if Nvidia doesn't change its sticker.",
+        key_numbers: [
+          { label: "GPU + HBM Share", value: "50-60%" },
+          { label: "Networking Share", value: "10-15%" },
+          { label: "DC Shell Cost", value: "$10-15M/MW" }
+        ] },
+      { title: "Opex — Power Math", content: "Opex is dominated by power — typically 60-80% of operating cost. The formula:\n\nAnnual_power_cost = IT_kW × PUE × 8760 × $/kWh\n\nFor one GB300 GPU at 1.4 kW TDP:\n• IT load: 1.4 kW\n• Effective load (85% utilization): 1.19 kW\n• PUE: 1.15 (modern liquid-cooled facility)\n• Power rate: $0.07/kWh (cheap industrial — TX, OK, IA)\n• Hours: 8760\n\n1.19 × 1.15 × 8760 × $0.07 = ~$840/year per GPU\n\nBump to a $0.12/kWh region (most coastal US) → $1,440/yr. That alone is a 70% swing from siting alone.\n\nFor a 100,000-GPU GB300 cluster: 140 MW IT load → 161 MW total at PUE 1.15 → ~$98M/year in power at $0.07/kWh.\n\nOther opex lines:\n• Cooling — folded into PUE, see next section.\n• Bandwidth/network — modest, mostly egress for inference.\n• Personnel — small for hyperscalers (~5%), larger for neoclouds (~10%).\n• Maintenance/spares — small but non-zero, especially for HBM and optics replacements.\n• Real estate / colo lease — applies if not self-built; can be 15-25% of opex.",
+        key_numbers: [
+          { label: "Power Share of Opex", value: "60-80%" },
+          { label: "GB300 Power/yr/GPU", value: "~$840" },
+          { label: "Siting Swing", value: "70%" }
+        ] },
+      { title: "PUE — The Hidden Multiplier", content: "PUE = (total facility power) / (IT equipment power). It's the tax on every watt your GPU draws — and it hides 20-40% of cost in plain sight.\n\nTypical ranges:\n• 1.05-1.10 — Theoretical / extreme immersion. Few production sites.\n• 1.10-1.20 — World-class hyperscaler, liquid-cooled. Google, Meta, latest Microsoft.\n• 1.25-1.40 — Modern colo with hot-aisle containment. Most newer Equinix, CoreSite.\n• 1.40-1.60 — Older enterprise / retrofitted. Lots of legacy capacity.\n• 1.60-2.00+ — Bad / hot climate / inefficient cooling. What you don't want.\n\nWhy it matters at scale: at 100 MW IT load and $0.07/kWh, going from PUE 1.5 to PUE 1.15 saves:\n\n(1.5 − 1.15) × 100 MW × 8760 × $70/MWh = $21.5M/year\n\nOver a 4-year asset life, that's $86M of pure savings — comparable to capex on ~1,500 GPUs.\n\nPUE is also why liquid cooling went from option to mandatory. GB300 at 1.4 kW per GPU pushes NVL72 racks to ~130-150 kW (GB200 baseline was ~120 kW). Vera Rubin pushes per-GPU TDP higher (industry consensus ~1.8-2.0 kW), with rack densities heading toward 200+ kW. Air cooling tops out around 30-40 kW per rack. So liquid cooling isn't a luxury — it's the only physically viable option, and as a side effect it pushes PUE down toward 1.1.\n\nThis is why the GB300 → VR NVL72 transition has only a small capex/W increase ($37.4 → $38.1 per the SemiAnalysis 'AI Value Capture' analysis): liquid cooling is already amortized into the buildout. The hard part (going from air to liquid) already happened. Subsequent generations get to run on the same plumbing.\n\nCooling capex anchors:\n• Air cooling: ~$1-2M per MW IT — cheap upfront, high PUE.\n• Direct-to-chip liquid: ~$3-5M per MW IT — recovers via lower PUE in 12-24 months at modern density.\n• Immersion: ~$5-8M per MW IT — lowest PUE, longest payback.",
+        key_numbers: [
+          { label: "World-Class PUE", value: "1.10-1.20" },
+          { label: "100MW Savings", value: "$21.5M/yr" },
+          { label: "Air Cooling Limit", value: "30-40 kW/rack" }
+        ] },
+      { title: "The Performance Denominator", content: "What you 'get' for your TCO is more nuanced than peak FLOPS. Three concepts:\n\nTHEORETICAL FLOPS — vendor spec (GB300: 5 PFLOPS FP8 dense, 10 PFLOPS sparse; Rubin: ~2x higher).\n\nMFU (Model FLOPS Utilization) — fraction of theoretical FLOPS your model actually achieves. Training MFU on H100: 30-55% typical, 60% best-in-class. Higher MFU on B200/GB300 because of FP4 support and Multi-Token Prediction.\n\nGOODPUT — MFU × cluster_uptime. At 10K+ GPU scale, single-node failures are constant. Google claims 97% goodput on TPU 8t superpods (per Damnang's analysis); Nvidia clusters typically run 92-96%. The 5-point gap is a real moat — at $5/GPU-hour rental, 5% goodput = $400+ per GPU per year of lost revenue.\n\nFor INFERENCE the equivalents are:\n• Tokens/sec/GPU — raw throughput\n• Cache hit rate — 90%+ for agentic workloads, explains the SemiAnalysis $0.99/M effective price vs. $5/$25 sticker\n• Concurrency — how many sessions you can serve per GPU\n• Input:output ratio — agentic workloads run 300:1, very different from chat 1:1\n\nThe trap: vendors quote peak FLOPS at lowest precision (FP4) on synthetic workloads. Real models run at ~30-50% MFU on FP8 with overhead. The honest number is usually 0.3-0.5x the marketing number.\n\nWhat this means in TCO: when SemiAnalysis says '14x software-only throughput improvement on B300' (wideEP, disaggregation, MTP), they're saying the DENOMINATOR of $/PFLOP-hour grows 14x without any hardware change. That's why the same chip delivers radically different unit economics over its life. Software optimization is the most underappreciated TCO driver.",
+        key_numbers: [
+          { label: "Training MFU", value: "30-55%" },
+          { label: "Goodput Range", value: "92-97%" },
+          { label: "Software Gain on B300", value: "14x" }
+        ] },
+      { title: "Key TCO Metrics", content: "The right metric depends on the question:\n\n• $/PFLOP-HOUR — Pure compute cost. Compares hardware fairly across precisions. SemiAnalysis benchmark for VR NVL72: $0.28/PFLOP for customers, 60% improvement over GB300.\n• $/M TOKENS (input/output) — Application unit economics. Diverges hugely from sticker due to cache + batching.\n• PERFORMANCE/WATT — Power-bound efficiency. Critical when power is the binding constraint (which it increasingly is).\n• PERFORMANCE/TCO — True economic efficiency. The metric that should drive purchase decisions.\n• GOODPUT-ADJUSTED FLOPS — Real delivered compute. Reliability is hidden value.\n• CAPEX/WATT ($/W) — Buildout efficiency. GB300 → VR went $37.4 → $38.1 — basically flat, signaling Nvidia restraint on pricing.\n• MFU / UTILIZATION — How much of theoretical you capture. Software stack maturity proxy.\n\nReading these in tension reveals the structural story:\n\n• A vendor's marketing pitch shows peak FLOPS/$ at FP4. That's the most generous denominator — multiply by 0.3-0.5x for honest workloads.\n• A neocloud's pricing is anchored to $/GPU-hour, which translates to $/PFLOP-hour at vendor-spec utilization. Customers care about $/M tokens delivered, which is 5-50x lower per token than the rental rate suggests because of batching and caching.\n• The gap between the rental rate (cost-based, with neocloud margin) and the value delivered to the application (token economics) is what SemiAnalysis means by 'value capture shifting upstack.' It's not that anyone's getting cheated — it's that whoever sits closest to the application can take a markup on every layer below.",
+        key_numbers: [
+          { label: "VR NVL72 $/PFLOP", value: "$0.28" },
+          { label: "VR vs GB300 Gain", value: "60%" },
+          { label: "GB300 → VR Capex/W", value: "$37.4 → $38.1" }
+        ] },
+      { title: "How TCO Changes Over Time", content: "Six forces compress or expand TCO over a GPU's useful life:\n\n1. SOFTWARE OPTIMIZATION — Same chip, more throughput. The 14x B300 software gain is the single most underappreciated TCO driver. Buy a GPU in 2025, get 14x more useful work out of it by 2027 with the same capex.\n\n2. GENERATIONAL DISPLACEMENT — H100 → H200 → B100 → B200 → GB300 → VR. Each ~12-18 months, ~2x perf at ~1.3-1.5x cost. Perf/$ improves 30-50% per gen, which means OLDER GPUS DEPRECIATE FASTER ECONOMICALLY THAN THEY DO ON THE BOOKS. This is why hyperscaler dep schedule extensions (Microsoft 2022, Meta and Google 2023 to 6 years; Amazon partially reversed to 5 years for AI servers in early 2025) are an EPS lever but also a deferred quality-of-earnings risk that cuts both ways.\n\n3. MEMORY PRICING — HBM allocation pricing up 6x YoY (per SemiAnalysis; ~20% on contract benchmarks per TrendForce) changes margin distribution within the system. If memory is now 25% of system cost vs. 15%, GPU vendors lose share of the BOM to memory vendors.\n\n4. POWER COSTS — Generally rising in load-zone constrained markets (NoVa, Dublin, Frankfurt), flat-to-down in renewable-rich regions (TX, IA, WA). Siting decisions made in 2024 lock in 4-year economics.\n\n5. COOLING EFFICIENCY — PUE has trended down 5-10 bps per year industry-wide. Cumulative effect over a 4-year asset is meaningful.\n\n6. RESALE VALUE — Almost zero historically. ML accelerators don't have a strong secondary market, unlike CPUs. This means salvage value in TCO models should be ~$0.\n\nThe combined effect: TCO at year 0 of an asset can look very different from TCO at year 3. The model that justified the purchase may have been correct for that day; what actually shows up in the P&L depends on how all six forces evolve. The biggest mistake in TCO modeling is treating these as static.",
+        key_numbers: [
+          { label: "Software Gain on B300", value: "14x" },
+          { label: "Generation Cycle", value: "12-18 months" },
+          { label: "HBM Pricing (YoY)", value: "+6x (SemiAnalysis)" }
+        ] },
+      { title: "Worked Example — GB300 NVL72", content: "Reasonable production assumptions (numbers approximated; vendor pricing varies):\n\n• Rack capex (72 GPUs + Grace + NVLink + tray): ~$3.5M\n• Per-GPU capex: ~$48,600\n• Per-GPU TDP: 1.4 kW\n• Useful life: 4 years\n• PUE: 1.15\n• Power rate: $0.07/kWh\n• Load factor: 85%\n\nCAPEX PER GPU PER YEAR (straight-line):\n$48,600 / 4 = $12,150\n\nPOWER PER GPU PER YEAR:\n1.4 × 0.85 × 1.15 × 8760 × $0.07 = $840\n\nNetworking/storage allocation: ~$1,500-2,000/yr\nDatacenter buildout amortization: ~$1,500/yr\nPersonnel + maintenance + miscellany: ~$500/yr\n\nTOTAL TCO PER GPU PER YEAR: ~$16,500\nTCO PER GPU PER HOUR: ~$1.88\n\nReading this against neocloud rental rates:\n• Sticker rental for H100: $2.50-4.00/GPU-hr\n• Implied for GB300: $4.50-6.00/GPU-hr\n• SemiAnalysis cost-based floor for VR NVL72: $4.92/hr — slightly higher because VR will be more expensive per GPU (~$60-70K) and HBM cost is rising.\n\nWhere the gross margin lives — at $4.92/hr rental and ~$1.88/hr TCO, gross margin is ~$3/hr per GPU. At 85% utilization, that's ~$22K/yr per GPU. Sounds great, but financing the capex (often 10%+ cost of capital for neoclouds) consumes ~$5K of that. Net ~$17K/yr per GPU at full utilization.\n\nThat's the IRR equation that produces the '15.6% hurdle rate' SemiAnalysis references — it's not generous, and it's why neoclouds are sensitive to utilization slipping below ~80%. A neocloud that can't keep utilization high doesn't just lose margin — it goes upside-down on the IRR pretty quickly.",
+        key_numbers: [
+          { label: "GB300 TCO/yr/GPU", value: "~$16,500" },
+          { label: "TCO/hour", value: "~$1.88" },
+          { label: "VR NVL72 Floor", value: "$4.92/hr" }
+        ] },
+      { title: "The Investing Lens", content: "Every line in the TCO equation maps to a publicly investable name:\n\n• GPU die — NVDA, AMD. Pricing power, cycle position.\n• HBM — MU, Hynix, Samsung. Tightening supply, 6x YoY pricing.\n• Networking — AVGO (Tomahawk), MRVL (custom), ANET (switches). Scale-out fabric expansion.\n• Optics — COHR, FN, LITE; CPO disrupting near-term. CPO compresses both capex and opex on optics.\n• Datacenter buildout — EQIX, DLR (REITs); VRT (cooling/power infra). Power/PUE economics.\n• Power — NEE, CEG, VST (utilities). Capacity scarcity, PPA pricing power.\n• Foundry — TSM. Node access bottleneck, deliberate restraint.\n\nThe SemiAnalysis 'value capture shifting to model labs' thesis read through this framework:\n• The numerator (TCO) is getting bigger but slower (Nvidia restraint, TSMC restraint, capex/W barely moving).\n• The denominator (useful tokens delivered) is exploding (software + Rubin perf + cache hits + agentic batching).\n• The application-layer take rate is widening because customer willingness-to-pay for agentic workloads has decoupled from raw compute cost.\n\nWhat to watch:\n• HBM share rising + pricing power → bullish memory.\n• Networking share rising + Broadcom dominance → bullish AVGO.\n• Power share constant but capacity-constrained → bullish utilities/REITs in load-zones.\n• GPU share constant + Nvidia restraint → margin expansion deferred but stored (the 40% headroom doesn't vanish, it gets exercised eventually).\n• Inference cost falling 14x via software → bullish any model-layer with pricing power (private labs + GOOGL + MSFT through partners).\n\nPortfolio exposure (direct beneficiaries of the TCO framework): NVDA, MU, TSM, AVGO, MRVL, GOOGL, MSFT.",
+        key_numbers: [
+          { label: "Capex Beneficiaries", value: "NVDA, MU, AVGO, TSM" },
+          { label: "Power Beneficiaries", value: "EQIX, DLR, VRT, CEG" },
+          { label: "Margin Expansion Bias", value: "Memory > GPU near-term" }
+        ] },
+      { title: "Mental Model Summary", content: "Three sentences that capture how to think about GPU TCO:\n\n1. CAPEX IS ~75% OF A 4-YEAR TCO; POWER IS MOST OF THE REST. PUE is the multiplier on the second-largest line — that's why hyperscaler PUE leadership is a real moat, not vanity.\n\n2. THE USEFUL DENOMINATOR IS GOODPUT-ADJUSTED FLOPS OR TOKENS-PER-HOUR, NOT PEAK FLOPS. Software improvements expand this denominator on the same hardware — sometimes 10x+ over an asset's life — which is why 'what you bought' is not what 'you operated.'\n\n3. WHERE TCO SHARE IS GROWING TELLS YOU WHICH LAYER HAS PRICING POWER. HBM share rising means memory vendors take more of every $1B AI capex order. Networking share rising means Broadcom does. Inference cost-per-token falling faster than rental rates means model labs do. The 'shift to model labs' thesis is just this framework applied to the application layer.\n\nThe operational instinct to develop: when you read any AI infrastructure analysis, immediately ask:\n• Is this changing the numerator (TCO) or the denominator (useful work)?\n• Which layer's share of the BOM is moving?\n• Who has pricing power at that layer right now?\n• What's the binding constraint (silicon, memory, power, cooling, network)?\n\nThe layer that's both gaining share AND has pricing power is where the profits go. Everything else is detail.",
+        key_numbers: [
+          { label: "Capex Share of TCO", value: "~75%" },
+          { label: "Software Lifetime Gain", value: "10x+" },
+          { label: "Profit Goes To", value: "Pricing × Share Gain" }
+        ] }
+    ] },
+  { id: "sw_lang_basics", title: "Programming Languages: A Refresher", topic: "software", _static: true,
+    summary: "A working refresher on the major general-purpose languages — Python, JavaScript/TypeScript, Java, C, C++, Go, Rust, SQL — what makes each distinctive (type system, memory model, concurrency) and when to pick one over another. Aimed at restoring fluency, not teaching from scratch.",
+    sections: [
+      { title: "When to Pick What", content: "Language choice is downstream of constraints — what runtime is required, what team you have, what ecosystem the problem already lives in. Rules of thumb:\n\nPICK PYTHON when: the bottleneck is developer time, not runtime. Data analysis, ML/AI, scripting, prototyping, glue between systems. Anything where heavy compute can sit in C/Fortran libraries (NumPy, PyTorch).\n\nPICK TYPESCRIPT when: you're shipping to browsers (no choice) or building a fullstack app with shared types. Node/Deno/Bun for backend if your team is JS-strong. Skip plain JS for non-trivial work — TS catches too much value to give up.\n\nPICK JAVA (or KOTLIN) when: enterprise backend with mature concurrency needs, big data processing (Spark, Flink, Kafka), Android. The JVM ecosystem is unmatched for backend infra at scale.\n\nPICK GO when: building cloud infrastructure tooling, networking services, or CLIs that need to run on many platforms. Anything that benefits from very fast compiles, easy cross-compilation, and a small static binary.\n\nPICK RUST when: you need C-level performance with safety guarantees. Systems software, performance-critical libraries, anything where memory bugs are unacceptable. Worth the learning curve when correctness matters more than time-to-market.\n\nPICK C++ when: Rust isn't an option (legacy codebase, ecosystem missing, team familiarity), and Go/Java are too slow. Game engines, HFT, ML compiler internals, browsers.\n\nPICK C when: you're writing a kernel, embedded firmware, or an FFI layer — or maintaining one of the millions of existing C codebases.\n\nPICK SQL when: the data lives in a database. Always learn enough SQL to read query plans — abstracting it away via ORMs has consistent costs.\n\nTHE META-RULE: match the language to the constraint that matters most — performance, safety, ecosystem, hiring, time-to-market. There is no 'best' language, only best-for-this-problem.",
+        key_numbers: [
+          { label: "Meta-Rule", value: "Match Language to Constraint" },
+          { label: "'Best Language'", value: "Doesn't Exist" },
+          { label: "What Matters", value: "Ecosystem · Team · Perf" }
+        ] },
+      { title: "The Language Landscape", content: "Most modern languages can be sorted along three axes — and almost everything else (performance, safety, what bugs are possible, what the runtime looks like) follows from the choices on these axes.\n\nTYPE DISCIPLINE\n• Static = types known and checked at compile time (Java, C++, Go, Rust, TypeScript)\n• Dynamic = types checked at runtime (Python, JavaScript, Ruby)\n• Strong = no implicit conversion between unrelated types (Python, Rust)\n• Weak = implicit coercion happens (JavaScript, C)\n\nMEMORY MODEL\n• Manual = programmer calls malloc/free or new/delete (C, classic C++)\n• Garbage collected = runtime reclaims unreferenced memory (Java, Python, Go, JavaScript, C#)\n• Ownership = compiler tracks who owns each value at compile time (Rust)\n\nEXECUTION MODEL\n• Compiled to native = source → machine code at build time (C, C++, Rust, Go)\n• Interpreted = bytecode/AST executed by a VM at run time (CPython)\n• JIT-compiled = bytecode → native at runtime (JVM languages, JavaScript V8, .NET)\n\nThese choices are a frontier. GC adds runtime cost but eliminates whole classes of bugs. Static typing catches errors early but slows prototyping. Manual memory is fastest but unsafe. Ownership is fast and safe but raises the learning curve. Pick the language whose tradeoffs match the constraint that matters most for your problem.",
+        key_numbers: [
+          { label: "Three Axes", value: "Type · Memory · Execution" },
+          { label: "Frontier", value: "Speed vs Safety vs Productivity" },
+          { label: "Universal Truth", value: "All Tradeoffs" }
+        ] },
+      { title: "Python", content: "Dynamically and STRONGLY typed — types checked at runtime, but no implicit coercion (Python won't add a string to an int the way JavaScript will). Garbage collected via reference counting plus a cycle detector. The reference implementation (CPython) interprets bytecode in a single thread protected by the Global Interpreter Lock (GIL): only one thread executes Python bytecode at a time. CPU-bound multithreading is therefore useless; I/O-bound threading and async work fine.\n\nMulti-paradigm — object-oriented, procedural, increasingly functional. Killer features: list/dict comprehensions, decorators, context managers, duck typing, generators, and a massive standard library. asyncio + async/await is the modern concurrency story; multiprocessing or C extensions (NumPy, Pandas, PyTorch) bypass the GIL for parallelism.\n\nDOMINATES where developer productivity beats runtime speed: data science (NumPy, Pandas, scikit-learn, PyTorch), ML (transformers, LangChain), web (Django, Flask, FastAPI), scripting/glue, DevOps automation. Notable warts: GIL kills CPU-bound parallelism (workarounds: subprocess, C extensions, free-threaded Python 3.13+ experimental); packaging is famously painful (pip vs conda vs poetry vs uv); the 2 → 3 migration was a decade of pain. Performance: 10-100x slower than C for tight loops, but C extensions handle the hot paths.",
+        key_numbers: [
+          { label: "Type System", value: "Dynamic + Strong" },
+          { label: "Memory", value: "Refcount GC + cycle detector" },
+          { label: "Big Constraint", value: "GIL (one thread runs bytecode)" }
+        ] },
+      { title: "JavaScript / TypeScript", content: "Dynamically and WEAKLY typed — the famous coercion footguns: `0 == \"0\"` is true, `[] + {}` is `\"[object Object]\"`, `typeof null` is `\"object\"`. Single-threaded event loop with non-blocking I/O — async work happens via callbacks, promises, and async/await on top of the same single thread. Browser engines (V8, SpiderMonkey, JavaScriptCore) JIT-compile JS to native. Node.js runs V8 server-side; Deno and Bun are newer alternatives.\n\nPrototype-based object model — `class` since ES6 is syntactic sugar over prototypes. First-class functions and closures are the bread-and-butter idioms. The module system was a 15-year mess (CommonJS vs AMD vs ESM); ESM is now the default. NPM is the largest package registry in the world (3M+ packages).\n\nTypeScript layers static structural typing on top of JavaScript and compiles down to JS. It is the de facto default for non-trivial JS projects — catches most coercion bugs at compile time without changing runtime behavior. Use cases: every browser frontend (no choice), increasingly server (Node, Deno, Bun), build tooling, Electron desktop apps, React Native mobile. Notable warts: type coercion if you skip TS; single-threaded means CPU-heavy work blocks the event loop (Worker threads exist but are awkward); npm ecosystem bloat and supply chain risk.",
+        key_numbers: [
+          { label: "Concurrency", value: "Single-thread event loop" },
+          { label: "Standard Mode", value: "TypeScript on top" },
+          { label: "Ecosystem", value: "NPM (3M+ packages)" }
+        ] },
+      { title: "Java", content: "Statically and strongly typed; runs on the JVM (Java Virtual Machine) which JIT-compiles bytecode to native at runtime. Garbage collected with multiple GC algorithms tuned for different goals — G1 (default since Java 9), ZGC and Shenandoah for sub-millisecond pauses on huge heaps. Mostly OOP — everything used to be a class — though records, lambdas (Java 8), and pattern matching (recent) softened the formality. Generics are TYPE-ERASED at runtime, which causes friction with reflection and prevents primitive specialization.\n\nConcurrency is mature: synchronized blocks, java.util.concurrent (locks, atomics, executors, fork-join), and as of Java 21 (Sept 2023) VIRTUAL THREADS — lightweight user-space threads that solve the thread-per-request scaling problem Go solved a decade earlier. The 'write once, run anywhere' promise mostly held because of bytecode portability; cross-platform GUI is the exception that proves the rule.\n\nUse cases: enterprise backends (Spring is the dominant framework), Android (alongside Kotlin), big data infra (Hadoop, Spark, Kafka, Cassandra, Flink — almost all in JVM languages), trading systems, ad tech. Notable warts: famously verbose (Spring boilerplate, getters/setters/equals/hashCode); slow JVM startup helped by GraalVM AOT compilation; Oracle vs OpenJDK licensing fight (resolved — OpenJDK is free); checked exceptions are widely regarded as a misfeature.",
+        key_numbers: [
+          { label: "Runtime", value: "JVM (JIT-compiled bytecode)" },
+          { label: "Concurrency", value: "Virtual threads (Java 21+)" },
+          { label: "Killer Domain", value: "Enterprise + Big Data" }
+        ] },
+      { title: "C", content: "Statically but WEAKLY typed — implicit conversions are everywhere, easy footguns. Manual memory management: `malloc` and `free` are your responsibility. Compiled directly to native machine code with thin or no runtime. Procedural — no built-in OOP, generics, or namespaces. Pointer arithmetic is exposed; the language assumes you know what you're doing.\n\nThe lingua franca of systems software for 50+ years (1972 → today): Linux kernel, every major Unix, the Windows kernel, every major language compiler/runtime (CPython, V8, JVM, GCC, LLVM), most database engines, embedded firmware. CRUCIALLY, C is the ABI boundary for every other language — Python's C extensions, Java JNI, Rust FFI, Go cgo, all speak C calling convention. Even if you never write a line of C, your program is running on top of C.\n\nThe minimal runtime is both the killer feature and the killer flaw: zero overhead, but no safety net. Buffer overflows, use-after-free, null pointer dereferences, and undefined behavior are easy and common. Modern static analyzers (clang-tidy, AddressSanitizer, UBSan) help but don't eliminate risk. Notable warts: `strcpy`/`gets` are unsafe by design; the C standard is full of 'implementation-defined' and 'undefined' behavior (compilers are allowed to do ANYTHING in UB cases); macro preprocessing is a footgun. C23 (the latest standard) adds modest QoL improvements (typeof, constexpr-ish constants).",
+        key_numbers: [
+          { label: "Memory", value: "Manual (malloc/free)" },
+          { label: "Role", value: "ABI Lingua Franca" },
+          { label: "Age", value: "50+ years (1972)" }
+        ] },
+      { title: "C++", content: "Statically and strongly typed; compiled to native. Memory is manual but RAII (Resource Acquisition Is Initialization) ties resource lifetimes to object scope — destructors fire automatically when objects go out of scope. Modern C++ (C++11 onwards) leans on smart pointers (`unique_ptr`, `shared_ptr`) so explicit `new`/`delete` is increasingly rare in new code. Multi-paradigm: procedural + OO + generic (templates) + increasingly functional (lambdas, ranges, std::optional/variant).\n\nThe core philosophy is ZERO-COST ABSTRACTIONS — high-level features should compile to code as fast as the hand-written low-level equivalent. Templates enable compile-time metaprogramming and generic algorithms with no runtime cost (monomorphization). The Standard Template Library (STL) gives you containers (vector, map, unordered_map, deque) and algorithms with predictable performance.\n\nUse cases where every microsecond matters: game engines (Unreal native, Unity native parts), browsers (Chromium, Firefox internals), high-frequency trading, databases (MySQL, MongoDB, ClickHouse), ML compilers (PyTorch C++ backend, ONNX, TensorRT), CAD, scientific computing, embedded with abstractions. Modern C++ (17/20/23) is much friendlier than C++98 — concepts, modules, ranges, coroutines all landed in the last decade. Notable warts: undefined behavior is everywhere (compilers exploit it aggressively); the header file model and slow compile times; templates produce inscrutable error messages; ABI compatibility is fragile across compiler versions; the standard library lags Boost on new features.",
+        key_numbers: [
+          { label: "Idiom", value: "RAII (deterministic destruction)" },
+          { label: "Philosophy", value: "Zero-cost Abstractions" },
+          { label: "Killer Domain", value: "Performance-critical Systems" }
+        ] },
+      { title: "Go", content: "Statically and strongly typed; compiled to native with extremely fast compile times (seconds even for large codebases). Tracing GC tuned for low pause times (sub-millisecond, even on multi-GB heaps). The killer feature is GOROUTINES — user-space 'green threads' multiplexed onto OS threads (M:N scheduling). A goroutine starts at ~2KB stack, so spawning thousands or millions is normal. They communicate via channels, the Go take on Communicating Sequential Processes (CSP).\n\nDeliberately a small, opinionated language. No generics until Go 1.18 (March 2022), still no exceptions, no inheritance, no operator overloading. Error handling is explicit `if err != nil` everywhere — the most controversial design choice in the language. Strong standard library philosophy: HTTP server/client, JSON, crypto, testing all in stdlib. Tooling is excellent: built-in formatter (gofmt), test runner, race detector, profiler, fuzz testing.\n\nUse cases: cloud infrastructure (Kubernetes, Docker, Prometheus, Terraform, etcd, Consul, Vault — nearly the entire CNCF stack is in Go), CLIs, networking services, DevOps tools, backend microservices. Notable warts: error handling verbosity (every fallible call is 3 lines); generics arrived late and are limited compared to most languages; the explicit-everything philosophy frustrates engineers from more expressive languages; no proper enums (`iota` is a workaround); nil interfaces vs nil pointers is a footgun.",
+        key_numbers: [
+          { label: "Concurrency", value: "Goroutines + Channels (CSP)" },
+          { label: "Compile Speed", value: "Seconds, even for large codebases" },
+          { label: "Killer Domain", value: "Cloud Infrastructure" }
+        ] },
+      { title: "Rust", content: "Statically and strongly typed; compiled to native. NO garbage collector — instead the OWNERSHIP system and BORROW CHECKER enforce memory safety at compile time. Each value has a single owner; references must follow strict aliasing rules ('one mutable XOR many shared'). Lifetimes track how long references are valid. The compiler refuses to build code that could cause use-after-free, double-free, or data races. Move semantics are the default — assigning a value transfers ownership.\n\nMulti-paradigm: imperative + functional + generic + trait-based. Algebraic data types (enums with payloads, like `Option<T>` and `Result<T, E>`) and exhaustive pattern matching replace exceptions and null. Traits are like Java interfaces but more powerful (and monomorphized at compile time, so zero runtime overhead). Cargo (build + package manager) is widely considered best-in-class.\n\nUse cases: systems software (parts of the Linux kernel since 6.1, Firefox engine), CLIs (ripgrep, fd, bat, eza), browsers, increasingly backend (axum + tokio for async services), embedded (no_std), blockchain (Solana), ML infra (Polars, Hugging Face Tokenizers, Pydantic v2 core). 'Most loved language' on Stack Overflow surveys for 8+ consecutive years. Notable warts: borrow checker has a steep learning curve ('fighting the borrow checker'); compile times are slow; async Rust is meaningfully harder than sync Rust; smaller ecosystem than C++ for legacy domains; some dynamic patterns require Rc/RefCell or unsafe.",
+        key_numbers: [
+          { label: "Memory", value: "Ownership (no GC, no UAF)" },
+          { label: "Safety", value: "Most data races caught at compile" },
+          { label: "Trade", value: "Steep Learning · Slow Compiles" }
+        ] },
+      { title: "SQL", content: "Declarative and SET-BASED — you describe the result you want, not how to compute it. The query optimizer figures out the execution plan (which indexes to use, join order, hashing vs sorting). Statically typed (column types fixed in the schema); strongly typed in modern dialects, more permissive in MySQL. Standardized as SQL:1992, with later updates (SQL:2003, 2011, 2016, 2023), but heavy dialect fragmentation: PostgreSQL, MySQL, SQL Server, Oracle, SQLite, BigQuery, Snowflake, Redshift each have meaningful divergence.\n\nCore ops: SELECT/FROM/WHERE/GROUP BY/HAVING/ORDER BY for retrieval; JOINs (INNER, LEFT, RIGHT, FULL, CROSS) for combining tables; window functions (OVER, PARTITION BY) for running totals and rank-within-group; CTEs (WITH clauses) for readable composition; recursive CTEs for graph traversal. Modern features: JSON columns and operators (jsonb in Postgres), full-text search, geospatial extensions (PostGIS), pivot/unpivot (some dialects).\n\nUse cases: every database-backed application. Analytics warehouses (BigQuery, Snowflake, Redshift) speak SQL even though they're column-store engines underneath. Data engineering pipelines often write the heavy lifting in SQL even when Python orchestrates them (dbt is the canonical example). Notable warts: NULL is 3-VALUED LOGIC (NULL = NULL is NULL, not true; you must use IS NULL); ORM abstraction layers leak constantly; dialect fragmentation makes 'portable SQL' mostly fiction; query performance depends on indexes and statistics, not just the SQL text — read the EXPLAIN plan.",
+        key_numbers: [
+          { label: "Paradigm", value: "Declarative + Set-based" },
+          { label: "NULL", value: "3-valued logic (footgun)" },
+          { label: "Standardized", value: "1992, fragmented since" }
+        ] }
+    ] },
 ];
 
 function DeepDivesTab() {
   const [dives, setDives] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [collapsedTopics, setCollapsedTopics] = useState({});
   useEffect(() => {
     supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data }) => { setDives(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
   }, []);
 
   const handleDelete = async (id) => {
-    if (id.startsWith("strat_")) return;
+    if (id.startsWith("strat_") || id.startsWith("infra_") || id.startsWith("sw_")) return;
     await supabase.from("deep_dives").delete().eq("id", id);
     setDives(prev => prev.filter(d => d.id !== id));
     setSelected(null);
@@ -363,36 +503,60 @@ function DeepDivesTab() {
 
   const allDives = [...STRATEGY_DIVES, ...dives].sort((a, b) => a.title.localeCompare(b.title));
 
+  const filtered = allDives.filter(d => filter === "all" || d.topic === filter);
+
   if (selected) return <DeepDiveDetail dive={selected} onBack={() => setSelected(null)} onDelete={handleDelete} />;
 
   return (
     <div>
-      <p style={{ fontSize: 12, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Multi-section breakdowns of big topics — A-Z.
-      </p>
+      <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
+        {TOPIC_FILTERS.map(t => (
+          <button key={t.key} onClick={() => setFilter(t.key)} style={{
+            background: filter === t.key ? `${T_.accent}20` : "transparent", border: `1px solid ${filter === t.key ? T_.accent : T_.border}`,
+            color: filter === t.key ? T_.accent : T_.textDim, padding: "5px 12px", borderRadius: 6, cursor: "pointer", fontSize: 12, fontFamily: FONT, fontWeight: filter === t.key ? 600 : 400,
+          }}>{t.label}{t.key !== "all" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>{allDives.filter(d => d.topic === t.key).length}</span>}</button>
+        ))}
+      </div>
+      <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>
+        <span style={{ color: T_.text, fontWeight: 600 }}>{filtered.length}</span> dives grouped by topic. Click any topic header to collapse.
+      </div>
 
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
-        : allDives.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>No deep dives yet.</div>
-        : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-          {allDives.map(d => (
-            <div key={d.id} onClick={() => setSelected(d)} style={{
-              display: "flex", alignItems: "center", gap: 16, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 20px", cursor: "pointer", transition: "border-color 0.2s",
-            }} onMouseEnter={e => e.currentTarget.style.borderColor = T_.accent} onMouseLeave={e => e.currentTarget.style.borderColor = T_.border}>
-              <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}>
-                  <span style={{ fontSize: 15, fontWeight: 600, color: T_.text }}>{d.title}</span>
-                  <span style={{ fontSize: 10, fontWeight: 600, textTransform: "uppercase", color: T_.blue, background: `${T_.blue}15`, padding: "2px 8px", borderRadius: 4 }}>{(TOPIC_FILTERS.find(t => t.key === d.topic) || {}).label || d.topic}</span>
-                  <span style={{ fontSize: 10, color: T_.textGhost }}>{(d.sections || []).length} sections</span>
+        : filtered.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>{allDives.length === 0 ? "No deep dives yet." : "No match."}</div>
+        : TOPIC_FILTERS.filter(t => t.key !== "all").map(topic => {
+            const items = filtered.filter(d => d.topic === topic.key);
+            if (items.length === 0) return null;
+            const collapsed = collapsedTopics[topic.key];
+            return (
+              <div key={topic.key} style={{ marginBottom: 22 }}>
+                <div onClick={() => setCollapsedTopics(p => ({ ...p, [topic.key]: !p[topic.key] }))}
+                  style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12, paddingBottom: 6, borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none" }}>
+                  <span style={{ fontSize: 10, color: T_.textDim, transition: "transform 0.15s", transform: collapsed ? "rotate(0)" : "rotate(90deg)", display: "inline-block" }}>&#9654;</span>
+                  <span style={{ fontSize: 12, fontWeight: 600, color: T_.text, textTransform: "uppercase", letterSpacing: "0.8px" }}>{topic.label}</span>
+                  <span style={{ fontSize: 11, color: T_.textGhost }}>{items.length}</span>
                 </div>
-                {d.summary && <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.5 }}>{d.summary}</div>}
-                {!d.summary && (d.sections || []).length === 0 && <div style={{ fontSize: 12, color: T_.amber, fontStyle: "italic" }}>Pending — run "compile my wiki" to generate</div>}
+                {!collapsed && (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    {items.map(d => (
+                      <div key={d.id} onClick={() => setSelected(d)} style={{
+                        display: "flex", alignItems: "center", gap: 16, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 20px", cursor: "pointer", transition: "border-color 0.2s",
+                      }} onMouseEnter={e => e.currentTarget.style.borderColor = T_.accent} onMouseLeave={e => e.currentTarget.style.borderColor = T_.border}>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}>
+                            <span style={{ fontSize: 15, fontWeight: 600, color: T_.text }}>{d.title}</span>
+                            <span style={{ fontSize: 10, color: T_.textGhost }}>{(d.sections || []).length} sections</span>
+                          </div>
+                          {d.summary && <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.5 }}>{d.summary}</div>}
+                          {!d.summary && (d.sections || []).length === 0 && <div style={{ fontSize: 12, color: T_.amber, fontStyle: "italic" }}>Pending — run "compile my wiki" to generate</div>}
+                        </div>
+                        <span style={{ color: T_.textGhost, fontSize: 14, flexShrink: 0 }}>&rarr;</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-              <span style={{ color: T_.textGhost, fontSize: 14, flexShrink: 0 }}>→</span>
-            </div>
-          ))}
-        </div>
-      )}
+            );
+          })}
 
     </div>
   );

@@ -261,7 +261,7 @@ export default function AgentsTools() {
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/agents/ — click any row to view & copy its prompt</span>
         </div>
 
-        {AGENTS.map(agent => {
+        {AGENTS.slice().sort((a, b) => a.name.localeCompare(b.name)).map(agent => {
           const isOpen = expanded === agent.name;
           return (
             <div key={agent.name} style={{ marginBottom: 6 }}>
@@ -321,7 +321,7 @@ export default function AgentsTools() {
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/skills/ — invoke with /name</span>
         </div>
 
-        {SKILLS.map(skill => {
+        {SKILLS.slice().sort((a, b) => a.name.localeCompare(b.name)).map(skill => {
           const skillId = `skill-${skill.name}`;
           const isOpen = expanded === skillId;
           return (
@@ -354,7 +354,7 @@ export default function AgentsTools() {
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>Model Context Protocol — external tool integrations</span>
         </div>
 
-        {MCP_SERVERS.map(mcp => (
+        {MCP_SERVERS.slice().sort((a, b) => a.name.localeCompare(b.name)).map(mcp => (
           <div key={mcp.name} style={{ marginBottom: 6 }}>
             <div
               style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: mcp.tools.length ? "pointer" : "default" }}
@@ -396,7 +396,7 @@ export default function AgentsTools() {
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>APIs & packages available across projects</span>
         </div>
 
-        {TOOLS.map(tool => (
+        {TOOLS.slice().sort((a, b) => a.name.localeCompare(b.name)).map(tool => (
           <div key={tool.name} style={{ marginBottom: 6 }}>
             <div
               style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", cursor: "pointer" }}

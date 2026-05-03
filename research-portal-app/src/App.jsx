@@ -342,7 +342,7 @@ function AppContent() {
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: industryOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                 <span style={{ color: view.type === "industryResearch" ? T_.accent : T_.textDim }}>Industry Research</span>
               </div>
-              <span style={s.badge}>8</span>
+              <span style={s.badge}>10</span>
             </div>
             {industryOpen && (
               <>
@@ -354,7 +354,8 @@ function AppContent() {
                   { key: "compute", label: "Compute" },
                   { key: "chiproadmap", label: "GPU/ASIC" },
                   { key: "cpuroadmap", label: "CPU" },
-                  { key: "aiinfra", label: "AI Infrastructure" },
+                  { key: "neoclouds", label: "Neoclouds" },
+                  { key: "shellpower", label: "Shell + Power" },
                   { key: "foundry", label: "Foundry" },
                 ].map(tab => {
                   const active = view.type === "industryResearch" && view.sub === tab.key;
@@ -373,7 +374,7 @@ function AppContent() {
             <div style={s.sectorHdr} onClick={() => setEquityOpen(p => !p)}>
               <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: equityOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
-                <span onClick={e => { e.stopPropagation(); setView({ type: "equityResearch" }); setEditingField(null); }}>Primary Research</span>
+                <span>Primary Research</span>
               </div>
               {equities.length > 0 && <span style={s.badge}>{equities.length}</span>}
             </div>

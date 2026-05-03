@@ -21,7 +21,7 @@ const AI_LABS_DATA = {
       { year: 2026, value: 50, est: true }, { year: 2027, value: 100, est: true }, { year: 2028, value: 150, est: true },
       { year: 2029, value: 200, est: true }, { year: 2030, value: 280, est: true },
     ],
-    arrCurrent: { value: "~$24-25B ARR", date: "Apr 2026", source: "Bloomberg (Mar 31). $2B/mo revenue → ~$24B run-rate. $122B round closed at $852B val. 900M WAU, 50M paying subs. Surpassed by Anthropic at $30B in Apr (OpenAI disputes basis — claims net Anthropic ~$22B)." },
+    arrCurrent: { value: "~$24-25B ARR", date: "Apr 2026", source: "Bloomberg (Mar 31). $2B/mo revenue → ~$24B run-rate. $122B round closed at $852B val. 900M WAU, 50M paying subs. Surpassed by Anthropic — official $30B+ (Apr 6) and SemiAnalysis tracking ~$44B+ (May 2). OpenAI disputes basis." },
     arrSource: "2023-2025: CFO Sarah Friar (Jan 2026 blog). 2027E: Altman ($100B). 2030E: CNBC ($280B high).",
     compute: [
       { year: 2023, value: 0.2 }, { year: 2024, value: 0.6 }, { year: 2025, value: 1.9 },
@@ -64,7 +64,7 @@ const AI_LABS_DATA = {
       { year: 2026, value: 26, est: true }, { year: 2027, value: 45, est: true }, { year: 2028, value: 70, est: true },
       { year: 2029, value: 85, est: true }, { year: 2030, value: 100, est: true },
     ],
-    arrCurrent: { value: "$30B+ ARR", date: "Apr 2026", source: "Bloomberg/Anthropic (Apr 6, 2026). Up from $19B (Mar), $14B (Feb), $9B (end 2025). Surpassed OpenAI (~$25B). 80% from 300K+ biz customers." },
+    arrCurrent: { value: "~$44B+ ARR", date: "May 2026", source: "SemiAnalysis (May 2, 2026 tracking — $9B end-2025 → $14B Feb → $19B Mar → $30B Apr 6 official → $44B+ May). Anthropic last officially confirmed $30B+ on Apr 6 (Bloomberg); SemiAnalysis estimates ~5x growth in <5 months. 80% from 300K+ biz customers; Claude Code >$2.5B ARR alone." },
     arrSource: "2024: $1B ARR exit (company). 2025: $9B ARR exit (SaaStr). 2026E: $20-26B (TechCrunch). 2028E: $70B bull (The Information). Claude Code ARR $2.5B+.",
     compute: [
       { year: 2023, value: 0.05 }, { year: 2024, value: 0.15 }, { year: 2025, value: 0.5 },
@@ -227,8 +227,9 @@ const AI_LABS_DATA = {
 };
 
 // AI Labs Industry News — Update during refresh alongside dashNewsUpdates
-// Updated 2026-04-29
+// Updated 2026-05-03
 const AI_LABS_NEWS = [
+  { date: "May 2", text: "Anthropic ARR ~$44B+ per SemiAnalysis tracking — up from $30B official disclosure on Apr 6 (Bloomberg/Anthropic). Trajectory: $9B (end 2025) → $14B (Feb) → $19B (Mar) → $30B (Apr 6 official) → $44B+ (May per SemiAnalysis). ~5x growth in <5 months. Methodology not company-confirmed; SemiAnalysis aggregates customer/usage signals (SemiAnalysis 'AI Value Capture' May 1; officechai)." },
   { date: "Apr 29", text: "META Q1 2026: Rev $56.31B (+33% YoY), net income $26.77B (incl $8.03B OBBBA tax benefit). FY26 capex RAISED to $125-145B (from $115-135B) citing higher component prices + DC costs. Q2 rev guide $58-61B. Declines specific 2027 capex guide but warns 'we have continued to underestimate compute needs.' Stock -7% AH (Fortune, CNBC)." },
   { date: "Apr 29", text: "GOOGL Q1 2026: Rev $109.9B (+22% YoY), net income $62.57B (+81%). GCP rev ~$20B (+63%), Cloud op income $6.6B (32.9% margin, tripled YoY). Backlog $462B (~doubled QoQ from $240B). 2026 capex RAISED to $180-190B (from $175-185B); 2027 capex 'significantly higher.' Pichai: 'compute constrained' (CNBC, 9to5Google, TechCrunch)." },
   { date: "Apr 29", text: "AMZN Q1 2026: Rev $181.5B (+17% YoY, vs $155.7B Q1 2025), beat $177.3B est by 2.4%; EPS $2.78 vs $1.63 est. AWS rev $37.6B (+28% YoY) — fastest growth in 15 quarters. AWS op income $14.2B. AI run rate >$15B, growing triple-digits. Chips business >$20B run rate (Graviton+Trainium+Nitro). 2026 capex ~$200B; Q1 cash capex $43.2B. Trn3 30-40% better price/perf vs Trn2, nearly fully subscribed (CNBC, Investing.com, Stocktitan)." },
@@ -472,7 +473,7 @@ const GPU_DATA = [
       { period: "Q1 23", value: 3.80 }, { period: "Q2 23", value: 3.50 }, { period: "Q3 23", value: 3.00 }, { period: "Q4 23", value: 2.60 },
       { period: "Q1 24", value: 2.20 }, { period: "Q2 24", value: 1.80 }, { period: "Q3 24", value: 1.50 }, { period: "Q4 24", value: 1.30 },
       { period: "Q1 25", value: 1.10 }, { period: "Q2 25", value: 0.95 }, { period: "Q3 25", value: 0.82 }, { period: "Q4 25", value: 0.75 },
-      { period: "Q1 26", value: 0.70 },
+      { period: "Q1 26", value: 0.70 }, { period: "Q2 26", value: 0.65 },
     ]},
     perf: { trainVsA100: "1.0x", inferVsA100: "1.0x", tokPerSec: "~350 (Llama 70B)", tokPerWatt: "0.88", tokPerDollar: "~500/hr" },
     status: "EOL — still widely deployed for inference & fine-tuning",
@@ -484,7 +485,7 @@ const GPU_DATA = [
       { period: "Q1 23", value: 8.50 }, { period: "Q2 23", value: 8.00 }, { period: "Q3 23", value: 7.00 }, { period: "Q4 23", value: 6.00 },
       { period: "Q1 24", value: 5.00 }, { period: "Q2 24", value: 4.20 }, { period: "Q3 24", value: 3.70 }, { period: "Q4 24", value: 3.30 },
       { period: "Q1 25", value: 2.80 }, { period: "Q2 25", value: 2.40 }, { period: "Q3 25", value: 2.10 }, { period: "Q4 25", value: 1.90 },
-      { period: "Q1 26", value: 2.20 },
+      { period: "Q1 26", value: 2.20 }, { period: "Q2 26", value: 2.30 },
     ]},
     perf: { trainVsA100: "~3x", inferVsA100: "~6x", tokPerSec: "~1,400 (Llama 70B)", tokPerWatt: "2.00", tokPerDollar: "~700/hr" },
     status: "Workhorse — mainstream for training & inference",
@@ -495,7 +496,7 @@ const GPU_DATA = [
     price: { unit: 35000, cloud: [
       { period: "Q3 24", value: 6.50 }, { period: "Q4 24", value: 5.80 },
       { period: "Q1 25", value: 4.80 }, { period: "Q2 25", value: 4.30 }, { period: "Q3 25", value: 3.90 }, { period: "Q4 25", value: 3.70 },
-      { period: "Q1 26", value: 3.72 },
+      { period: "Q1 26", value: 3.72 }, { period: "Q2 26", value: 3.65 },
     ]},
     perf: { trainVsA100: "~3x", inferVsA100: "~12x (mem-bound)", tokPerSec: "~2,800 (Llama 70B)", tokPerWatt: "4.00", tokPerDollar: "~750/hr" },
     status: "Premium inference — 76% more VRAM than H100",
@@ -504,7 +505,7 @@ const GPU_DATA = [
     gpu: "B200 SXM", gen: "Blackwell", year: 2025, node: "TSMC 4NP",
     vram: 192, hbmType: "HBM3e", bw: 8.0, tdp: 1000, fp16: 2250, fp8: 4500, nvlink: 1800,
     price: { unit: 40000, cloud: [
-      { period: "Q3 25", value: 8.00 }, { period: "Q4 25", value: 7.20 }, { period: "Q1 26", value: 6.00 },
+      { period: "Q3 25", value: 8.00 }, { period: "Q4 25", value: 7.20 }, { period: "Q1 26", value: 6.00 }, { period: "Q2 26", value: 5.50 },
     ]},
     perf: { trainVsA100: "~6x", inferVsA100: "~15x (DGX vs DGX)", tokPerSec: "~7,000 (Llama 70B, est.)", tokPerWatt: "7.00", tokPerDollar: "~1,170/hr" },
     status: "Ramping — sold out through mid-2026",
@@ -513,7 +514,7 @@ const GPU_DATA = [
     gpu: "GB200 NVL72", gen: "Blackwell", year: 2025, node: "TSMC 4NP",
     vram: 192, hbmType: "HBM3e", bw: 8.0, tdp: 1200, fp16: 2500, fp8: 5000, nvlink: 1800,
     price: { unit: 54000, cloud: [
-      { period: "Q1 26", value: 8.50 },
+      { period: "Q1 26", value: 8.50 }, { period: "Q2 26", value: 7.80 },
     ]},
     perf: { trainVsA100: "~8x (rack)", inferVsA100: "~30x (NVL72 rack)", tokPerSec: "~10,000+ (Llama 70B, rack-avg)", tokPerWatt: "8.33", tokPerDollar: "~1,180/hr" },
     status: "Rack-scale — 72 GPUs + 36 Grace CPUs + 18 BlueField-3 DPUs, liquid cooled. First commercial deployment: CoreWeave (Feb 2025). ~13.5 TB HBM3e per rack (72 × 192 GB). Used for OpenAI Tranches 1 & 2.",
@@ -544,6 +545,7 @@ const GPU_DEMAND_DATA = [
   { period: "Q3 25", "A100 SXM": 700, "H100 SXM": 3500, "H200 SXM": 650, "B200 SXM": 1300, "GB200 NVL72": 550 },
   { period: "Q4 25", "A100 SXM": 700, "H100 SXM": 3700, "H200 SXM": 800, "B200 SXM": 1800, "GB200 NVL72": 900 },
   { period: "Q1 26", "A100 SXM": 700, "H100 SXM": 3900, "H200 SXM": 1100, "B200 SXM": 3200, "GB200 NVL72": 1800 },
+  { period: "Q2 26", "A100 SXM": 700, "H100 SXM": 4000, "H200 SXM": 1400, "B200 SXM": 4500, "GB200 NVL72": 2700 },
 ];
 
 // LLM / AI API Pricing History — Frontier models, $/1M tokens
@@ -1269,7 +1271,6 @@ export default function IndustryResearch({ initialTab }) {
   const [mainTab, setMainTab] = useState(initialTab || "ailabs");
   useEffect(() => { if (initialTab) setMainTab(initialTab); }, [initialTab]);
   const [activeLab, setActiveLab] = useState("OpenAI");
-  const [activeInfra, setActiveInfra] = useState("neoclouds");
   const [activeGpu, setActiveGpu] = useState("all");
   const [chipVendorFilter, setChipVendorFilter] = useState("All");
   const [chipDeliverySort, setChipDeliverySort] = useState({ key: "shipDate", dir: "desc" });
@@ -1705,7 +1706,7 @@ export default function IndustryResearch({ initialTab }) {
             },
             Anthropic: {
               layers: [
-                { label: "AI Lab", items: [{ name: "Anthropic", sub: "$30B ARR · 300K+ biz", color: T_.amber }] },
+                { label: "AI Lab", items: [{ name: "Anthropic", sub: "~$44B+ ARR · 300K+ biz", color: T_.amber }] },
                 { label: "Cloud / Compute", items: [
                   { name: "AWS (Primary)", sub: "Project Rainier · $11B campus", color: T_.amber, link: "AMZN" },
                   { name: "Google Cloud", sub: "1M TPUs · 1+ GW · tens of $B", color: T_.blue, link: "GOOGL" },
@@ -2530,7 +2531,6 @@ export default function IndustryResearch({ initialTab }) {
           {[
             { label: "TSMC 2026E", value: "$54B", sub: "+33% y/y · 70-80% advanced nodes (2/3nm)", color: T_.green },
             { label: "DRAM Industry 2026E", value: "$69.5B", sub: "SK Hynix $26B + Samsung $30B + Micron $13.5B", color: T_.amber },
-            { label: "HBM Market 2026", value: "Sold Out", sub: "All 3 vendors sold out. HBM4 ramp H1 2026", color: T_.red },
             { label: "Capex → Supply Lag", value: "18-24 mo", sub: "Capex today → volume production 1.5-2 yrs later", color: T_.blue },
           ].map((c, i) => (
             <div key={i} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 20px", flex: "1 1 0" }}>
@@ -2848,6 +2848,43 @@ export default function IndustryResearch({ initialTab }) {
               ))}
             </tbody>
           </table>
+        </div>
+
+        {/* NVIDIA Datacenter GPU — Spec & Pricing Comparison */}
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
+          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>NVIDIA Datacenter GPU — Spec &amp; Pricing Comparison</div>
+          <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
+            <thead><tr>
+              {["GPU","Gen","Year","VRAM","HBM","BW (TB/s)","TDP (W)","FP16 TFLOPS","FP8 TFLOPS","NVLink (GB/s)","Unit Price","Cloud $/hr"].map((h,i) => (
+                <th key={i} style={{ padding: "10px 10px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, textAlign: i > 2 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr></thead>
+            <tbody>
+              {[...GPU_DATA].reverse().map((g, i) => {
+                const genColor = g.gen === "Ampere" ? T_.textGhost : g.gen === "Hopper" ? T_.blue : g.gen === "Blackwell" ? T_.green : T_.amber;
+                const latestCloud = g.price.cloud.length > 0 ? g.price.cloud[g.price.cloud.length - 1].value : 0;
+                return (
+                  <tr key={i} onMouseEnter={e => e.currentTarget.style.background = `${T_.border}30`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, fontWeight: 700, color: T_.text, fontSize: 14 }}>{g.gpu}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08` }}>
+                      <span style={{ padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: `${genColor}18`, color: genColor, border: `1px solid ${genColor}40` }}>{g.gen}</span>
+                    </td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, color: T_.textDim }}>{g.year}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid, fontWeight: 600 }}>{g.vram.toLocaleString()} GB</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textDim }}>{g.hbmType}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.bw} TB/s</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: g.tdp >= 1000 ? T_.red : g.tdp >= 700 ? T_.amber : T_.textDim, fontWeight: 600 }}>{g.tdp.toLocaleString()}W</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.fp16 ? `${g.fp16.toLocaleString()} TFLOPS` : "TBD"}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.fp8 ? `${g.fp8.toLocaleString()} TFLOPS` : "TBD"}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textDim }}>{g.nvlink.toLocaleString()} GB/s</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.text, fontWeight: 600 }}>{g.price.unit ? `$${(g.price.unit / 1000).toFixed(0)}K` : "TBD"}</td>
+                    <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.green, fontWeight: 700 }}>{latestCloud > 0 ? `$${latestCloud.toFixed(2)}/hr` : "TBD"}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+          <div style={{ padding: "10px 16px", fontSize: 11, color: T_.textGhost, fontStyle: "italic", borderTop: `1px solid ${T_.border}` }}>NVIDIA datacenter SXM SKUs only. Cloud $/hr = latest avg on-demand from spot indices. For full multi-vendor accelerator coverage see the Accelerator Specs table above.</div>
         </div>
 
         {/* Delivery & Volume Expectations — Current + Upcoming */}
@@ -3257,7 +3294,7 @@ export default function IndustryResearch({ initialTab }) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24 }}>
             <div>
               <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Compute</div>
-              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>GPU rental pricing, specs &amp; token economics across generations</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>GPU compute pricing across generations &middot; on-demand spot &amp; contract</div>
             </div>
           </div>
 
@@ -3273,7 +3310,7 @@ export default function IndustryResearch({ initialTab }) {
               ))}
             </div>
             {(() => {
-              const periods = ["Q1 23","Q2 23","Q3 23","Q4 23","Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26"];
+              const periods = ["Q1 23","Q2 23","Q3 23","Q4 23","Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26","Q2 26"];
               const chartData = periods.map(p => {
                 const row = { period: p };
                 GPU_DATA.forEach(g => {
@@ -3303,144 +3340,89 @@ export default function IndustryResearch({ initialTab }) {
             <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>Sources: SiliconData GPU Rental Index, Jarvislabs, RunPod, Lambda, AWS/GCP on-demand. Avg of specialist providers.</div>
           </div>
 
-          {/* GPU Cumulative Shipments Chart */}
+          {/* H100 Spot Tiers vs 1-yr Contract — Time Series */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>Cumulative GPU Shipments by Generation (thousands of units)</div>
-            <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 16 }}>Tracks installed base ramp for same cohorts as rental prices above</div>
+            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>H100 Pricing — Spot Tiers vs 1-yr Contract</div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 16 }}>$/GPU-hr · Silicon Data spot index by tier (since Aug 2023) + SemiAnalysis H100 1-yr Contract Index (free monthly, since Oct 2025)</div>
             <div style={{ display: "flex", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
-              {[{ gpu: "A100 SXM", color: T_.textDim }, { gpu: "H100 SXM", color: T_.blue }, { gpu: "H200 SXM", color: "#60A5FA" }, { gpu: "B200 SXM", color: T_.green }, { gpu: "GB200 NVL72", color: T_.amber }].map(g => (
-                <div key={g.gpu} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
-                  <div style={{ width: 10, height: 3, borderRadius: 1, background: g.color }} />
-                  <span style={{ color: T_.textDim }}>{g.gpu}</span>
+              {[
+                { lbl: "Hyperscaler Spot", color: "#A78BFA" },
+                { lbl: "Neocloud Spot", color: T_.amber },
+                { lbl: "Marketplace Spot", color: T_.green },
+                { lbl: "1-yr Contract", color: T_.blue, dashed: true },
+              ].map(s => (
+                <div key={s.lbl} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
+                  <div style={{ width: 14, height: 0, borderTop: s.dashed ? `2px dashed ${s.color}` : `3px solid ${s.color}` }} />
+                  <span style={{ color: T_.textDim }}>{s.lbl}</span>
                 </div>
               ))}
             </div>
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={GPU_DEMAND_DATA} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
-                <defs>
-                  {[{ key: "A100 SXM", color: T_.textDim }, { key: "H100 SXM", color: T_.blue }, { key: "H200 SXM", color: "#60A5FA" }, { key: "B200 SXM", color: T_.green }, { key: "GB200 NVL72", color: T_.amber }].map(g => (
-                    <linearGradient key={g.key} id={`demand-grad-${g.key.replace(/\s/g, "")}`} x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor={g.color} stopOpacity={0.2} />
-                      <stop offset="100%" stopColor={g.color} stopOpacity={0.02} />
-                    </linearGradient>
-                  ))}
-                </defs>
-                <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
-                <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={50} tickFormatter={(v) => v >= 1000 ? `${(v/1000).toFixed(1)}M` : `${v}K`} />
-                <Tooltip
-                  contentStyle={tooltipStyleSm}
-                  formatter={(value, name) => [value >= 1000 ? `${(value/1000).toFixed(1)}M units` : `${value}K units`, name]}
-                />
-                <Area type="monotone" dataKey="A100 SXM" stroke={T_.textGhost} strokeWidth={2} fill={`url(#demand-grad-A100SXM)`} dot={{ r: 3, fill: T_.textDim }} connectNulls />
-                <Area type="monotone" dataKey="H100 SXM" stroke={T_.blue} strokeWidth={2.5} fill={`url(#demand-grad-H100SXM)`} dot={{ r: 3, fill: T_.blue }} connectNulls />
-                <Area type="monotone" dataKey="H200 SXM" stroke="#60A5FA" strokeWidth={2} fill={`url(#demand-grad-H200SXM)`} dot={{ r: 3, fill: "#60A5FA" }} connectNulls />
-                <Area type="monotone" dataKey="B200 SXM" stroke={T_.green} strokeWidth={2.5} fill={`url(#demand-grad-B200SXM)`} dot={{ r: 3, fill: T_.green }} connectNulls />
-                <Area type="monotone" dataKey="GB200 NVL72" stroke={T_.amber} strokeWidth={2} fill={`url(#demand-grad-GB200NVL72)`} dot={{ r: 4, fill: T_.amber }} connectNulls />
-              </AreaChart>
-            </ResponsiveContainer>
-            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>Sources: Epoch AI Chip Sales DB, TrendForce, Jensen Huang (4M Hoppers + 6M Blackwell thru Oct '25), SemiAnalysis. A100 = cumulative installed; Hopper/Blackwell = cumulative shipped.</div>
+            {(() => {
+              const H100_PRICING = [
+                { period: "Q3 23", hyperscaler: 7.76 },
+                { period: "Q4 23", hyperscaler: 7.76 },
+                { period: "Q1 24", hyperscaler: 7.92 },
+                { period: "Q2 24", hyperscaler: 8.50 },
+                { period: "Q3 24", hyperscaler: 9.34, neocloud: 2.99, marketplace: 2.58 },
+                { period: "Q4 24", hyperscaler: 9.34, neocloud: 2.99, marketplace: 2.58 },
+                { period: "Q1 25", hyperscaler: 8.96, neocloud: 3.50, marketplace: 2.29 },
+                { period: "Q2 25", hyperscaler: 6.94, neocloud: 3.29, marketplace: 2.00 },
+                { period: "Q3 25", hyperscaler: 6.26, neocloud: 3.33, marketplace: 1.95 },
+                { period: "Q4 25", hyperscaler: 6.26, neocloud: 3.33, marketplace: 1.95, contract1y: 1.70 },
+                { period: "Q1 26", hyperscaler: 7.48, neocloud: 2.53, marketplace: 1.95, contract1y: 2.18 },
+                { period: "Q2 26", hyperscaler: 7.48, neocloud: 2.53, marketplace: 1.95, contract1y: 2.35 },
+              ];
+              return (
+                <ResponsiveContainer width="100%" height={300}>
+                  <LineChart data={H100_PRICING} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
+                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+                    <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={40} tickFormatter={(v) => `$${v}/hr`} domain={[0, 10]} />
+                    <Tooltip contentStyle={tooltipStyleSm} formatter={(value, name) => [`$${value.toFixed(2)}/hr`, name]} />
+                    <Line type="monotone" dataKey="hyperscaler" name="Hyperscaler Spot" stroke="#A78BFA" strokeWidth={2.5} dot={{ r: 3, fill: "#A78BFA" }} connectNulls />
+                    <Line type="monotone" dataKey="neocloud" name="Neocloud Spot" stroke={T_.amber} strokeWidth={2.5} dot={{ r: 3, fill: T_.amber }} connectNulls />
+                    <Line type="monotone" dataKey="marketplace" name="Marketplace Spot" stroke={T_.green} strokeWidth={2.5} dot={{ r: 3, fill: T_.green }} connectNulls />
+                    <Line type="monotone" dataKey="contract1y" name="1-yr Contract" stroke={T_.blue} strokeWidth={3} strokeDasharray="6 3" dot={{ r: 4, fill: T_.blue }} connectNulls />
+                  </LineChart>
+                </ResponsiveContainer>
+              );
+            })()}
+            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 10, fontStyle: "italic" }}>
+              Sources: <a href="https://www.silicondata.com/blog/h100-rental-price-over-time" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> H100 monthly index by tier (Aug 2023→); <a href="https://newsletter.semianalysis.com/p/the-great-gpu-shortage-rental-capacity" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>SemiAnalysis</a> H100 1-yr Contract Index (free monthly, launched Oct 2025; full multi-GPU coverage paywalled). Quarterly aggregates from monthly publications.
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 8, lineHeight: 1.6 }}>
+              <strong style={{ color: T_.amber }}>Read:</strong> 3-tier spot persists — hyperscaler premium reflects SLAs/networking; neocloud middle for committed buyers; marketplace floor for spot/burst. <strong style={{ color: T_.blue }}>Contract pricing</strong> sits ~25-30% below neocloud spot, but jumped +40% Oct 25 → Mar 26 ($1.70 → $2.35) as B200/H200 allocations tightened. Hyperscaler spot rebounding Q1 26 alongside contract premium — consistent with a re-tightening market.
+            </div>
           </div>
 
-          {/* GPU Specs Comparison Table */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 20, overflow: "auto" }}>
-            <div style={{ padding: "14px 16px", fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>GPU Specs Comparison</div>
-            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
-              <thead><tr>
-                {["GPU","Gen","Year","VRAM","HBM","BW (TB/s)","TDP (W)","FP16 TFLOPS","FP8 TFLOPS","NVLink (GB/s)","Unit Price","Cloud $/hr"].map((h,i) => (
-                  <th key={i} style={{ padding: "10px 10px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, textAlign: i > 2 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</th>
-                ))}
-              </tr></thead>
-              <tbody>
-                {[...GPU_DATA].reverse().map((g, i) => {
-                  const genColor = g.gen === "Ampere" ? T_.textGhost : g.gen === "Hopper" ? T_.blue : g.gen === "Blackwell" ? T_.green : T_.amber;
-                  const latestCloud = g.price.cloud.length > 0 ? g.price.cloud[g.price.cloud.length - 1].value : 0;
-                  return (
-                    <tr key={i} onMouseEnter={e => e.currentTarget.style.background = `${T_.border}30`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, fontWeight: 700, color: T_.text, fontSize: 14 }}>{g.gpu}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08` }}>
-                        <span style={{ padding: "2px 8px", borderRadius: 4, fontSize: 11, fontWeight: 600, background: `${genColor}18`, color: genColor, border: `1px solid ${genColor}40` }}>{g.gen}</span>
-                      </td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, color: T_.textDim }}>{g.year}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid, fontWeight: 600 }}>{g.vram.toLocaleString()} GB</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textDim }}>{g.hbmType}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.bw} TB/s</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: g.tdp >= 1000 ? T_.red : g.tdp >= 700 ? T_.amber : T_.textDim, fontWeight: 600 }}>{g.tdp.toLocaleString()}W</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.fp16 ? `${g.fp16.toLocaleString()} TFLOPS` : "TBD"}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid }}>{g.fp8 ? `${g.fp8.toLocaleString()} TFLOPS` : "TBD"}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textDim }}>{g.nvlink.toLocaleString()} GB/s</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.text, fontWeight: 600 }}>{g.price.unit ? `$${(g.price.unit / 1000).toFixed(0)}K` : "TBD"}</td>
-                      <td style={{ padding: "10px 10px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.green, fontWeight: 700 }}>{latestCloud > 0 ? `$${latestCloud.toFixed(2)}/hr` : "TBD"}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Token Economics & Performance */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 20, overflow: "auto" }}>
-            <div style={{ padding: "14px 16px", fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>Token Economics &amp; Performance</div>
-            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
-              <thead><tr>
-                {["GPU","Train vs A100","Infer vs A100","Tokens/sec (Llama 70B)","Tokens/Watt","Tokens/$ (per hr)","Status"].map((h,i) => (
-                  <th key={i} style={{ padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, textAlign: i > 0 && i < 6 ? "right" : "left", whiteSpace: "nowrap" }}>{h}</th>
-                ))}
-              </tr></thead>
-              <tbody>
-                {[...GPU_DATA].reverse().map((g, i) => {
-                  const genColor = g.gen === "Ampere" ? T_.textGhost : g.gen === "Hopper" ? T_.blue : g.gen === "Blackwell" ? T_.green : T_.amber;
-                  return (
-                    <tr key={i} onMouseEnter={e => e.currentTarget.style.background = `${T_.border}30`} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, fontWeight: 700, color: T_.text, fontSize: 14 }}>{g.gpu}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.textMid, fontWeight: 600 }}>{g.perf.trainVsA100}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.green, fontWeight: 600 }}>{g.perf.inferVsA100}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.text, fontWeight: 700 }}>{g.perf.tokPerSec}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.amber, fontWeight: 600 }}>{g.perf.tokPerWatt}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, textAlign: "right", color: T_.blue, fontWeight: 600 }}>{g.perf.tokPerDollar}</td>
-                      <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}08`, color: T_.textDim, fontSize: 12, maxWidth: 260 }}>{g.status}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Key Observations */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Key Observations</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-              {[
-                { label: "Price Collapse", text: "H100 rental fell from $8/hr (H1 2023) to $2.20/hr (H1 2026) — a 73% decline in 3 years as supply caught up.", color: T_.blue },
-                { label: "A100 Near-Free", text: "A100 at $0.70/hr is approaching commodity pricing. Still viable for inference and fine-tuning at 70% of H100 perf.", color: T_.textDim },
-                { label: "Blackwell Premium", text: "B200/GB200 commands 3x H100 pricing but delivers 15x inference throughput — net 5x better cost per token.", color: T_.green },
-                { label: "Memory Wall", text: "HBM3e prices rose 40-60% in 2025-2026 due to AI demand. This flows into GPU costs — AMD warned of 2026 hikes.", color: T_.red },
-                { label: "Power Scaling", text: "TDP rose from 400W (A100) → 700W (H100) → 1200W (GB200). Data center power is now the binding constraint.", color: T_.amber },
-                { label: "Vera Rubin (2026)", text: "HBM4 at 288 GB, 22 TB/s bandwidth, TSMC 3nm. NVL72 rack at 3.6 ExaFLOPS FP4. Will reset the price curve.", color: T_.purple },
-              ].map((obs, i) => (
-                <div key={i} style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <div style={{ minWidth: 110, padding: "5px 10px", borderRadius: 6, background: `${obs.color}15`, border: `1px solid ${obs.color}40`, fontSize: 12, fontWeight: 700, color: obs.color, textAlign: "center" }}>
-                    {obs.label}
-                  </div>
-                  <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6, flex: 1 }}>{obs.text}</div>
-                </div>
-              ))}
+          {/* B200 Spot Trend — Q1 2026 */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>B200 Spot Index — Monthly Mean</div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 16 }}>$/GPU-hr · Silicon Data B200 Index (since Jan 2026) — short window, watch the March surge</div>
+            {(() => {
+              const B200_PRICING = [
+                { period: "Jan 26", b200: 4.41 },
+                { period: "Feb 26", b200: 4.52 },
+                { period: "Mar 26", b200: 5.09 },
+              ];
+              return (
+                <ResponsiveContainer width="100%" height={200}>
+                  <LineChart data={B200_PRICING} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
+                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+                    <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={40} tickFormatter={(v) => `$${v}/hr`} domain={[3.5, 6.5]} />
+                    <Tooltip contentStyle={tooltipStyleSm} formatter={(value) => [`$${value.toFixed(2)}/hr`, "B200 monthly mean"]} />
+                    <Line type="monotone" dataKey="b200" name="B200 monthly mean" stroke={T_.green} strokeWidth={2.5} dot={{ r: 4, fill: T_.green }} />
+                  </LineChart>
+                </ResponsiveContainer>
+              );
+            })()}
+            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 10, fontStyle: "italic" }}>
+              Source: <a href="https://www.silicondata.com/blog/b200-rental-price-march-2026-update" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> B200 Index. March mean +12.6% MoM, +15.4% YTD; March daily high $6.11/hr on Mar 25 (YTD); 10-90th pctl band $4.56-$6.05.
             </div>
           </div>
         </div>
       )}
 
-      {mainTab === "aiinfra" && (
-        <div>
-        {/* Sub-tabs */}
-        <TabBar
-          tabs={[{ key: "neoclouds", label: "Neoclouds" }, { key: "shellpower", label: "Shell + Power" }]}
-          active={activeInfra}
-          onChange={setActiveInfra}
-          size="lg"
-        />
-
-        {/* Neoclouds Sub-tab */}
-        {activeInfra === "neoclouds" && (
+      {mainTab === "neoclouds" && (
         <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div>
@@ -3548,10 +3530,9 @@ export default function IndustryResearch({ initialTab }) {
           ))}
         </div>
         </div>
-        )}
+      )}
 
-        {/* Shell + Power Sub-tab */}
-        {activeInfra === "shellpower" && (
+      {mainTab === "shellpower" && (
         <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div>
@@ -3658,9 +3639,6 @@ export default function IndustryResearch({ initialTab }) {
             </div>
           ))}
         </div>
-        </div>
-        )}
-
         </div>
       )}
 
