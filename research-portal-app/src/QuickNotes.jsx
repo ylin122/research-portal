@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
 function fmtDate(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }); }
@@ -8,17 +10,21 @@ function fmtDate(d) { return new Date(d).toLocaleDateString("en-US", { month: "s
 export default function QuickNotes() {
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [draft, setDraft] = useState("");
 
-  useEffect(() => {
-    supabase.from("quick_notes").select("*").order("created_at", { ascending: false }).then(({ data }) => {
+  const load = () => {
+    setLoading(true);
+    setLoadError(null);
+    supabase.from("quick_notes").select("*").order("created_at", { ascending: false }).then(({ data, error }) => {
+      if (error) { setLoadError(error.message); setLoading(false); return; }
       setNotes(data || []);
       setLoading(false);
-    }).catch(err => {
-      console.error(err);
-      setLoading(false);
     });
-  }, []);
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleAdd = async () => {
     if (!draft.trim()) return;
@@ -35,10 +41,15 @@ export default function QuickNotes() {
 
   return (
     <div style={{ padding: "36px 52px", maxWidth: "none", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Notes</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Notes</div>
+        <LastUpdated rows={notes} />
+      </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
         Jot things down from anywhere. Run <span style={{ color: T_.accent }}>"process my notes"</span> in Claude Code to sort them into the right places.
       </p>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Input */}
       <div style={{ marginBottom: 24 }}>

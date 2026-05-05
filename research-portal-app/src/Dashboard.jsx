@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
 
 function fmtDate(d) { return d ? new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric" }) : ""; }
 
@@ -27,20 +28,25 @@ export default function Dashboard({ companies, setView }) {
   const [articles, setArticles] = useState([]);
   const [concepts, setConcepts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
-  useEffect(() => {
+  const load = () => {
+    setLoading(true);
+    setLoadError(null);
     Promise.all([
       supabase.from("kb_articles").select("id, title, date, category, key_takeaways, themes").order("created_at", { ascending: false }).limit(5),
       supabase.from("concepts").select("id, title, topic, one_liner").order("title", { ascending: true }),
     ]).then(([aRes, cRes]) => {
+      const err = aRes.error || cRes.error;
+      if (err) { setLoadError(err.message); setLoading(false); return; }
       setArticles(aRes.data || []);
       setConcepts(cRes.data || []);
       setLoading(false);
-    }).catch(err => {
-      console.error(err);
-      setLoading(false);
     });
-  }, []);
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   if (loading) return <div style={{ padding: "60px 44px", color: T_.textDim, fontSize: 14, textAlign: "center" }}>Loading dashboard...</div>;
 
@@ -50,6 +56,8 @@ export default function Dashboard({ companies, setView }) {
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Overview of your research portal. {companies?.length > 0 && `Tracking ${companies.length} companies.`}
       </p>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Stats Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(140px, 1fr))", gap: 10, marginBottom: 8 }}>

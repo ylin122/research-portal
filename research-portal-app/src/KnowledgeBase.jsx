@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 const CATEGORIES = [
   { key: "all", label: "All" },
@@ -16,7 +18,7 @@ async function loadArticles() {
     .from("kb_articles")
     .select("*")
     .order("created_at", { ascending: false });
-  if (error) { console.error("loadArticles:", error); return []; }
+  if (error) { console.error("loadArticles:", error); throw error; }
   return data || [];
 }
 
@@ -315,6 +317,7 @@ function AddArticleModal({ onClose, onSave }) {
 export default function KnowledgeBase() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
@@ -322,12 +325,17 @@ export default function KnowledgeBase() {
 
   const load = useCallback(async () => {
     setLoading(true);
-    const data = await loadArticles();
-    setArticles(data);
-    setLoading(false);
+    setLoadError(null);
+    try {
+      const data = await loadArticles();
+      setArticles(data);
+    } catch (err) {
+      setLoadError(err.message || "Failed to load articles");
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
   useEffect(() => { load(); }, [load]);
 
   const handleDelete = async (id) => {
@@ -360,12 +368,17 @@ export default function KnowledgeBase() {
 
   return (
     <div style={{ padding: 0 }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4, fontFamily: FONT }}>
-        Research Wiki
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", fontFamily: FONT }}>
+          Research Wiki
+        </div>
+        <LastUpdated rows={articles} />
       </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Articles, notes, and research pulled from Gmail. Email links to <span style={{ color: T_.accent }}>ylresearchwiki@gmail.com</span>, run ingest, then compile.
       </p>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Controls */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>

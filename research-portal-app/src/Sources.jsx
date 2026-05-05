@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 const CATEGORIES = [
   { key: "all", label: "All" },
@@ -17,19 +19,23 @@ function uid() { return Date.now().toString(36) + Math.random().toString(36).sli
 export default function Sources() {
   const [sources, setSources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [showAdd, setShowAdd] = useState(false);
   const [form, setForm] = useState({ name: "", url: "", category: "other", description: "" });
 
-  useEffect(() => {
-    supabase.from("sources").select("*").order("name", { ascending: true }).then(({ data }) => {
+  const load = () => {
+    setLoading(true);
+    setLoadError(null);
+    supabase.from("sources").select("*").order("name", { ascending: true }).then(({ data, error }) => {
+      if (error) { setLoadError(error.message); setLoading(false); return; }
       setSources(data || []);
       setLoading(false);
-    }).catch(err => {
-      console.error(err);
-      setLoading(false);
     });
-  }, []);
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleAdd = async () => {
     if (!form.name.trim()) return;
@@ -56,10 +62,15 @@ export default function Sources() {
 
   return (
     <div style={{ padding: "36px 52px", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Sources</div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Sources</div>
+        <LastUpdated rows={sources} />
+      </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 24, lineHeight: 1.6 }}>
         Trusted sources used across the portal for research, data, and analysis.
       </p>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Controls */}
       <div style={{ display: "flex", gap: 10, marginBottom: 16 }}>

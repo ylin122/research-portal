@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 const AGENT_COLORS = {
   "refresh": { bg: `${T_.blue}22`, color: T_.blue, border: `${T_.blue}44` },
@@ -29,15 +31,22 @@ export default function AuditLog() {
   const [runs, setRuns] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
 
   async function fetchRuns() {
+    setLoadError(null);
     const { data, error } = await supabase
       .from("agent_runs")
       .select("*")
       .eq("project", "research-portal")
       .order("created_at", { ascending: false })
       .limit(200);
-    if (error) console.error("fetchRuns:", error);
+    if (error) {
+      console.error("fetchRuns:", error);
+      setLoadError(error.message);
+      setLoading(false);
+      return;
+    }
     setRuns(data || []);
     setLoading(false);
   }
@@ -62,7 +71,10 @@ export default function AuditLog() {
   return (
     <div style={{ padding: "36px 52px", maxWidth: "none", fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Agent Run Log</div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Agent Run Log</div>
+          <LastUpdated rows={runs} label="Last run" />
+        </div>
         <button style={{
           padding: "8px 16px", fontSize: 12, borderRadius: 6, cursor: "pointer",
           background: T_.accent, color: "#000", border: "none", fontFamily: FONT, fontWeight: 500,
@@ -72,6 +84,8 @@ export default function AuditLog() {
         Every agent run logged with task, changes, and files modified.
         <span style={{ color: T_.textGhost, marginLeft: 8 }}>{runs.length} runs</span>
       </p>
+
+      <ErrorBanner message={loadError} onRetry={fetchRuns} />
 
       {/* Stats bar */}
       <div style={{ display: "flex", gap: 12, marginBottom: 24, flexWrap: "wrap" }}>

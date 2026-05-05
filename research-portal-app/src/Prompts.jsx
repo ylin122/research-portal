@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 async function loadPrompts() {
   const { data, error } = await supabase.from("prompts").select("*").order("created_at", { ascending: true });
-  if (error) { console.error("loadPrompts:", error); return []; }
+  if (error) { console.error("loadPrompts:", error); throw error; }
   return data || [];
 }
 
@@ -23,8 +25,15 @@ export default function Prompts() {
   const [adding, setAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newText, setNewText] = useState("");
+  const [loadError, setLoadError] = useState(null);
 
-  useEffect(() => { loadPrompts().then(setPrompts); }, []);
+  const load = () => {
+    setLoadError(null);
+    loadPrompts().then(setPrompts).catch(err => setLoadError(err.message || "Failed to load prompts"));
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleAdd = async () => {
     if (!newTitle.trim() || !newText.trim()) return;
@@ -71,12 +80,17 @@ export default function Prompts() {
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", margin: 0 }}>Prompts</div>
+        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", margin: 0 }}>Prompts</div>
+          <LastUpdated rows={prompts} field="updated_at" />
+        </div>
         <button onClick={() => setAdding(true)} style={{
           background: T_.accent, border: "none", color: "#000", fontWeight: 600,
           fontSize: 13, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontFamily: FONT,
         }}>+ Add Prompt</button>
       </div>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Add new */}
       {adding && (

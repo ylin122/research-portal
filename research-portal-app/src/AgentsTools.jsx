@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 import { supabase } from "./lib/supabase";
+import ErrorBanner from "./lib/ErrorBanner";
 
 const MCP_SERVERS = [
   {
@@ -224,6 +225,7 @@ export default function AgentsTools() {
   const [expanded, setExpanded] = useState(null);
   const [rows, setRows] = useState({});
   const [copied, setCopied] = useState(null);
+  const [loadError, setLoadError] = useState(null);
 
   const copyPrompt = (id) => {
     const row = rows[id];
@@ -233,19 +235,29 @@ export default function AgentsTools() {
     setTimeout(() => setCopied(null), 1500);
   };
 
-  useEffect(() => {
+  const load = () => {
+    setLoadError(null);
     let cancelled = false;
     (async () => {
       const { data, error } = await supabase
         .from("agent_definitions")
         .select("id, name, description, tools, body");
       if (cancelled) return;
-      if (error) { console.error("Failed to load agent prompts:", error.message); return; }
+      if (error) {
+        console.error("Failed to load agent prompts:", error.message);
+        setLoadError(error.message);
+        return;
+      }
       const map = {};
       for (const r of data || []) map[r.id] = r;
       setRows(map);
     })();
     return () => { cancelled = true; };
+  };
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+    return load();
   }, []);
 
   return (
@@ -254,6 +266,8 @@ export default function AgentsTools() {
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
         Claude Code agents, skills, MCP servers, and installed tools. Agents: <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span> &nbsp; Skills: <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>
       </p>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 14 }}>

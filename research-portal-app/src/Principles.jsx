@@ -1,10 +1,12 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 async function loadPrinciples() {
   const { data, error } = await supabase.from("principles").select("*").order("sort_order", { ascending: true });
-  if (error) { console.error("loadPrinciples:", error); return []; }
+  if (error) { console.error("loadPrinciples:", error); throw error; }
   return data || [];
 }
 
@@ -23,9 +25,16 @@ export default function Principles() {
   const [adding, setAdding] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [editing, setEditing] = useState(null);
+  const [loadError, setLoadError] = useState(null);
   const saveTimers = useRef({});
 
-  useEffect(() => { loadPrinciples().then(setPrinciples); }, []);
+  const load = () => {
+    setLoadError(null);
+    loadPrinciples().then(setPrinciples).catch(err => setLoadError(err.message || "Failed to load principles"));
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleAdd = async () => {
     if (!newTitle.trim()) return;
@@ -77,7 +86,10 @@ export default function Principles() {
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <div>
-          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Principles & Epiphanies</div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
+            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Principles & Epiphanies</div>
+            <LastUpdated rows={principles} field="updated_at" />
+          </div>
           <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>Fundamental beliefs that guide decisions. Review before acting.</div>
         </div>
         <button
@@ -90,6 +102,8 @@ export default function Principles() {
           {adding ? "Cancel" : "+ Add"}
         </button>
       </div>
+
+      <ErrorBanner message={loadError} onRetry={load} />
 
       {/* Add new */}
       {adding && (

@@ -190,10 +190,10 @@ export default function App() {
     );
   }
 
-  return <AppContent />;
+  return <AppContent userEmail={session.user?.email || ""} onSignOut={() => supabase.auth.signOut()} />;
 }
 
-function AppContent() {
+function AppContent({ userEmail, onSignOut }) {
   const [ready, setReady] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [fieldsMap, setFieldsMap] = useState({});
@@ -218,8 +218,23 @@ function AppContent() {
       { id: "eq_orcl", name: "Oracle", sub: "" },
       { id: "eq_meta", name: "Meta", sub: "" },
     ];
+    // Validate shape: must be an array of { id: string, name: string }.
+    // A malformed entry would crash the sidebar / search. Reset to SEED on any drift.
+    const isValidEquity = (e) => e && typeof e.id === "string" && typeof e.name === "string";
     let saved = [];
-    try { saved = JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { /* fall through to SEED */ }
+    try {
+      const parsed = JSON.parse(localStorage.getItem("research_portal_equities") || "[]");
+      if (Array.isArray(parsed) && parsed.every(isValidEquity)) {
+        saved = parsed;
+      } else {
+        console.warn("research_portal_equities malformed; resetting to seed");
+        localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
+        return SEED;
+      }
+    } catch {
+      localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
+      return SEED;
+    }
     if (saved.length === 0) {
       localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
       return SEED;
@@ -576,6 +591,12 @@ function AppContent() {
           <div style={{ ...s.sectorHdr, color: view.type === "auditLog" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "auditLog" }); setEditingField(null); }}>
             <span>Audit Log</span>
           </div>
+        </div>
+
+        {/* User footer — email + sign out */}
+        <div style={s.userFooter}>
+          <div style={s.userEmail} title={userEmail}>{userEmail}</div>
+          <button style={s.signOutBtn} onClick={onSignOut}>Sign out</button>
         </div>
       </div>
 
@@ -990,4 +1011,7 @@ const s = {
   modalInput: { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 7, padding: "10px 14px", fontSize: 14, color: T_.text, outline: "none", fontFamily: FONT, boxSizing: "border-box" },
   subPill: { padding: "5px 14px", fontSize: 12, color: T_.textDim, border: `1px solid ${T_.border}`, borderRadius: 6, cursor: "pointer", fontFamily: FONT },
   subPillActive: { color: T_.accent, borderColor: T_.accent, background: "rgba(245,158,11,0.1)" },
+  userFooter: { padding: "12px 18px", borderTop: `1px solid ${T_.border}`, display: "flex", flexDirection: "column", gap: 8, fontFamily: FONT, flexShrink: 0 },
+  userEmail: { fontSize: 11, color: T_.textGhost, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" },
+  signOutBtn: { background: "transparent", border: `1px solid ${T_.border}`, color: T_.textDim, padding: "6px 10px", borderRadius: 6, fontSize: 12, cursor: "pointer", fontFamily: FONT, textAlign: "left" },
 };

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 import TabBar from "./lib/TabBar";
+import ErrorBanner from "./lib/ErrorBanner";
+import LastUpdated from "./lib/LastUpdated";
 
 const TABS = [
   { key: "concepts", label: "Concepts" },
@@ -99,6 +101,7 @@ function ConceptRow({ concept, expanded, onToggle, onDelete }) {
 function ConceptsTab() {
   const [concepts, setConcepts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState(null);
   const [showAdd, setShowAdd] = useState(false);
@@ -106,9 +109,18 @@ function ConceptsTab() {
   const [addTopic, setAddTopic] = useState("ai");
   const [collapsedTopics, setCollapsedTopics] = useState({});
 
-  useEffect(() => {
-    supabase.from("concepts").select("*").order("title", { ascending: true }).then(({ data }) => { setConcepts(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
-  }, []);
+  const load = () => {
+    setLoading(true);
+    setLoadError(null);
+    supabase.from("concepts").select("*").order("title", { ascending: true }).then(({ data, error }) => {
+      if (error) { setLoadError(error.message); setLoading(false); return; }
+      setConcepts(data || []);
+      setLoading(false);
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleAdd = async () => {
     if (!addTitle.trim()) return;
@@ -129,7 +141,9 @@ function ConceptsTab() {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 16 }}>
+      <ErrorBanner message={loadError} onRetry={load} />
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+        <LastUpdated rows={concepts} />
         <button onClick={() => setShowAdd(true)} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>+ Add</button>
       </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
@@ -487,12 +501,23 @@ const STRATEGY_DIVES = [
 function DeepDivesTab() {
   const [dives, setDives] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(null);
   const [selected, setSelected] = useState(null);
   const [filter, setFilter] = useState("all");
   const [collapsedTopics, setCollapsedTopics] = useState({});
-  useEffect(() => {
-    supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data }) => { setDives(data || []); setLoading(false); }).catch(err => { console.error(err); setLoading(false); });
-  }, []);
+
+  const load = () => {
+    setLoading(true);
+    setLoadError(null);
+    supabase.from("deep_dives").select("*").order("title", { ascending: true }).then(({ data, error }) => {
+      if (error) { setLoadError(error.message); setLoading(false); return; }
+      setDives(data || []);
+      setLoading(false);
+    });
+  };
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
+  useEffect(() => { load(); }, []);
 
   const handleDelete = async (id) => {
     if (id.startsWith("strat_") || id.startsWith("infra_") || id.startsWith("sw_")) return;
@@ -509,6 +534,10 @@ function DeepDivesTab() {
 
   return (
     <div>
+      <ErrorBanner message={loadError} onRetry={load} />
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
+        <LastUpdated rows={dives} />
+      </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
         {TOPIC_FILTERS.map(t => (
           <button key={t.key} onClick={() => setFilter(t.key)} style={{
