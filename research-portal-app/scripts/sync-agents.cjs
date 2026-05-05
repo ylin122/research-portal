@@ -1,31 +1,40 @@
-// ─── Pull from GitHub + Supabase to local machine ───
+// ─── Pull from GitHub to local machine ───
 // Run: node scripts/sync-agents.cjs
 // This is the "log on" sync — run when starting on a new machine.
+//
+// As of 2026-05-05: agents and skills live in the ~/dotclaude git repo (no longer
+// synced via Supabase — the anon key is RLS-blocked from writes and we wanted to
+// avoid managing a service-role key per machine). dotclaude is the source of truth
+// for ~/.claude/{CLAUDE.md, settings.json, agents/, skills/}.
+//
+// Architecture:
+//   ~/dotclaude/                    ← git repo (push from any machine, pull on others)
+//     ├── CLAUDE.md
+//     ├── settings.json
+//     ├── agents/                   ← all agent .md files
+//     └── skills/                   ← all skill SKILL.md files
+//
+//   ~/.claude/                      ← local Claude Code config (overwritten on sync)
+//     ├── CLAUDE.md                 ← copied from dotclaude
+//     ├── settings.json             ← copied from dotclaude
+//     ├── agents/                   ← copied from dotclaude
+//     └── skills/                   ← copied from dotclaude
 
-require('dotenv').config();
-const { createClient } = require('@supabase/supabase-js');
 const fs = require('fs');
 const path = require('path');
+const os = require('os');
 const { execSync } = require('child_process');
 
-const supabase = createClient(
-  process.env.VITE_SUPABASE_URL,
-  process.env.VITE_SUPABASE_ANON_KEY
-);
-
-const AGENTS_DIR = path.join(require('os').homedir(), '.claude', 'agents');
-const SKILLS_DIR = path.join(require('os').homedir(), '.claude', 'skills');
-
-function toMd({ name, description, tools, body }) {
-  return `---\nname: ${name}\ndescription: ${description}\ntools: ${tools}\n---\n\n${body}\n`;
-}
+const HOME = os.homedir();
+const DOTCLAUDE = path.join(HOME, 'dotclaude');
+const CLAUDE = path.join(HOME, '.claude');
 
 (async () => {
-  // ── Step 1: Pull latest repos from GitHub ──
+  // ── Step 1: Pull project repos from GitHub ──
   console.log('\n=== Step 1: Pull repos from GitHub ===');
   const repos = [
     { name: 'research-portal', dir: path.join(__dirname, '..'), branch: 'main' },
-    { name: 'portfolio-dashboard', dir: path.join(require('os').homedir(), 'projects', 'portfolio-dashboard'), branch: 'master' },
+    { name: 'portfolio-dashboard', dir: path.join(HOME, 'projects', 'portfolio-dashboard'), branch: 'master' },
   ];
   for (const r of repos) {
     if (!fs.existsSync(r.dir)) {
@@ -40,78 +49,51 @@ function toMd({ name, description, tools, body }) {
     }
   }
 
-  // ── Step 2: Pull agent definitions from Supabase to local ──
-  console.log('\n=== Step 2: Pull agents from Supabase ===');
-  const { data, error } = await supabase
-    .from('agent_definitions')
-    .select('*')
-    .order('sort_order', { ascending: true });
-
-  if (error) { console.error('Failed to fetch agents:', error.message); process.exit(1); }
-  if (!data || data.length === 0) { console.log('No agents found in Supabase.'); return; }
-
-  fs.mkdirSync(AGENTS_DIR, { recursive: true });
-  fs.mkdirSync(SKILLS_DIR, { recursive: true });
-
-  // Track which files came from Supabase
-  const supabaseIds = new Set();
-
-  for (const row of data) {
-    if (row.id.startsWith('skill-')) {
-      const skillName = row.id.replace(/^skill-/, '');
-      const skillDir = path.join(SKILLS_DIR, skillName);
-      fs.mkdirSync(skillDir, { recursive: true });
-      fs.writeFileSync(path.join(skillDir, 'SKILL.md'), toMd(row), 'utf-8');
-      console.log(`  OK: skills/${skillName}/SKILL.md`);
-    } else {
-      const filePath = path.join(AGENTS_DIR, `${row.id}.md`);
-      fs.writeFileSync(filePath, toMd(row), 'utf-8');
-      supabaseIds.add(`${row.id}.md`);
-      console.log(`  OK: ${row.id}.md`);
-    }
-  }
-
-  // Check for local-only agents (exist on disk but not in Supabase)
-  const localFiles = fs.readdirSync(AGENTS_DIR).filter(f => f.endsWith('.md'));
-  const localOnly = localFiles.filter(f => !supabaseIds.has(f));
-  if (localOnly.length > 0) {
-    console.log(`\n  Local-only agents (not in Supabase):`);
-    for (const f of localOnly) {
-      console.log(`    ${f} — run @sync-agents-push to upload`);
-    }
-  }
-
-  // ── Step 3: Pull dotclaude + refresh ~/.claude/CLAUDE.md and settings.json ──
-  console.log('\n=== Step 3: Pull dotclaude + refresh ~/.claude/{CLAUDE.md,settings.json} ===');
-  const dotclaudeDir = path.join(require('os').homedir(), 'dotclaude');
-  if (!fs.existsSync(dotclaudeDir)) {
+  // ── Step 2: Pull dotclaude + sync agents/skills/CLAUDE.md/settings.json ──
+  console.log('\n=== Step 2: Pull dotclaude + sync ~/.claude/ ===');
+  if (!fs.existsSync(DOTCLAUDE)) {
     console.log('  SKIP: ~/dotclaude not cloned on this machine');
     console.log('  Run: git clone https://github.com/ylin122/dotclaude.git ~/dotclaude');
-  } else {
-    try {
-      const result = execSync('git pull --ff-only origin main', { cwd: dotclaudeDir, encoding: 'utf-8' }).trim();
-      console.log(`  ${result.split('\n')[0]}`);
-      const claudeDir = path.join(require('os').homedir(), '.claude');
-      for (const file of ['CLAUDE.md', 'settings.json']) {
-        const src = path.join(dotclaudeDir, file);
-        const dst = path.join(claudeDir, file);
-        if (fs.existsSync(src)) {
-          fs.copyFileSync(src, dst);
-          console.log(`  OK: ~/.claude/${file} refreshed`);
-        }
-      }
-      const skillsSrc = path.join(dotclaudeDir, 'skills');
-      const skillsDst = path.join(claudeDir, 'skills');
-      if (fs.existsSync(skillsSrc)) {
-        fs.mkdirSync(skillsDst, { recursive: true });
-        fs.cpSync(skillsSrc, skillsDst, { recursive: true, force: true });
-        const skillCount = fs.readdirSync(skillsSrc).filter(f => f !== '.gitkeep').length;
-        console.log(`  OK: ~/.claude/skills/ refreshed (${skillCount} skill${skillCount === 1 ? '' : 's'})`);
-      }
-    } catch (e) {
-      console.error('  dotclaude error:', e.message.split('\n')[0]);
+    return;
+  }
+  try {
+    const result = execSync('git pull --ff-only origin main', { cwd: DOTCLAUDE, encoding: 'utf-8' }).trim();
+    console.log(`  dotclaude: ${result.split('\n')[0]}`);
+  } catch (e) {
+    console.error('  dotclaude pull error:', e.message.split('\n')[0]);
+  }
+
+  // CLAUDE.md + settings.json — top-level files
+  for (const file of ['CLAUDE.md', 'settings.json']) {
+    const src = path.join(DOTCLAUDE, file);
+    const dst = path.join(CLAUDE, file);
+    if (fs.existsSync(src)) {
+      fs.copyFileSync(src, dst);
+      console.log(`  OK: ~/.claude/${file} refreshed`);
     }
   }
 
-  console.log(`\nDone. Synced ${data.length} agents from Supabase. GitHub + dotclaude up to date.`);
+  // Agents — flat .md files
+  const agentsSrc = path.join(DOTCLAUDE, 'agents');
+  const agentsDst = path.join(CLAUDE, 'agents');
+  if (fs.existsSync(agentsSrc)) {
+    fs.mkdirSync(agentsDst, { recursive: true });
+    const files = fs.readdirSync(agentsSrc).filter(f => f.endsWith('.md'));
+    for (const f of files) {
+      fs.copyFileSync(path.join(agentsSrc, f), path.join(agentsDst, f));
+    }
+    console.log(`  OK: ~/.claude/agents/ refreshed (${files.length} agent${files.length === 1 ? '' : 's'})`);
+  }
+
+  // Skills — nested directories with SKILL.md
+  const skillsSrc = path.join(DOTCLAUDE, 'skills');
+  const skillsDst = path.join(CLAUDE, 'skills');
+  if (fs.existsSync(skillsSrc)) {
+    fs.mkdirSync(skillsDst, { recursive: true });
+    fs.cpSync(skillsSrc, skillsDst, { recursive: true, force: true });
+    const skillCount = fs.readdirSync(skillsSrc).filter(f => f !== '.gitkeep').length;
+    console.log(`  OK: ~/.claude/skills/ refreshed (${skillCount} skill${skillCount === 1 ? '' : 's'})`);
+  }
+
+  console.log('\nDone. GitHub + dotclaude up to date. No API keys required.');
 })();
