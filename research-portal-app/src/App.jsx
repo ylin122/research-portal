@@ -2,7 +2,6 @@ import { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react"
 const Primer = lazy(() => import("./Primer"));
 const ProductPrimer = lazy(() => import("./ProductPrimer"));
 const AIDisruption = lazy(() => import("./AIDisruption"));
-import NotesIdeasAgent from "./NotesIdeasAgent";
 import AgentsTools from "./AgentsTools";
 const BusinessModels = lazy(() => import("./BusinessModels"));
 const Accounting = lazy(() => import("./Accounting"));
@@ -77,7 +76,6 @@ const MOBILE_MORE_ITEMS = [
   { type: "home", label: "Dashboard", icon: "\u{2302}" },
   { type: null, label: "— Agents —", icon: "" },
   { type: "dataVerificationAgent", label: "Agents / Tools", icon: "\u{1F6E0}" },
-  { type: "notesIdeasAgent", label: "Ideas Agent", icon: "\u{1F4A1}" },
   { type: null, label: "— Trackers —", icon: "" },
   { type: "aidisruption", label: "AI Research", icon: "\u{1F916}" },
   { type: "industryResearch", label: "Industry Research", icon: "\u{1F3ED}" },
@@ -650,9 +648,6 @@ function AppContent() {
         {/* INDUSTRY RESEARCH */}
         {view.type === "industryResearch" && <Suspense fallback={<div style={s.page}><div style={{ color: T_.textDim }}>Loading...</div></div>}><IndustryResearch initialTab={view.sub} /></Suspense>}
 
-
-        {/* NOTES / IDEAS AGENT */}
-        {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} />}
 
         {/* AGENTS & TOOLS */}
         {view.type === "dataVerificationAgent" && <AgentsTools />}

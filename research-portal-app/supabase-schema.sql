@@ -5,7 +5,7 @@
 -- Security model:
 --   • Every write goes through an authenticated browser session
 --     (Supabase Auth signInWithPassword in App.jsx).
---   • The /api/claude server function verifies the JWT.
+--   • Server functions (api/financials.mjs) verify the JWT before any work.
 --   • RLS policies require auth.uid() IS NOT NULL on every table.
 --   • The anon key in the client bundle is *only* usable for SELECT/INSERT
 --     when the request carries a valid JWT.

@@ -12,7 +12,6 @@ Refresh a research portal tab or section with latest information from ALL availa
 |---|---|---|
 | Dashboard | `Dashboard.jsx` | Supabase |
 | Thesis Tracker | `ThesisAgent.jsx` | localStorage |
-| Ideas/Notes | `NotesIdeasAgent.jsx` | Supabase |
 | Agent Commands | `DataVerificationAgent.jsx` | -- |
 | AI Research | `AIDisruption.jsx` | Hardcoded JSX |
 | Industry Research | `IndustryResearch.jsx` | Hardcoded JSX |

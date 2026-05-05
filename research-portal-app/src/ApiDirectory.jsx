@@ -33,16 +33,6 @@ const APIS = [
     status: "active",
   },
   {
-    name: "Anthropic Claude API",
-    category: "AI / Research",
-    usage: "Powers research agents (Q&A, Thesis Tracker, Data Verification, Ideas). Used for web search via tool_use. Also used in portfolio dashboard for text-based tab refreshes (AI Labs, Capex, GPU/ASIC news).",
-    tables: "N/A — server proxy at /api/claude",
-    endpoint: "Browser → POST /api/claude (Vercel Function) → https://api.anthropic.com/v1/messages",
-    auth: "Server-only key (ANTHROPIC_API_KEY in Vercel env). Browser sends Supabase access_token as Bearer; the function calls supabase.auth.getUser to validate before invoking Anthropic. Model: claude-sonnet-4-20250514. Tools: web_search_20250305.",
-    projects: ["Research Portal", "Portfolio Dashboard"],
-    status: "active",
-  },
-  {
     name: "Vercel",
     category: "Hosting / Serverless",
     usage: "Hosts both apps. Serverless functions for Yahoo Finance API endpoints. Cron job for daily price refresh (weekdays 11:30 UTC). Auto-deploys from GitHub on push.",

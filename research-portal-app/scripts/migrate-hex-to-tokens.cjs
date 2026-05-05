@@ -9,7 +9,7 @@ const SRC_DIR = path.join(__dirname, "..", "src");
 const DRY = process.argv.includes("--dry");
 
 const FILES = [
-  "Dashboard.jsx", "AgentsTools.jsx", "NotesIdeasAgent.jsx", "AIDisruption.jsx",
+  "Dashboard.jsx", "AgentsTools.jsx", "AIDisruption.jsx",
   "IndustryResearch.jsx", "QuickNotes.jsx", "KnowledgeInterests.jsx",
   "KnowledgeBase.jsx", "BusinessModels.jsx", "Accounting.jsx", "CreditInstruments.jsx",
   "Restructuring.jsx", "CaseStudies.jsx", "Primer.jsx", "PrimerNewTabs.jsx",
