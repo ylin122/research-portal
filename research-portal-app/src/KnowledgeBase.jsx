@@ -128,7 +128,6 @@ function ArticleCard({ article, onClick, onDelete }) {
 function ArticleDetail({ article, onBack }) {
   const [showFullContent, setShowFullContent] = useState(false);
   const takeaways = article.key_takeaways || [];
-  const metrics = article.key_metrics || [];
   const themes = article.themes || [];
   const questions = article.questions || [];
   const hasAnalysis = takeaways.length > 0 || article.investment_implications;
@@ -328,6 +327,7 @@ export default function KnowledgeBase() {
     setLoading(false);
   }, []);
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
   useEffect(() => { load(); }, [load]);
 
   const handleDelete = async (id) => {

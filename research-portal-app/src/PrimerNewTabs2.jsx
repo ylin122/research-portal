@@ -2,7 +2,7 @@
 // Additional industry primer tabs: Healthcare & Pharma, Healthcare Services,
 // Energy & Materials, Real Estate, Utilities, IT Services & BPO
 
-export default function PrimerNewTabs2({ subTab, expanded, toggle, isExp, T_, FONT }) {
+export default function PrimerNewTabs2({ subTab, toggle, isExp, T_ }) {
 
   // ═══════════════════════════════════════════════════════
   // 1. HEALTHCARE & PHARMA

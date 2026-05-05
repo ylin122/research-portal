@@ -2,7 +2,7 @@
 // Financials, Fintech, Industrials, Aerospace & Defense
 // Mirrors exact JSX structure from Primer.jsx (IT Services tab pattern)
 
-export default function PrimerNewTabs1({ subTab, expanded, toggle, isExp, T_, FONT }) {
+export default function PrimerNewTabs1({ subTab, toggle, isExp, T_ }) {
 
   // helper: expand taxonomy cat + subsector (force open, don't toggle closed)
   const forceOpen = (...keys) => { keys.forEach(k => { if (!isExp(k)) toggle(k); }); };

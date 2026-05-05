@@ -16,7 +16,8 @@ export const RESEARCH_FIELDS = [
   { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends..." },
   { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat..." },
   { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships..." },
-  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR..." },
+  // "financials" text field intentionally omitted — live data is shown via the
+  // Financials tab (api/financials.mjs). Manual snapshots go stale.
 ];
 
 export const reviewStyles = {

@@ -25,11 +25,6 @@ export async function updateCompanySector(id, sector, sub) {
   if (error) console.error('updateCompanySector:', error);
 }
 
-export async function updateCompanyMoats(id, moats) {
-  const { error } = await supabase.from('companies').update({ moats }).eq('id', id);
-  if (error) console.error('updateCompanyMoats:', error);
-}
-
 // ─── Company Fields ────────────────────────────────────
 export async function loadAllFields() {
   const map = {};
@@ -58,90 +53,3 @@ export async function upsertField(companyId, fieldKey, text) {
   return date;
 }
 
-// ─── Company Notes ─────────────────────────────────────
-export async function loadAllNotes() {
-  const { data, error } = await supabase
-    .from('company_notes')
-    .select('*')
-    .order('date', { ascending: false });
-  if (error) { console.error('loadAllNotes:', error); return {}; }
-  const map = {};
-  for (const row of data || []) {
-    if (!map[row.company_id]) map[row.company_id] = [];
-    map[row.company_id].push({ id: row.id, text: row.text, date: row.date });
-  }
-  return map;
-}
-
-export async function insertNote(companyId, noteId, text) {
-  const date = new Date().toISOString();
-  const { error } = await supabase.from('company_notes').insert({
-    id: noteId, company_id: companyId, text, date
-  });
-  if (error) console.error('insertNote:', error);
-  return date;
-}
-
-export async function deleteNote(noteId) {
-  const { error } = await supabase.from('company_notes').delete().eq('id', noteId);
-  if (error) console.error('deleteNote:', error);
-}
-
-// ─── News Cache ────────────────────────────────────────
-export async function loadNewsCache() {
-  const { data, error } = await supabase.from('news_cache').select('*');
-  if (error) { console.error('loadNewsCache:', error); return {}; }
-  const map = {};
-  for (const row of data || []) {
-    map[row.company_id] = { items: row.items || [], date: row.date };
-  }
-  return map;
-}
-
-export async function upsertNewsCache(companyId, items) {
-  const date = new Date().toISOString();
-  const { error } = await supabase.from('news_cache').upsert(
-    { company_id: companyId, items, date },
-    { onConflict: 'company_id' }
-  );
-  if (error) console.error('upsertNewsCache:', error);
-  return date;
-}
-
-// ─── Research Results ─────────────────────────────────
-export async function loadResearchResults() {
-  const { data, error } = await supabase.from('research_results').select('*');
-  if (error) { console.error('loadResearchResults:', error); return {}; }
-  const map = {};
-  for (const row of data || []) {
-    map[row.company_id] = {
-      news: row.news || [],
-      transactions: row.transactions || [],
-      competitive: row.competitive || [],
-      industry: row.industry || [],
-      lastUpdated: row.updated_at,
-    };
-  }
-  return map;
-}
-
-// ─── Sector Notes ──────────────────────────────────────
-export async function loadSectorNotes() {
-  const { data, error } = await supabase.from('sector_notes').select('*');
-  if (error) { console.error('loadSectorNotes:', error); return {}; }
-  const map = {};
-  for (const row of data || []) {
-    map[row.key] = { text: row.text || '', date: row.date || '' };
-  }
-  return map;
-}
-
-export async function upsertSectorNote(key, text) {
-  const date = new Date().toISOString();
-  const { error } = await supabase.from('sector_notes').upsert(
-    { key, text, date },
-    { onConflict: 'key' }
-  );
-  if (error) console.error('upsertSectorNote:', error);
-  return date;
-}

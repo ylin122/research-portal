@@ -7,6 +7,15 @@ const supabase = createClient(
   process.env.SUPABASE_ANON_KEY || process.env.VITE_SUPABASE_ANON_KEY
 );
 
+async function requireAuth(req) {
+  const auth = req.headers.authorization || '';
+  const jwt = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+  if (!jwt) return { ok: false, status: 401, error: 'Missing Authorization header' };
+  const { data, error } = await supabase.auth.getUser(jwt);
+  if (error || !data?.user) return { ok: false, status: 401, error: 'Invalid or expired session' };
+  return { ok: true };
+}
+
 // CIK map for SEC EDGAR lookups
 const CIK = {
   MU: '0000723125', ORCL: '0001341439', NVDA: '0001045810', AMZN: '0001018724',
@@ -139,10 +148,12 @@ async function fetchYahoo(ticker) {
 }
 
 export default async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   if (req.method === 'OPTIONS') return res.status(200).end();
+
+  const auth = await requireAuth(req);
+  if (!auth.ok) return res.status(auth.status).json({ error: auth.error });
 
   const symbol = (req.query?.symbol || '').toUpperCase();
   if (!symbol) return res.status(400).json({ error: 'Missing symbol param' });

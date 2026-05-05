@@ -287,6 +287,7 @@ const INSTRUMENT_ORDER = Object.keys(INSTRUMENTS);
 
 export default function CreditInstruments({ initialTab }) {
   const [active, setActive] = useState(initialTab || INSTRUMENT_ORDER[0]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setActive(initialTab); }, [initialTab]);
 
   const inst = INSTRUMENTS[active];

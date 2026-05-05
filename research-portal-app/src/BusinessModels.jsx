@@ -668,6 +668,7 @@ const CATEGORIES = [
 
 export default function BusinessModels({ initialTab }) {
   const [activeModel, setActiveModel] = useState(initialTab || MODEL_ORDER[0]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setActiveModel(initialTab); }, [initialTab]);
 
   const model = activeModel ? MODELS[activeModel] : MODELS[MODEL_ORDER[0]];

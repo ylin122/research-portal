@@ -1,5 +1,13 @@
 import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
+import { supabase } from "./lib/supabase";
+
+async function authedFetch(url) {
+  const { data: { session } } = await supabase.auth.getSession();
+  return fetch(url, {
+    headers: session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {},
+  });
+}
 
 // ── Number formatting — negatives as (parentheses), matching portal style ──
 const fmtB = (v) => {
@@ -75,8 +83,9 @@ export default function FinancialsTab({ ticker, companyId, companyName, curField
   // Load cached data on mount (only for companies with a ticker)
   useEffect(() => {
     if (!ticker) return;
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: fetch + setState on ticker change
     setLoading(true);
-    fetch(`/api/financials?symbol=${encodeURIComponent(ticker)}`)
+    authedFetch(`/api/financials?symbol=${encodeURIComponent(ticker)}`)
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
       .catch(() => setLoading(false));
@@ -85,7 +94,7 @@ export default function FinancialsTab({ ticker, companyId, companyName, curField
   const handleRefresh = () => {
     if (!ticker) return;
     setRefreshing(true);
-    fetch(`/api/financials?symbol=${encodeURIComponent(ticker)}&refresh=true`)
+    authedFetch(`/api/financials?symbol=${encodeURIComponent(ticker)}&refresh=true`)
       .then(r => r.json())
       .then(d => { setData(d); setRefreshing(false); })
       .catch(() => setRefreshing(false));

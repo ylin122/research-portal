@@ -1,15 +1,10 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, AreaChart } from "recharts";
 import { T_, FONT } from "./lib/theme";
 import TabBar from "./lib/TabBar";
 import { tooltipStyle, tooltipStyleSm } from "./lib/chartTheme";
 
 // Updated 2026-04-29 (hyperscaler Q1 2026 prints)
-const fmt = (n) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 0, maximumFractionDigits: 0 });
-const fmtPct = (n) => (n * 100).toFixed(1) + "%";
-const fmtShares = (n) => n % 1 === 0 ? n.toLocaleString() : n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 3 });
-const fmtPrice = (n) => n.toLocaleString("en-US", { style: "currency", currency: "USD", minimumFractionDigits: 2, maximumFractionDigits: 2 });
-const fmtNum = (n) => n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
 const AI_LABS_DATA = {
   OpenAI: {
@@ -1269,9 +1264,9 @@ const TYPE_COLORS = {
 
 export default function IndustryResearch({ initialTab }) {
   const [mainTab, setMainTab] = useState(initialTab || "ailabs");
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setMainTab(initialTab); }, [initialTab]);
   const [activeLab, setActiveLab] = useState("OpenAI");
-  const [activeGpu, setActiveGpu] = useState("all");
   const [chipVendorFilter, setChipVendorFilter] = useState("All");
   const [chipDeliverySort, setChipDeliverySort] = useState({ key: "shipDate", dir: "desc" });
   const [chipHistSort, setChipHistSort] = useState({ key: "q", dir: "desc" });
@@ -1323,9 +1318,6 @@ export default function IndustryResearch({ initialTab }) {
     input: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none", width: "100%" },
     select: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none" },
   };
-
-  // Stub holdings as empty for supply chain map (research portal has no portfolio)
-  const holdings = [];
 
   return (
     <div style={s.page}>
@@ -1890,11 +1882,6 @@ export default function IndustryResearch({ initialTab }) {
             },
           };
           const sc = supplyChains[activeLab];
-          // Build ticker weight map (% of total portfolio)
-          const tickerValues = {};
-          holdings.forEach(h => { tickerValues[h.ticker] = (tickerValues[h.ticker] || 0) + h.value; });
-          const portTotal = holdings.reduce((s, h) => s + h.value, 0);
-          const tickerWeight = (ticker) => portTotal > 0 ? (tickerValues[ticker] || 0) / portTotal : 0;
           // Sort contracts: newest first. Parse mixed date formats to sortable key.
           const dateKey = (d) => {
             if (!d) return "0000";
@@ -2923,7 +2910,7 @@ export default function IndustryResearch({ initialTab }) {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
                   <tr style={{ borderBottom: `2px solid ${T_.border}` }}>
-                    {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h, i) => (
+                    {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h) => (
                       <th key={h.l} onClick={h.k ? () => dToggle(h.k) : undefined} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: h.k ? "pointer" : "default" }}>{h.l}{dArr(h.k)}</th>
                     ))}
                   </tr>
@@ -3184,7 +3171,7 @@ export default function IndustryResearch({ initialTab }) {
               <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
                 <thead>
                   <tr style={{ borderBottom: `2px solid ${T_.border}` }}>
-                    {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h, i) => (
+                    {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h) => (
                       <th key={h.l} onClick={h.k ? () => dToggle(h.k) : undefined} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: h.k ? "pointer" : "default" }}>{h.l}{dArr(h.k)}</th>
                     ))}
                   </tr>
@@ -3645,7 +3632,6 @@ export default function IndustryResearch({ initialTab }) {
       {/* ═══════ FOUNDRY TAB ═══════ */}
       {mainTab === "foundry" && (() => {
         const TSMC_COLOR = "#E11D48";
-        const nodeColor = (n) => ({ "N3": T_.purple, "N2": T_.blue, "A16": "#06B6D4", "Pkg": T_.amber }[n] || T_.textDim);
 
         // N2 + CoWoS focused roadmap
         const n2Roadmap = [
@@ -3669,12 +3655,6 @@ export default function IndustryResearch({ initialTab }) {
           { year: "FY2025", capex: 40.9, rev: 122.0, gm: 59.9, note: "Actual (+36% YoY)" },
           { year: "Q1 2026", capex: 0, rev: 35.9, gm: 66.2, note: "Record Q. +41% YoY. HPC 61% of rev." },
           { year: "FY2026E", capex: 54.0, rev: 159.0, gm: 64.0, note: "Guided: $52-56B capex (high end likely), ~30% rev growth, Q1 guide 63-65% GM" },
-        ];
-
-        const capexBreakdown = [
-          { label: "Advanced Nodes (N3, N2, A16)", pct: 70, color: T_.blue },
-          { label: "Advanced Packaging & Test", pct: 15, color: T_.amber },
-          { label: "Specialty / Mature Nodes", pct: 15, color: T_.textDim },
         ];
 
         const revByNode = [

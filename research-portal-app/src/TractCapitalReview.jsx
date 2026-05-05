@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
 
-export default function TractCapitalReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
+export default function TractCapitalReview({ companyId, curFields, updateField, editingField, setEditingField }) {
   const [tractTab, setTractTab] = useState("recent");
 
   return (

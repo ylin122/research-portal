@@ -25,35 +25,22 @@ function SectionHeader({ title, count, onViewAll }) {
 
 export default function Dashboard({ companies, setView }) {
   const [articles, setArticles] = useState([]);
-  const [ideas, setIdeas] = useState([]);
   const [concepts, setConcepts] = useState([]);
-  const [qa, setQa] = useState([]);
-  const [alerts, setAlerts] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       supabase.from("kb_articles").select("id, title, date, category, key_takeaways, themes").order("created_at", { ascending: false }).limit(5),
-      supabase.from("ideas").select("id, title, status, conviction, updated_at").order("updated_at", { ascending: false }).limit(10),
       supabase.from("concepts").select("id, title, topic, one_liner").order("title", { ascending: true }),
-      supabase.from("qa_log").select("id, question, answer, created_at").order("created_at", { ascending: false }).limit(5),
-      supabase.from("watchlist").select("id, keyword, active").order("created_at", { ascending: false }),
-    ]).then(([aRes, iRes, cRes, qRes, wRes]) => {
+    ]).then(([aRes, cRes]) => {
       setArticles(aRes.data || []);
-      setIdeas(iRes.data || []);
       setConcepts(cRes.data || []);
-      setQa(qRes.data || []);
-      setAlerts(wRes.data || []);
       setLoading(false);
     }).catch(err => {
       console.error(err);
       setLoading(false);
     });
   }, []);
-
-  const ideasByStatus = (status) => ideas.filter(i => i.status === status).length;
-  const pendingQa = qa.filter(q => !q.answer).length;
-  const activeAlerts = alerts.filter(a => a.active).length;
 
   if (loading) return <div style={{ padding: "60px 44px", color: T_.textDim, fontSize: 14, textAlign: "center" }}>Loading dashboard...</div>;
 
@@ -90,46 +77,6 @@ export default function Dashboard({ companies, setView }) {
           </div>
         </>
       )}
-
-      {/* Idea Pipeline */}
-      {ideas.length > 0 && (
-        <>
-          <SectionHeader title="Idea Pipeline" count={ideas.length} />
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", gap: 8, marginBottom: 4 }}>
-            {[
-              { key: "seed", label: "Seed", color: T_.textDim },
-              { key: "researching", label: "Researching", color: T_.blue },
-              { key: "thesis", label: "Thesis", color: T_.amber },
-              { key: "validated", label: "Validated", color: T_.green },
-              { key: "archived", label: "Archived", color: T_.textGhost },
-            ].map(s => (
-              <div key={s.key} style={{ background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", textAlign: "center" }}>
-                <div style={{ fontSize: 18, fontWeight: 700, color: s.color }}>{ideasByStatus(s.key)}</div>
-                <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
-      {/* Pending Q&A */}
-      {pendingQa > 0 && (
-        <>
-          <SectionHeader title="Pending Questions" count={pendingQa} />
-          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            {qa.filter(q => !q.answer).slice(0, 3).map(q => (
-              <div key={q.id} style={{
-                display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
-                background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${T_.amber}`,
-              }}>
-                <span style={{ fontSize: 10, fontWeight: 600, color: T_.amber, background: `${T_.amber}15`, padding: "2px 8px", borderRadius: 4 }}>Pending</span>
-                <span style={{ fontSize: 13, color: T_.text, flex: 1 }}>{q.question}</span>
-              </div>
-            ))}
-          </div>
-        </>
-      )}
-
     </div>
   );
 }

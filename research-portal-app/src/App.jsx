@@ -31,8 +31,8 @@ const IndustryResearch = lazy(() => import("./IndustryResearch"));
 import {
   loadCompanies, insertCompany, updateCompanyPriority, updateCompanySector,
   loadAllFields, upsertField,
-  loadSectorNotes,
 } from "./lib/db";
+import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 
 // ─── Helpers ──────────────────────────────────────────
@@ -63,7 +63,8 @@ const FIELDS = [
   { key: "industry", label: "Industry & market", ph: "TAM/SAM/SOM, growth drivers, macro trends, regulatory environment, tailwinds/headwinds, secular shifts..." },
   { key: "competitive", label: "Competitive landscape", ph: "Key competitors, differentiation, moat, positioning, win/loss dynamics, emerging threats, market share..." },
   { key: "transactions", label: "Recent transactions", ph: "Funding rounds, M&A, divestitures, partnerships, key deals, valuation history, cap table, exit path..." },
-  { key: "financials", label: "Financials & metrics", ph: "Revenue, growth, margins, ARR/MRR, headcount, unit economics, burn, profitability, debt profile..." },
+  // "financials" text field intentionally omitted — live data is shown via the
+  // Financials tab (api/financials.mjs). Manual snapshots go stale.
 ];
 
 const SOURCE_FIELDS = [
@@ -101,49 +102,90 @@ const MOBILE_MORE_ITEMS = [
 ];
 
 // ─── App ──────────────────────────────────────────────
-const APP_PASS = "Ylin6274@";
-
+// Auth gate via Supabase Auth. The user must exist in Supabase Auth (created
+// once in the Supabase dashboard) and the RLS policies must require auth.uid()
+// — otherwise this is just a UI gate, not actual security.
 export default function App() {
-  const [authed, setAuthed] = useState(() => sessionStorage.getItem("rp_auth") === "1");
-  const [passInput, setPassInput] = useState("");
-  const [passError, setPassError] = useState(false);
+  const [session, setSession] = useState(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  const [email, setEmail] = useState(() => localStorage.getItem("rp_last_email") || "");
+  const [password, setPassword] = useState("");
+  const [authError, setAuthError] = useState(null);
+  const [authBusy, setAuthBusy] = useState(false);
 
-  if (!authed) {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => {
+      setSession(data.session);
+      setAuthChecked(true);
+    });
+    const { data: sub } = supabase.auth.onAuthStateChange((_evt, s) => setSession(s));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function signIn() {
+    if (!email || !password) return;
+    setAuthBusy(true);
+    setAuthError(null);
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    setAuthBusy(false);
+    if (error) {
+      setAuthError(error.message);
+    } else {
+      localStorage.setItem("rp_last_email", email);
+      setPassword("");
+    }
+  }
+
+  if (!authChecked) {
+    return (
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: T_.bg, color: T_.textDim, fontSize: 13 }}>
+        Loading...
+      </div>
+    );
+  }
+
+  if (!session) {
     return (
       <div style={{ display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: T_.bg, fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif' }}>
-        <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 12, padding: 40, width: 320, textAlign: "center" }}>
-          <div style={{ fontSize: 20, fontWeight: 700, color: T_.text, marginBottom: 6 }}>Research Portal</div>
-          <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 24 }}>Enter password to continue</div>
+        <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 12, padding: 40, width: 340 }}>
+          <div style={{ fontSize: 20, fontWeight: 700, color: T_.text, marginBottom: 6, textAlign: "center" }}>Research Portal</div>
+          <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 24, textAlign: "center" }}>Sign in to continue</div>
+          <input
+            type="email"
+            value={email}
+            onChange={e => { setEmail(e.target.value); setAuthError(null); }}
+            placeholder="Email"
+            autoFocus={!email}
+            style={{
+              width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
+              padding: "10px 14px", color: T_.text, fontSize: 14, outline: "none", boxSizing: "border-box",
+              fontFamily: "inherit", marginBottom: 10,
+            }}
+          />
           <input
             type="password"
-            value={passInput}
-            onChange={e => { setPassInput(e.target.value); setPassError(false); }}
-            onKeyDown={e => {
-              if (e.key === "Enter") {
-                if (passInput === APP_PASS) { sessionStorage.setItem("rp_auth", "1"); setAuthed(true); }
-                else setPassError(true);
-              }
-            }}
+            value={password}
+            onChange={e => { setPassword(e.target.value); setAuthError(null); }}
+            onKeyDown={e => { if (e.key === "Enter") signIn(); }}
             placeholder="Password"
-            autoFocus
+            autoFocus={!!email}
             style={{
-              width: "100%", background: T_.bgInput, border: `1px solid ${passError ? T_.red : T_.border}`, borderRadius: 6,
+              width: "100%", background: T_.bgInput, border: `1px solid ${authError ? T_.red : T_.border}`, borderRadius: 6,
               padding: "10px 14px", color: T_.text, fontSize: 14, outline: "none", boxSizing: "border-box",
               fontFamily: "inherit",
             }}
           />
-          {passError && <div style={{ color: T_.red, fontSize: 12, marginTop: 8 }}>Incorrect password</div>}
+          {authError && <div style={{ color: T_.red, fontSize: 12, marginTop: 8 }}>{authError}</div>}
           <button
-            onClick={() => {
-              if (passInput === APP_PASS) { sessionStorage.setItem("rp_auth", "1"); setAuthed(true); }
-              else setPassError(true);
-            }}
+            onClick={signIn}
+            disabled={authBusy || !email || !password}
             style={{
               marginTop: 16, width: "100%", background: T_.accent, color: "#000", border: "none", borderRadius: 6,
-              padding: "10px", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+              padding: "10px", fontSize: 14, fontWeight: 600, cursor: authBusy ? "default" : "pointer", fontFamily: "inherit",
+              opacity: authBusy ? 0.6 : 1,
             }}
           >
-            Enter
+            {authBusy ? "Signing in..." : "Sign in"}
           </button>
         </div>
       </div>
@@ -156,7 +198,6 @@ export default function App() {
 function AppContent() {
   const [ready, setReady] = useState(false);
   const [companies, setCompanies] = useState([]);
-  const [sectorNotes, setSectorNotes] = useState({});
   const [fieldsMap, setFieldsMap] = useState({});
   const [view, setView] = useState({ type: "home" });
   const [sidebarOpen, setSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
@@ -165,8 +206,34 @@ function AppContent() {
   const [publicCosOpen, setPublicCosOpen] = useState(false);
   const [publicSidebarOpen, setPublicSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [industryOpen, setIndustryOpen] = useState(false);
-  const [equities, setEquities] = useState(() => {
-    try { return JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { return []; }
+  const [equities] = useState(() => {
+    const SEED = [
+      { id: "eq_micron", name: "Micron", sub: "" },
+      { id: "eq_alibaba", name: "Alibaba", sub: "" },
+      { id: "eq_tencent", name: "Tencent", sub: "" },
+      { id: "eq_lumentum", name: "Lumentum", sub: "" },
+      { id: "eq_coherent", name: "Coherent", sub: "" },
+      { id: "eq_nvda", name: "NVIDIA", sub: "" },
+      { id: "eq_amzn", name: "Amazon", sub: "" },
+      { id: "eq_msft", name: "Microsoft", sub: "" },
+      { id: "eq_tsm", name: "TSMC", sub: "" },
+      { id: "eq_orcl", name: "Oracle", sub: "" },
+      { id: "eq_meta", name: "Meta", sub: "" },
+    ];
+    let saved = [];
+    try { saved = JSON.parse(localStorage.getItem("research_portal_equities") || "[]"); } catch { /* fall through to SEED */ }
+    if (saved.length === 0) {
+      localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
+      return SEED;
+    }
+    const ids = new Set(saved.map(e => e.id));
+    const missing = SEED.filter(s => !ids.has(s.id));
+    if (missing.length > 0) {
+      const merged = [...saved, ...missing];
+      localStorage.setItem("research_portal_equities", JSON.stringify(merged));
+      return merged;
+    }
+    return saved;
   });
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
@@ -182,47 +249,15 @@ function AppContent() {
   useEffect(() => {
     (async () => {
       try {
-        const [cos, fields, sn] = await Promise.all([
-          loadCompanies(), loadAllFields(), loadSectorNotes()
-        ]);
+        const [cos, fields] = await Promise.all([loadCompanies(), loadAllFields()]);
         setCompanies(cos);
         setFieldsMap(fields);
-        setSectorNotes(sn);
         setReady(true);
       } catch (err) {
         console.error('Failed to load data:', err);
         setLoadError(err.message || 'Failed to connect to database');
       }
     })();
-  }, []);
-
-  // Seed equity companies on first load
-  useEffect(() => { // eslint-disable-line react-hooks/exhaustive-deps
-    const SEED = [
-      { id: "eq_micron", name: "Micron", sub: "" },
-      { id: "eq_alibaba", name: "Alibaba", sub: "" },
-      { id: "eq_tencent", name: "Tencent", sub: "" },
-      { id: "eq_lumentum", name: "Lumentum", sub: "" },
-      { id: "eq_coherent", name: "Coherent", sub: "" },
-      { id: "eq_nvda", name: "NVIDIA", sub: "" },
-      { id: "eq_amzn", name: "Amazon", sub: "" },
-      { id: "eq_msft", name: "Microsoft", sub: "" },
-      { id: "eq_tsm", name: "TSMC", sub: "" },
-      { id: "eq_orcl", name: "Oracle", sub: "" },
-      { id: "eq_meta", name: "Meta", sub: "" },
-    ];
-    if (equities.length === 0) {
-      setEquities(SEED);
-      localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
-    } else {
-      const ids = new Set(equities.map(e => e.id));
-      const missing = SEED.filter(s => !ids.has(s.id));
-      if (missing.length > 0) {
-        const updated = [...equities, ...missing];
-        setEquities(updated);
-        localStorage.setItem("research_portal_equities", JSON.stringify(updated));
-      }
-    }
   }, []);
 
   const debouncedFieldSave = useAutoSave((companyId, fieldKey, text) => {
@@ -617,10 +652,10 @@ function AppContent() {
 
 
         {/* NOTES / IDEAS AGENT */}
-        {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+        {view.type === "notesIdeasAgent" && <NotesIdeasAgent companies={companies} />}
 
         {/* AGENTS & TOOLS */}
-        {view.type === "dataVerificationAgent" && <AgentsTools companies={companies} fieldsMap={fieldsMap} sectorNotes={sectorNotes} />}
+        {view.type === "dataVerificationAgent" && <AgentsTools />}
 
         {/* TOOLS */}
 

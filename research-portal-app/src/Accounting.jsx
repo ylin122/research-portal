@@ -889,6 +889,7 @@ const TOPIC_ORDER = [
 
 export default function Accounting({ initialTab }) {
   const [activeTopic, setActiveTopic] = useState(initialTab || TOPIC_ORDER[0]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setActiveTopic(initialTab); }, [initialTab]);
 
   const topic = activeTopic ? TOPICS[activeTopic] : TOPICS[TOPIC_ORDER[0]];

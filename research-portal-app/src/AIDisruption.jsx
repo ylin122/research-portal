@@ -656,6 +656,7 @@ function weightedTotal(scores) {
 export default function AIDisruption({ companies, initialTab }) {
   const [expanded, setExpanded] = useState({});
   const [subTab, setSubTab] = useState(initialTab || "disruption");
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setSubTab(initialTab); }, [initialTab]);
   const [moatSort, setMoatSort] = useState({ key: "total", group: null });
   const dynamicMoatGroups = buildMoatGroups(companies);
@@ -1314,11 +1315,35 @@ const CONFIDENCE_STYLES = {
   projected: { label: "Projected", bg: "#f8717118", border: "#f8717140", color: "#f87171" },
 };
 
+const CURRENT_YEAR = 2026;
+
+function DiffusionTooltip({ active, payload, label }) {
+  if (!active || !payload?.length) return null;
+  const seen = {};
+  const items = [];
+  payload.forEach(p => {
+    const baseKey = p.dataKey.replace("_proj", "");
+    if (p.value == null || seen[baseKey]) return;
+    seen[baseKey] = true;
+    const isProj = p.dataKey.endsWith("_proj") && label > CURRENT_YEAR;
+    items.push({ baseKey, value: p.value, color: p.color, isProj });
+  });
+  return (
+    <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "12px 16px", fontSize: 12, fontFamily: FONT }}>
+      <div style={{ fontWeight: 600, color: T_.text, marginBottom: 6 }}>{label}{label > CURRENT_YEAR ? " (projected)" : ""}</div>
+      {items.map(p => (
+        <div key={p.baseKey} style={{ color: p.color, marginBottom: 2 }}>
+          {DIFFUSION_LAYERS.find(l => l.key === p.baseKey)?.label}: {p.value}%{p.isProj ? " *" : ""}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function AIDiffusionTab() {
   const [selectedLayer, setSelectedLayer] = useState(null);
   const [hoveredMilestone, setHoveredMilestone] = useState(null);
-  const currentYear = 2026;
-  const chartData = useMemo(() => generateSCurveData(currentYear), [currentYear]);
+  const chartData = useMemo(() => generateSCurveData(CURRENT_YEAR), []);
 
   const visibleLayers = selectedLayer ? DIFFUSION_LAYERS.filter(l => l.key === selectedLayer) : DIFFUSION_LAYERS;
   const timelineMilestones = selectedLayer
@@ -1336,30 +1361,6 @@ function AIDiffusionTab() {
 
   const layerColor = (key) => DIFFUSION_LAYERS.find(l => l.key === key)?.color || T_.textDim;
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (!active || !payload?.length) return null;
-    // Dedupe — show each layer once, preferring the historical value
-    const seen = {};
-    const items = [];
-    payload.forEach(p => {
-      const baseKey = p.dataKey.replace("_proj", "");
-      if (p.value == null || seen[baseKey]) return;
-      seen[baseKey] = true;
-      const isProj = p.dataKey.endsWith("_proj") && label > currentYear;
-      items.push({ baseKey, value: p.value, color: p.color, isProj });
-    });
-    return (
-      <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 8, padding: "12px 16px", fontSize: 12, fontFamily: FONT }}>
-        <div style={{ fontWeight: 600, color: T_.text, marginBottom: 6 }}>{label}{label > currentYear ? " (projected)" : ""}</div>
-        {items.map(p => (
-          <div key={p.baseKey} style={{ color: p.color, marginBottom: 2 }}>
-            {DIFFUSION_LAYERS.find(l => l.key === p.baseKey)?.label}: {p.value}%{p.isProj ? " *" : ""}
-          </div>
-        ))}
-      </div>
-    );
-  };
-
   return (
     <div>
       {/* Header */}
@@ -1376,7 +1377,7 @@ function AIDiffusionTab() {
           <span style={{ width: 20, height: 2, background: T_.textMid, display: "inline-block" }} /> Sourced data
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span style={{ width: 20, height: 2, background: T_.textMid, display: "inline-block", borderTop: "2px dashed " + T_.textGhost, height: 0 }} /> Projected
+          <span style={{ width: 20, display: "inline-block", borderTop: "2px dashed " + T_.textGhost }} /> Projected
         </span>
         {Object.entries(CONFIDENCE_STYLES).map(([k, v]) => (
           <span key={k} style={{ display: "flex", alignItems: "center", gap: 4 }}>
@@ -1410,7 +1411,7 @@ function AIDiffusionTab() {
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "24px 24px 12px", marginBottom: 28 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: T_.text }}>Adoption S-Curves</div>
-          <div style={{ fontSize: 11, color: T_.textGhost }}>Dashed lines = projected beyond {currentYear}</div>
+          <div style={{ fontSize: 11, color: T_.textGhost }}>Dashed lines = projected beyond {CURRENT_YEAR}</div>
         </div>
         <ResponsiveContainer width="100%" height={380}>
           <AreaChart data={chartData} margin={{ top: 10, right: 20, left: 0, bottom: 0 }}>
@@ -1426,8 +1427,8 @@ function AIDiffusionTab() {
             <XAxis dataKey="year" tick={{ fill: T_.textGhost, fontSize: 11 }} tickLine={false} axisLine={{ stroke: T_.border }} />
             <YAxis tick={{ fill: T_.textGhost, fontSize: 11 }} tickLine={false} axisLine={{ stroke: T_.border }} domain={[0, 100]}
               tickFormatter={v => `${v}%`} />
-            <Tooltip content={<CustomTooltip />} />
-            <ReferenceLine x={currentYear} stroke={T_.textGhost} strokeDasharray="4 4" label={{ value: "Now", fill: T_.textGhost, fontSize: 11, position: "top" }} />
+            <Tooltip content={<DiffusionTooltip />} />
+            <ReferenceLine x={CURRENT_YEAR} stroke={T_.textGhost} strokeDasharray="4 4" label={{ value: "Now", fill: T_.textGhost, fontSize: 11, position: "top" }} />
             {/* Historical lines (solid) */}
             {visibleLayers.map(l => (
               <Area key={l.key} type="monotone" dataKey={l.key} stroke={l.color} strokeWidth={2}
@@ -1445,7 +1446,7 @@ function AIDiffusionTab() {
       {/* Current state summary cards */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: 12, marginBottom: 28 }}>
         {DIFFUSION_LAYERS.map(l => {
-          const latest = DIFFUSION_MILESTONES.filter(m => m.layer === l.key && m.year <= currentYear).sort((a, b) => b.year - a.year)[0];
+          const latest = DIFFUSION_MILESTONES.filter(m => m.layer === l.key && m.year <= CURRENT_YEAR).sort((a, b) => b.year - a.year)[0];
           const phase = latest?.pct < 16 ? "Innovators / Early Adopters" : latest?.pct < 50 ? "Crossing the Chasm" : latest?.pct < 84 ? "Early → Late Majority" : "Saturation";
           const conf = latest?.confidence || "estimated";
           const cs = CONFIDENCE_STYLES[conf];
@@ -1472,7 +1473,7 @@ function AIDiffusionTab() {
         <div style={{ fontSize: 14, fontWeight: 600, color: T_.text, marginBottom: 20 }}>Milestone Timeline</div>
         <div style={{ position: "relative" }}>
           {sortedYears.map((yr, yi) => {
-            const isFuture = yr > currentYear;
+            const isFuture = yr > CURRENT_YEAR;
             return (
               <div key={yr} style={{ display: "flex", gap: 20 }}>
                 {/* Year marker */}
@@ -1481,7 +1482,7 @@ function AIDiffusionTab() {
                 </div>
                 {/* Vertical line */}
                 <div style={{ width: 20, display: "flex", flexDirection: "column", alignItems: "center", flexShrink: 0 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 5, background: yr === currentYear ? T_.accent : isFuture ? T_.border : T_.textGhost, flexShrink: 0, marginTop: 4 }} />
+                  <div style={{ width: 10, height: 10, borderRadius: 5, background: yr === CURRENT_YEAR ? T_.accent : isFuture ? T_.border : T_.textGhost, flexShrink: 0, marginTop: 4 }} />
                   {yi < sortedYears.length - 1 && <div style={{ width: 1, flex: 1, background: isFuture ? `${T_.border}80` : T_.border, minHeight: 10, borderLeft: isFuture ? `1px dashed ${T_.border}` : "none" }} />}
                 </div>
                 {/* Milestones for this year */}

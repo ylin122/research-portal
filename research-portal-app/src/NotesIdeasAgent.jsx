@@ -6,7 +6,7 @@ const STORAGE_KEY = "research_portal_notes_ideas";
 function loadEntries() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); } catch { return []; } }
 function saveEntries(entries) { localStorage.setItem(STORAGE_KEY, JSON.stringify(entries)); }
 
-export default function NotesIdeasAgent({ companies, fieldsMap, sectorNotes }) {
+export default function NotesIdeasAgent({ companies }) {
   const [entries, setEntries] = useState(loadEntries);
   const [input, setInput] = useState("");
   const [type, setType] = useState("note");

@@ -272,6 +272,7 @@ const KEY_CONCEPTS = [
 
 export default function Primer({ initialTab }) {
   const [subTab, setSubTab] = useState(initialTab || "software");
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setSubTab(initialTab); }, [initialTab]);
   const [expanded, setExpanded] = useState({});
   const toggle = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));

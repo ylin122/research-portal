@@ -5282,9 +5282,8 @@ function XeroxCase() {
 export default function Restructuring({ initialTab }) {
   const [activeCase, setActiveCase] = useState(initialTab || "windstream");
 
-  useEffect(() => {
-    if (initialTab) setActiveCase(initialTab);
-  }, [initialTab]);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
+  useEffect(() => { if (initialTab) setActiveCase(initialTab); }, [initialTab]);
 
   return (
     <div style={{ padding: "36px 52px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
