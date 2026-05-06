@@ -16,11 +16,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
             <div style={{ fontSize: 12, color: "#94A3B8", marginTop: 4 }}>Founded 1977 &middot; Austin, TX (HQ) &middot; NYSE: ORCL &middot; ~164,000 employees</div>
             <div style={{ fontSize: 12, color: "#64748B", marginTop: 4 }}>Enterprise software, cloud infrastructure, database, ERP/SaaS, healthcare IT</div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px" }}>Market Cap</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#3B82F6" }}>~$397B</div>
-            <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>Stock ~$138 &middot; P/E ~24-28x</div>
-          </div>
+          <div style={{ textAlign: "right", fontSize: 11, color: "#64748B" }}>See Financials tab for live price / market cap / P/E</div>
         </div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {[
@@ -348,7 +344,6 @@ export default function OracleReview({ companyId, companyName, curFields, update
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(59,130,246,0.15)", color: "#60A5FA" }}>Fitch: BBB</span>
           </div>
           <div style={{ display: "flex", gap: 8, justifyContent: "center", marginTop: 8, flexWrap: "wrap" }}>
-            <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(245,158,11,0.15)", color: "#F59E0B" }}>Market Cap: ~$397B</span>
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(245,158,11,0.15)", color: "#F59E0B" }}>Total Debt: ~$162B</span>
             <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(245,158,11,0.15)", color: "#F59E0B" }}>Net Debt: ~$90B</span>
           </div>
@@ -822,8 +817,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
       <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
         {[
           { label: "Consensus Rating", value: "Buy", sub: "33 of 44 analysts rate Buy. 10 Hold. 1 Sell.", color: "#10B981" },
-          { label: "Avg Price Target", value: "~$261", sub: "Range: $160 (RBC) to $400 (Guggenheim)", color: "#3B82F6" },
-          { label: "Current Price", value: "~$138", sub: "P/E ~24-28x. Market cap ~$397B.", color: "#F8FAFC" },
+          { label: "Avg Price Target", value: "~$261", sub: "Range: $160 (RBC) to $400 (Guggenheim) — see Financials tab for live price / P/E", color: "#3B82F6" },
           { label: "Credit Ratings", value: "BBB / Baa2", sub: "S&P Negative. Moody's Negative. Fitch BBB.", color: "#F59E0B" },
         ].map((m, i) => (
           <div key={i} style={{ background: "#111827", borderRadius: 10, border: "1px solid #1E293B", padding: "14px 18px", flex: "1 1 180px", minWidth: 180 }}>
@@ -946,8 +940,6 @@ export default function OracleReview({ companyId, companyName, curFields, update
         <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 10 }}>Financial Snapshot</div>
         <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
           {[
-            { label: "Stock Price", value: "~$138", sub: "ATH: ~$198 (Nov 2024)" },
-            { label: "Market Cap", value: "~$397B", sub: "P/E: ~24-28x" },
             { label: "FY2025 Revenue", value: "$57.4B", sub: "+8% YoY" },
             { label: "FY2025 GAAP EPS", value: "$4.34", sub: "Non-GAAP: $6.03" },
             { label: "FY2025 OCF", value: "$20.8B", sub: "+12% YoY" },

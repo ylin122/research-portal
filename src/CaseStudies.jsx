@@ -469,6 +469,7 @@ function FluorCase() {
 export default function CaseStudies({ initialTab }) {
   const [activeCase, setActiveCase] = useState(initialTab || "fluor");
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: deep-link sync when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setActiveCase(initialTab); }, [initialTab]);
 
   return (

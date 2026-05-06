@@ -20,11 +20,7 @@ export default function MicronReview({ companyId, companyName, curFields, update
               <span style={{ fontSize: 10, padding: "2px 8px", borderRadius: 4, background: "rgba(16,185,129,0.15)", color: "#10B981" }}>Investment Grade</span>
             </div>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.8px" }}>Market Cap</div>
-            <div style={{ fontSize: 20, fontWeight: 700, color: "#3B82F6" }}>~$474B</div>
-            <div style={{ fontSize: 11, color: "#64748B" }}>~$419/share &middot; P/E ~18x (TTM) &middot; Fwd P/E ~7x</div>
-          </div>
+          <div style={{ textAlign: "right", fontSize: 11, color: "#64748B" }}>See Financials tab for live price / market cap / P/E</div>
         </div>
         <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
           {[
@@ -811,24 +807,8 @@ export default function MicronReview({ companyId, companyName, curFields, update
 
       {/* Market Positioning */}
       <div style={s.card}>
-        <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Market Positioning &amp; Key Metrics</div>
-
-        <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginBottom: 16 }}>
-          {[
-            { label: "Market Cap", value: "~$474B", sub: "Top 15 US by market cap" },
-            { label: "Forward P/E", value: "~6.6x", sub: "On FY2026E EPS ~$57" },
-            { label: "TTM P/E", value: "~18x", sub: "Rapidly compressing" },
-            { label: "52-Week Range", value: "$80 – $471", sub: "ATH post-Q2 FY26" },
-            { label: "Shares Outstanding", value: "~1.13B", sub: "Diluted" },
-            { label: "Dividend Yield", value: "~0.1%", sub: "$0.115/qtr ($0.46/yr)" },
-          ].map((m, i) => (
-            <div key={i} style={{ flex: "1 1 140px", minWidth: 140, background: "#0B0F19", borderRadius: 8, border: "1px solid #1E293B", padding: "10px 14px" }}>
-              <div style={{ fontSize: 11, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 3 }}>{m.label}</div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC" }}>{m.value}</div>
-              <div style={{ fontSize: 11, color: "#64748B", marginTop: 2 }}>{m.sub}</div>
-            </div>
-          ))}
-        </div>
+        <div style={{ fontSize: 16, fontWeight: 700, color: "#F8FAFC", marginBottom: 16 }}>Market Positioning &amp; Sentiment</div>
+        <div style={{ fontSize: 11, color: "#64748B", marginBottom: 16, fontStyle: "italic" }}>Live market cap, P/E, and 52-week range live on the Financials tab.</div>
 
         <div style={{ fontSize: 13, fontWeight: 700, color: "#94A3B8", textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 10 }}>Bull vs Bear Case</div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>

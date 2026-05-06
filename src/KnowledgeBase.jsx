@@ -34,7 +34,7 @@ async function deleteArticle(id) {
 
 // ─── Section Component ───────────────────────────────
 // Local small-card with uppercase title; intentionally distinct from
-// lib/Section (big title, no uppercase). Renamed to avoid name collision.
+// lib/Section (big title, no uppercase).
 function MiniSection({ title, color, children }) {
   return (
     <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 }}>

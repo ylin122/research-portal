@@ -88,7 +88,7 @@ export default function FinancialsTab({ ticker, companyId, companyName, curField
     authedFetch(`/api/financials?symbol=${encodeURIComponent(ticker)}`)
       .then(r => r.json())
       .then(d => { setData(d); setLoading(false); })
-      .catch(() => setLoading(false));
+      .catch(err => { setData({ error: err?.message || 'Network error' }); setLoading(false); });
   }, [ticker]);
 
   const handleRefresh = () => {

@@ -13,10 +13,11 @@ const REVIEW_TABS = [
 
 export function ReviewShell({ ticker, companyId, companyName, curFields, updateField, editingField, setEditingField, children }) {
   const [tab, setTab] = useState("recent");
+  const tabs = ticker ? REVIEW_TABS : REVIEW_TABS.filter(t => t.key !== "financials");
   return (
     <>
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {REVIEW_TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
@@ -66,7 +67,7 @@ export function ReviewShell({ ticker, companyId, companyName, curFields, updateF
         </div>
       )}
 
-      {tab === "financials" && (
+      {tab === "financials" && ticker && (
         <FinancialsTab ticker={ticker} companyId={companyId} companyName={companyName}
           curFields={curFields} updateField={updateField} />
       )}
@@ -76,9 +77,13 @@ export function ReviewShell({ ticker, companyId, companyName, curFields, updateF
   );
 }
 
-// Map company IDs to tickers for public equity companies
+// Map company IDs to tickers for public equity companies routed through
+// the catch-all GenericReview default export. Equities with their own
+// dedicated review file (Micron, Oracle, Meta, Applied Digital, Cipher,
+// Coreweave, Terawulf) hardcode the ticker on <ReviewShell> directly
+// and do NOT need an entry here.
 const TICKER_MAP = {
-  eq_micron: "MU", eq_orcl: "ORCL", eq_lumentum: "LITE", eq_coherent: "COHR",
+  eq_lumentum: "LITE", eq_coherent: "COHR",
   eq_nvda: "NVDA", eq_amzn: "AMZN", eq_msft: "MSFT", eq_tsm: "TSM",
   eq_alibaba: "BABA", eq_tencent: "TCEHY",
 };
@@ -251,7 +256,6 @@ function FieldEditor({ fieldKey, curFields, companyId, updateField, editingField
 /* ── Main Component ── */
 
 export default function GenericReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [tab, setTab] = useState("recent");
   const fp = { curFields, companyId, updateField, editingField, setEditingField };
 
   // Parse JSON data from Supabase fields
@@ -270,54 +274,12 @@ export default function GenericReview({ companyId, companyName, curFields, updat
   const ownershipTable = tryJSON(curFields?.sentiment_ownership_json?.text);
 
   const ticker = TICKER_MAP[companyId];
-  const isPublic = !!ticker || (curFields?.public_private?.text || "").startsWith("Public");
-  const baseTabs = [{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }];
-  if (isPublic) baseTabs.push({ key: "financials", label: "Financials" });
-  baseTabs.push({ key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" });
 
   return (
-    <>
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {baseTabs.map((t) => (
-          <button key={t.key} onClick={() => setTab(t.key)} style={{
-            padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-            background: "transparent", color: tab === t.key ? "#F8FAFC" : "#64748B",
-            borderBottom: tab === t.key ? "2px solid #3B82F6" : "2px solid transparent",
-            marginBottom: -1, transition: "all 0.15s",
-          }}>{t.label}</button>
-        ))}
-      </div>
-
-      {/* ===== RESEARCH TAB ===== */}
-      {tab === "recent" && (
-        <div style={s.section}>
-          {RESEARCH_FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6} value={fd?.text || ""} onChange={e => updateField(companyId, f.key, e.target.value)} placeholder={f.ph} autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
+    <ReviewShell ticker={ticker} companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
       {/* ===== OVERVIEW TAB ===== */}
       {tab === "overview" && (<>
         <div style={s.card}>
@@ -522,12 +484,7 @@ export default function GenericReview({ companyId, companyName, curFields, updat
           </div>
         )}
       </>)}
-
-      {/* ===== FINANCIALS TAB ===== */}
-      {tab === "financials" && (
-        <FinancialsTab ticker={ticker} companyId={companyId} companyName={companyName}
-          curFields={curFields} updateField={updateField} />
-      )}
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

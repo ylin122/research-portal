@@ -204,7 +204,7 @@ function AppContent({ userEmail, onSignOut }) {
   const [publicCosOpen, setPublicCosOpen] = useState(false);
   const [publicSidebarOpen, setPublicSidebarOpen] = useState(() => Object.fromEntries(Object.keys(SECTORS).map(k => [k, false])));
   const [industryOpen, setIndustryOpen] = useState(false);
-  const [equities] = useState(() => {
+  const equities = useMemo(() => {
     const SEED = [
       { id: "eq_micron", name: "Micron", sub: "" },
       { id: "eq_alibaba", name: "Alibaba", sub: "" },
@@ -247,7 +247,7 @@ function AppContent({ userEmail, onSignOut }) {
       return merged;
     }
     return saved;
-  });
+  }, []);
   const [adding, setAdding] = useState(null);
   const [addName, setAddName] = useState("");
   const [addSub, setAddSub] = useState("");

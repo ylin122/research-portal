@@ -1194,7 +1194,7 @@ const ETF_SENSITIVITY = {
       { name: "Other", weight: 5.0, color: T_.textDim },
     ],
     holdings: [
-      // Prices in KRW from Yahoo Finance (3/27/26). P/E populated on live refresh.
+      // Prices in KRW from Yahoo Finance snapshot (3/27/26). P/E left as 0 — no live refresh wired.
       { ticker: "005930", name: "Samsung Electronics", weight: 22.27, price: 179700, ltmEps: 0, fwdEps: 0, ltmPe: 0, fwdPe: 0, sector: "Semiconductors", sectorColor: T_.blue },
       { ticker: "000660", name: "SK Hynix", weight: 20.88, price: 922000, ltmEps: 0, fwdEps: 0, ltmPe: 0, fwdPe: 0, sector: "Semiconductors", sectorColor: T_.blue },
       { ticker: "005380", name: "Hyundai Motor", weight: 3.31, price: 495000, ltmEps: 0, fwdEps: 0, ltmPe: 0, fwdPe: 0, sector: "Automotive", sectorColor: T_.purple },
