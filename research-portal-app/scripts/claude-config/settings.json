@@ -1,0 +1,23 @@
+{
+  "enabledPlugins": {
+    "vercel@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {},
+  "autoUpdatesChannel": "latest",
+  "enableAllProjectMcpServers": true,
+  "effortLevel": "xhigh",
+  "hooks": {
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "cd $HOME/projects/research-portal && node scripts/sync-agents.cjs || true",
+            "timeout": 30,
+            "statusMessage": "Syncing agents + dotclaude..."
+          }
+        ]
+      }
+    ]
+  }
+}
