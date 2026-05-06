@@ -6,7 +6,7 @@ import FinancialsTab from "./FinancialsTab";
 const TICKER_MAP = {
   eq_micron: "MU", eq_orcl: "ORCL", eq_lumentum: "LITE", eq_coherent: "COHR",
   eq_nvda: "NVDA", eq_amzn: "AMZN", eq_msft: "MSFT", eq_tsm: "TSM",
-  google_eq: "GOOGL", tesla_eq: "TSLA", eq_alibaba: "BABA", eq_tencent: "TCEHY",
+  eq_alibaba: "BABA", eq_tencent: "TCEHY",
 };
 
 export const RESEARCH_FIELDS = [

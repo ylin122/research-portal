@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef, Suspense, lazy } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, Suspense, lazy } from "react";
 const Primer = lazy(() => import("./Primer"));
 const ProductPrimer = lazy(() => import("./ProductPrimer"));
 const AIDisruption = lazy(() => import("./AIDisruption"));
@@ -306,8 +306,20 @@ function AppContent({ userEmail, onSignOut }) {
     setCompanies(p => p.map(c => c.id === id ? { ...c, priority: newPr } : c));
   }
 
-  const getCos = (sector) => companies.filter(c => c.sector === sector).sort((a, b) => a.name.localeCompare(b.name));
-  const isPublicCo = (c) => (fieldsMap[c.id]?.public_private?.text || "").startsWith("Public");
+  const cosBySector = useMemo(() => {
+    const bySector = new Map();
+    const publicIds = new Set();
+    for (const c of companies) {
+      if ((fieldsMap[c.id]?.public_private?.text || "").startsWith("Public")) publicIds.add(c.id);
+      if (!bySector.has(c.sector)) bySector.set(c.sector, []);
+      bySector.get(c.sector).push(c);
+    }
+    for (const arr of bySector.values()) arr.sort((a, b) => a.name.localeCompare(b.name));
+    return { bySector, publicIds };
+  }, [companies, fieldsMap]);
+
+  const getCos = (sector) => cosBySector.bySector.get(sector) || [];
+  const isPublicCo = (c) => cosBySector.publicIds.has(c.id);
   const getPublicCos = (sector) => getCos(sector).filter(c => isPublicCo(c));
   const getPrivateCos = (sector) => getCos(sector).filter(c => !isPublicCo(c));
   const filteredCos = (list) => search ? list.filter(c => c.name.toLowerCase().includes(search.toLowerCase())) : list;

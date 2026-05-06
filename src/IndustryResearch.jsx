@@ -1261,6 +1261,46 @@ const TYPE_COLORS = {
   "Money Market": { bg: "#E8F5E9", text: "#2E7D32", border: "#A5D6A7" },
 };
 
+const s = {
+  page: { fontFamily: FONT, background: T_.bg, color: T_.textMid, minHeight: "100vh", padding: "36px 52px" },
+  header: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 },
+  title: { fontSize: 24, fontWeight: 700, letterSpacing: "-0.5px", color: T_.text },
+  subtitle: { fontSize: 14, color: T_.textDim, marginTop: 4 },
+  bigNum: { fontSize: 32, fontWeight: 700, color: T_.text, letterSpacing: "-1px" },
+  card: { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 },
+  statsRow: { display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" },
+  statBox: { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 18px", flex: "1 1 140px", minWidth: 140 },
+  statLabel: { fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 },
+  statVal: { fontSize: 20, fontWeight: 700, color: T_.text },
+  filtersRow: { display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "center" },
+  filterGroup: { display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid ${T_.border}` },
+  filterBtn: (active) => ({
+    padding: "7px 14px", fontSize: 12, fontWeight: 500, cursor: "pointer", border: "none", transition: "all 0.15s",
+    background: active ? T_.blue : T_.bgPanel, color: active ? "#FFF" : T_.textDim,
+  }),
+  viewToggle: (active) => ({
+    padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", borderRadius: 8, transition: "all 0.15s",
+    background: active ? T_.border : "transparent", color: active ? T_.text : T_.textDim,
+  }),
+  table: { width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 },
+  th: { textAlign: "left", padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" },
+  thRight: { textAlign: "right", padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" },
+  td: { padding: "10px 12px", borderBottom: `1px solid ${T_.border}10`, whiteSpace: "nowrap" },
+  tdRight: { padding: "10px 12px", borderBottom: `1px solid ${T_.border}10`, textAlign: "right", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" },
+  ticker: { fontWeight: 700, color: T_.text, fontSize: 14, letterSpacing: "0.3px" },
+  name: { color: T_.textDim, fontSize: 11, marginTop: 1 },
+  badge: (type) => ({
+    display: "inline-block", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600,
+    background: TYPE_COLORS[type]?.bg || "#333", color: TYPE_COLORS[type]?.text || "#FFF",
+    border: `1px solid ${TYPE_COLORS[type]?.border || "#555"}`,
+  }),
+  peInput: { width: 58, padding: "4px 6px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 4, color: T_.textMid, textAlign: "right", outline: "none" },
+  btn: { padding: "6px 14px", fontSize: 12, fontWeight: 600, borderRadius: 6, border: "none", cursor: "pointer", transition: "all 0.15s" },
+  barWrap: { width: "100%", height: 6, background: T_.border, borderRadius: 3, overflow: "hidden" },
+  bar: (pct, color) => ({ width: `${Math.min(pct, 100)}%`, height: "100%", background: color || T_.blue, borderRadius: 3, transition: "width 0.3s" }),
+  input: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none", width: "100%" },
+  select: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none" },
+};
 
 export default function IndustryResearch({ initialTab }) {
   const [mainTab, setMainTab] = useState(initialTab || "ailabs");
@@ -1277,47 +1317,6 @@ export default function IndustryResearch({ initialTab }) {
   const [llmTableSort, setLlmTableSort] = useState({ key: "date", dir: "desc" });
   const [neocloudSort, setNeocloudSort] = useState({ key: "backlog", dir: "desc" });
   const [shellSort, setShellSort] = useState({ key: "backlog", dir: "desc" });
-
-  const s = {
-    page: { fontFamily: FONT, background: T_.bg, color: T_.textMid, minHeight: "100vh", padding: "36px 52px" },
-    header: { display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 28, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 },
-    title: { fontSize: 24, fontWeight: 700, letterSpacing: "-0.5px", color: T_.text },
-    subtitle: { fontSize: 14, color: T_.textDim, marginTop: 4 },
-    bigNum: { fontSize: 32, fontWeight: 700, color: T_.text, letterSpacing: "-1px" },
-    card: { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 },
-    statsRow: { display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" },
-    statBox: { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 18px", flex: "1 1 140px", minWidth: 140 },
-    statLabel: { fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 },
-    statVal: { fontSize: 20, fontWeight: 700, color: T_.text },
-    filtersRow: { display: "flex", gap: 10, marginBottom: 20, flexWrap: "wrap", alignItems: "center" },
-    filterGroup: { display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid ${T_.border}` },
-    filterBtn: (active) => ({
-      padding: "7px 14px", fontSize: 12, fontWeight: 500, cursor: "pointer", border: "none", transition: "all 0.15s",
-      background: active ? T_.blue : T_.bgPanel, color: active ? "#FFF" : T_.textDim,
-    }),
-    viewToggle: (active) => ({
-      padding: "7px 16px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none", borderRadius: 8, transition: "all 0.15s",
-      background: active ? T_.border : "transparent", color: active ? T_.text : T_.textDim,
-    }),
-    table: { width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 },
-    th: { textAlign: "left", padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" },
-    thRight: { textAlign: "right", padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, cursor: "pointer", userSelect: "none", whiteSpace: "nowrap" },
-    td: { padding: "10px 12px", borderBottom: `1px solid ${T_.border}10`, whiteSpace: "nowrap" },
-    tdRight: { padding: "10px 12px", borderBottom: `1px solid ${T_.border}10`, textAlign: "right", whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" },
-    ticker: { fontWeight: 700, color: T_.text, fontSize: 14, letterSpacing: "0.3px" },
-    name: { color: T_.textDim, fontSize: 11, marginTop: 1 },
-    badge: (type) => ({
-      display: "inline-block", padding: "2px 8px", borderRadius: 4, fontSize: 10, fontWeight: 600,
-      background: TYPE_COLORS[type]?.bg || "#333", color: TYPE_COLORS[type]?.text || "#FFF",
-      border: `1px solid ${TYPE_COLORS[type]?.border || "#555"}`,
-    }),
-    peInput: { width: 58, padding: "4px 6px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 4, color: T_.textMid, textAlign: "right", outline: "none" },
-    btn: { padding: "6px 14px", fontSize: 12, fontWeight: 600, borderRadius: 6, border: "none", cursor: "pointer", transition: "all 0.15s" },
-    barWrap: { width: "100%", height: 6, background: T_.border, borderRadius: 3, overflow: "hidden" },
-    bar: (pct, color) => ({ width: `${Math.min(pct, 100)}%`, height: "100%", background: color || T_.blue, borderRadius: 3, transition: "width 0.3s" }),
-    input: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none", width: "100%" },
-    select: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none" },
-  };
 
   return (
     <div style={s.page}>

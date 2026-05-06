@@ -33,7 +33,9 @@ async function deleteArticle(id) {
 }
 
 // ─── Section Component ───────────────────────────────
-function Section({ title, color, children }) {
+// Local small-card with uppercase title; intentionally distinct from
+// lib/Section (big title, no uppercase). Renamed to avoid name collision.
+function MiniSection({ title, color, children }) {
   return (
     <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 }}>
       <div style={{ fontSize: 11, fontWeight: 600, color: color || T_.accent, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 12 }}>{title}</div>
@@ -176,40 +178,40 @@ function ArticleDetail({ article, onBack }) {
 
       {/* Summary */}
       {article.summary && (
-        <Section title="Summary" color={T_.accent}>
+        <MiniSection title="Summary" color={T_.accent}>
           <div style={{ fontSize: 14, color: T_.textMid, lineHeight: 1.7 }}>{article.summary}</div>
-        </Section>
+        </MiniSection>
       )}
 
       {/* Key Takeaways */}
       {takeaways.length > 0 && (
-        <Section title="Key Takeaways" color={T_.green}>
+        <MiniSection title="Key Takeaways" color={T_.green}>
           {takeaways.map((t, i) => (
             <div key={i} style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
               <span style={{ color: T_.green, fontSize: 14, flexShrink: 0, marginTop: 1 }}>→</span>
               <span style={{ fontSize: 13, color: T_.text, lineHeight: 1.6 }}>{t}</span>
             </div>
           ))}
-        </Section>
+        </MiniSection>
       )}
 
       {/* Investment Implications */}
       {article.investment_implications && (
-        <Section title="Investment Implications" color={T_.amber}>
+        <MiniSection title="Investment Implications" color={T_.amber}>
           <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{article.investment_implications}</div>
-        </Section>
+        </MiniSection>
       )}
 
       {/* Open Questions */}
       {questions.length > 0 && (
-        <Section title="Open Questions" color={T_.red}>
+        <MiniSection title="Open Questions" color={T_.red}>
           {questions.map((q, i) => (
             <div key={i} style={{ display: "flex", gap: 10, marginBottom: 8, alignItems: "flex-start" }}>
               <span style={{ color: T_.red, fontSize: 13, flexShrink: 0 }}>?</span>
               <span style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{q}</span>
             </div>
           ))}
-        </Section>
+        </MiniSection>
       )}
 
       {/* Full Content (collapsible) */}

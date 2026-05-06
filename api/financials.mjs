@@ -143,7 +143,6 @@ async function fetchYahoo(ticker) {
     revenueGrowth: estimates?.financialData?.revenueGrowth ? +(estimates.financialData.revenueGrowth * 100).toFixed(1) : null,
     pegRatio: estimates?.defaultKeyStatistics?.pegRatio ?? null,
     beta: estimates?.defaultKeyStatistics?.betaRaw ?? estimates?.defaultKeyStatistics?.beta ?? null,
-    dividendYield: quote.dividendYield ? +(quote.dividendYield * 100).toFixed(2) : null,
   };
 }
 
@@ -204,7 +203,6 @@ export default async function handler(req, res) {
         fwdEpsNextYear: yahoo.fwdEpsNextYear,
         pegRatio: yahoo.pegRatio,
         beta: yahoo.beta,
-        dividendYield: yahoo.dividendYield,
         change1d: yahoo.change1d,
         fiftyTwoWeekHigh: yahoo.fiftyTwoWeekHigh,
         fiftyTwoWeekLow: yahoo.fiftyTwoWeekLow,

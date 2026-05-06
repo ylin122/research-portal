@@ -659,7 +659,7 @@ export default function AIDisruption({ companies, initialTab }) {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
   useEffect(() => { if (initialTab) setSubTab(initialTab); }, [initialTab]);
   const [moatSort, setMoatSort] = useState({ key: "total", group: null });
-  const dynamicMoatGroups = buildMoatGroups(companies);
+  const dynamicMoatGroups = useMemo(() => buildMoatGroups(companies), [companies]);
   const toggle = (key) => setExpanded(prev => ({ ...prev, [key]: !prev[key] }));
   const isExp = (key) => !!expanded[key];
 

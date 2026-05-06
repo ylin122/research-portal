@@ -1,15 +1,16 @@
 import { useState } from "react";
 import FinancialsTab from "./FinancialsTab";
-import { reviewStyles as s } from "./GenericReview";
+import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
 
-export default function MetaReview({ companyId, companyName, curFields, updateField }) {
-  const [metaTab, setMetaTab] = useState("overview");
+export default function MetaReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
+  const [metaTab, setMetaTab] = useState("recent");
 
   return (
     <>
       {/* Meta Sub-Tabs */}
       <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
         {[
+          { key: "recent", label: "Research" },
           { key: "overview", label: "Overview" },
           { key: "financials", label: "Financials" },
           { key: "orgchart", label: "Org Chart" },
@@ -31,6 +32,40 @@ export default function MetaReview({ companyId, companyName, curFields, updateFi
           </button>
         ))}
       </div>
+
+      {/* ===== RECENT UPDATES TAB ===== */}
+      {metaTab === "recent" && (
+        <div style={s.section}>
+          {FIELDS.map(f => {
+            const fd = curFields?.[f.key];
+            const isEditing = editingField === f.key;
+            const hasContent = fd?.text?.trim();
+            return (
+              <div key={f.key} style={s.section}>
+                <div style={s.sectionHdr}>
+                  <span>{f.label}</span>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
+                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                  </div>
+                </div>
+                {(isEditing || !hasContent) ? (
+                  <div>
+                    <textarea style={s.textarea} rows={6}
+                      value={fd?.text || ""}
+                      onChange={e => updateField(companyId, f.key, e.target.value)}
+                      placeholder={f.ph}
+                      autoFocus={isEditing} />
+                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                  </div>
+                ) : (
+                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
 
       {/* ===== OVERVIEW TAB ===== */}
       {metaTab === "overview" && (<>

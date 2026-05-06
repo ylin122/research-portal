@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { T_, FONT } from "./lib/theme";
 import { VLine, VLineLabel, Box, DetailPanel } from "./lib/orgChart";
 
@@ -468,6 +468,8 @@ function FluorCase() {
 
 export default function CaseStudies({ initialTab }) {
   const [activeCase, setActiveCase] = useState(initialTab || "fluor");
+
+  useEffect(() => { if (initialTab) setActiveCase(initialTab); }, [initialTab]);
 
   return (
     <div style={{ padding: "36px 52px", maxWidth: "100%", fontFamily: FONT }}>

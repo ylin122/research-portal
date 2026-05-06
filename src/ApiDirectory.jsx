@@ -7,7 +7,7 @@ const APIS = [
     category: "Database",
     usage: "Primary database for both Research Portal and Portfolio Dashboard. Stores companies, research articles, notes, principles, prompts, sources, agents, and cached financials.",
     tables: "Active: companies, company_fields, kb_articles, concepts, deep_dives, principles, prompts, quick_notes, sources, agent_runs, agent_definitions, financials_cache. Retained-only: company_notes, news_cache, sector_notes, research_results, ideas, qa_log, watchlist.",
-    endpoint: "https://azhbbywzspflrxpqrdqw.supabase.co",
+    endpoint: import.meta.env.VITE_SUPABASE_URL || "(VITE_SUPABASE_URL unset)",
     auth: "Supabase Auth (signInWithPassword) + RLS policy auth_only on every table. Anon key in client bundle is read/write only when accompanied by a valid JWT.",
     projects: ["Research Portal", "Portfolio Dashboard"],
     status: "active",
