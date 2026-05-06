@@ -243,7 +243,8 @@
       "WebFetch(domain:www.nasdaq.com)",
       "WebFetch(domain:indexes.nasdaqomx.com)",
       "WebFetch(domain:www.invesco.com)",
-      "WebFetch(domain:www.ssga.com)"
+      "WebFetch(domain:www.ssga.com)",
+      "WebFetch(domain:officechai.com)"
     ]
   }
 }
