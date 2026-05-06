@@ -30,7 +30,7 @@ Caller specifies mode + target. Examples:
 - `pa-full` or "run across the project" or "check everything" — all modes against the entire PA dashboard (see Mode 4)
 - No mode → infer: if target is `api/*` or has formulas → `formulas`; if target is a config/data file with hardcoded numbers → `data`. If target is the whole PA dashboard project → `pa-full`.
 
-Determine project root from target path. PA dashboard = `~/pa-dashboard`; research portal = `~/research-portal/research-portal-app`.
+Determine project root from target path. PA dashboard = `~/projects/pa-dashboard`; research portal = `~/projects/research-portal`.
 
 ---
 
@@ -213,7 +213,7 @@ When the user invokes `consistency` mode, run all five and combine output. Do no
 
 ### PA dashboard known consistency pairs
 
-These are the specific pairs to check when running against `~/pa-dashboard`:
+These are the specific pairs to check when running against `~/projects/pa-dashboard`:
 
 | Metric | Site A | Site B | Must match? |
 |---|---|---|---|
@@ -488,17 +488,17 @@ When the caller says "fix", "fix all", or "fix 1, 3, 5":
 
 ## Special workflow: ETF aggregate refresh (PA dashboard `ETF_SENSITIVITY`)
 
-Triggered when the target is `~/pa-dashboard/src/PortfolioDashboard.jsx` and the request is refresh / fix / update on the `ETF_SENSITIVITY` block (SMH, SOXX, DRAM; ~64 constituents). This is the only place in either project where the agent performs a live full-block refresh against Yahoo Finance.
+Triggered when the target is `~/projects/pa-dashboard/src/PortfolioDashboard.jsx` and the request is refresh / fix / update on the `ETF_SENSITIVITY` block (SMH, SOXX, DRAM; ~64 constituents). This is the only place in either project where the agent performs a live full-block refresh against Yahoo Finance.
 
 ### Step 1 — Read current state
 - `Grep` for `const ETF_SENSITIVITY` to get the live line number (do NOT hardcode — it drifts). Capture every ticker/weight/sector tuple.
 - `Grep` for `const [etfInputs, setEtfInputs]` — the UI `useState` initializer reads from `ETF_SENSITIVITY`, so updating the block updates defaults.
 
 ### Step 2 — Install deps if needed
-`cd ~/pa-dashboard && [ -d node_modules/yahoo-finance2 ] || npm install --no-audit --no-fund`
+`cd ~/projects/pa-dashboard && [ -d node_modules/yahoo-finance2 ] || npm install --no-audit --no-fund`
 
 ### Step 3 — Fetch Yahoo data
-Create scratch `~/pa-dashboard/_verify-fetch.mjs` (NOT `/tmp` — Node must resolve `node_modules` from project root). Use this exact init (yahoo-finance2 v3+ requires instantiation + survey suppression, otherwise stdout pollution breaks JSON):
+Create scratch `~/projects/pa-dashboard/_verify-fetch.mjs` (NOT `/tmp` — Node must resolve `node_modules` from project root). Use this exact init (yahoo-finance2 v3+ requires instantiation + survey suppression, otherwise stdout pollution breaks JSON):
 ```js
 import YahooFinance from 'yahoo-finance2';
 const yf = new YahooFinance({ suppressNotices: ['yahooSurvey'] });
@@ -554,7 +554,7 @@ For each ETF:
 Two live computation sites: `// ── CORE LOGIC ──` and `// Step 3: Recalc ETF-level P/E`.
 
 ### Step 9 — Build gate
-`cd ~/pa-dashboard && npm run build`. Must exit 0. If it fails: do NOT delete scratch files, report the error verbatim, stop.
+`cd ~/projects/pa-dashboard && npm run build`. Must exit 0. If it fails: do NOT delete scratch files, report the error verbatim, stop.
 
 ### Step 10 — Audit log (bonus to the automatic SubagentStop hook)
 The global hook logs every run automatically. No manual Supabase call needed here; if the hook is disabled, the global log-subagent-run.cjs handles it.

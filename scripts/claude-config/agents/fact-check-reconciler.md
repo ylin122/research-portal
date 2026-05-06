@@ -24,8 +24,8 @@ These are the sources the user has personally curated for this portal — **they
 
 ```bash
 # Try .env.local first, fall back to .env
-ENV_FILE=~/research-portal/research-portal-app/.env.local
-[ -f "$ENV_FILE" ] || ENV_FILE=~/research-portal/research-portal-app/.env
+ENV_FILE=~/projects/research-portal/.env.local
+[ -f "$ENV_FILE" ] || ENV_FILE=~/projects/research-portal/.env
 set -a && . "$ENV_FILE" && set +a
 curl -s "${VITE_SUPABASE_URL}/rest/v1/sources?select=name,url,category,description&order=category,name" \
   -H "apikey: ${VITE_SUPABASE_ANON_KEY}" \

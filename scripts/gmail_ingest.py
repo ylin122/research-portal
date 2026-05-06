@@ -15,7 +15,7 @@ Usage:
 Setup:
   1. Download OAuth credentials from Google Cloud Console → save as scripts/credentials.json
   2. First run will open browser for OAuth consent → saves token.json
-  3. .env in research-portal-app root must have VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
+  3. .env at the repo root (~/projects/research-portal) must have VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY
   4. pip install pymupdf (for PDF extraction)
 """
 

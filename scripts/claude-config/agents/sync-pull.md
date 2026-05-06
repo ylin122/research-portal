@@ -18,18 +18,18 @@ Run this when starting on a new or different machine to get the latest state.
 
 ### Step 1 — Sync research portal + agents from Supabase
 ```bash
-cd ~/research-portal/research-portal-app && git pull origin main && node scripts/sync-agents.cjs
+cd ~/projects/research-portal && git pull origin main && node scripts/sync-agents.cjs
 ```
 
 ### Step 2 — Pull PA dashboard
 ```bash
-cd ~/pa-dashboard && git pull
+cd ~/projects/pa-dashboard && git pull
 ```
 
 ### Step 3 — Restore Claude Code config + memory from GitHub
 Copy synced config files, hook scripts, and conversation memory back to `~/.claude/`:
 ```bash
-CFG=~/research-portal/research-portal-app/scripts/claude-config
+CFG=~/projects/research-portal/scripts/claude-config
 # Memory dir is per-machine — replace C--Users-willi with this machine's
 # Claude Code project dir (under ~/.claude/projects/) if different.
 mkdir -p ~/.claude/hooks ~/.claude/projects/C--Users-willi/memory

@@ -4,7 +4,7 @@ A multi-pass audit system that runs independent checks in sequence. Each check i
 
 ## How to Run
 
-From `research-portal-app/`, paste this into Claude Code:
+From the repo root (`~/projects/research-portal`), paste this into Claude Code:
 
 ```
 Run my weekly research portal audit. Execute each script in scripts/audit/ in order (01 through 08). Each script writes a JSON results file to scripts/audit/results/. After all scripts complete, run 09_report.cjs to compile the final report. Then read the report and tell me what needs attention — prioritize critical issues and stale data.
@@ -13,7 +13,7 @@ Run my weekly research portal audit. Execute each script in scripts/audit/ in or
 Or run manually:
 
 ```bash
-cd research-portal-app
+cd ~/projects/research-portal
 node scripts/audit/01_field_coverage.cjs
 node scripts/audit/02_labels_and_classification.cjs
 node scripts/audit/03_freshness.cjs

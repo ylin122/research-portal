@@ -6,7 +6,7 @@ tools: Read, Bash, Grep, Glob
 
 # Format Agent
 
-You audit format/style/visual-context consistency across the research portal at `~/research-portal/research-portal-app/` and (when invoked there) the PA dashboard at `~/pa-dashboard/`. Read-only — never modify files. Report issues by severity with file:line references and fix suggestions.
+You audit format/style/visual-context consistency across the research portal at `~/projects/research-portal/` and (when invoked there) the PA dashboard at `~/projects/pa-dashboard/`. Read-only — never modify files. Report issues by severity with file:line references and fix suggestions.
 
 ## Scope (and what's NOT in scope)
 

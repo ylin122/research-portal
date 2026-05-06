@@ -4,7 +4,7 @@ description: Refreshes any research portal tab with the latest information from 
 tools: Read, Bash, Grep, Glob, Edit, Write, WebSearch, WebFetch
 ---
 
-Refresh a research portal tab or section with latest information from ALL available data sources. Source: `~/research-portal/research-portal-app/src/`
+Refresh a research portal tab or section with latest information from ALL available data sources. Source: `~/projects/research-portal/src/`
 
 ## Tab -> File / Storage Map
 
@@ -54,7 +54,7 @@ curl -s "https://query1.finance.yahoo.com/v8/finance/chart/<TICKER>?interval=1d&
 Or use the PA dashboard API if vercel dev is running: `curl -s http://localhost:3000/api/quote?symbols=TICKER1,TICKER2`
 
 ### Supabase (for tabs that use Supabase storage)
-Read-only reference — check `~/research-portal/research-portal-app/.env` for connection details if needed.
+Read-only reference — check `~/projects/research-portal/.env` for connection details if needed.
 
 ## Process
 
@@ -190,7 +190,7 @@ Every remaining hit must be either (a) a different metric that legitimately equa
 
 ### Step 5: Build Check
 
-Run `cd ~/research-portal/research-portal-app && npx vite build 2>&1 | tail -20` to verify nothing broke. (Try the alternate path `~/research-portal/research-portal-app` if the first doesn't exist.)
+Run `cd ~/projects/research-portal && npx vite build 2>&1 | tail -20` to verify nothing broke. (Try the alternate path `~/projects/research-portal` if the first doesn't exist.)
 
 ### Step 5b: Visual Verification — grep the built chunk
 
@@ -244,8 +244,8 @@ For each touched metric AND every watchlist item that shares a name with anythin
 
 ```bash
 # Search the whole src tree for the metric — both old and new values, plus any label
-grep -r -n -E "MSFT.*capex|Microsoft.*capex" ~/research-portal/research-portal-app/src/
-grep -r -n -E "value: 130|value: 190" ~/research-portal/research-portal-app/src/
+grep -r -n -E "MSFT.*capex|Microsoft.*capex" ~/projects/research-portal/src/
+grep -r -n -E "value: 130|value: 190" ~/projects/research-portal/src/
 ```
 
 For each cross-file occurrence:
@@ -346,4 +346,4 @@ When in doubt: read the surrounding 5 lines of context. If the value is attribut
 - **Cross-tab consistency: grep before declaring done.** Even when scope is one tab, grep the rest of `src/` for the same metric — and ALWAYS sweep the watchlist in Step 6 — surfacing inconsistencies in the report.
 - **Don't flag historical snapshots as bugs.** Values inside firm/date-attributed thesis quotes, "as of DATE" markers, or archive sections are intentional. Classify as `INTENTIONAL_SNAPSHOT` and report under "Skipped (Historical Snapshots)", not under "Cross-Tab Inconsistencies".
 - **Visual verification: grep the built chunk (Step 5b).** Build clean ≠ rendered correctly. Don't curl localhost (Vite SPA returns empty shell). Instead, after `vite build`, grep `dist/assets/<TabName>-*.js` for `NaN` / `undefined,` / `null,` and confirm your new values appear in the chunk. For UI-heavy edits (chart layout, alignment, colors), also do a manual Chrome check; if you can't, say so explicitly rather than claiming success.
-- **Try both candidate paths.** Source tree may be at `~/research-portal/research-portal-app/src/` or `~/research-portal/research-portal-app/src/` depending on the machine — check both, edit the one that exists.
+- **Source tree path:** `~/projects/research-portal/src/`. The repo was flattened on 2026-05-06 (used to be a `research-portal-app/` subdir).

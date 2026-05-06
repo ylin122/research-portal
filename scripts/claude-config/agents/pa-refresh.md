@@ -4,7 +4,7 @@ description: Comprehensive data refresh for the PA dashboard. Pulls live Yahoo F
 tools: Bash, Read, Edit, Write, Grep, Glob, WebFetch
 ---
 
-You refresh ALL data in the PA dashboard at `~/pa-dashboard` (GitHub: ylin122/portfolio-dashboard). This is a comprehensive refresh — every hardcoded data block, the Supabase `daily_values` snapshot, AND every live API endpoint.
+You refresh ALL data in the PA dashboard at `~/projects/pa-dashboard` (GitHub: ylin122/pa-dashboard). This is a comprehensive refresh — every hardcoded data block, the Supabase `daily_values` snapshot, AND every live API endpoint.
 
 ## What this agent updates (the user-facing 10)
 
@@ -113,11 +113,11 @@ Capture every unique ticker across all blocks. Add `^IRX` to the fetch list.
 
 ### Step 2 — Install deps
 ```bash
-cd ~/pa-dashboard && [ -d node_modules/yahoo-finance2 ] || npm install --no-audit --no-fund
+cd ~/projects/pa-dashboard && [ -d node_modules/yahoo-finance2 ] || npm install --no-audit --no-fund
 ```
 
 ### Step 3 — Fetch Yahoo quote data for ALL tickers
-Create scratch script `~/pa-dashboard/_refresh-fetch.mjs`:
+Create scratch script `~/projects/pa-dashboard/_refresh-fetch.mjs`:
 
 ```js
 import YF from 'yahoo-finance2';
@@ -310,16 +310,16 @@ The Risk sub-tab's TWR / Sharpe / IR / Drawdown / SPY benchmark all read from Su
 
 ```bash
 # Probe for CRON_SECRET first
-HAS_CRON_SECRET=$(grep -c '^CRON_SECRET=' ~/pa-dashboard/.env.local 2>/dev/null || echo 0)
+HAS_CRON_SECRET=$(grep -c '^CRON_SECRET=' ~/projects/pa-dashboard/.env.local 2>/dev/null || echo 0)
 
 if [ "$HAS_CRON_SECRET" -gt 0 ] && [ -n "$PORT" ]; then
-  CRON_SECRET=$(grep '^CRON_SECRET=' ~/pa-dashboard/.env.local | cut -d= -f2-)
+  CRON_SECRET=$(grep '^CRON_SECRET=' ~/projects/pa-dashboard/.env.local | cut -d= -f2-)
   curl -s -H "Authorization: Bearer ${CRON_SECRET}" "http://localhost:${PORT}/api/refresh-daily-values"
   curl -s -H "Authorization: Bearer ${CRON_SECRET}" "http://localhost:${PORT}/api/refresh-prices"
   echo "daily_values: refreshed via HTTP cron path"
 else
   # Local fallback — runs the same Supabase write logic without the auth wrapper
-  cd ~/pa-dashboard && node scripts/backfill-values.mjs
+  cd ~/projects/pa-dashboard && node scripts/backfill-values.mjs
   echo "daily_values: refreshed via local backfill-values.mjs"
 fi
 ```
@@ -424,7 +424,7 @@ curl -s -X POST "http://localhost:${PORT}/api/audit" \
 
 ### Step 18 — Build gate
 ```bash
-cd ~/pa-dashboard && npm run build
+cd ~/projects/pa-dashboard && npm run build
 ```
 Must exit 0. If it fails, report the error and stop.
 
@@ -432,7 +432,7 @@ Must exit 0. If it fails, report the error and stop.
 Before writing the final report, verify NO files outside the permitted set were modified. The permitted set is exactly: `src/lib/constants.js` and `_refresh-*.{mjs,json}` scratch files.
 
 ```bash
-cd ~/pa-dashboard
+cd ~/projects/pa-dashboard
 unauthorized=$(git diff --name-only HEAD | grep -v -x 'src/lib/constants.js' | grep -v -E '^_refresh-.*\.(mjs|json)$' || true)
 if [ -n "$unauthorized" ]; then
   echo "FATAL: scope violation — files modified outside permitted set:"
@@ -448,7 +448,7 @@ A prior run edited `src/PortfolioDashboard.jsx` and reported "pre-existing diff"
 Before composing the final report's Section 1 (Summary), capture `git diff --stat HEAD` exactly and embed it verbatim in Section 1.
 
 ```bash
-cd ~/pa-dashboard && git diff --stat HEAD > _refresh-diff-stat.txt
+cd ~/projects/pa-dashboard && git diff --stat HEAD > _refresh-diff-stat.txt
 ```
 
 Required: paste the contents of `_refresh-diff-stat.txt` as the FIRST item in Section 1 of the report, inside a fenced code block. Never paraphrase. Never describe a file as "pre-existing" or "unrelated." If `--stat` shows the file, it was changed in this session. If a non-permitted file appears, raise to Section 14 BEFORE finalizing the report.

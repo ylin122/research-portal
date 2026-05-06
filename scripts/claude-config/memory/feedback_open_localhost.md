@@ -11,8 +11,9 @@ When the user says "work on PA dashboard" or "work on research portal", automati
 **Why:** User expects the app to be running and visible immediately when they start working. Don't wait for them to ask.
 
 **How to apply:**
-- PA dashboard: `cd ~/pa-dashboard && npx vercel dev --listen 5173` → open http://localhost:5173
-- Research portal: `cd ~/research-portal/research-portal-app && npx vercel dev --listen 5174` → open http://localhost:5174
-- Use dedicated ports: 5173 for PA dashboard, 5174 for research portal — never share
+- PA dashboard: `cd ~/projects/pa-dashboard && vercel dev --listen 3000` → open http://localhost:3000
+- Research portal: `cd ~/projects/research-portal && vercel dev --listen 3001` → open http://localhost:3001
+- Use dedicated ports: 3000 for PA dashboard, 3001 for research portal — never share
 - Kill any conflicting process on the target port first
 - Use PowerShell to open Chrome (not cmd.exe — see feedback_chrome_default.md)
+- Yarn is installed globally so `vercel dev`'s "Creating initial build" step works for both projects

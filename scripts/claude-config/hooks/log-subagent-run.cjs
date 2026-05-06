@@ -168,7 +168,7 @@ async function main() {
     url = creds.PA_SUPABASE_URL;
     key = creds.PA_SUPABASE_SECRET_KEY || creds.PA_SUPABASE_ANON_KEY;
   } else {
-    credsPath = path.join(os.homedir(), 'projects', 'research-portal', 'research-portal-app', '.env.local');
+    credsPath = path.join(os.homedir(), 'projects', 'research-portal', '.env.local');
     const env = loadEnv(credsPath);
     url = env.VITE_SUPABASE_URL || env.SUPABASE_URL;
     key = env.SUPABASE_SERVICE_ROLE_KEY || env.SUPABASE_SECRET_KEY || env.VITE_SUPABASE_ANON_KEY || env.SUPABASE_ANON_KEY;

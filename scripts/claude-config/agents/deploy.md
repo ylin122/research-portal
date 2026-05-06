@@ -4,7 +4,7 @@ description: Build, commit, push to GitHub, and verify Vercel deployment. One co
 tools: Read, Bash, Grep, Glob
 ---
 
-Deploy research portal at `~/research-portal/research-portal-app` to production.
+Deploy research portal at `~/projects/research-portal` to production.
 
 ## Steps
 

@@ -17,16 +17,16 @@ Run this before switching machines to ensure everything is saved remotely.
 
 ### Step 1 — Sync agents to Supabase + push research portal
 ```bash
-cd ~/research-portal/research-portal-app && node scripts/seed-agents.cjs
+cd ~/projects/research-portal && node scripts/seed-agents.cjs
 ```
 The script also pushes the research-portal and dotclaude repos itself. As a sanity check, confirm nothing is left uncommitted:
 ```bash
-cd ~/research-portal && git status
+cd ~/projects/research-portal && git status
 ```
 
 ### Step 2 — Push PA dashboard
 ```bash
-cd ~/pa-dashboard && git add -A && git status
+cd ~/projects/pa-dashboard && git add -A && git status
 ```
 If there are changes, commit with a descriptive message and push:
 ```bash
@@ -37,7 +37,7 @@ If no changes, report "PA dashboard: already up to date."
 ### Step 3 — Sync Claude Code config + memory to GitHub
 Copy `~/.claude/` configs, hook files, and conversation memory into the research portal repo so they're version-controlled:
 ```bash
-CFG=~/research-portal/research-portal-app/scripts/claude-config
+CFG=~/projects/research-portal/scripts/claude-config
 mkdir -p "$CFG/hooks" "$CFG/memory"
 cp ~/.claude/mcp-config.json "$CFG/mcp-config.json" 2>/dev/null
 cp ~/.claude/settings.json "$CFG/settings.json" 2>/dev/null
