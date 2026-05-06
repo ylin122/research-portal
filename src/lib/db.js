@@ -33,11 +33,12 @@ export async function loadAllFields() {
   while (true) {
     const { data, error } = await supabase.from('company_fields').select('*').range(from, from + pageSize - 1);
     if (error) { console.error('loadAllFields:', error); break; }
-    for (const row of data || []) {
+    if (!data || data.length === 0) break;
+    for (const row of data) {
       if (!map[row.company_id]) map[row.company_id] = {};
       map[row.company_id][row.field_key] = { text: row.text || '', date: row.date || '' };
     }
-    if (!data || data.length < pageSize) break;
+    if (data.length < pageSize) break;
     from += pageSize;
   }
   return map;

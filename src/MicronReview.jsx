@@ -1,68 +1,14 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function MicronReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [muTab, setMuTab] = useState("recent");
-
   return (
-    <>
-      {/* Micron Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setMuTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: muTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: muTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RECENT UPDATES TAB ===== */}
-      {muTab === "recent" && (
-        <div style={s.section}>
-          {/* Structured Fields */}
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+    <ReviewShell ticker="MU" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
 
       {/* ===== OVERVIEW TAB ===== */}
-      {muTab === "overview" && (<>
+      {tab ==="overview" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -384,7 +330,7 @@ export default function MicronReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== ORG CHART SUB-TAB ===== */}
-    {muTab === "orgchart" && (<>
+    {tab ==="orgchart" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
@@ -557,7 +503,7 @@ export default function MicronReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
-    {muTab === "contracts" && (<>
+    {tab ==="contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Chain &amp; Customer Deep Dive</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Micron is the #3 global memory semiconductor company. DRAM: ~25% market share (behind Samsung ~40%, SK Hynix ~35%). NAND: ~13% share. HBM: ~21% share (behind SK Hynix 62%, ahead of Samsung 17%). Revenue mix: 77% DRAM, 23% NAND in FY2025.</div>
 
@@ -739,7 +685,7 @@ export default function MicronReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== SENTIMENT SUB-TAB ===== */}
-    {muTab === "sentiment" && (<>
+    {tab ==="sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>~29 analysts. Consensus: Strong Buy. Avg PT ~$465-493. Stock ~$419. FY2026 tracking to massive earnings acceleration. Forward P/E ~7x on est. FY2026 EPS of ~$56-57. Q2 FY2026 was a blowout: $23.9B revenue, $12.20 EPS, 74.4% gross margin.</div>
 
@@ -904,13 +850,7 @@ export default function MicronReview({ companyId, companyName, curFields, update
       </div>
     </>)}
 
-    {/* ===== FINANCIALS TAB ===== */}
-    {muTab === "financials" && (
-      <FinancialsTab ticker="MU" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
-
-
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

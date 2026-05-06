@@ -1,67 +1,13 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function CipherDigitalReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [cifrTab, setCifrTab] = useState("recent");
-
   return (
-    <>
-      {/* Cipher Digital Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setCifrTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: cifrTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: cifrTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RESEARCH TAB ===== */}
-      {cifrTab === "recent" && (
-        <div style={s.section}>
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
+    <ReviewShell ticker="CIFR" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
       {/* ===== OVERVIEW TAB ===== */}
-      {cifrTab === "overview" && (<>
+      {tab ==="overview" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -342,7 +288,7 @@ export default function CipherDigitalReview({ companyId, companyName, curFields,
     </>)}
 
     {/* ===== ORG CHART SUB-TAB ===== */}
-    {cifrTab === "orgchart" && (<>
+    {tab ==="orgchart" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
@@ -443,7 +389,7 @@ export default function CipherDigitalReview({ companyId, companyName, curFields,
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
-    {cifrTab === "contracts" && (<>
+    {tab ==="contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Side &amp; Customer Contracts</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Total contracted HPC revenue: ~$9.3B+ across first two deals. Target average NOI: $669M/year (2026-2036). Peak NOI: $754M by 2035. 85-90% NOI margins.</div>
 
@@ -597,7 +543,7 @@ export default function CipherDigitalReview({ companyId, companyName, curFields,
     </>)}
 
     {/* ===== SENTIMENT SUB-TAB ===== */}
-    {cifrTab === "sentiment" && (<>
+    {tab ==="sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>11-16 analysts. All Buy. Avg PT ~$21-26. Short interest ~20-21% of float. Q1 earnings May 5-12.</div>
 
@@ -766,11 +712,7 @@ export default function CipherDigitalReview({ companyId, companyName, curFields,
       </div>
     </>)}
 
-    {cifrTab === "financials" && (
-      <FinancialsTab ticker="CIFR" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
-
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

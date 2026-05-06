@@ -1,74 +1,13 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function MetaReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [metaTab, setMetaTab] = useState("recent");
-
   return (
-    <>
-      {/* Meta Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[
-          { key: "recent", label: "Research" },
-          { key: "overview", label: "Overview" },
-          { key: "financials", label: "Financials" },
-          { key: "orgchart", label: "Org Chart" },
-          { key: "contracts", label: "Supply Chain & Customers" },
-          { key: "sentiment", label: "Sentiment" },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setMetaTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: metaTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: metaTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RECENT UPDATES TAB ===== */}
-      {metaTab === "recent" && (
-        <div style={s.section}>
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
+    <ReviewShell ticker="META" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
       {/* ===== OVERVIEW TAB ===== */}
-      {metaTab === "overview" && (<>
+      {tab ==="overview" && (<>
         <div style={s.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
             <div>
@@ -243,7 +182,7 @@ export default function MetaReview({ companyId, companyName, curFields, updateFi
       </>)}
 
       {/* ===== ORG CHART TAB ===== */}
-      {metaTab === "orgchart" && (<>
+      {tab ==="orgchart" && (<>
         <div style={s.card}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
             <div>
@@ -562,7 +501,7 @@ export default function MetaReview({ companyId, companyName, curFields, updateFi
       </>)}
 
       {/* ===== SUPPLY CHAIN & CUSTOMERS TAB ===== */}
-      {metaTab === "contracts" && (<>
+      {tab ==="contracts" && (<>
         <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Chain &amp; Customers</div>
         <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Meta is unusual: it is simultaneously the largest customer of multiple AI infra vendors AND a major supplier of open-weight AI to the developer ecosystem. Customer concentration is low on the demand side (advertising) but supplier concentration is rising fast on the infrastructure side (NVIDIA, TSMC, Broadcom, CoreWeave).</div>
 
@@ -711,7 +650,7 @@ export default function MetaReview({ companyId, companyName, curFields, updateFi
       </>)}
 
       {/* ===== SENTIMENT TAB ===== */}
-      {metaTab === "sentiment" && (<>
+      {tab ==="sentiment" && (<>
         <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
         <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>~50 sell-side analysts. Consensus: Buy. Investment grade across all three majors. Equity narrative oscillates between AI capex anxiety and ad-business operating leverage; credit narrative is cleaner — robust FCF, low net leverage, growing absolute debt stack.</div>
 
@@ -884,11 +823,7 @@ export default function MetaReview({ companyId, companyName, curFields, updateFi
         </div>
       </>)}
 
-      {/* ===== FINANCIALS TAB ===== */}
-      {metaTab === "financials" && (
-        <FinancialsTab ticker="META" companyId={companyId} companyName={companyName}
-          curFields={curFields} updateField={updateField} />
-      )}
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

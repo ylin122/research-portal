@@ -1,67 +1,13 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function AppliedDigitalReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [apldTab, setApldTab] = useState("recent");
-
   return (
-    <>
-      {/* Applied Digital Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setApldTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: apldTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: apldTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RESEARCH TAB ===== */}
-      {apldTab === "recent" && (
-        <div style={s.section}>
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
+    <ReviewShell ticker="APLD" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
       {/* ===== OVERVIEW TAB ===== */}
-      {apldTab === "overview" && (<>
+      {tab === "overview" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -315,7 +261,7 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
     </>)}
 
     {/* ===== ORG CHART SUB-TAB ===== */}
-    {apldTab === "orgchart" && (<>
+    {tab ==="orgchart" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
@@ -462,7 +408,7 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
-    {apldTab === "contracts" && (<>
+    {tab ==="contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Side &amp; Customer Contracts</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Total contracted lease revenue: ~$16B across 600 MW. Projected NOI &gt;$1B within 5 years. All leases are triple-net with 15-year terms.</div>
 
@@ -631,7 +577,7 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
     </>)}
 
     {/* ===== SENTIMENT SUB-TAB ===== */}
-    {apldTab === "sentiment" && (<>
+    {tab ==="sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>12 analysts. All Buy. Avg PT ~$48. Short interest ~27-33% of float. Q3 earnings Apr 8.</div>
 
@@ -800,11 +746,7 @@ export default function AppliedDigitalReview({ companyId, companyName, curFields
       </div>
     </>)}
 
-    {apldTab === "financials" && (
-      <FinancialsTab ticker="APLD" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
-
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

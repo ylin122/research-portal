@@ -1,68 +1,14 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function OracleReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [orclTab, setOrclTab] = useState("recent");
-
   return (
-    <>
-      {/* Oracle Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setOrclTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: orclTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: orclTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RECENT UPDATES TAB ===== */}
-      {orclTab === "recent" && (
-        <div style={s.section}>
-          {/* Structured Fields */}
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
+    <ReviewShell ticker="ORCL" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
 
       {/* ===== OVERVIEW TAB ===== */}
-      {orclTab === "overview" && (<>
+      {tab ==="overview" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -377,7 +323,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== ORG CHART SUB-TAB ===== */}
-    {orclTab === "orgchart" && (<>
+    {tab ==="orgchart" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
@@ -648,7 +594,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
-    {orclTab === "contracts" && (<>
+    {tab ==="contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Chain &amp; Customer Contracts</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Oracle's $553B RPO backlog is dominated by large-scale AI infrastructure contracts. Revenue breakdown: Cloud Services &amp; License Support $44B (FY25), Cloud Infrastructure $4.9B/qtr (+84% YoY, Q3 FY26), Cloud Applications $3.9B/qtr (+11%). Multicloud DB revenue grew 817% in Q2 FY26.</div>
 
@@ -868,7 +814,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
     </>)}
 
     {/* ===== SENTIMENT SUB-TAB ===== */}
-    {orclTab === "sentiment" && (<>
+    {tab ==="sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>33-44 analysts covering. Consensus: Buy. Avg PT ~$260-266. Stock ~$138 (Apr 10, 2026). PT range: $160 (RBC) to $400 (Guggenheim). Investment grade but negative outlook from S&P and Moody's. Massive $553B RPO backlog.</div>
 
@@ -1077,12 +1023,7 @@ export default function OracleReview({ companyId, companyName, curFields, update
       </div>
     </>)}
 
-    {/* ===== FINANCIALS TAB ===== */}
-    {orclTab === "financials" && (
-      <FinancialsTab ticker="ORCL" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
-
-    </>
+    </>)}
+    </ReviewShell>
   );
 }

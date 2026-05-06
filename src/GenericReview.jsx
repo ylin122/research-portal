@@ -2,6 +2,80 @@ import { useState } from "react";
 import { T_, FONT } from "./lib/theme";
 import FinancialsTab from "./FinancialsTab";
 
+const REVIEW_TABS = [
+  { key: "recent", label: "Research" },
+  { key: "overview", label: "Overview" },
+  { key: "financials", label: "Financials" },
+  { key: "orgchart", label: "Org Chart" },
+  { key: "contracts", label: "Supply Chain & Customers" },
+  { key: "sentiment", label: "Sentiment" },
+];
+
+export function ReviewShell({ ticker, companyId, companyName, curFields, updateField, editingField, setEditingField, children }) {
+  const [tab, setTab] = useState("recent");
+  return (
+    <>
+      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
+        {REVIEW_TABS.map((t) => (
+          <button
+            key={t.key}
+            onClick={() => setTab(t.key)}
+            style={{
+              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
+              background: "transparent",
+              color: tab === t.key ? "#F8FAFC" : "#64748B",
+              borderBottom: tab === t.key ? "2px solid #3B82F6" : "2px solid transparent",
+              marginBottom: -1, transition: "all 0.15s",
+            }}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      {tab === "recent" && (
+        <div style={reviewStyles.section}>
+          {RESEARCH_FIELDS.map(f => {
+            const fd = curFields?.[f.key];
+            const isEditing = editingField === f.key;
+            const hasContent = fd?.text?.trim();
+            return (
+              <div key={f.key} style={reviewStyles.section}>
+                <div style={reviewStyles.sectionHdr}>
+                  <span>{f.label}</span>
+                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+                    {fd?.date && <span style={reviewStyles.sectionDate}>{fmtShort(fd.date)}</span>}
+                    {hasContent && !isEditing && <button style={reviewStyles.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
+                  </div>
+                </div>
+                {(isEditing || !hasContent) ? (
+                  <div>
+                    <textarea style={reviewStyles.textarea} rows={6}
+                      value={fd?.text || ""}
+                      onChange={e => updateField(companyId, f.key, e.target.value)}
+                      placeholder={f.ph}
+                      autoFocus={isEditing} />
+                    {isEditing && <button style={{ ...reviewStyles.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
+                  </div>
+                ) : (
+                  <div style={reviewStyles.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {tab === "financials" && (
+        <FinancialsTab ticker={ticker} companyId={companyId} companyName={companyName}
+          curFields={curFields} updateField={updateField} />
+      )}
+
+      {children(tab)}
+    </>
+  );
+}
+
 // Map company IDs to tickers for public equity companies
 const TICKER_MAP = {
   eq_micron: "MU", eq_orcl: "ORCL", eq_lumentum: "LITE", eq_coherent: "COHR",

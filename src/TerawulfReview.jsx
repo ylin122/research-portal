@@ -1,67 +1,13 @@
-import { useState } from "react";
-import FinancialsTab from "./FinancialsTab";
-import { RESEARCH_FIELDS as FIELDS, reviewStyles as s, fmtShort } from "./GenericReview";
+import { ReviewShell, reviewStyles as s } from "./GenericReview";
 
 export default function TerawulfReview({ companyId, companyName, curFields, updateField, editingField, setEditingField }) {
-  const [wulfTab, setWulfTab] = useState("recent");
-
   return (
-    <>
-      {/* TeraWulf Sub-Tabs */}
-      <div style={{ display: "flex", gap: 0, marginBottom: 20, borderBottom: "1px solid #1E293B" }}>
-        {[{ key: "recent", label: "Research" }, { key: "overview", label: "Overview" }, { key: "financials", label: "Financials" }, { key: "orgchart", label: "Org Chart" }, { key: "contracts", label: "Supply Chain & Customers" }, { key: "sentiment", label: "Sentiment" }].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setWulfTab(tab.key)}
-            style={{
-              padding: "8px 20px", fontSize: 12, fontWeight: 600, cursor: "pointer", border: "none",
-              background: "transparent",
-              color: wulfTab === tab.key ? "#F8FAFC" : "#64748B",
-              borderBottom: wulfTab === tab.key ? "2px solid #3B82F6" : "2px solid transparent",
-              marginBottom: -1, transition: "all 0.15s",
-            }}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
-
-      {/* ===== RESEARCH TAB ===== */}
-      {wulfTab === "recent" && (
-        <div style={s.section}>
-          {FIELDS.map(f => {
-            const fd = curFields?.[f.key];
-            const isEditing = editingField === f.key;
-            const hasContent = fd?.text?.trim();
-            return (
-              <div key={f.key} style={s.section}>
-                <div style={s.sectionHdr}>
-                  <span>{f.label}</span>
-                  <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
-                    {fd?.date && <span style={s.sectionDate}>{fmtShort(fd.date)}</span>}
-                    {hasContent && !isEditing && <button style={s.btnSmall} onClick={() => setEditingField(f.key)}>Edit</button>}
-                  </div>
-                </div>
-                {(isEditing || !hasContent) ? (
-                  <div>
-                    <textarea style={s.textarea} rows={6}
-                      value={fd?.text || ""}
-                      onChange={e => updateField(companyId, f.key, e.target.value)}
-                      placeholder={f.ph}
-                      autoFocus={isEditing} />
-                    {isEditing && <button style={{ ...s.btnSmall, marginTop: 10 }} onClick={() => setEditingField(null)}>Done</button>}
-                  </div>
-                ) : (
-                  <div style={s.proseBody} onClick={() => setEditingField(f.key)}>{fd.text}</div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-
+    <ReviewShell ticker="WULF" companyId={companyId} companyName={companyName}
+      curFields={curFields} updateField={updateField}
+      editingField={editingField} setEditingField={setEditingField}>
+      {(tab) => (<>
       {/* ===== OVERVIEW TAB ===== */}
-      {wulfTab === "overview" && (<>
+      {tab ==="overview" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
           <div>
@@ -325,7 +271,7 @@ export default function TerawulfReview({ companyId, companyName, curFields, upda
     </>)}
 
     {/* ===== ORG CHART SUB-TAB ===== */}
-    {wulfTab === "orgchart" && (<>
+    {tab ==="orgchart" && (<>
       <div style={s.card}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
           <div>
@@ -423,7 +369,7 @@ export default function TerawulfReview({ companyId, companyName, curFields, upda
     </>)}
 
     {/* ===== CONTRACTS SUB-TAB ===== */}
-    {wulfTab === "contracts" && (<>
+    {tab ==="contracts" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Supply Side &amp; Customer Contracts</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>Total contracted HPC revenue: ~$12.8B+ across 522 MW. All HPC contracts are 10+ year terms.</div>
 
@@ -574,7 +520,7 @@ export default function TerawulfReview({ companyId, companyName, curFields, upda
     </>)}
 
     {/* ===== SENTIMENT SUB-TAB ===== */}
-    {wulfTab === "sentiment" && (<>
+    {tab ==="sentiment" && (<>
       <div style={{ fontSize: 28, fontWeight: 700, color: "#F8FAFC", letterSpacing: "-0.5px", marginBottom: 4 }}>Market Sentiment</div>
       <div style={{ fontSize: 13, color: "#94A3B8", marginBottom: 24 }}>13 analysts. All Buy. Avg PT ~$23. Short interest ~22% of float. Q1 earnings May 8.</div>
 
@@ -742,11 +688,7 @@ export default function TerawulfReview({ companyId, companyName, curFields, upda
       </div>
     </>)}
 
-    {wulfTab === "financials" && (
-      <FinancialsTab ticker="WULF" companyId={companyId} companyName={companyName}
-        curFields={curFields} updateField={updateField} />
-    )}
-
-    </>
+    </>)}
+    </ReviewShell>
   );
 }
