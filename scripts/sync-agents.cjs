@@ -29,16 +29,23 @@ const HOME = os.homedir();
 const DOTCLAUDE = path.join(HOME, 'dotclaude');
 const CLAUDE = path.join(HOME, '.claude');
 
+function findRepo(name) {
+  for (const dir of [path.join(HOME, 'projects', name), path.join(HOME, name)]) {
+    if (fs.existsSync(dir)) return dir;
+  }
+  return null;
+}
+
 (async () => {
   // ── Step 1: Pull project repos from GitHub ──
   console.log('\n=== Step 1: Pull repos from GitHub ===');
   const repos = [
     { name: 'research-portal', dir: path.join(__dirname, '..'), branch: 'main' },
-    { name: 'pa-dashboard', dir: path.join(HOME, 'projects', 'pa-dashboard'), branch: 'master' },
+    { name: 'pa-dashboard', dir: findRepo('pa-dashboard'), branch: 'master' },
   ];
   for (const r of repos) {
-    if (!fs.existsSync(r.dir)) {
-      console.log(`  SKIP: ${r.name} not cloned at ${r.dir}`);
+    if (!r.dir || !fs.existsSync(r.dir)) {
+      console.log(`  SKIP: ${r.name} not found at ~/projects/${r.name} or ~/${r.name}`);
       continue;
     }
     try {
