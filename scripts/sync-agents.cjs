@@ -34,7 +34,7 @@ const CLAUDE = path.join(HOME, '.claude');
   console.log('\n=== Step 1: Pull repos from GitHub ===');
   const repos = [
     { name: 'research-portal', dir: path.join(__dirname, '..'), branch: 'main' },
-    { name: 'portfolio-dashboard', dir: path.join(HOME, 'projects', 'portfolio-dashboard'), branch: 'master' },
+    { name: 'pa-dashboard', dir: path.join(HOME, 'projects', 'pa-dashboard'), branch: 'master' },
   ];
   for (const r of repos) {
     if (!fs.existsSync(r.dir)) {
