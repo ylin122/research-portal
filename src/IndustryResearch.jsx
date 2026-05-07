@@ -3635,7 +3635,7 @@ export default function IndustryResearch({ initialTab }) {
         // === Industry header tiles (industry-wide) ===
         const headerTiles = [
           { label: "Foundry Mkt 2025", value: "~$170B", sub: "+25% YoY (TrendForce)" },
-          { label: "Foundry Capex 2026E", value: "~$90B", sub: "Pure-play foundries" },
+          { label: "Foundry Capex 2026E", value: "~$90B", sub: "All foundries (TSMC $54B + Samsung/Intel/SMIC/UMC/GF)" },
           { label: "Advanced (<7nm)", value: "~50%", sub: "of foundry value" },
           { label: "TSMC Share", value: "70%", sub: "90% at <7nm" },
           { label: "AI/HPC Demand", value: "~45%", sub: "of foundry rev (rising)" },
@@ -3646,11 +3646,11 @@ export default function IndustryResearch({ initialTab }) {
         // === Foundry market structure ===
         const foundryShare = [
           { name: "TSMC", share: 70, color: TSMC_COLOR, sub: "Pure-play. 90%+ at <7nm" },
-          { name: "Samsung", share: 11, color: "#1428A0", sub: "IDM-foundry. GAA at 3nm; yields lag TSMC" },
-          { name: "GlobalFoundries", share: 5, color: "#00A551", sub: "Pure-play. Mature/specialty (12nm+); no EUV" },
-          { name: "UMC", share: 5, color: "#005BAC", sub: "Pure-play. Mature (22/28nm+)" },
-          { name: "SMIC", share: 5, color: "#CC0000", sub: "Pure-play. China; capped at DUV 7nm" },
-          { name: "Others", share: 4, color: T_.textGhost, sub: "Tower, PSMC, HHGrace, etc." },
+          { name: "Samsung", share: 7, color: "#1428A0", sub: "IDM-foundry. GAA at 3nm; yields lag TSMC. Share fell from ~15% in 2022" },
+          { name: "GlobalFoundries", share: 4, color: "#00A551", sub: "Pure-play. Mature/specialty (12nm+); no EUV" },
+          { name: "UMC", share: 4, color: "#005BAC", sub: "Pure-play. Mature (22/28nm+)" },
+          { name: "SMIC", share: 5, color: "#CC0000", sub: "Pure-play. China; DUV 7nm/5nm-class (N+3) in volume" },
+          { name: "Others", share: 10, color: T_.textGhost, sub: "HuaHong 2.6%, Tower 0.9%, VIS 0.9%, Nexchip 0.9%, PSMC 0.8%" },
         ];
 
         const advancedShare = [
@@ -3662,7 +3662,7 @@ export default function IndustryResearch({ initialTab }) {
         // === Process node ladder — who is at what node (compact matrix) ===
         const nodeLadder = [
           { node: "A14 / 1.4nm",      year: "2027-28",   tsmc: "Risk prod 2027",   samsung: "Targeted 2028",    intel: "14A (post-18A)",   smic: "—" },
-          { node: "A16 / 1.6nm",      year: "Late 2026", tsmc: "On track (BSPDN)", samsung: "—",                intel: "—",                smic: "—" },
+          { node: "A16 / 1.6nm",      year: "2027 (slipped Apr 2026)", tsmc: "Slipped to 2027 (BSPDN)", samsung: "—",                intel: "—",                smic: "—" },
           { node: "N2 / 2nm (GAA)",   year: "Q4 2025+",  tsmc: "HVM Q4 2025",      samsung: "Limited HVM",      intel: "18A risk H2 2025", smic: "—" },
           { node: "3nm",              year: "2022+",     tsmc: "HVM mainstream",   samsung: "HVM (yld issue)",  intel: "Intel 3 limited",  smic: "—" },
           { node: "5nm / 4nm",        year: "2020+",     tsmc: "HVM",              samsung: "HVM",              intel: "Intel 4 limited",  smic: "—" },
@@ -3673,7 +3673,7 @@ export default function IndustryResearch({ initialTab }) {
 
         // === Demand drivers — foundry industry end-market mix ===
         const demandMix = [
-          { sector: "HPC / AI / Datacenter", pct: 45, color: T_.blue, growth: "+50%/yr", note: "Datacenter GPUs, custom ASICs, server CPUs. Fastest growing. Will dominate <3nm capacity. Was ~25% in 2022." },
+          { sector: "HPC / AI / Datacenter", pct: 45, color: T_.blue, growth: "+50%/yr", note: "Datacenter GPUs, custom ASICs, server CPUs. Industry-wide ~45%; TSMC-specific HPC platform = 58% (FY2025). Was ~25% industry / ~41% TSMC in 2022." },
           { sector: "Smartphone", pct: 28, color: T_.green, growth: "Flat", note: "Apple, Qualcomm, MediaTek. Apple alone is ~17% of TSMC. First-mover on every node but mature growth." },
           { sector: "Automotive / Industrial", pct: 9, color: T_.amber, growth: "+10%/yr", note: "Mostly mature nodes (N16/N28+). Growing share of mature fab utilization. Long product cycles." },
           { sector: "PC / Notebook", pct: 8, color: T_.purple, growth: "Mid-single", note: "AMD, Intel client, Apple M-series. Recovering from 2022-2024 cyclical trough." },
@@ -3700,11 +3700,11 @@ export default function IndustryResearch({ initialTab }) {
           ]},
           { label: "Foundries", items: [
             { name: "TSMC", sub: "70% global share. Sole leader at <3nm. $122B FY25 rev", color: TSMC_COLOR, link: "TSM" },
-            { name: "Samsung Foundry", sub: "11% share. GAA 3nm; volume lags. Yield issues", color: "#1428A0" },
-            { name: "Intel Foundry", sub: "Sub-3% advanced share. Intel 18A make-or-break 2025-26", color: "#0071C5", link: "INTC" },
-            { name: "GlobalFoundries", sub: "5% mature; no EUV. Specialty (RF, auto, defense)", color: "#00A551", link: "GFS" },
-            { name: "UMC", sub: "5% mature (22/28nm+)", color: "#005BAC" },
-            { name: "SMIC", sub: "5% China domestic; capped at DUV-based 7nm", color: "#CC0000" },
+            { name: "Samsung Foundry", sub: "7% share (down from 15% in 2022). GAA 3nm; volume lags. Yield issues", color: "#1428A0" },
+            { name: "Intel Foundry", sub: "Sub-3% advanced share. Intel 18A make-or-break 2025-26. External rev only $307M FY25", color: "#0071C5", link: "INTC" },
+            { name: "GlobalFoundries", sub: "4% mature; no EUV. Specialty (RF, auto, defense)", color: "#00A551", link: "GFS" },
+            { name: "UMC", sub: "4% mature (22/28nm+)", color: "#005BAC" },
+            { name: "SMIC", sub: "5% China domestic; DUV 7nm/5nm-class (N+3) in volume", color: "#CC0000" },
           ]},
           { label: "Advanced Packaging", items: [
             { name: "CoWoS (TSMC)", sub: "75K wpm 2025 → 130K wpm 2026. Primary AI GPU pkg", color: T_.amber },
@@ -3751,7 +3751,7 @@ export default function IndustryResearch({ initialTab }) {
         ];
 
         const cowosAllocation = [
-          { customer: "NVIDIA", share: 55, wafers: "~850K/yr", products: "B300, Rubin (CoWoS-L)", color: "#76B900" },
+          { customer: "NVIDIA", share: 58, wafers: "~850-990K/yr", products: "B300, Rubin (CoWoS-L). Range: TrendForce 60% / file-internal 55%", color: "#76B900" },
           { customer: "Broadcom", share: 15, wafers: "~150K/yr", products: "Google TPU, Meta MTIA, OpenAI ASIC", color: T_.red },
           { customer: "AMD", share: 11, wafers: "~105K/yr", products: "MI355, MI400", color: "#ED1C24" },
           { customer: "Marvell", share: 5, wafers: "~55K/yr", products: "AWS Trainium, MSFT Maia", color: "#00599C" },
@@ -3762,23 +3762,23 @@ export default function IndustryResearch({ initialTab }) {
 
         // === Geographic distribution ===
         const geoMix = [
-          { region: "Taiwan", advancedShare: 80, totalShare: 21, color: TSMC_COLOR, note: "TSMC + UMC + others. ~80% of <5nm wafers" },
-          { region: "South Korea", advancedShare: 12, totalShare: 19, color: "#1428A0", note: "Samsung + SK Hynix. Memory-heavy" },
-          { region: "China (mainland)", advancedShare: 1, totalShare: 22, color: "#CC0000", note: "SMIC, YMTC, CXMT. Mature; expanding rapidly" },
+          { region: "Taiwan", advancedShare: 80, totalShare: 17, color: TSMC_COLOR, note: "TSMC + UMC + others. ~80% of <5nm wafers" },
+          { region: "South Korea", advancedShare: 12, totalShare: 17, color: "#1428A0", note: "Samsung + SK Hynix. Memory-heavy" },
+          { region: "China (mainland)", advancedShare: 1, totalShare: 30, color: "#CC0000", note: "SMIC, YMTC, CXMT. Mature; expanding rapidly. Largest share globally per SEMI 2025" },
           { region: "Japan", advancedShare: 2, totalShare: 13, color: "#BC002D", note: "Sony, Renesas, Kioxia, Rapidus, JASM. Specialty + mature" },
           { region: "USA", advancedShare: 4, totalShare: 11, color: "#0070C0", note: "Intel, Micron, Samsung Austin, GF, TSMC AZ. CHIPS-funded buildout" },
           { region: "Europe", advancedShare: 1, totalShare: 7, color: "#003399", note: "ST, Infineon, Bosch, GF Dresden, ESMC" },
-          { region: "Singapore + ROW", advancedShare: 0, totalShare: 7, color: T_.textDim, note: "GF, Micron, Samsung. Mature & memory" },
+          { region: "Singapore + ROW", advancedShare: 0, totalShare: 5, color: T_.textDim, note: "GF, Micron, Samsung. Mature & memory" },
         ];
 
         // === Re-shoring projects ===
         const reshoringProjects = [
-          { project: "TSMC Arizona (Fab 21)", invest: "$165B (6 fabs)", node: "N4 → N3 → N2/A16", target: "P1 prod 2024; P3 (2nm) 2027+", funding: "CHIPS Act $6.6B" },
+          { project: "TSMC Arizona (Fab 21)", invest: "$165B (6 fabs)", node: "N4 → N3 → N2/A16", target: "P1 (N4) prod 2024; P2 (N3) H2 2027; P3 (N2/A16) 2028+", funding: "CHIPS Act $6.6B" },
           { project: "TSMC Kumamoto (JASM)", invest: "$13.9B+", node: "12-22nm + 3nm/2nm planned", target: "P1 prod Dec 2024; P2 ~2027", funding: "Japan METI ~$8B" },
           { project: "TSMC Dresden (ESMC)", invest: "JV w/ Bosch+Infineon+NXP", node: "28/22 + 16/12nm", target: "Equipment H2 2026; prod late 2027", funding: "EU Chips Act €5B" },
           { project: "Intel Arizona (Fab 52/62)", invest: "$30B+", node: "Intel 18A", target: "Risk prod H2 2025", funding: "CHIPS Act $7.86B" },
-          { project: "Intel Ohio", invest: "$28B", node: "Intel 14A target", target: "First chips delayed to 2027-28", funding: "CHIPS Act portion" },
-          { project: "Samsung Taylor TX", invest: "$44B", node: "2nm GAA target", target: "Originally 2024; delayed to ~2026-27", funding: "CHIPS Act $6.4B" },
+          { project: "Intel Ohio", invest: "$28B", node: "Intel 14A target", target: "Mod 1 first chips delayed to 2030-31 (Feb 2025 8-K)", funding: "CHIPS Act portion" },
+          { project: "Samsung Taylor TX", invest: "$37B (cut from $44B)", node: "2nm GAA + Tesla AI5/AI6", target: "Originally 2024; mass production now ~2027", funding: "CHIPS Act $4.745B (cut Dec 2025)" },
           { project: "Micron Idaho + NY", invest: "$125B over 20yr", node: "Leading-edge DRAM", target: "Idaho mid-2027; NY H2 2028+", funding: "CHIPS Act $6.165B" },
           { project: "Rapidus Hokkaido (JP)", invest: "$30B+", node: "2nm (IBM JV)", target: "Pilot 2025; HVM 2027", funding: "Japan METI ~$10B" },
         ];
@@ -3786,8 +3786,8 @@ export default function IndustryResearch({ initialTab }) {
         // === AI compute capacity bottlenecks ===
         const bottlenecks = [
           { item: "CoWoS-L Capacity", severity: "Critical", current: "~75K wpm (end-2025)", target: "130K wpm (end-2026)", note: "Direct gating factor for NVIDIA Rubin and all major AI GPUs. NVIDIA gets ~55% allocation. No alternative at scale." },
-          { item: "HBM Memory", severity: "Critical", current: "Sold out through 2026", target: "HBM4 ramp H1 2026", note: "SK Hynix ~53%, Samsung ~35%, Micron ~12%. HBM4 spec raised to 11Gbps. Each Rubin GPU needs 288GB HBM4." },
-          { item: "EUV Lithography Tools", severity: "High", current: "ASML ships ~50-60 EUV/yr", target: "High-NA EUV ramp 2026-27", note: "ASML monopoly. Each tool $200-350M. High-NA needed for A16+. Multi-year backlog." },
+          { item: "HBM Memory", severity: "Critical", current: "Sold out through 2026", target: "HBM4 ramp H1 2026", note: "SK Hynix ~57-62%, Samsung ~17-22%, Micron ~21% (Q2-Q3 2025). HBM4 spec raised to 11Gbps. Each Rubin GPU needs 288GB HBM4. SK Hynix reportedly cut 2026 HBM4 target 20-30% (Apr 2026)." },
+          { item: "EUV Lithography Tools", severity: "High", current: "ASML ships ~50-60 EUV/yr", target: "High-NA EUV ramp 2026-27", note: "ASML monopoly. Low-NA $200M; High-NA $380M. High-NA needed for A14+ (TSMC A16 uses Low-NA). Multi-year backlog." },
           { item: "N2 / 2nm Yield", severity: "Medium", current: "TSMC N2 HVM Q4 2025", target: "Volume ramp through 2026", note: "Yield curve determines effective capacity. Apple gets first allocation; NVIDIA/AMD H2 2026." },
           { item: "Advanced Substrate (ABF)", severity: "Medium", current: "Ibiden / Shinko duopoly", target: "Capacity expanding 2026-27", note: "ABF substrates needed for large-die HPC packages. Was 2022-23 bottleneck; eased but tight." },
           { item: "Power & Water (Taiwan)", severity: "Medium", current: "Taiwan grid stress", target: "60% renewables by 2030", note: "Each leading-edge fab uses ~100MW + 10M gal/day water. Taiwan capacity constrained." },
@@ -3831,7 +3831,7 @@ export default function IndustryResearch({ initialTab }) {
                   <div style={{ fontSize: 11, color: T_.textGhost, marginLeft: 22 }}>{f.sub}</div>
                 </div>
               ))}
-              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce. TSMC peaked at 72% Q3 2025; FY avg ~70%.</div>
+              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce. TSMC peaked at 71.0% Q3 2025; FY2025 ~70%.</div>
             </div>
 
             <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
