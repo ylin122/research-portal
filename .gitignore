@@ -31,6 +31,7 @@ _seed_extract.cjs
 scripts/credentials.json
 scripts/token.json
 .env*.local
+.env.production
 
 # Screenshot debug captures
 shots-*.png

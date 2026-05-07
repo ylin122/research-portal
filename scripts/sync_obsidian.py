@@ -14,8 +14,10 @@ PROJECT_DIR = SCRIPT_DIR.parent
 VAULT_DIR = Path("C:/Users/ylin1/obsidianvault/Research Wiki")
 
 load_dotenv(PROJECT_DIR / ".env")
-SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("VITE_SUPABASE_ANON_KEY")
+load_dotenv(PROJECT_DIR / ".env.local", override=True)
+SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")
+# Service role bypasses RLS, which hides rows from anon on this project.
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
 
 
 def main():

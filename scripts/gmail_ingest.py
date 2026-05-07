@@ -54,11 +54,13 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 TAG_RESEARCH = "[Research]"  # → kb_articles table
 
 load_dotenv(PROJECT_DIR / ".env")
-SUPABASE_URL = os.getenv("VITE_SUPABASE_URL")
-SUPABASE_KEY = os.getenv("VITE_SUPABASE_ANON_KEY")
+load_dotenv(PROJECT_DIR / ".env.local", override=True)
+SUPABASE_URL = os.getenv("SUPABASE_URL") or os.getenv("VITE_SUPABASE_URL")
+# Service role bypasses RLS; required for inserts. Falls back to anon for read-only dry runs.
+SUPABASE_KEY = os.getenv("SUPABASE_SERVICE_ROLE_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY")
 
 if not SUPABASE_URL or not SUPABASE_KEY:
-    print("ERROR: Missing VITE_SUPABASE_URL or VITE_SUPABASE_ANON_KEY in .env")
+    print("ERROR: Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY (or VITE_* fallbacks) in .env / .env.local")
     sys.exit(1)
 
 
