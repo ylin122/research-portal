@@ -1,8 +1,8 @@
 # Memory Index
 
 - [feedback_no_shortening.md](feedback_no_shortening.md) — Never shorten or abbreviate user prompts when delegating to agents
-- [project_research_portal.md](project_research_portal.md) — Research portal project context and structure
-- [project_pa_dashboard.md](project_pa_dashboard.md) — PA dashboard at ~/projects/pa-dashboard — portfolio analytics with Yahoo Finance API on Vercel
+- [project_research_portal.md](project_research_portal.md) — Research Portal project context and structure
+- [project_pa_dashboard.md](project_pa_dashboard.md) — PA Dashboard at ~/projects/pa-dashboard — portfolio analytics with Yahoo Finance API on Vercel
 - [feedback_chrome_default.md](feedback_chrome_default.md) — Always use Google Chrome when opening URLs in the browser
 - [feedback_research_ingest.md](feedback_research_ingest.md) — "Research ingest" means full pipeline: Gmail ingest + analyze + Obsidian sync
 - [feedback_article_dates.md](feedback_article_dates.md) — Always include publication date in analyzed research article titles
@@ -12,16 +12,16 @@
 - [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use Yahoo Finance API for live prices in portfolio analysis, not stale code values
 - [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — Portfolio exposure line in research articles must be on its own separate line
 - [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
-- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research portal" always means ~/projects/research-portal, never the PA dashboard
+- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research Portal" always means ~/projects/research-portal, never the PA Dashboard
 - [feedback_open_localhost.md](feedback_open_localhost.md) — Always auto-start vercel dev and open localhost when user begins working on either project
 - [feedback_credit_philosophy.md](feedback_credit_philosophy.md) — EV is the ultimate margin of safety in credit — think through-cycle, not just cash flow/debt service
-- [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the research portal
+- [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the Research Portal
 - [user_investment_philosophy.md](user_investment_philosophy.md) — Investment philosophy: 90-day trading restriction, averaging-down, SPY as dry powder, software background not semi infra
 - [feedback_no_windows.md](feedback_no_windows.md) — Launch background processes hidden — no visible cmd/PowerShell windows
 - [feedback_commit_claude_commands.md](feedback_commit_claude_commands.md) — Custom .claude/commands should be committed to git repos so they sync across machines
 - [feedback_edgartools_financials_order.md](feedback_edgartools_financials_order.md) — edgartools financials display periods left-to-right earliest → latest
-- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — Which PA dashboard charts use total return (adjclose) vs price return (close-only)
+- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — Which PA Dashboard charts use total return (adjclose) vs price return (close-only)
 - [project_research_portal_vision.md](project_research_portal_vision.md) — Longer-term vision for research-portal as aggregated research hub (2026-04-21)
-- [reference_pa_dashboard.md](reference_pa_dashboard.md) — PA dashboard: Vercel project, GitHub repo, Supabase project, local path
-- [reference_research_portal.md](reference_research_portal.md) — Research portal: deployed at research-portal-one.vercel.app, ylin122/research-portal repo
+- [reference_pa_dashboard.md](reference_pa_dashboard.md) — PA Dashboard: Vercel project, GitHub repo, Supabase project, local path
+- [reference_research_portal.md](reference_research_portal.md) — Research Portal: deployed at research-portal-one.vercel.app, ylin122/research-portal repo
 - [user_focus_projects.md](user_focus_projects.md) — User's two primary projects: pa-dashboard and research-portal — usage roles

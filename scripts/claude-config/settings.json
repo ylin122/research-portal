@@ -12,7 +12,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "cd $HOME/projects/research-portal && node scripts/sync-agents.cjs || true",
+            "command": "RP=$HOME/projects/research-portal; [ -d \"$RP\" ] || RP=$HOME/research-portal; [ -d \"$RP\" ] && cd \"$RP\" && node scripts/sync-agents.cjs",
             "timeout": 30,
             "statusMessage": "Syncing agents + dotclaude..."
           }
