@@ -3632,44 +3632,116 @@ export default function IndustryResearch({ initialTab }) {
       {mainTab === "foundry" && (() => {
         const TSMC_COLOR = "#E11D48";
 
-        // N2 + CoWoS focused roadmap
-        const n2Roadmap = [
-          { variant: "N2", status: "HVM", date: "Q4 2025", detail: "First nanosheet/GAA transistor node. Fab 22 (Kaohsiung) in production; Fab 20 (Hsinchu) to follow. 4x more tape-outs vs N5 at same stage. Key customers: Apple, NVIDIA, AMD, Qualcomm, MediaTek." },
-          { variant: "N2P", status: "On track", date: "Late 2026", detail: "Enhanced 2nm without backside power delivery. Optimized for client SoCs (smartphones, entry-level PCs). Better power efficiency than base N2." },
-          { variant: "A16 (1.6nm)", status: "On track", date: "Late 2026", detail: "First node with Super Power Rail (backside power delivery / BSPDN). Targets data center and AI accelerators. NVIDIA reportedly first customer. Arizona Fab 21 Phase 3 will produce A16." },
-        ];
-        const cowosRoadmap = [
-          { variant: "CoWoS-L", status: "Ramping", date: "2025-2026", detail: "Primary packaging for next-gen AI GPUs. 5.5x reticle interposer in 2026, scaling to 9.5x in 2027 (12 HBM4 stacks + 4 accelerator dies). NVIDIA B300 and Rubin R100 both depend on CoWoS-L. Feynman (2028) expected to continue on CoWoS-L or successor." },
-          { variant: "CoWoS-S", status: "Legacy", date: "2023+", detail: "Traditional CoWoS. Demand declining as customers transition to CoWoS-L. Still used for smaller AI chips and non-GPU HPC." },
-          { variant: "SoIC (3D)", status: "Ramping", date: "2025+", detail: "3D chip stacking via hybrid bonding (6um pitch). CAGR >100% from 2022-2026. Enables chiplet-based architectures — multiple dies stacked vertically." },
-        ];
-        const priorNodes = [
-          { variant: "N3P (3nm)", status: "HVM", date: "Q4 2024", detail: "Current mainstream. Apple 2025 iPhones, NVIDIA Rubin R100. +5% perf vs N3E." },
-          { variant: "N3E (3nm)", status: "HVM", date: "2023", detail: "Main 3nm workhorse. ~19 EUV layers." },
-          { variant: "N3X (3nm)", status: "On track", date: "H2 2025", detail: "Extreme performance variant for HPC." },
+        // === Industry header tiles (industry-wide) ===
+        const headerTiles = [
+          { label: "Foundry Mkt 2025", value: "~$170B", sub: "+25% YoY (TrendForce)" },
+          { label: "Foundry Capex 2026E", value: "~$90B", sub: "Pure-play foundries" },
+          { label: "Advanced (<7nm)", value: "~50%", sub: "of foundry value" },
+          { label: "TSMC Share", value: "70%", sub: "90% at <7nm" },
+          { label: "AI/HPC Demand", value: "~45%", sub: "of foundry rev (rising)" },
+          { label: "CoWoS-class Pkg", value: "130K wpm", sub: "End 2026E (3.4x)" },
+          { label: "Taiwan Adv. Share", value: "~80%", sub: "of <5nm wafers" },
         ];
 
-        const capexData = [
-          { year: "FY2024", capex: 29.8, rev: 88.3, gm: 56.1, note: "Actual" },
-          { year: "FY2025", capex: 40.9, rev: 122.0, gm: 59.9, note: "Actual (+36% YoY)" },
-          { year: "Q1 2026", capex: 0, rev: 35.9, gm: 66.2, note: "Record Q. +41% YoY. HPC 61% of rev." },
-          { year: "FY2026E", capex: 54.0, rev: 159.0, gm: 64.0, note: "Guided: $52-56B capex (high end likely), ~30% rev growth, Q1 guide 63-65% GM" },
+        // === Foundry market structure ===
+        const foundryShare = [
+          { name: "TSMC", share: 70, color: TSMC_COLOR, sub: "Pure-play. 90%+ at <7nm" },
+          { name: "Samsung", share: 11, color: "#1428A0", sub: "IDM-foundry. GAA at 3nm; yields lag TSMC" },
+          { name: "GlobalFoundries", share: 5, color: "#00A551", sub: "Pure-play. Mature/specialty (12nm+); no EUV" },
+          { name: "UMC", share: 5, color: "#005BAC", sub: "Pure-play. Mature (22/28nm+)" },
+          { name: "SMIC", share: 5, color: "#CC0000", sub: "Pure-play. China; capped at DUV 7nm" },
+          { name: "Others", share: 4, color: T_.textGhost, sub: "Tower, PSMC, HHGrace, etc." },
         ];
 
-        const revByNode = [
-          { label: "3nm", pct: 24, color: T_.purple },
-          { label: "5nm", pct: 36, color: T_.blue },
-          { label: "7nm", pct: 14, color: "#06B6D4" },
-          { label: "16nm", pct: 7, color: T_.green },
-          { label: "28nm+", pct: 19, color: T_.textDim },
+        const advancedShare = [
+          { name: "TSMC", share: 90, color: TSMC_COLOR, sub: "N3, N5, N7. Sole leader at <3nm" },
+          { name: "Samsung", share: 8, color: "#1428A0", sub: "GAA 3nm; volume lags significantly" },
+          { name: "Intel Foundry", share: 2, color: "#0071C5", sub: "Intel 18A ramping 2025-2026" },
         ];
 
-        const revByPlatform = [
-          { label: "HPC", pct: 61, color: T_.blue },
-          { label: "Smartphone", pct: 26, color: T_.green },
-          { label: "IoT", pct: 5, color: T_.amber },
-          { label: "Auto", pct: 4, color: T_.red },
-          { label: "DCE", pct: 4, color: T_.textDim },
+        // === Process node ladder — who is at what node (compact matrix) ===
+        const nodeLadder = [
+          { node: "A14 / 1.4nm",      year: "2027-28",   tsmc: "Risk prod 2027",   samsung: "Targeted 2028",    intel: "14A (post-18A)",   smic: "—" },
+          { node: "A16 / 1.6nm",      year: "Late 2026", tsmc: "On track (BSPDN)", samsung: "—",                intel: "—",                smic: "—" },
+          { node: "N2 / 2nm (GAA)",   year: "Q4 2025+",  tsmc: "HVM Q4 2025",      samsung: "Limited HVM",      intel: "18A risk H2 2025", smic: "—" },
+          { node: "3nm",              year: "2022+",     tsmc: "HVM mainstream",   samsung: "HVM (yld issue)",  intel: "Intel 3 limited",  smic: "—" },
+          { node: "5nm / 4nm",        year: "2020+",     tsmc: "HVM",              samsung: "HVM",              intel: "Intel 4 limited",  smic: "—" },
+          { node: "7nm",              year: "2018+",     tsmc: "HVM (declining)",  samsung: "HVM",              intel: "HVM (legacy)",     smic: "DUV-based 2023+" },
+          { node: "16-14nm (FinFET)", year: "2014-16",   tsmc: "HVM",              samsung: "HVM (+ GF lic)",   intel: "—",                smic: "HVM" },
+          { node: "28nm and older",   year: "2011+",     all: "Mass production at all foundries (~50%+ of total wafers)" },
+        ];
+
+        // === Demand drivers — foundry industry end-market mix ===
+        const demandMix = [
+          { sector: "HPC / AI / Datacenter", pct: 45, color: T_.blue, growth: "+50%/yr", note: "Datacenter GPUs, custom ASICs, server CPUs. Fastest growing. Will dominate <3nm capacity. Was ~25% in 2022." },
+          { sector: "Smartphone", pct: 28, color: T_.green, growth: "Flat", note: "Apple, Qualcomm, MediaTek. Apple alone is ~17% of TSMC. First-mover on every node but mature growth." },
+          { sector: "Automotive / Industrial", pct: 9, color: T_.amber, growth: "+10%/yr", note: "Mostly mature nodes (N16/N28+). Growing share of mature fab utilization. Long product cycles." },
+          { sector: "PC / Notebook", pct: 8, color: T_.purple, growth: "Mid-single", note: "AMD, Intel client, Apple M-series. Recovering from 2022-2024 cyclical trough." },
+          { sector: "IoT / Consumer", pct: 6, color: T_.red, growth: "Flat", note: "Wearables, smart home, image sensors. Mostly N12-N28." },
+          { sector: "Other", pct: 4, color: T_.textGhost, growth: "—", note: "Networking, defense, specialty." },
+        ];
+
+        // === Foundry value chain — full stack ===
+        const valueChain = [
+          { label: "End Markets", items: [
+            { name: "AI / HPC", sub: "Datacenters, AI training/inference. Hyperscalers + sovereign clouds", color: T_.blue },
+            { name: "Smartphones", sub: "Apple iPhones, Samsung, Chinese OEMs", color: T_.green },
+            { name: "Automotive", sub: "EVs, ADAS, infotainment", color: T_.amber },
+            { name: "PC / Server CPU", sub: "AMD, Intel, hyperscaler in-house ARM", color: T_.purple },
+          ]},
+          { label: "Chip Designers", items: [
+            { name: "NVIDIA", sub: "B200/B300/Rubin. Largest <3nm customer. ~19% TSMC rev", color: "#76B900", link: "NVDA" },
+            { name: "Apple", sub: "A/M series. ~17% TSMC rev. First mover on every node", color: T_.textDim },
+            { name: "AMD", sub: "EPYC, MI300/MI400. ~7% TSMC rev", color: "#ED1C24", link: "AMD" },
+            { name: "Qualcomm", sub: "Snapdragon SoCs. ~8% TSMC rev", color: "#3253DC", link: "QCOM" },
+            { name: "Broadcom", sub: "Custom AI ASICs (Google TPU, Meta MTIA, OpenAI). ~7-15%", color: T_.red, link: "AVGO" },
+            { name: "MediaTek", sub: "Dimensity SoCs, Google TPU custom designs. ~9%", color: "#FFCC00" },
+            { name: "Hyperscaler in-house", sub: "Google TPU, AWS Trainium, MSFT Maia, Meta MTIA — via Broadcom/Marvell/Alchip", color: T_.purple },
+          ]},
+          { label: "Foundries", items: [
+            { name: "TSMC", sub: "70% global share. Sole leader at <3nm. $122B FY25 rev", color: TSMC_COLOR, link: "TSM" },
+            { name: "Samsung Foundry", sub: "11% share. GAA 3nm; volume lags. Yield issues", color: "#1428A0" },
+            { name: "Intel Foundry", sub: "Sub-3% advanced share. Intel 18A make-or-break 2025-26", color: "#0071C5", link: "INTC" },
+            { name: "GlobalFoundries", sub: "5% mature; no EUV. Specialty (RF, auto, defense)", color: "#00A551", link: "GFS" },
+            { name: "UMC", sub: "5% mature (22/28nm+)", color: "#005BAC" },
+            { name: "SMIC", sub: "5% China domestic; capped at DUV-based 7nm", color: "#CC0000" },
+          ]},
+          { label: "Advanced Packaging", items: [
+            { name: "CoWoS (TSMC)", sub: "75K wpm 2025 → 130K wpm 2026. Primary AI GPU pkg", color: T_.amber },
+            { name: "SoIC 3D (TSMC)", sub: "Hybrid bonding. >100% CAGR. Chiplet stacking", color: "#F97316" },
+            { name: "Foveros + EMIB (Intel)", sub: "Intel's 3D + interposer. Limited HVM, internal use", color: "#0071C5" },
+            { name: "OSAT (ASE, Amkor, JCET)", sub: "Outsourced assembly & test for non-advanced", color: T_.textDim },
+          ]},
+          { label: "Equipment (WFE)", items: [
+            { name: "ASML", sub: "EUV monopoly. High-NA EUV for A16+. ~$200-350M/tool", color: "#00A0E3", link: "ASML" },
+            { name: "Applied Materials", sub: "CVD, PVD, etch, CMP. Largest WFE supplier", color: T_.amber, link: "AMAT" },
+            { name: "Lam Research", sub: "Etch & deposition. Critical for GAA transistors", color: T_.green, link: "LRCX" },
+            { name: "KLA Corp", sub: "Inspection & metrology. Defect detection for EUV", color: T_.red, link: "KLAC" },
+            { name: "Tokyo Electron", sub: "Coater/developer, etch. #3 global WFE", color: T_.blue },
+          ]},
+          { label: "EDA & IP", items: [
+            { name: "Synopsys", sub: "EDA tools + IP cores. Design enablement for N2/A16", color: "#7C3AED", link: "SNPS" },
+            { name: "Cadence", sub: "EDA tools + IP. Verification, signoff", color: "#7C3AED", link: "CDNS" },
+            { name: "ARM", sub: "CPU IP cores. Neoverse (DC), Cortex (mobile)", color: "#0091BD", link: "ARM" },
+            { name: "Siemens EDA", sub: "IC verification, DFM", color: "#009999" },
+          ]},
+          { label: "Materials & Substrates", items: [
+            { name: "Shin-Etsu", sub: "300mm silicon wafers. #1 global share", color: T_.textDim },
+            { name: "SUMCO", sub: "300mm silicon wafers. #2 global", color: T_.textDim },
+            { name: "Entegris", sub: "Specialty chemicals, filters, CMP slurries", color: T_.purple, link: "ENTG" },
+            { name: "Photronics", sub: "Photomasks for EUV lithography", color: T_.textGhost },
+            { name: "Zeiss (ASML optics)", sub: "EUV optics supplier to ASML. Sole source", color: "#00A0E3" },
+            { name: "SK Hynix / Samsung / Micron", sub: "HBM for advanced packaging (CoWoS)", color: "#A855F7", link: "MU" },
+          ]},
+        ];
+
+        // === Advanced packaging roadmap (industry view, compact) ===
+        const packagingRoadmap = [
+          { variant: "CoWoS-L",       vendor: "TSMC",    vendorColor: TSMC_COLOR, status: "Ramping",     date: "2025-26", note: "Primary AI GPU packaging. 5.5× → 9.5× reticle interposer 2026-27 (12 HBM4 stacks + 4 dies). NVIDIA Rubin/Feynman depend on it. No alternative at scale." },
+          { variant: "CoWoS-S",       vendor: "TSMC",    vendorColor: TSMC_COLOR, status: "Legacy",      date: "2023+",   note: "Traditional CoWoS. Declining as customers shift to CoWoS-L. Still used for non-GPU HPC and smaller AI chips." },
+          { variant: "SoIC / 3D",     vendor: "TSMC",    vendorColor: TSMC_COLOR, status: "Ramping",     date: "2025+",   note: "3D hybrid bonding (~6μm pitch). >100% CAGR 2022-26. Chiplet stacking. NVIDIA Feynman first stacked GPU." },
+          { variant: "Foveros / EMIB", vendor: "Intel",  vendorColor: "#0071C5",  status: "Limited HVM", date: "2023+",   note: "Intel 2.5D + 3D. Internal use only (Sapphire Rapids, Ponte Vecchio, Lunar Lake). Volume far below TSMC." },
+          { variant: "I-Cube",        vendor: "Samsung", vendorColor: "#1428A0",  status: "Limited",     date: "2024+",   note: "Samsung 2.5D. Far behind CoWoS in volume and customer adoption." },
         ];
 
         const cowosCapacity = [
@@ -3688,97 +3760,51 @@ export default function IndustryResearch({ initialTab }) {
           { customer: "Others", share: 7, wafers: "—", products: "Second-tier AI chip cos", color: T_.textGhost },
         ];
 
-        const fabExpansion = [
-          { loc: "Arizona (Fab 21)", phases: [
-            { phase: "P1", node: "4nm (N4)", status: "Production", date: "Q4 2024", invest: "$165B total (6 fabs)" },
-            { phase: "P2", node: "3nm (N3)", status: "Construction", date: "2027", invest: "Equipment install Q3 2026" },
-            { phase: "P3", node: "2nm / A16", status: "Groundbreaking", date: "2027", invest: "Accelerated 1yr ahead" },
-          ]},
-          { loc: "Japan — Kumamoto (JASM)", phases: [
-            { phase: "P1", node: "12/16/22/28nm", status: "Production", date: "Dec 2024", invest: "55K wpm; image sensors, auto" },
-            { phase: "P2", node: "3nm or 2nm (pivoted from 6nm)", status: "Construction", date: "~2027", invest: "$13.9B; target node TBD" },
-          ]},
-          { loc: "Germany — Dresden (ESMC)", phases: [
-            { phase: "JV", node: "28/22nm, 16/12nm", status: "Equipment H2 2026", date: "Late 2027", invest: "JV: Bosch + Infineon + NXP; 40K wpm" },
-          ]},
-          { loc: "Taiwan — Kaohsiung (Fab 22)", phases: [
-            { phase: "P1-P5", node: "N2", status: "P1 HVM, P2 trial, P3-5 build", date: "All operational Q4 2027", invest: "5-phase N2 gigafab" },
-          ]},
-          { loc: "Taiwan — Packaging", phases: [
-            { phase: "AP5B", node: "CoWoS", status: "On track", date: "2026", invest: "Taichung" },
-            { phase: "AP7", node: "CoWoS / SoIC", status: "Building", date: "P2 2026, P1 2027", invest: "Chiayi" },
-            { phase: "AP8", node: "CoWoS", status: "Acquired (Innolux)", date: "2026+", invest: "CoWoS expansion" },
-          ]},
+        // === Geographic distribution ===
+        const geoMix = [
+          { region: "Taiwan", advancedShare: 80, totalShare: 21, color: TSMC_COLOR, note: "TSMC + UMC + others. ~80% of <5nm wafers" },
+          { region: "South Korea", advancedShare: 12, totalShare: 19, color: "#1428A0", note: "Samsung + SK Hynix. Memory-heavy" },
+          { region: "China (mainland)", advancedShare: 1, totalShare: 22, color: "#CC0000", note: "SMIC, YMTC, CXMT. Mature; expanding rapidly" },
+          { region: "Japan", advancedShare: 2, totalShare: 13, color: "#BC002D", note: "Sony, Renesas, Kioxia, Rapidus, JASM. Specialty + mature" },
+          { region: "USA", advancedShare: 4, totalShare: 11, color: "#0070C0", note: "Intel, Micron, Samsung Austin, GF, TSMC AZ. CHIPS-funded buildout" },
+          { region: "Europe", advancedShare: 1, totalShare: 7, color: "#003399", note: "ST, Infineon, Bosch, GF Dresden, ESMC" },
+          { region: "Singapore + ROW", advancedShare: 0, totalShare: 7, color: T_.textDim, note: "GF, Micron, Samsung. Mature & memory" },
         ];
 
-        // Supply chain ecosystem layers
-        const ecosystemLayers = [
-          { label: "End Customers", items: [
-            { name: "Apple", sub: "~17% rev FY2025 (was ~24% in FY2024). A/M-series SoCs (N3P)", color: T_.textDim, link: "AAPL" },
-            { name: "NVIDIA", sub: "~19% rev FY2025 (largest customer). B200/B300/Rubin", color: "#76B900", link: "NVDA" },
-            { name: "AMD", sub: "~7% rev. EPYC, MI300/MI400", color: "#ED1C24", link: "AMD" },
-            { name: "Qualcomm", sub: "~8% rev. Snapdragon SoCs", color: "#3253DC", link: "QCOM" },
-            { name: "MediaTek", sub: "~9% rev. Dimensity, Google TPU design", color: "#FFCC00" },
-            { name: "Broadcom", sub: "~7-15% rev. Custom AI ASICs for hyperscalers", color: T_.red, link: "AVGO" },
-            { name: "Intel", sub: "~6-7% rev. Outsourced products", color: "#0071C5", link: "INTC" },
-          ]},
-          { label: "Hyperscaler ASICs", items: [
-            { name: "Google TPU", sub: "v6/v7/v8 via Broadcom + MediaTek. N3/N2", color: "#4285F4", link: "GOOGL" },
-            { name: "Amazon Trainium", sub: "Via Alchip/Marvell. Graviton + Trainium2/3", color: "#FF9900", link: "AMZN" },
-            { name: "Microsoft Maia", sub: "Via Marvell. Custom AI accelerator", color: "#00A4EF", link: "MSFT" },
-            { name: "Meta MTIA", sub: "Via Broadcom. Custom inference chip", color: "#0866FF", link: "META" },
-          ]},
-          { label: "TSMC (Foundry)", items: [
-            { name: "TSMC", sub: "~70% foundry share. 90%+ at <7nm. $122B rev FY2025. Q1 2026: $35.9B (+41% YoY), GM 66.2%", color: TSMC_COLOR, link: "TSM" },
-          ]},
-          { label: "Advanced Packaging", items: [
-            { name: "CoWoS", sub: "75K wpm (2025) → 130K wpm (2026). Primary for AI GPUs", color: T_.amber },
-            { name: "SoIC (3D)", sub: "Hybrid bonding. >100% CAGR. Next-gen chiplet stacking", color: "#F97316" },
-            { name: "InFO", sub: "Fan-out packaging. Integrated into 3DFabric platform", color: "#D97706" },
-          ]},
-          { label: "EDA & IP", items: [
-            { name: "Synopsys", sub: "EDA tools + IP cores. Design enablement for N2/A16", color: "#7C3AED", link: "SNPS" },
-            { name: "Cadence", sub: "EDA tools + IP. Verification, signoff", color: "#7C3AED", link: "CDNS" },
-            { name: "ARM", sub: "CPU IP cores. Neoverse (DC), Cortex (mobile)", color: "#0091BD", link: "ARM" },
-            { name: "Siemens EDA", sub: "IC verification, DFM", color: "#009999" },
-          ]},
-          { label: "Equipment (WFE)", items: [
-            { name: "ASML", sub: "EUV monopoly. High-NA EUV for A16+. ~$350M/tool", color: "#00A0E3", link: "ASML" },
-            { name: "Applied Materials", sub: "CVD, PVD, etch, CMP. Largest WFE supplier", color: T_.amber, link: "AMAT" },
-            { name: "Lam Research", sub: "Etch & deposition. Critical for GAA transistors", color: T_.green, link: "LRCX" },
-            { name: "KLA Corp", sub: "Inspection & metrology. Defect detection for EUV", color: T_.red, link: "KLAC" },
-            { name: "Tokyo Electron", sub: "Coater/developer, etch. #3 global WFE", color: T_.blue },
-          ]},
-          { label: "Materials & Components", items: [
-            { name: "Shin-Etsu", sub: "300mm silicon wafers. #1 global share", color: T_.textDim },
-            { name: "SUMCO", sub: "300mm silicon wafers. #2 global", color: T_.textDim },
-            { name: "Entegris", sub: "Specialty chemicals, filters, CMP slurries", color: T_.purple, link: "ENTG" },
-            { name: "Photronics", sub: "Photomasks for EUV lithography", color: T_.textGhost },
-            { name: "Zeiss (ASML optics)", sub: "EUV optics supplier to ASML. Sole source", color: "#00A0E3" },
-            { name: "SK Hynix / Samsung / Micron", sub: "HBM for CoWoS packaging (via NVIDIA/AMD)", color: "#A855F7", link: "MU" },
-          ]},
+        // === Re-shoring projects ===
+        const reshoringProjects = [
+          { project: "TSMC Arizona (Fab 21)", invest: "$165B (6 fabs)", node: "N4 → N3 → N2/A16", target: "P1 prod 2024; P3 (2nm) 2027+", funding: "CHIPS Act $6.6B" },
+          { project: "TSMC Kumamoto (JASM)", invest: "$13.9B+", node: "12-22nm + 3nm/2nm planned", target: "P1 prod Dec 2024; P2 ~2027", funding: "Japan METI ~$8B" },
+          { project: "TSMC Dresden (ESMC)", invest: "JV w/ Bosch+Infineon+NXP", node: "28/22 + 16/12nm", target: "Equipment H2 2026; prod late 2027", funding: "EU Chips Act €5B" },
+          { project: "Intel Arizona (Fab 52/62)", invest: "$30B+", node: "Intel 18A", target: "Risk prod H2 2025", funding: "CHIPS Act $7.86B" },
+          { project: "Intel Ohio", invest: "$28B", node: "Intel 14A target", target: "First chips delayed to 2027-28", funding: "CHIPS Act portion" },
+          { project: "Samsung Taylor TX", invest: "$44B", node: "2nm GAA target", target: "Originally 2024; delayed to ~2026-27", funding: "CHIPS Act $6.4B" },
+          { project: "Micron Idaho + NY", invest: "$125B over 20yr", node: "Leading-edge DRAM", target: "Idaho mid-2027; NY H2 2028+", funding: "CHIPS Act $6.165B" },
+          { project: "Rapidus Hokkaido (JP)", invest: "$30B+", node: "2nm (IBM JV)", target: "Pilot 2025; HVM 2027", funding: "Japan METI ~$10B" },
         ];
 
-        const statusColor = (s) => s === "Production" || s === "HVM" ? T_.green : s === "Ramping" || s.includes("Construction") || s.includes("Equipment") ? T_.amber : s.includes("Groundbreaking") || s === "On track" ? T_.blue : T_.textDim;
-        const fmtB = (v) => `$${v.toFixed(1)}B`;
+        // === AI compute capacity bottlenecks ===
+        const bottlenecks = [
+          { item: "CoWoS-L Capacity", severity: "Critical", current: "~75K wpm (end-2025)", target: "130K wpm (end-2026)", note: "Direct gating factor for NVIDIA Rubin and all major AI GPUs. NVIDIA gets ~55% allocation. No alternative at scale." },
+          { item: "HBM Memory", severity: "Critical", current: "Sold out through 2026", target: "HBM4 ramp H1 2026", note: "SK Hynix ~53%, Samsung ~35%, Micron ~12%. HBM4 spec raised to 11Gbps. Each Rubin GPU needs 288GB HBM4." },
+          { item: "EUV Lithography Tools", severity: "High", current: "ASML ships ~50-60 EUV/yr", target: "High-NA EUV ramp 2026-27", note: "ASML monopoly. Each tool $200-350M. High-NA needed for A16+. Multi-year backlog." },
+          { item: "N2 / 2nm Yield", severity: "Medium", current: "TSMC N2 HVM Q4 2025", target: "Volume ramp through 2026", note: "Yield curve determines effective capacity. Apple gets first allocation; NVIDIA/AMD H2 2026." },
+          { item: "Advanced Substrate (ABF)", severity: "Medium", current: "Ibiden / Shinko duopoly", target: "Capacity expanding 2026-27", note: "ABF substrates needed for large-die HPC packages. Was 2022-23 bottleneck; eased but tight." },
+          { item: "Power & Water (Taiwan)", severity: "Medium", current: "Taiwan grid stress", target: "60% renewables by 2030", note: "Each leading-edge fab uses ~100MW + 10M gal/day water. Taiwan capacity constrained." },
+          { item: "Skilled Labor", severity: "Low-Medium", current: "TSMC AZ delays cited workforce", target: "Long-term challenge", note: "TSMC brought 4,500 engineers from Taiwan to AZ. Long-term industrial-policy issue for re-shoring." },
+        ];
+
+        const statusColor = (s) => s.includes("HVM") || s === "Production" ? T_.green : s === "Ramping" || s.includes("Construction") || s.includes("Equipment") || s.includes("Limited") ? T_.amber : s.includes("Risk") || s === "On track" ? T_.blue : T_.textDim;
+        const sevColor = (s) => s === "Critical" ? "#EF4444" : s === "High" ? T_.amber : s === "Medium" ? T_.blue : T_.textGhost;
 
         return (
         <div>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>TSMC — Foundry Ecosystem & Roadmap</h2>
-          <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>Technology roadmap, capex, CoWoS capacity, fab expansion, and supply chain. Sources: TSMC Q1 2026 earnings (Apr 16), TrendForce, SemiAnalysis, Tom's Hardware. Updated 2026-04-18.</p>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Foundry Industry & Ecosystem</h2>
+          <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 24 }}>The semiconductor manufacturing industry — players, processes, value chain, geographic distribution, and capacity bottlenecks. Sources: TSMC, Samsung, Intel earnings; TrendForce, SemiAnalysis, SIA, ASML. As of 2026-05-07.</p>
 
-          {/* ── Key Metrics ── */}
+          {/* ── Industry Header Tiles ── */}
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 24 }}>
-            {[
-              { label: "Q1 2026 Revenue", value: "$35.9B", sub: "+41% YoY, record Q" },
-              { label: "FY2025 Revenue", value: "$122B", sub: "+36% YoY (USD)" },
-              { label: "FY2026E Revenue", value: "~$159B", sub: "~30% growth (raised)" },
-              { label: "Gross Margin", value: "66.2%", sub: "Q1 2026 actual" },
-              { label: "Advanced (<7nm)", value: "74-77%", sub: "of wafer revenue" },
-              { label: "HPC Share", value: "61%", sub: "of Q1 2026 rev" },
-              { label: "CoWoS (2026E)", value: "130K wpm", sub: "3.4x from late 2024" },
-              { label: "Arizona", value: "$165B", sub: "Largest FDI in U.S." },
-            ].map(m => (
+            {headerTiles.map(m => (
               <div key={m.label} style={{ flex: "1 1 140px", minWidth: 140, background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "10px 14px" }}>
                 <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 3 }}>{m.label}</div>
                 <div style={{ fontSize: 18, fontWeight: 700, color: T_.text }}>{m.value}</div>
@@ -3787,156 +3813,151 @@ export default function IndustryResearch({ initialTab }) {
             ))}
           </div>
 
-          {/* ── Next-Gen: N2 / 2nm Wafer Roadmap ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Next-Gen: 2nm Wafer Roadmap</div>
-            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>TSMC's transition from FinFET (N3) to Gate-All-Around nanosheet transistors (N2/A16). N2 capacity target: ~50K wpm by end 2025, ~120-130K wpm by end 2026.</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {n2Roadmap.map((r, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${T_.blue}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: T_.textMid }}>{r.variant}</span>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <span style={{ fontSize: 11, color: T_.textDim }}>{r.date}</span>
-                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.7 }}>{r.detail}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── CoWoS Advanced Packaging Roadmap ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>CoWoS Advanced Packaging Roadmap</div>
-            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>CoWoS-L is the critical bottleneck for AI GPU scaling. NVIDIA Rubin (R100, 2026) and Feynman (~2028) both depend on CoWoS-L — without it, these GPUs cannot be assembled. CoWoS-L integrates multiple accelerator dies + HBM stacks on a single large interposer.</div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              {cowosRoadmap.map((r, i) => (
-                <div key={i} style={{ padding: "14px 16px", background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${T_.amber}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
-                    <span style={{ fontSize: 14, fontWeight: 700, color: T_.textMid }}>{r.variant}</span>
-                    <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                      <span style={{ fontSize: 11, color: T_.textDim }}>{r.date}</span>
-                      <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
-                    </div>
-                  </div>
-                  <div style={{ fontSize: 13, color: T_.textDim, lineHeight: 1.7 }}>{r.detail}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Prior Nodes (collapsed reference) ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 24px", marginBottom: 20 }}>
-            <div style={{ fontSize: 13, fontWeight: 600, color: T_.textGhost, marginBottom: 8 }}>Current Production Nodes (N3 Family)</div>
-            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {priorNodes.map((r, i) => (
-                <div key={i} style={{ padding: "8px 12px", background: "#0B0F19", borderRadius: 6, border: `1px solid ${T_.border}`, flex: "1 1 200px" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: T_.textMid }}>{r.variant}</span>
-                    <span style={{ fontSize: 10, fontWeight: 600, padding: "2px 6px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span>
-                  </div>
-                  <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 2 }}>{r.detail}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* ── Capex & Revenue ── */}
+          {/* ── Foundry Market Structure ── */}
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
             <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>Capex & Revenue</div>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
-                <thead>
-                  <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-                    <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textDim, fontWeight: 600, fontSize: 11 }}>Year</th>
-                    <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textDim, fontWeight: 600, fontSize: 11 }}>Revenue</th>
-                    <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textDim, fontWeight: 600, fontSize: 11 }}>Capex</th>
-                    <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textDim, fontWeight: 600, fontSize: 11 }}>GM</th>
+              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Market Share (FY2025)</div>
+              <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>Pure-play + foundry-services share of global wafer revenue. TSMC dominates; share rises with node advancement.</div>
+              {foundryShare.map(f => (
+                <div key={f.name} style={{ marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: T_.textMid, minWidth: 120, fontWeight: 600 }}>{f.name}</span>
+                    <div style={{ flex: 1, height: 14, background: T_.border, borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
+                    </div>
+                    <span style={{ fontSize: 11, color: T_.textDim, minWidth: 30, textAlign: "right" }}>{f.share}%</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost, marginLeft: 22 }}>{f.sub}</div>
+                </div>
+              ))}
+              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce. TSMC peaked at 72% Q3 2025; FY avg ~70%.</div>
+            </div>
+
+            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
+              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Advanced Node Share (&lt;7nm)</div>
+              <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>The leading edge is a duopoly + 1. TSMC has near-monopoly; Samsung 3nm GAA is competitive but volume lags significantly. Intel 18A is the wildcard — a successful ramp would change the structure materially.</div>
+              {advancedShare.map(f => (
+                <div key={f.name} style={{ marginBottom: 8 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 2 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
+                    <span style={{ fontSize: 12, color: T_.textMid, minWidth: 120, fontWeight: 600 }}>{f.name}</span>
+                    <div style={{ flex: 1, height: 14, background: T_.border, borderRadius: 4, overflow: "hidden" }}>
+                      <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
+                    </div>
+                    <span style={{ fontSize: 11, color: T_.textDim, minWidth: 30, textAlign: "right" }}>{f.share}%</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost, marginLeft: 22 }}>{f.sub}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Process Node Ladder ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "20px 24px", marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Process Node Ladder Across Players</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>Who is at what node. Newer nodes at top. Node names are marketing — TSMC N3 ≠ Samsung 3GAA in transistor density. Advanced-node value/wafer is 2-4× mature.</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>Node</th>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>Year</th>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: TSMC_COLOR, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>TSMC</th>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: "#1428A0", fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>Samsung</th>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: "#0071C5", fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>Intel</th>
+                  <th style={{ textAlign: "left", padding: "6px 8px", color: "#CC0000", fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>SMIC</th>
+                </tr>
+              </thead>
+              <tbody>
+                {nodeLadder.map((n, i) => (
+                  <tr key={n.node} style={{ borderBottom: `1px solid ${T_.border}` }}>
+                    <td style={{ padding: "7px 8px", color: i < 3 ? T_.amber : i < 6 ? T_.blue : T_.textMid, fontWeight: 600, whiteSpace: "nowrap" }}>{n.node}</td>
+                    <td style={{ padding: "7px 8px", color: T_.textDim, whiteSpace: "nowrap" }}>{n.year}</td>
+                    {n.all ? (
+                      <td colSpan={4} style={{ padding: "7px 8px", color: T_.textGhost, fontStyle: "italic" }}>{n.all}</td>
+                    ) : (<>
+                      <td style={{ padding: "7px 8px", color: n.tsmc === "—" ? T_.textGhost : T_.textMid }}>{n.tsmc}</td>
+                      <td style={{ padding: "7px 8px", color: n.samsung === "—" ? T_.textGhost : T_.textMid }}>{n.samsung}</td>
+                      <td style={{ padding: "7px 8px", color: n.intel === "—" ? T_.textGhost : T_.textMid }}>{n.intel}</td>
+                      <td style={{ padding: "7px 8px", color: n.smic === "—" ? T_.textGhost : T_.textMid }}>{n.smic}</td>
+                    </>)}
                   </tr>
-                </thead>
-                <tbody>
-                  {capexData.map(c => (
-                    <tr key={c.year} style={{ borderBottom: `1px solid ${T_.border}` }}>
-                      <td style={{ padding: "8px", color: c.year.includes("E") ? "#60A5FA" : T_.textMid, fontWeight: 600 }}>{c.year}</td>
-                      <td style={{ padding: "8px", textAlign: "right", color: T_.textMid }}>{fmtB(c.rev)}</td>
-                      <td style={{ padding: "8px", textAlign: "right", color: T_.textMid }}>{fmtB(c.capex)}</td>
-                      <td style={{ padding: "8px", textAlign: "right", color: T_.textMid }}>{c.gm}%</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 10 }}>FY2026E: $52-56B capex guided. ~70% to advanced nodes, ~15% packaging, ~15% mature.</div>
-            </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>Revenue by Node (FY2025)</div>
-              <div style={{ display: "flex", height: 20, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
-                {revByNode.map(r => <div key={r.label} style={{ width: `${r.pct}%`, background: r.color, transition: "width 0.3s" }} />)}
-              </div>
-              {revByNode.map(r => (
-                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: r.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: T_.textMid, flex: 1 }}>{r.label}</span>
-                  <span style={{ fontSize: 12, color: T_.textDim, fontWeight: 600 }}>{r.pct}%</span>
+          {/* ── Foundry Value Chain ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Value Chain: Inputs → Foundry → Outputs</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 20 }}>Revenue flows downward (end markets pay designers pay foundries pay equipment/materials). Direct stock positions (&gt;$20K) highlighted in green.</div>
+
+            {valueChain.map((layer, li) => (
+              <div key={layer.label}>
+                {li > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke={T_.borderStrong} strokeWidth="2" fill="none"/></svg>
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
+                  <div style={{ minWidth: 130, maxWidth: 130, textAlign: "right", paddingTop: 10 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
+                    {layer.items.map(item => {
+                      const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
+                      const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
+                      return (
+                        <div key={item.name} style={{
+                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
+                          border: `1px solid ${inPort ? T_.green : T_.border}`,
+                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
+                          borderLeft: `3px solid ${item.color}`, position: "relative",
+                        }}>
+                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: T_.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
+                          <div style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.name}</div>
+                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{item.sub}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
                 </div>
-              ))}
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginTop: 20, marginBottom: 12 }}>Revenue by Platform (Q4 2025)</div>
-              <div style={{ display: "flex", height: 20, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
-                {revByPlatform.map(r => <div key={r.label} style={{ width: `${r.pct}%`, background: r.color }} />)}
               </div>
-              {revByPlatform.map(r => (
-                <div key={r.label} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: r.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: T_.textMid, flex: 1 }}>{r.label}</span>
-                  <span style={{ fontSize: 12, color: T_.textDim, fontWeight: 600 }}>{r.pct}%</span>
-                </div>
-              ))}
+            ))}
+
+            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: T_.textGhost }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1px dashed ${T_.green}`, background: "rgba(16,185,129,0.08)" }} />
+                <span>Direct position (&gt;$20K)</span>
+              </div>
+              <span>↓ = revenue flow direction</span>
             </div>
           </div>
 
-          {/* ── Wafer Foundry Market Share ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>Foundry Market Share (FY2025)</div>
-              {[
-                { name: "TSMC", share: 70, color: TSMC_COLOR, sub: "90%+ at advanced nodes (<7nm)" },
-                { name: "Samsung", share: 11, color: "#1428A0", sub: "GAA at 3nm; yields lagging TSMC" },
-                { name: "GlobalFoundries", share: 5, color: "#00A551", sub: "Mature/specialty (12nm+); no EUV" },
-                { name: "UMC", share: 5, color: "#005BAC", sub: "Mature nodes (22/28nm+)" },
-                { name: "SMIC", share: 5, color: "#CC0000", sub: "China domestic; DUV-based 7nm" },
-                { name: "Others", share: 4, color: T_.textGhost, sub: "Tower Semi, PSMC, etc." },
-              ].map(f => (
-                <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: T_.textMid, minWidth: 90, fontWeight: 600 }}>{f.name}</span>
-                  <div style={{ flex: 1, height: 14, background: T_.border, borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
-                  </div>
-                  <span style={{ fontSize: 11, color: T_.textDim, minWidth: 30, textAlign: "right" }}>{f.share}%</span>
-                </div>
-              ))}
-              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce. TSMC peaked at 72% in Q3 2025; FY avg ~70%.</div>
-            </div>
-            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>Advanced Node Share (&lt;7nm)</div>
-              {[
-                { name: "TSMC", share: 90, color: TSMC_COLOR, sub: "N3, N5, N7. Sole EUV leader at 3nm" },
-                { name: "Samsung", share: 8, color: "#1428A0", sub: "3nm GAA; Qualcomm, Google partial" },
-                { name: "Intel Foundry", share: 2, color: "#0071C5", sub: "Intel 18A; ramping 2025-2026" },
-              ].map(f => (
-                <div key={f.name} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: f.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: T_.textMid, minWidth: 90, fontWeight: 600 }}>{f.name}</span>
-                  <div style={{ flex: 1, height: 14, background: T_.border, borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${f.share}%`, height: "100%", background: f.color, borderRadius: 4, opacity: 0.7 }} />
-                  </div>
-                  <span style={{ fontSize: 11, color: T_.textDim, minWidth: 30, textAlign: "right" }}>{f.share}%</span>
-                </div>
-              ))}
-              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>TSMC has near-monopoly at leading edge. Samsung competitive at 3nm GAA but volume lags significantly.</div>
-            </div>
+          {/* ── Advanced Packaging Roadmap ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "20px 24px", marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Advanced Packaging — The Critical AI Bottleneck</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>2.5D / 3D packaging gates AI compute today. CoWoS-L integrates multiple accelerator dies + HBM stacks on one large interposer — without it, modern AI GPUs cannot be assembled. Intel and Samsung have alternatives but neither is at scale.</div>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+                  {["Variant", "Vendor", "Status", "Date", "Notes"].map(h => (
+                    <th key={h} style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost, fontWeight: 600, fontSize: 10, textTransform: "uppercase", letterSpacing: "0.5px" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {packagingRoadmap.map(r => (
+                  <tr key={r.variant} style={{ borderBottom: `1px solid ${T_.border}` }}>
+                    <td style={{ padding: "8px", color: T_.textMid, fontWeight: 600, whiteSpace: "nowrap" }}>{r.variant}</td>
+                    <td style={{ padding: "8px", color: r.vendorColor, fontWeight: 600, whiteSpace: "nowrap" }}>{r.vendor}</td>
+                    <td style={{ padding: "8px", whiteSpace: "nowrap" }}><span style={{ fontSize: 10, fontWeight: 600, padding: "2px 8px", borderRadius: 4, background: `${statusColor(r.status)}15`, color: statusColor(r.status) }}>{r.status}</span></td>
+                    <td style={{ padding: "8px", color: T_.textDim, whiteSpace: "nowrap" }}>{r.date}</td>
+                    <td style={{ padding: "8px", color: T_.textDim, lineHeight: 1.5 }}>{r.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* ── CoWoS Capacity & Allocation ── */}
@@ -3970,85 +3991,108 @@ export default function IndustryResearch({ initialTab }) {
                   <span style={{ fontSize: 10, color: T_.textGhost, minWidth: 100 }}>{c.wafers}</span>
                 </div>
               ))}
-              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>NVIDIA &gt;50% of total CoWoS; 510K wafers specifically CoWoS-L for B300/Rubin.</div>
+              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>NVIDIA &gt;50% of total CoWoS; ~510K wafers specifically CoWoS-L for B300/Rubin.</div>
             </div>
           </div>
 
-          {/* ── Supply Chain & Ecosystem Map ── */}
+          {/* ── Demand Drivers ── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>TSMC Supply Chain & Ecosystem Map</div>
-            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 20 }}>Revenue and capex flow from materials → equipment → TSMC → packaging → customers. Direct stock positions (&gt;$20K) highlighted in green.</div>
-
-            {ecosystemLayers.map((layer, li) => (
-              <div key={layer.label}>
-                {li > 0 && (
-                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
-                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke={T_.borderStrong} strokeWidth="2" fill="none"/></svg>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Demand by End Market</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>Where the foundry industry's revenue comes from. AI/HPC has gone from ~25% to ~45% in 3 years; if the trend continues it owns &lt;3nm capacity. Smartphones still the largest single OEM customer (Apple) but mature growth.</div>
+            <div style={{ display: "flex", height: 22, borderRadius: 6, overflow: "hidden", marginBottom: 14 }}>
+              {demandMix.map(d => <div key={d.sector} style={{ width: `${d.pct}%`, background: d.color }} />)}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {demandMix.map(d => (
+                <div key={d.sector} style={{ background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, padding: "8px 12px", borderLeft: `3px solid ${d.color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: T_.textMid }}>{d.sector}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: d.color }}>{d.pct}% · {d.growth}</span>
                   </div>
-                )}
-                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
-                  <div style={{ minWidth: 120, maxWidth: 120, textAlign: "right", paddingTop: 10 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
-                    {layer.items.map(item => {
-                      const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
-                      const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
-                      return (
-                        <div key={item.name} style={{
-                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
-                          border: `1px solid ${inPort ? T_.green : T_.border}`,
-                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
-                          borderLeft: `3px solid ${item.color}`, position: "relative",
-                        }}>
-                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: T_.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
-                          <div style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.name}</div>
-                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{item.sub}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.4 }}>{d.note}</div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
+            <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce, SIA, TSMC platform mix.</div>
+          </div>
 
-            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: T_.textGhost }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1px dashed ${T_.green}`, background: "rgba(16,185,129,0.08)" }} />
-                <span>Direct position (&gt;$20K)</span>
+          {/* ── Geographic Distribution & Re-shoring ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Geographic Distribution & Re-shoring</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>Where wafers come from today, and where new capacity is being built. Taiwan dominance at the leading edge is the industry's central geopolitical risk.</div>
+
+            <div style={{ marginBottom: 18 }}>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T_.textGhost, marginBottom: 10 }}>Wafer Capacity by Region (2025)</div>
+              <div style={{ display: "grid", gridTemplateColumns: "120px 1fr 1fr 2fr", gap: 8, fontSize: 10, color: T_.textGhost, padding: "0 8px 6px", borderBottom: `1px solid ${T_.border}`, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                <div>Region</div><div>Adv. (&lt;5nm) Share</div><div>Total Wafer Share</div><div></div>
               </div>
-              <span>↓ = revenue / capex flow direction</span>
+              {geoMix.map(g => (
+                <div key={g.region} style={{ display: "grid", gridTemplateColumns: "120px 1fr 1fr 2fr", gap: 8, padding: "8px", borderBottom: `1px solid ${T_.border}`, alignItems: "center" }}>
+                  <div style={{ fontSize: 12, color: g.color, fontWeight: 600 }}>{g.region}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ flex: 1, height: 10, background: T_.border, borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{ width: `${g.advancedShare}%`, height: "100%", background: g.color, opacity: 0.7 }} />
+                    </div>
+                    <span style={{ fontSize: 11, color: T_.textDim, minWidth: 28 }}>{g.advancedShare}%</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                    <div style={{ flex: 1, height: 10, background: T_.border, borderRadius: 3, overflow: "hidden" }}>
+                      <div style={{ width: `${g.totalShare}%`, height: "100%", background: g.color, opacity: 0.4 }} />
+                    </div>
+                    <span style={{ fontSize: 11, color: T_.textDim, minWidth: 28 }}>{g.totalShare}%</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost }}>{g.note}</div>
+                </div>
+              ))}
+              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 6 }}>Source: SIA 2024 State of Industry, TrendForce. Advanced = &lt;5nm.</div>
+            </div>
+
+            <div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: T_.textGhost, marginBottom: 10 }}>Major Re-shoring Projects (CHIPS Act + EU Chips Act + JP METI)</div>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+                <thead>
+                  <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+                    {["Project", "Investment", "Node", "Target", "Public Funding"].map(h => (
+                      <th key={h} style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost, fontWeight: 600, fontSize: 10, textTransform: "uppercase" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {reshoringProjects.map(p => (
+                    <tr key={p.project} style={{ borderBottom: `1px solid ${T_.border}` }}>
+                      <td style={{ padding: "6px 8px", color: T_.textMid, fontWeight: 600 }}>{p.project}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textMid }}>{p.invest}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textMid }}>{p.node}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textDim }}>{p.target}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textGhost, fontSize: 11 }}>{p.funding}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
 
-          {/* ── Global Fab Expansion (compact table) ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 20px", marginBottom: 20 }}>
-            <div style={{ fontSize: 14, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Global Fab Expansion</div>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-              <thead>
-                <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-                  {["Location", "Phase", "Node", "Status", "Target", "Notes"].map(h => (
-                    <th key={h} style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost, fontWeight: 600, fontSize: 10, textTransform: "uppercase" }}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {fabExpansion.flatMap(fab => fab.phases.map(p => (
-                  <tr key={`${fab.loc}-${p.phase}`} style={{ borderBottom: `1px solid ${T_.border}` }}>
-                    <td style={{ padding: "5px 8px", color: TSMC_COLOR, fontWeight: 600, whiteSpace: "nowrap" }}>{fab.loc.split('—')[0].split('(')[0].trim()}</td>
-                    <td style={{ padding: "5px 8px", color: T_.textMid }}>{p.phase}</td>
-                    <td style={{ padding: "5px 8px", color: T_.textMid }}>{p.node}</td>
-                    <td style={{ padding: "5px 8px" }}><span style={{ fontSize: 10, fontWeight: 600, padding: "1px 6px", borderRadius: 4, background: `${statusColor(p.status)}15`, color: statusColor(p.status) }}>{p.status}</span></td>
-                    <td style={{ padding: "5px 8px", color: T_.textDim }}>{p.date}</td>
-                    <td style={{ padding: "5px 8px", color: T_.textGhost, fontSize: 11 }}>{p.invest}</td>
-                  </tr>
-                )))}
-              </tbody>
-            </table>
+          {/* ── Current Inputs & Bottlenecks ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>AI Compute: Critical Inputs & Current Bottlenecks (2026)</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>Critical inputs to AI compute and where the bottlenecks sit today. <span style={{ color: T_.amber, fontWeight: 600 }}>This list shifts with each chip generation</span> — yesterday's binding constraint becomes tomorrow's commodity. As of 2026 (Rubin / MI400 / TPU v8 era), advanced packaging (CoWoS-L) and HBM are the gating factors; foundry wafer capacity itself is generally not.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {bottlenecks.map((b, i) => (
+                <div key={i} style={{ display: "grid", gridTemplateColumns: "180px 90px 1fr 1.5fr", gap: 10, padding: "10px 12px", background: "#0B0F19", borderRadius: 6, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${sevColor(b.severity)}`, alignItems: "center" }}>
+                  <div style={{ fontSize: 12, color: T_.textMid, fontWeight: 700 }}>{b.item}</div>
+                  <div><span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${sevColor(b.severity)}20`, color: sevColor(b.severity) }}>{b.severity}</span></div>
+                  <div style={{ fontSize: 11, color: T_.textDim }}>
+                    <div>Now: {b.current}</div>
+                    <div style={{ color: T_.textGhost }}>→ {b.target}</div>
+                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.5 }}>{b.note}</div>
+                </div>
+              ))}
+            </div>
           </div>
 
           <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.6 }}>
-            Sources: TSMC Q4 2025 / Q1 2026 earnings, 2025 Technology Symposium, TrendForce, SemiAnalysis, Tom's Hardware, SemiEngineering, BlackRidge Research, company filings. Revenue shares are estimates based on sell-side consensus and public disclosures. CoWoS allocation based on TrendForce and supply chain reports.
+            Sources: TSMC Q1 2026 earnings; Samsung & Intel earnings; TrendForce; SemiAnalysis; SIA 2024 State of Industry; ASML earnings; Tom's Hardware; SemiEngineering; BlackRidge Research; company filings. Market-share figures are TrendForce estimates. CoWoS allocation based on TrendForce and supply-chain reports.
           </div>
         </div>
         );
