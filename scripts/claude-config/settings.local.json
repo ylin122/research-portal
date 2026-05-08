@@ -274,7 +274,8 @@
       "Bash(cp ~/.claude/CLAUDE.md ~/dotclaude/CLAUDE.md)",
       "Bash(cp ~/.claude/settings.json ~/dotclaude/settings.json)",
       "PowerShell($node = \\(node --version\\) 2>&1; $user = $env:USERNAME; Write-Output \"NODE_VERSION=$node\"; Write-Output \"WINDOWS_USERNAME=$user\"; Write-Output \"USERPROFILE=$env:USERPROFILE\")",
-      "Bash(echo \"exit code: $?\")"
+      "Bash(echo \"exit code: $?\")",
+      "PowerShell(Start-Process \"chrome.exe\" \"http://localhost:3000\"; Start-Process \"chrome.exe\" \"http://localhost:3001\")"
     ]
   }
 }

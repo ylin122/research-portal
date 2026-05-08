@@ -3133,8 +3133,8 @@ export default function IndustryResearch({ initialTab }) {
         </div>
 
         {/* Delivery & Volume Expectations — Current + Upcoming */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Delivery &amp; Volume Expectations — Current &amp; Upcoming</div>
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 14, marginBottom: 20 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 10 }}>Delivery &amp; Volume Expectations — Current &amp; Upcoming</div>
           {(() => {
             const cpuDeliveryData = [
               { vendor: "Intel", chip: "Diamond Rapids (Xeon 7)", status: "Sampling", shipDate: "2026-12", vol2025: "—", vol2026: "Sampling only", customers: "Hyperscalers, OEMs", notes: "256C/256T P-core. Intel 18A. Up to 650W. Yield-dependent — could slip to 2027.", color: "#0369A1" },
@@ -3167,25 +3167,25 @@ export default function IndustryResearch({ initialTab }) {
             const shipLabel = (d) => { const [y, m] = d.split("-"); const months = ["","Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]; return `${months[+m]} ${y}`; };
             return (
             <div style={{ overflow: "auto" }}>
-              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
                 <thead>
                   <tr style={{ borderBottom: `2px solid ${T_.border}` }}>
                     {[{l:"Vendor",k:"vendor"},{l:"Chip / Platform",k:"chip"},{l:"Ship Date (Est.)",k:"shipDate"},{l:"Status",k:"status"},{l:"2025 Vol (est.)",k:""},{l:"2026 Vol (est.)",k:""},{l:"Key Customers",k:""},{l:"Notes",k:""}].map((h) => (
-                      <th key={h.l} onClick={h.k ? () => dToggle(h.k) : undefined} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: h.k ? "pointer" : "default" }}>{h.l}{dArr(h.k)}</th>
+                      <th key={h.l} onClick={h.k ? () => dToggle(h.k) : undefined} style={{ padding: "6px 8px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap", cursor: h.k ? "pointer" : "default" }}>{h.l}{dArr(h.k)}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {dSorted.map((row, ri) => (
                     <tr key={ri} style={{ borderBottom: "1px solid #0B0F19" }}>
-                      <td style={{ padding: "8px 10px", fontWeight: 700, color: row.color, whiteSpace: "nowrap" }}>{row.vendor}</td>
-                      <td style={{ padding: "8px 10px", color: T_.textMid, fontWeight: 600, whiteSpace: "nowrap" }}>{row.chip}</td>
-                      <td style={{ padding: "8px 10px", color: T_.text, fontWeight: 600, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>{shipLabel(row.shipDate)}</td>
-                      <td style={{ padding: "8px 10px" }}><span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: row.status.includes("Shipping") ? "rgba(16,185,129,0.12)" : row.status.includes("2026") ? "rgba(245,158,11,0.12)" : "rgba(100,116,139,0.12)", color: row.status.includes("Shipping") ? T_.green : row.status.includes("2026") ? T_.amber : T_.textDim }}>{row.status}</span></td>
-                      <td style={{ padding: "8px 10px", color: T_.textMid, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2025}</td>
-                      <td style={{ padding: "8px 10px", color: T_.amber, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2026}</td>
-                      <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11, whiteSpace: "nowrap" }}>{row.customers}</td>
-                      <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11, maxWidth: 280 }}>{row.notes}</td>
+                      <td style={{ padding: "6px 8px", fontWeight: 700, color: row.color, whiteSpace: "nowrap" }}>{row.vendor}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textMid, fontWeight: 600, whiteSpace: "nowrap" }}>{row.chip}</td>
+                      <td style={{ padding: "6px 8px", color: T_.text, fontWeight: 600, whiteSpace: "nowrap", fontVariantNumeric: "tabular-nums" }}>{shipLabel(row.shipDate)}</td>
+                      <td style={{ padding: "6px 8px" }}><span style={{ fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3, background: row.status.includes("Shipping") ? "rgba(16,185,129,0.12)" : row.status.includes("2026") ? "rgba(245,158,11,0.12)" : "rgba(100,116,139,0.12)", color: row.status.includes("Shipping") ? T_.green : row.status.includes("2026") ? T_.amber : T_.textDim, whiteSpace: "nowrap" }}>{row.status}</span></td>
+                      <td style={{ padding: "6px 8px", color: T_.textMid, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2025}</td>
+                      <td style={{ padding: "6px 8px", color: T_.amber, fontWeight: 600, fontVariantNumeric: "tabular-nums", whiteSpace: "nowrap" }}>{row.vol2026}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textDim, fontSize: 10.5, maxWidth: 200, lineHeight: 1.4 }}>{row.customers}</td>
+                      <td style={{ padding: "6px 8px", color: T_.textDim, fontSize: 10.5, maxWidth: 240, lineHeight: 1.4 }}>{row.notes}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -3257,17 +3257,17 @@ export default function IndustryResearch({ initialTab }) {
         </div>
 
         {/* Notes per chip — expandable */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Key Notes &amp; Context</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 14 }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 10 }}>Key Notes &amp; Context</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
             {cpuSorted.filter(c => c.notes).map((c, i) => (
-              <div key={i} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: cpuVendorColors[c.vendor] }}>{c.vendor}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{c.chip}</span>
-                  <span style={{ padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${cpuStatusColor(c.status)}20`, color: cpuStatusColor(c.status) }}>{c.status}</span>
+              <div key={i} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "9px 11px" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: cpuVendorColors[c.vendor] }}>{c.vendor}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: T_.text }}>{c.chip}</span>
+                  <span style={{ padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${cpuStatusColor(c.status)}20`, color: cpuStatusColor(c.status) }}>{c.status}</span>
                 </div>
-                <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.6 }}>{c.notes}</div>
+                <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.45 }}>{c.notes}</div>
               </div>
             ))}
           </div>
@@ -3522,7 +3522,7 @@ export default function IndustryResearch({ initialTab }) {
         <div>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div>
-            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Shell + Power</div>
+            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Infra + Power</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{SHELL_POWER_DATA.length} providers &middot; Infrastructure shell &amp; power for AI data centers</div>
           </div>
         </div>
@@ -3635,7 +3635,7 @@ export default function IndustryResearch({ initialTab }) {
         // === Industry header tiles (industry-wide) ===
         const headerTiles = [
           { label: "Foundry Mkt 2025", value: "~$170B", sub: "+25% YoY (TrendForce)" },
-          { label: "Foundry Capex 2026E", value: "~$90B", sub: "All foundries (TSMC $54B + Samsung/Intel/SMIC/UMC/GF)" },
+          { label: "Foundry Capex 2026E", value: "~$90B", sub: "" },
           { label: "Advanced (<7nm)", value: "~50%", sub: "of foundry value" },
           { label: "TSMC Share", value: "70%", sub: "90% at <7nm" },
           { label: "AI/HPC Demand", value: "~45%", sub: "of foundry rev (rising)" },
@@ -3744,20 +3744,26 @@ export default function IndustryResearch({ initialTab }) {
           { variant: "I-Cube",        vendor: "Samsung", vendorColor: "#1428A0",  status: "Limited",     date: "2024+",   note: "Samsung 2.5D. Far behind CoWoS in volume and customer adoption." },
         ];
 
-        const cowosCapacity = [
-          { period: "Late 2024", kwpm: 38, label: "~38K wpm" },
-          { period: "End 2025", kwpm: 75, label: "~75K wpm (2x)" },
-          { period: "End 2026E", kwpm: 130, label: "~130K wpm (3.4x)" },
+        // === CoWoS capacity (year-end wpm, 12-inch wafer-equivalent) + customer allocation share ===
+        // Sources: TSMC earnings, TrendForce, SemiAnalysis, Morgan Stanley. 2022-25 are actuals/guided; 2026E TSMC-guided exit rate; 2027E analyst estimates.
+        const cowosTimeSeries = [
+          { year: "2022",  est: false, total: 13,  yoy: "+30%",  nvidia: 32, broadcom: 12, amd: 6,  marvell: 0,  amazon: 0, mediatek: 0, other: 50, notes: "Pre-ChatGPT baseline. AI <30% of CoWoS demand. Mostly Xilinx (AMD) FPGA, HPC ASICs, networking." },
+          { year: "2023",  est: false, total: 17,  yoy: "+31%",  nvidia: 50, broadcom: 10, amd: 7,  marvell: 2,  amazon: 1, mediatek: 0, other: 30, notes: "Post-ChatGPT inflection. NVIDIA scrambles for H100 allocation; pre-pays multi-quarter capacity. TSMC announces 2x expansion plan." },
+          { year: "2024",  est: false, total: 38,  yoy: "+124%", nvidia: 58, broadcom: 11, amd: 9,  marvell: 3,  amazon: 3, mediatek: 1, other: 15, notes: "TSMC doubled CoWoS capacity. Hyperscaler ASIC volume emerges (TPU v5p, Trainium 2). Still oversold; Apple/Tesla declined allocation." },
+          { year: "2025",  est: false, total: 75,  yoy: "+97%",  nvidia: 58, broadcom: 13, amd: 10, marvell: 5,  amazon: 5, mediatek: 2, other: 7,  notes: "TSMC 2x again. CoWoS-L volume ramps for Blackwell (B200/B300). Non-NVIDIA customers still allocation-constrained. CoWoS-S declining." },
+          { year: "2026E", est: true,  total: 130, yoy: "+73%",  nvidia: 56, broadcom: 15, amd: 11, marvell: 6,  amazon: 5, mediatek: 2, other: 5,  notes: "TSMC-guided 130K exit rate (Apr 2026 call). Rubin (CoWoS-L, 5.5× reticle) primary product. ASIC share rising as Google/Meta/OpenAI scale." },
+          { year: "2027E", est: true,  total: 185, yoy: "+42%",  nvidia: 52, broadcom: 18, amd: 11, marvell: 7,  amazon: 6, mediatek: 3, other: 3,  notes: "Analyst estimate (TrendForce / SemiAnalysis). 9.5× reticle interposer for Rubin Ultra/Feynman. NVIDIA share dilutes as custom ASIC volume scales faster." },
         ];
 
-        const cowosAllocation = [
-          { customer: "NVIDIA", share: 58, wafers: "~850-990K/yr", products: "B300, Rubin (CoWoS-L). Range: TrendForce 60% / file-internal 55%", color: "#76B900" },
-          { customer: "Broadcom", share: 15, wafers: "~150K/yr", products: "Google TPU, Meta MTIA, OpenAI ASIC", color: T_.red },
-          { customer: "AMD", share: 11, wafers: "~105K/yr", products: "MI355, MI400", color: "#ED1C24" },
-          { customer: "Marvell", share: 5, wafers: "~55K/yr", products: "AWS Trainium, MSFT Maia", color: "#00599C" },
-          { customer: "Amazon (Alchip)", share: 5, wafers: "~50K/yr", products: "Custom AI chips", color: "#FF9900" },
-          { customer: "MediaTek", share: 2, wafers: "~20K/yr", products: "Google TPU v7e/v8e", color: "#FFCC00" },
-          { customer: "Others", share: 7, wafers: "—", products: "Second-tier AI chip cos", color: T_.textGhost },
+        // === TSMC advanced-node (<5nm) wafer capacity (year-end wpm) + customer allocation share ===
+        // Sources: TSMC capex calls, TrendForce, SemiAnalysis. <5nm = N5+N4+N3 (+ N2 from 2026). 2026E/2027E are guided/estimates.
+        const advWaferTimeSeries = [
+          { year: "2022",  est: false, total: 140, n5n4: 130, n3: 0,   n2: 0,   nvidia: 5,  apple: 50, amd: 10, qualcomm: 12, mediatek: 10, broadcom: 3,  other: 10, notes: "N3 not yet in HVM. Apple dominates N5/N4 (A16, M2). NVIDIA on custom 4N for Hopper (H100). N7 still huge but excluded here." },
+          { year: "2023",  est: false, total: 155, n5n4: 140, n3: 15,  n2: 0,   nvidia: 12, apple: 45, amd: 12, qualcomm: 11, mediatek: 8,  broadcom: 4,  other: 8,  notes: "N3 HVM begins (Apple A17 Pro / M3). NVIDIA H100/H200 ramp lifts share. TSMC advanced sold out through 2024." },
+          { year: "2024",  est: false, total: 175, n5n4: 145, n3: 30,  n2: 0,   nvidia: 22, apple: 32, amd: 11, qualcomm: 9,  mediatek: 8,  broadcom: 7,  other: 11, notes: "Blackwell (4NP) ramp. N3 expanding. NVIDIA share doubles on AI GPU volume. Hyperscaler ASIC (Broadcom) becomes a meaningful slice." },
+          { year: "2025",  est: false, total: 205, n5n4: 150, n3: 55,  n2: 0,   nvidia: 28, apple: 26, amd: 11, qualcomm: 8,  mediatek: 7,  broadcom: 10, other: 10, notes: "B200/B300 ramp + Rubin tape-outs on N3. Apple M5/A19 on N3P. Broadcom (TPU v7, Meta MTIA v2) on N3. N2 risk-prod starts Q4." },
+          { year: "2026E", est: true,  total: 235, n5n4: 145, n3: 75,  n2: 15,  nvidia: 32, apple: 22, amd: 12, qualcomm: 8,  mediatek: 6,  broadcom: 12, other: 8,  notes: "N2 HVM mainstream. Apple A20/M6 first to N2. NVIDIA Vera/Rubin on N3. Broadcom volume scales fast for hyperscaler ASIC. AMD MI455 on N2." },
+          { year: "2027E", est: true,  total: 265, n5n4: 130, n3: 90,  n2: 45,  nvidia: 33, apple: 20, amd: 13, qualcomm: 7,  mediatek: 6,  broadcom: 14, other: 7,  notes: "Analyst estimate. Rubin Ultra / Feynman move to N3/A16. AMD MI500 on N2. ASIC volume (Broadcom + Marvell) overtakes Apple growth — but Apple stays #2 by absolute wafers." },
         ];
 
         // === Geographic distribution ===
@@ -3811,6 +3817,27 @@ export default function IndustryResearch({ initialTab }) {
                 <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 2 }}>{m.sub}</div>
               </div>
             ))}
+          </div>
+
+          {/* ── Demand Drivers (who buys the wafers) ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 18, marginBottom: 18 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Demand by End Market</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 12 }}>Where the foundry industry's revenue comes from. AI/HPC has gone from ~25% to ~45% in 3 years; if the trend continues it owns &lt;3nm capacity. Smartphones still the largest single OEM customer (Apple) but mature growth.</div>
+            <div style={{ display: "flex", height: 22, borderRadius: 6, overflow: "hidden", marginBottom: 12 }}>
+              {demandMix.map(d => <div key={d.sector} style={{ width: `${d.pct}%`, background: d.color }} />)}
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              {demandMix.map(d => (
+                <div key={d.sector} style={{ background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, padding: "8px 12px", borderLeft: `3px solid ${d.color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: T_.textMid }}>{d.sector}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: d.color }}>{d.pct}% · {d.growth}</span>
+                  </div>
+                  <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.4 }}>{d.note}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce, SIA, TSMC platform mix.</div>
           </div>
 
           {/* ── Foundry Market Structure ── */}
@@ -3887,53 +3914,6 @@ export default function IndustryResearch({ initialTab }) {
             </table>
           </div>
 
-          {/* ── Foundry Value Chain ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Value Chain: Inputs → Foundry → Outputs</div>
-            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 20 }}>Revenue flows downward (end markets pay designers pay foundries pay equipment/materials). Direct stock positions (&gt;$20K) highlighted in green.</div>
-
-            {valueChain.map((layer, li) => (
-              <div key={layer.label}>
-                {li > 0 && (
-                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
-                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke={T_.borderStrong} strokeWidth="2" fill="none"/></svg>
-                  </div>
-                )}
-                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
-                  <div style={{ minWidth: 130, maxWidth: 130, textAlign: "right", paddingTop: 10 }}>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
-                  </div>
-                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
-                    {layer.items.map(item => {
-                      const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
-                      const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
-                      return (
-                        <div key={item.name} style={{
-                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
-                          border: `1px solid ${inPort ? T_.green : T_.border}`,
-                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
-                          borderLeft: `3px solid ${item.color}`, position: "relative",
-                        }}>
-                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: T_.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
-                          <div style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.name}</div>
-                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{item.sub}</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: T_.textGhost }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1px dashed ${T_.green}`, background: "rgba(16,185,129,0.08)" }} />
-                <span>Direct position (&gt;$20K)</span>
-              </div>
-              <span>↓ = revenue flow direction</span>
-            </div>
-          </div>
-
           {/* ── Advanced Packaging Roadmap ── */}
           <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "20px 24px", marginBottom: 20 }}>
             <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Advanced Packaging — The Critical AI Bottleneck</div>
@@ -3960,60 +3940,80 @@ export default function IndustryResearch({ initialTab }) {
             </table>
           </div>
 
-          {/* ── CoWoS Capacity & Allocation ── */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 20 }}>
-            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>CoWoS Capacity Ramp</div>
-              <div style={{ display: "flex", alignItems: "flex-end", gap: 16, height: 140, marginBottom: 12 }}>
-                {cowosCapacity.map(c => {
-                  const h = (c.kwpm / 130) * 120;
-                  return (
-                    <div key={c.period} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
-                      <div style={{ fontSize: 12, fontWeight: 700, color: T_.amber }}>{c.label}</div>
-                      <div style={{ width: "100%", height: h, background: `linear-gradient(180deg, ${T_.amber} 0%, #92400E 100%)`, borderRadius: "6px 6px 0 0" }} />
-                      <div style={{ fontSize: 11, color: T_.textDim }}>{c.period}</div>
-                    </div>
-                  );
-                })}
-              </div>
+          {/* ── CoWoS & Wafer Ramp — Capacity + Customer Allocation Over Time ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, marginBottom: 20 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>CoWoS & Advanced Wafer Ramp — Capacity + Customer Allocation Over Time</div>
+            <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.5, marginBottom: 14 }}>
+              Two-stage AI accelerator supply chain: front-end <strong>advanced wafer</strong> (the GPU/ASIC die, fabbed at &lt;5nm) and <strong>CoWoS</strong> (advanced packaging that combines die + HBM on an interposer). Capacity is reported as year-end wafer-equivalent monthly capacity (wpm). 2022-25 are actuals/TSMC-guided; <span style={{ color: T_.amber }}>2026E is TSMC-guided exit rate</span>; <span style={{ color: T_.amber }}>2027E is analyst estimate</span> (TrendForce / SemiAnalysis / Morgan Stanley) — wide error bars. Capex → capacity lag is 18-24 months, so 2024-25 capex is what built today's capacity.
             </div>
 
-            <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 16 }}>CoWoS Allocation (2026E)</div>
-              {cowosAllocation.map(c => (
-                <div key={c.customer} style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <div style={{ width: 10, height: 10, borderRadius: 2, background: c.color, flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: T_.textMid, minWidth: 80, fontWeight: 600 }}>{c.customer}</span>
-                  <div style={{ flex: 1, height: 14, background: T_.border, borderRadius: 4, overflow: "hidden" }}>
-                    <div style={{ width: `${c.share}%`, height: "100%", background: c.color, borderRadius: 4, opacity: 0.7 }} />
-                  </div>
-                  <span style={{ fontSize: 11, color: T_.textDim, minWidth: 30, textAlign: "right" }}>{c.share}%</span>
-                  <span style={{ fontSize: 10, color: T_.textGhost, minWidth: 100 }}>{c.wafers}</span>
-                </div>
-              ))}
-              <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>NVIDIA &gt;50% of total CoWoS; ~510K wafers specifically CoWoS-L for B300/Rubin.</div>
+            {/* CoWoS table */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: T_.amber, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6, marginTop: 6 }}>CoWoS Packaging — Capacity & Customer Mix (% share of total)</div>
+            <div style={{ overflow: "auto", marginBottom: 14 }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${T_.border}` }}>
+                    {["Year","Total wpm (YE)","YoY","NVIDIA","Broadcom (HS ASIC)","AMD","Marvell","Amazon (Alchip)","MediaTek","Others","Key Notes"].map(h => (
+                      <th key={h} style={{ padding: "6px 8px", textAlign: h === "Key Notes" ? "left" : (h === "Year" || h === "YoY") ? "left" : "right", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {cowosTimeSeries.map(r => (
+                    <tr key={r.year} style={{ borderBottom: "1px solid #0B0F19", background: r.est ? "rgba(245,158,11,0.04)" : "transparent" }}>
+                      <td style={{ padding: "6px 8px", fontWeight: 700, color: r.est ? T_.amber : T_.text, whiteSpace: "nowrap" }}>{r.year}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.text, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{r.total}K</td>
+                      <td style={{ padding: "6px 8px", color: T_.green, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{r.yoy}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#76B900", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{r.nvidia}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.red, fontVariantNumeric: "tabular-nums" }}>{r.broadcom}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#ED1C24", fontVariantNumeric: "tabular-nums" }}>{r.amd}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#00599C", fontVariantNumeric: "tabular-nums" }}>{r.marvell || "—"}{r.marvell ? "%" : ""}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#FF9900", fontVariantNumeric: "tabular-nums" }}>{r.amazon || "—"}{r.amazon ? "%" : ""}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#FFCC00", fontVariantNumeric: "tabular-nums" }}>{r.mediatek || "—"}{r.mediatek ? "%" : ""}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textGhost, fontVariantNumeric: "tabular-nums" }}>{r.other}%</td>
+                      <td style={{ padding: "6px 8px", color: T_.textDim, fontSize: 10.5, maxWidth: 360, lineHeight: 1.4 }}>{r.notes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          </div>
 
-          {/* ── Demand Drivers ── */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24, marginBottom: 20 }}>
-            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Demand by End Market</div>
-            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 14 }}>Where the foundry industry's revenue comes from. AI/HPC has gone from ~25% to ~45% in 3 years; if the trend continues it owns &lt;3nm capacity. Smartphones still the largest single OEM customer (Apple) but mature growth.</div>
-            <div style={{ display: "flex", height: 22, borderRadius: 6, overflow: "hidden", marginBottom: 14 }}>
-              {demandMix.map(d => <div key={d.sector} style={{ width: `${d.pct}%`, background: d.color }} />)}
+            {/* Advanced wafer table */}
+            <div style={{ fontSize: 12, fontWeight: 700, color: T_.blue, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 6, marginTop: 12 }}>TSMC Advanced Node (&lt;5nm) Wafer — Capacity & Customer Mix (% share of &lt;5nm wpm)</div>
+            <div style={{ overflow: "auto" }}>
+              <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+                <thead>
+                  <tr style={{ borderBottom: `2px solid ${T_.border}` }}>
+                    {["Year","<5nm Total wpm","N5/N4","N3","N2","NVIDIA","Apple","AMD","Qualcomm","MediaTek","Broadcom","Others","Key Notes"].map(h => (
+                      <th key={h} style={{ padding: "6px 8px", textAlign: h === "Key Notes" ? "left" : h === "Year" ? "left" : "right", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {advWaferTimeSeries.map(r => (
+                    <tr key={r.year} style={{ borderBottom: "1px solid #0B0F19", background: r.est ? "rgba(59,130,246,0.04)" : "transparent" }}>
+                      <td style={{ padding: "6px 8px", fontWeight: 700, color: r.est ? T_.blue : T_.text, whiteSpace: "nowrap" }}>{r.year}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.text, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>{r.total}K</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textMid, fontVariantNumeric: "tabular-nums" }}>{r.n5n4}K</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textMid, fontVariantNumeric: "tabular-nums" }}>{r.n3 ? `${r.n3}K` : "—"}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textMid, fontVariantNumeric: "tabular-nums" }}>{r.n2 ? `${r.n2}K` : "—"}</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#76B900", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>{r.nvidia}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textDim, fontVariantNumeric: "tabular-nums" }}>{r.apple}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#ED1C24", fontVariantNumeric: "tabular-nums" }}>{r.amd}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#3253DC", fontVariantNumeric: "tabular-nums" }}>{r.qualcomm}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: "#FFCC00", fontVariantNumeric: "tabular-nums" }}>{r.mediatek}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.red, fontVariantNumeric: "tabular-nums" }}>{r.broadcom}%</td>
+                      <td style={{ padding: "6px 8px", textAlign: "right", color: T_.textGhost, fontVariantNumeric: "tabular-nums" }}>{r.other}%</td>
+                      <td style={{ padding: "6px 8px", color: T_.textDim, fontSize: 10.5, maxWidth: 340, lineHeight: 1.4 }}>{r.notes}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {demandMix.map(d => (
-                <div key={d.sector} style={{ background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, padding: "8px 12px", borderLeft: `3px solid ${d.color}` }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 2 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: T_.textMid }}>{d.sector}</span>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: d.color }}>{d.pct}% · {d.growth}</span>
-                  </div>
-                  <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.4 }}>{d.note}</div>
-                </div>
-              ))}
+
+            <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 12, fontStyle: "italic", lineHeight: 1.5 }}>
+              <strong>How to use this:</strong> CoWoS allocation is the leading indicator analysts trade on (TSMC mid-year wpm guidance moves NVIDIA/AMD/AVGO unit estimates). Wafer allocation is the longer-cycle view. Each Rubin GPU consumes ~1 CoWoS-L slot + 8 HBM stacks + ~1 N3 wafer-equivalent of die area; Rubin Ultra ~2× on each. NVIDIA's CoWoS share peaked in 2024 and is dilluting as hyperscaler ASIC volume scales (Broadcom + Marvell + Alchip combined hit ~28% by 2027E). Sources: TSMC earnings, TrendForce, SemiAnalysis, Morgan Stanley, Goldman Sachs.
             </div>
-            <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 8 }}>Source: TrendForce, SIA, TSMC platform mix.</div>
           </div>
 
           {/* ── Geographic Distribution & Re-shoring ── */}
@@ -4088,6 +4088,53 @@ export default function IndustryResearch({ initialTab }) {
                   <div style={{ fontSize: 11, color: T_.textGhost, lineHeight: 1.5 }}>{b.note}</div>
                 </div>
               ))}
+            </div>
+          </div>
+
+          {/* ── Foundry Value Chain (full-stack reference) ── */}
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 18, marginBottom: 18 }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Foundry Value Chain — Full-Stack Reference</div>
+            <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>End-market → designer → foundry → packaging → equipment → EDA → materials. Revenue flows downward. Direct stock positions (&gt;$20K) highlighted in green.</div>
+
+            {valueChain.map((layer, li) => (
+              <div key={layer.label}>
+                {li > 0 && (
+                  <div style={{ display: "flex", justifyContent: "center", padding: "6px 0" }}>
+                    <svg width="20" height="20"><path d="M10 2 L10 14 M6 10 L10 14 L14 10" stroke={T_.borderStrong} strokeWidth="2" fill="none"/></svg>
+                  </div>
+                )}
+                <div style={{ display: "flex", gap: 12, marginBottom: 4 }}>
+                  <div style={{ minWidth: 130, maxWidth: 130, textAlign: "right", paddingTop: 10 }}>
+                    <span style={{ fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px" }}>{layer.label}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", flex: 1 }}>
+                    {layer.items.map(item => {
+                      const DIRECT_POSITIONS = ["GOOGL","MSFT","NVDA","AMZN","BABA","TSLA","MU"];
+                      const inPort = item.link && DIRECT_POSITIONS.includes(item.link);
+                      return (
+                        <div key={item.name} style={{
+                          background: inPort ? "rgba(16,185,129,0.08)" : "#0B0F19",
+                          border: `1px solid ${inPort ? T_.green : T_.border}`,
+                          borderRadius: 8, padding: "10px 14px", minWidth: 160, flex: "1 1 160px", maxWidth: 260,
+                          borderLeft: `3px solid ${item.color}`, position: "relative",
+                        }}>
+                          {inPort && <div style={{ position: "absolute", top: 4, right: 6, fontSize: 8, color: T_.green, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px" }}>DIRECT POSITION</div>}
+                          <div style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.name}</div>
+                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{item.sub}</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            ))}
+
+            <div style={{ display: "flex", gap: 16, marginTop: 16, fontSize: 11, color: T_.textGhost }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                <div style={{ width: 16, height: 16, borderRadius: 4, border: `1px dashed ${T_.green}`, background: "rgba(16,185,129,0.08)" }} />
+                <span>Direct position (&gt;$20K)</span>
+              </div>
+              <span>↓ = revenue flow direction</span>
             </div>
           </div>
 

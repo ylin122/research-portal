@@ -415,7 +415,7 @@ function AppContent({ userEmail, onSignOut }) {
                   { key: "chiproadmap", label: "GPU/ASIC" },
                   { key: "cpuroadmap", label: "CPU" },
                   { key: "neoclouds", label: "Neoclouds" },
-                  { key: "shellpower", label: "Shell + Power" },
+                  { key: "shellpower", label: "Infra + Power" },
                   { key: "foundry", label: "Foundry" },
                 ].map(tab => {
                   const active = view.type === "industryResearch" && view.sub === tab.key;
