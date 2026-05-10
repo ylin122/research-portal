@@ -226,6 +226,24 @@ CREATE TABLE IF NOT EXISTS financials_cache (
   updated_at   TIMESTAMPTZ DEFAULT now()
 );
 
+-- compute_prices: weekly snapshots of cloud GPU pricing across hyperscalers.
+-- Written by api/cron-compute-pricing.mjs (Sundays). Read by IndustryResearch
+-- "Compute Pricing" tab. SKU→cohort mapping lives in src/data/computeCohortMap.js.
+CREATE TABLE IF NOT EXISTS compute_prices (
+  as_of_date          DATE NOT NULL,
+  provider            TEXT NOT NULL,    -- 'AWS' | 'Azure' | 'GCP'
+  instance_sku        TEXT NOT NULL,    -- raw provider-native SKU
+  cohort              TEXT NOT NULL,    -- canonical: A100, H100, H200, B200, B300, GB200
+  gpus_per_instance   INTEGER NOT NULL,
+  region              TEXT NOT NULL,
+  surface             TEXT NOT NULL,    -- 'on_demand' | 'spot' | 'reserved' | 'committed_short' | 'low_priority'
+  hourly_usd          NUMERIC NOT NULL, -- per-instance
+  hourly_per_gpu_usd  NUMERIC,
+  PRIMARY KEY (as_of_date, provider, instance_sku, region, surface)
+);
+CREATE INDEX IF NOT EXISTS idx_compute_prices_lookup ON compute_prices (cohort, provider, surface, as_of_date DESC);
+CREATE INDEX IF NOT EXISTS idx_compute_prices_as_of  ON compute_prices (as_of_date DESC);
+
 
 -- ─── Tables retained but no longer surfaced in the UI ────────
 -- Keep them so historical rows aren't lost. The matching client
@@ -305,7 +323,8 @@ BEGIN
   FOR t IN SELECT unnest(ARRAY[
     'companies','company_fields','kb_articles','concepts',
     'deep_dives','principles','prompts','quick_notes','sources','agent_runs',
-    'agent_definitions','financials_cache','company_notes','sector_notes',
+    'agent_definitions','financials_cache','compute_prices',
+    'company_notes','sector_notes',
     'news_cache','research_results','ideas','qa_log','watchlist'
   ])
   LOOP

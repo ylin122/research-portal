@@ -54,3 +54,23 @@ export async function upsertField(companyId, fieldKey, text) {
   return date;
 }
 
+// ─── Compute Pricing ───────────────────────────────────────────
+// Reads the latest snapshot of compute_prices written by the weekly cron.
+export async function loadLatestComputePrices() {
+  // First find the most recent as_of_date, then pull all rows for that date.
+  const { data: latest, error: latestErr } = await supabase
+    .from('compute_prices')
+    .select('as_of_date')
+    .order('as_of_date', { ascending: false })
+    .limit(1);
+  if (latestErr) { console.error('loadLatestComputePrices (latest):', latestErr); return { as_of: null, rows: [] }; }
+  if (!latest || latest.length === 0) return { as_of: null, rows: [] };
+  const as_of = latest[0].as_of_date;
+  const { data, error } = await supabase
+    .from('compute_prices')
+    .select('*')
+    .eq('as_of_date', as_of);
+  if (error) { console.error('loadLatestComputePrices (rows):', error); return { as_of, rows: [] }; }
+  return { as_of, rows: data || [] };
+}
+

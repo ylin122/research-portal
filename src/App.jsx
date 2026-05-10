@@ -208,16 +208,19 @@ function AppContent({ userEmail, onSignOut }) {
     const SEED = [
       { id: "eq_micron", name: "Micron", sub: "" },
       { id: "eq_alibaba", name: "Alibaba", sub: "" },
-      { id: "eq_tencent", name: "Tencent", sub: "" },
       { id: "eq_lumentum", name: "Lumentum", sub: "" },
       { id: "eq_coherent", name: "Coherent", sub: "" },
       { id: "eq_nvda", name: "NVIDIA", sub: "" },
       { id: "eq_amzn", name: "Amazon", sub: "" },
       { id: "eq_msft", name: "Microsoft", sub: "" },
+      { id: "eq_googl", name: "Google", sub: "" },
       { id: "eq_tsm", name: "TSMC", sub: "" },
       { id: "eq_orcl", name: "Oracle", sub: "" },
       { id: "eq_meta", name: "Meta", sub: "" },
     ];
+    // Hard-removed ids — purged from any persisted list on load so they don't linger.
+    const REMOVED_IDS = new Set(["eq_tencent", "eq_tcehy"]);
+    const REMOVED_NAMES = new Set(["tencent"]);
     // Validate shape: must be an array of { id: string, name: string }.
     // A malformed entry would crash the sidebar / search. Reset to SEED on any drift.
     const isValidEquity = (e) => e && typeof e.id === "string" && typeof e.name === "string";
@@ -234,6 +237,12 @@ function AppContent({ userEmail, onSignOut }) {
     } catch {
       localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
       return SEED;
+    }
+    // Purge any hard-removed ids/names from the persisted list.
+    const purged = saved.filter(e => !REMOVED_IDS.has(e.id) && !REMOVED_NAMES.has(e.name?.toLowerCase?.()));
+    if (purged.length !== saved.length) {
+      localStorage.setItem("research_portal_equities", JSON.stringify(purged));
+      saved = purged;
     }
     if (saved.length === 0) {
       localStorage.setItem("research_portal_equities", JSON.stringify(SEED));
@@ -411,12 +420,12 @@ function AppContent({ userEmail, onSignOut }) {
                   { key: "ainative", label: "AI-Native" },
                   { key: "capex", label: "AI Capex" },
                   { key: "semicapex", label: "Semi Capex" },
-                  { key: "compute", label: "Compute" },
+                  { key: "foundry", label: "Foundry" },
+                  { key: "compute", label: "Compute Pricing" },
                   { key: "chiproadmap", label: "GPU/ASIC" },
                   { key: "cpuroadmap", label: "CPU" },
                   { key: "neoclouds", label: "Neoclouds" },
                   { key: "shellpower", label: "Infra + Power" },
-                  { key: "foundry", label: "Foundry" },
                 ].map(tab => {
                   const active = view.type === "industryResearch" && view.sub === tab.key;
                   return (

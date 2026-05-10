@@ -3,6 +3,8 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Area, Area
 import { T_, FONT } from "./lib/theme";
 import TabBar from "./lib/TabBar";
 import { tooltipStyle, tooltipStyleSm } from "./lib/chartTheme";
+import { loadLatestComputePrices } from "./lib/db";
+import { COHORT_ORDER } from "./data/computeCohortMap";
 
 // Updated 2026-04-29 (hyperscaler Q1 2026 prints)
 
@@ -49,6 +51,30 @@ const AI_LABS_DATA = {
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD GPU HBM packaging", color: "#A855F7" },
       { category: "Distribution", partners: "ChatGPT (900M WAU), Copilot (via MSFT), Apple Siri (in talks)", color: T_.red },
     ],
+    fundingHistory: [
+      { date: "Mar 2026", round: "Series G", raised: "$122B", postValuation: "$852B", leadInvestors: "SoftBank co-led w/ a16z, D.E. Shaw Ventures, MGX, TPG, T. Rowe Price", publicParticipants: [
+        { ticker: "AMZN", amount: "$50B", color: T_.amber },
+        { ticker: "NVDA", amount: "$30B", color: T_.green },
+        { ticker: "9984.T", amount: "$30B (SoftBank)", color: T_.purple },
+        { ticker: "MSFT", amount: "~$9B continued", color: T_.blue },
+      ], arrAtRound: "~$24-25B ARR", kpis: "900M WAU \u00b7 50M paying", notes: "Closed Mar 31 2026. Largest single VC round in history. $3B from individual investors via banks." },
+      { date: "Oct 2025", round: "PBC restructure", raised: "\u2014", postValuation: "$500B (secondary tender)", leadInvestors: "Microsoft 27% formalized; PBC conversion completed", publicParticipants: [
+        { ticker: "MSFT", amount: "~27% stake post-restructure", color: T_.blue },
+      ], arrAtRound: "~$13B ARR", kpis: "800M WAU", notes: "OpenAI converts to Public Benefit Corporation. Azure deal restructured to $250B (2025-2032)." },
+      { date: "Mar 2025", round: "Series F", raised: "$40B", postValuation: "$300B", leadInvestors: "SoftBank lead ($30B); Blackstone, TPG, T. Rowe Price, D1 Capital, Coatue, Dragoneer", publicParticipants: [
+        { ticker: "9984.T", amount: "$30B (SoftBank)", color: T_.purple },
+        { ticker: "MSFT", amount: "Continued participation", color: T_.blue },
+      ], arrAtRound: "~$10B ARR (exit 2024 $5.5B)", kpis: "500M+ WAU; Stargate launched Jan 2025", notes: "Tied to Stargate commitment. SoftBank $30B largest single check." },
+      { date: "Oct 2024", round: "Series E", raised: "$6.6B", postValuation: "$157B", leadInvestors: "Thrive Capital lead ($1.2B + $1B option); MGX, Fidelity, Altimeter, Khosla, Tiger, Coatue", publicParticipants: [
+        { ticker: "MSFT", amount: "Continued", color: T_.blue },
+        { ticker: "NVDA", amount: "Strategic", color: T_.green },
+      ], arrAtRound: "$3.6B ARR", kpis: "250M WAU; first frontier reasoning model (o1)", notes: "Convertible to equity contingent on for-profit conversion." },
+      { date: "Jan 2024", round: "Tender offer", raised: "Secondary ~$1B", postValuation: "$86B", leadInvestors: "Thrive Capital lead", publicParticipants: [], arrAtRound: "~$2B ARR", kpis: "180M WAU", notes: "Employee secondary; no new primary capital." },
+      { date: "Apr 2023", round: "Tender offer", raised: "Secondary ~$300M", postValuation: "$27-29B", leadInvestors: "Sequoia, a16z, Tiger Global, Founders Fund, K2 (secondary)", publicParticipants: [], arrAtRound: "~$1B ARR (Q4 23 exit)", kpis: "100M WAU (post-ChatGPT viral)", notes: "Secondary tender post-ChatGPT viral launch." },
+      { date: "Jan 2023", round: "Strategic", raised: "$10B", postValuation: "~$29B", leadInvestors: "Microsoft (commercial + cloud commitment)", publicParticipants: [
+        { ticker: "MSFT", amount: "$10B; Azure-exclusive cloud through 2030", color: T_.blue },
+      ], arrAtRound: "~$50M ARR (pre-ChatGPT scale)", kpis: "ChatGPT just launched Nov 2022", notes: "Original deal: 75% of profits to MSFT until $10B + interest recouped, then 49% / 51%. Exclusive Azure cloud." },
+    ],
   },
   Anthropic: {
     name: "Anthropic", tagline: "AI safety company \u00b7 Claude",
@@ -91,6 +117,31 @@ const AI_LABS_DATA = {
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via TPU/GPU from cloud partners", color: "#A855F7" },
       { category: "Distribution", partners: "Claude.ai, Claude Code ($2.5B ARR), API (300K+), Cowork. Opus 4.7 released Apr 17.", color: T_.red },
     ],
+    fundingHistory: [
+      { date: "Apr 2026", round: "Strategic (Google expanded)", raised: "Up to $40B (cash + 5 GW TPU compute)", postValuation: "$350B (initial $10B tranche)", leadInvestors: "Google \u2014 milestone-based tranches", publicParticipants: [
+        { ticker: "GOOGL", amount: "Initial $10B at $350B; up to $40B total", color: T_.blue },
+      ], arrAtRound: "$30B+ official (Apr 6); SemiAnalysis tracking $44B+ (May)", kpis: "300K+ biz, 1,000+ at $1M+/yr; Claude Code $2.5B ARR", notes: "Largest cumulative Anthropic investment. Pairs with 3.5 GW additional TPU capacity online 2027 (via Broadcom)." },
+      { date: "Apr 2026", round: "Series G amendment", raised: "$5B (AMZN add-on)", postValuation: "$380B (held)", leadInvestors: "Amazon \u2014 equity expansion", publicParticipants: [
+        { ticker: "AMZN", amount: "+$5B (now $13B+ invested; option for up to $20B more)", color: T_.amber },
+      ], arrAtRound: "$30B+ ARR", kpis: "AWS $100B / 10-yr expansion \u00b7 5 GW Trainium ramp", notes: "Tied to Apr 21 AWS-Anthropic $100B compute commitment." },
+      { date: "Feb 2026", round: "Series G", raised: "$30B", postValuation: "$380B", leadInvestors: "Iconiq, Lightspeed, Coatue, Founders Fund, GIC, D.E. Shaw, Altimeter, Wellington", publicParticipants: [
+        { ticker: "MSFT", amount: "$5B", color: T_.blue },
+        { ticker: "NVDA", amount: "$10B", color: T_.green },
+      ], arrAtRound: "$14B ARR (Feb 2026)", kpis: "Claude Code $1B+ ARR; 8 of Fortune 10 customers", notes: "2nd largest VC round all-time at the time." },
+      { date: "Sep 2025", round: "Series F", raised: "$13B", postValuation: "$183B", leadInvestors: "Iconiq lead; Lightspeed, Bond, Coatue, GIC, D.E. Shaw, Altimeter, Insight, Salesforce Ventures", publicParticipants: [], arrAtRound: "$5B ARR mid-2025", kpis: "100K+ biz customers; Claude 4 family launched", notes: "~3x val jump in 6 months from Series E." },
+      { date: "Mar 2025", round: "Series E", raised: "$3.5B", postValuation: "$61.5B", leadInvestors: "Lightspeed lead; Bessemer, Cisco, Fidelity, Salesforce, MGX", publicParticipants: [
+        { ticker: "CSCO", amount: "Cisco Investments", color: T_.blue },
+      ], arrAtRound: "~$1B ARR exit 2024", kpis: "Claude 3.5 Sonnet/Opus released; 17M biz users", notes: "Lightspeed-led; signaling enterprise traction." },
+      { date: "Nov 2024", round: "Strategic (Amazon)", raised: "$4B", postValuation: "~$40B+", leadInvestors: "Amazon", publicParticipants: [
+        { ticker: "AMZN", amount: "+$4B (cumulative $8B); AWS primary cloud", color: T_.amber },
+      ], arrAtRound: "$0.7B ARR (Q4 24)", kpis: "Trainium co-design announced", notes: "Anthropic agrees AWS as primary training partner." },
+      { date: "Mar 2024", round: "Strategic (Amazon)", raised: "$2.75B", postValuation: "$18.4B", leadInvestors: "Amazon (Sep 2023 $1.25B + Mar 2024 $2.75B)", publicParticipants: [
+        { ticker: "AMZN", amount: "$4B initial commitment fully drawn", color: T_.amber },
+      ], arrAtRound: "~$0.3B ARR", kpis: "Claude 3 family launched", notes: "Original AMZN $4B from Sep 2023 commitment fully drawn." },
+      { date: "May 2023", round: "Series C", raised: "$450M", postValuation: "~$5B", leadInvestors: "Spark Capital lead; Salesforce Ventures, Sound Ventures, Zoom Ventures", publicParticipants: [
+        { ticker: "GOOGL", amount: "$300M (initial position)", color: T_.blue },
+      ], arrAtRound: "$0.1B ARR", kpis: "Claude launched Mar 2023; safety positioning", notes: "Google's initial Anthropic position. Cumulative GOOGL stake \u224814% by 2025 across $3B+ rounds." },
+    ],
   },
   Google: {
     name: "Google DeepMind", tagline: "Gemini \u00b7 TPU \u00b7 Vertically Integrated AI",
@@ -131,6 +182,23 @@ const AI_LABS_DATA = {
       { category: "Power", partners: "$180-190B capex 2026 (raised Apr 29) \u2014 nuclear SMR, solar PPAs, global DC expansion. 2027 capex to 'significantly increase'", color: T_.green },
       { category: "Memory", partners: "SK Hynix (HBM for TPUs), Samsung, Micron", color: "#A855F7" },
       { category: "Distribution", partners: "Search (8.5B queries/day), Android, YouTube, Apple Siri (Gemini, ~$5B)", color: T_.red },
+    ],
+    // Public \u2014 funding history reframed as AI capex evolution + cross-investments in private labs.
+    fundingHistory: [
+      { date: "Apr 2026", round: "Strategic (Anthropic expanded)", raised: "Up to $40B commitment", postValuation: "Anthropic $350B (initial tranche)", leadInvestors: "Google \u2014 milestone-based tranches + 5 GW TPU compute", publicParticipants: [
+        { ticker: "ANTH", amount: "Cumulative Google stake to \u226514% (capped at 15%)", color: T_.amber },
+      ], arrAtRound: "GCP $20B Q1 (+63% YoY)", kpis: "Cloud backlog $462B (~doubled QoQ); 'compute constrained'", notes: "Largest cumulative AI lab investment. Pairs with Broadcom-built 3.5 GW TPU capacity (online 2027)." },
+      { date: "Apr 2026", round: "Capex raise", raised: "FY26 capex $180-190B (from $175-185B)", postValuation: "GOOGL $3.76T", leadInvestors: "Public market", publicParticipants: [], arrAtRound: "$109.9B Q1 rev (+22% YoY); GCP $20B (+63%)", kpis: "Net income $62.57B (+81%); FY27 capex 'significantly higher'", notes: "Q1 2026 earnings (Apr 29). Pichai: 'compute constrained.' Cloud op income $6.6B (32.9% margin, tripled YoY)." },
+      { date: "Jan 2025", round: "Strategic (Anthropic)", raised: "$1B", postValuation: "Anthropic ~$60B (pre-Series E)", leadInvestors: "Google", publicParticipants: [
+        { ticker: "ANTH", amount: "+$1B (cumulative ~$3B+; ~14% stake)", color: T_.amber },
+      ], arrAtRound: "GCP $43B (Q4 2024 annualized)", kpis: "Gemini 2.0 launched", notes: "Building toward 14% stake reported in court documents." },
+      { date: "2024", round: "Capex raise", raised: "FY24 capex ~$53B", postValuation: "GOOGL $2T", leadInvestors: "Public market", publicParticipants: [], arrAtRound: "GCP $48B exit", kpis: "Gemini 1.0/1.5 trained on TPU v5p; AI Overviews launched", notes: "First major AI-driven capex inflection." },
+      { date: "Q4 2023", round: "Strategic (Anthropic)", raised: "$2B", postValuation: "Anthropic ~$15B (post-money est.)", leadInvestors: "Google (extension of Series C position)", publicParticipants: [
+        { ticker: "ANTH", amount: "+$2B (cumulative ~$2.3B)", color: T_.amber },
+      ], arrAtRound: "GCP $37B exit", kpis: "Gemini 1.0 launched Dec 2023", notes: "Second major Anthropic infusion ahead of Q4 23 close." },
+      { date: "May 2023", round: "Strategic (Anthropic Series C)", raised: "$300M", postValuation: "Anthropic ~$5B", leadInvestors: "Google + Spark Capital + others", publicParticipants: [
+        { ticker: "ANTH", amount: "$300M initial position", color: T_.amber },
+      ], arrAtRound: "GCP ~$33B run-rate", kpis: "Bard launched (Mar 2023); LaMDA \u2192 Gemini transition", notes: "Initial Google position in Anthropic. Public-market vehicle is GOOGL." },
     ],
   },
   xAI: {
@@ -175,6 +243,19 @@ const AI_LABS_DATA = {
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia HBM3E packaging", color: "#A855F7" },
       { category: "Distribution", partners: "X (600M MAU), Tesla FSD, SpaceX/Starlink, DoD GenAI.mil", color: T_.red },
     ],
+    fundingHistory: [
+      { date: "Jan 2026", round: "Series E", raised: "$20B (upsized from $15B target)", postValuation: "$230B", leadInvestors: "Valor, StepStone, Fidelity, QIA, MGX, Baron Capital", publicParticipants: [
+        { ticker: "NVDA", amount: "Strategic", color: T_.green },
+        { ticker: "CSCO", amount: "Cisco Investments", color: T_.blue },
+        { ticker: "TSLA", amount: "$2B (Tesla)", color: T_.red },
+      ], arrAtRound: "~$1B ARR (Sacra est.)", kpis: "Grok ~35M MAU; X 600M; Colossus 555K GPUs / 2 GW", notes: "Plus $5B Morgan Stanley debt facility. Tesla $2B participation tied to Megapack power supply." },
+      { date: "Sep 2025", round: "Series D", raised: "$10B", postValuation: "$200B", leadInvestors: "Institutional consortium", publicParticipants: [], arrAtRound: "$0.5B+ ARR", kpis: "Colossus expansion to 555K GPUs; Grok 4 launch", notes: "4x val jump from Series C in 9 months. Funded Colossus 1 \u2192 1.1 GW Solaris commitment." },
+      { date: "Dec 2024", round: "Series C", raised: "$6B", postValuation: "$50B", leadInvestors: "Valor, Sequoia, a16z, Fidelity, Kingdom Holdings", publicParticipants: [
+        { ticker: "NVDA", amount: "Strategic + GPU supply", color: T_.green },
+      ], arrAtRound: "$0.1B ARR (early API + X Premium)", kpis: "Colossus 100K GPUs live; Grok-3 training", notes: "First major institutional round. NVDA strategic." },
+      { date: "May 2024", round: "Series B", raised: "$6B", postValuation: "$24B", leadInvestors: "Valor, Vy Capital, a16z, Sequoia, Kingdom Holdings, Fidelity", publicParticipants: [], arrAtRound: "Pre-revenue at scale", kpis: "Grok-1 / Grok-1.5 (open-weighted)", notes: "Funded Colossus Memphis launch; SpaceX FCF tie-in." },
+      { date: "Nov 2023", round: "Series A", raised: "$135M", postValuation: "Undisclosed (~$1B)", leadInvestors: "Insider/founders", publicParticipants: [], arrAtRound: "\u2014", kpis: "Founded Mar 2023; team from DeepMind, OpenAI", notes: "Initial seed-equivalent. Musk personal equity + Sequoia pre-position." },
+    ],
   },
   Meta: {
     name: "Meta AI", tagline: "Llama \u00b7 Open-weight models \u00b7 3.5B+ DAP",
@@ -217,6 +298,30 @@ const AI_LABS_DATA = {
       { category: "Power", partners: "Hyperion (Richland Parish LA, sized for 5 GW IT load — 7 new gas plants ~5.2 GW + 240mi of 500-kV transmission); Prometheus (New Albany OH, 1+ GW, online 2026); 6.6 GW nuclear via Vistra/Oklo/TerraPower (Jan 2026) + Constellation Clinton (Jun 2025, online 2027); 30 DCs (26 in US); $600B US investment by 2028", color: T_.green },
       { category: "Memory", partners: "SK Hynix, Samsung, Micron \u2014 via Nvidia/AMD HBM packaging", color: "#A855F7" },
       { category: "Distribution", partners: "Facebook (3B+), Instagram (2B+), WhatsApp (2.5B+), Threads, Meta AI (1.4B MAU)", color: T_.red },
+    ],
+    // Public \u2014 funding history reframed as AI capex evolution + cross-investments / equity stakes.
+    fundingHistory: [
+      { date: "Apr 2026", round: "Capex raise", raised: "FY26 capex $125-145B (from $115-135B)", postValuation: "META $1.5T", leadInvestors: "Public market", publicParticipants: [], arrAtRound: "$56.31B Q1 26 rev (+33%)", kpis: "Net income $26.77B (incl $8.03B OBBBA tax benefit); 1.4B Meta AI MAU", notes: "Stock -7% AH on capex raise. Q2 guide $58-61B. Zuck: 'continued to underestimate compute needs.'" },
+      { date: "Apr 2026", round: "Strategic (CoreWeave expansion)", raised: "Additional $21B ($35.2B total)", postValuation: "META $1.5T", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "CRWV", amount: "$35.2B total cloud commitment thru 2032", color: T_.purple },
+      ], arrAtRound: "$56.31B Q1 26 rev", kpis: "GB300 deployment", notes: "Largest single neocloud deal. Originally $14.2B (Q3 2025)." },
+      { date: "Mar 2026", round: "Strategic (Nebius)", raised: "$27B (5-yr Vera Rubin)", postValuation: "META $1.5T", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "NBIS", amount: "$12B dedicated + $15B available", color: T_.green },
+      ], arrAtRound: "$56.31B Q1 26 rev", kpis: "Vera Rubin platform deployment 2027", notes: "First large-scale Vera Rubin commitment. NBIS biggest single customer deal." },
+      { date: "Feb 2026", round: "Strategic (AMD)", raised: "$60-100B / 6 GW Instinct", postValuation: "AMD ~$240B (warrant-tied)", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "AMD", amount: "Performance-warrants for ~10% AMD stake (160M shares @ $0.01); $600 share-price threshold", color: T_.red },
+      ], arrAtRound: "$56.31B Q1 26 rev", kpis: "AMD MI355X / MI455X deployment 2026-2028", notes: "Largest AMD AI deal ever. Warrants vest on GPU shipment milestones + AMD share price thresholds." },
+      { date: "Feb 2026", round: "Strategic (Nvidia)", raised: "Tens of $B (est. $35-67B multi-year)", postValuation: "META $1.5T", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "NVDA", amount: "Multi-year Blackwell + Rubin GPU commitment (no equity)", color: T_.green },
+      ], arrAtRound: "$56.31B Q1 26 rev", kpis: "Millions of GPUs deployed", notes: "No equity stake (unlike AMD). Highest single Nvidia customer deal." },
+      { date: "Aug 2025", round: "Strategic (Google Cloud)", raised: "$10B+ (6-yr)", postValuation: "META $1.5T", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "GOOGL", amount: "$10B+ multi-year cloud", color: T_.blue },
+      ], arrAtRound: "$48B Q3 25 rev (est.)", kpis: "TPU lease talks for on-prem 2027", notes: "First Meta-Google cloud deal of scale; signals diversifying off Nvidia/MTIA." },
+      { date: "Jun 2025", round: "Strategic (Scale AI)", raised: "$14.3B for 49% non-voting stake", postValuation: "Scale AI ~$29B+", leadInvestors: "Public market", publicParticipants: [
+        { ticker: "SCALE", amount: "49% Meta stake (non-voting); CEO Alexandr Wang joins Meta", color: T_.amber },
+      ], arrAtRound: "$165B 2024 rev", kpis: "Superintelligence Lab launch under Wang", notes: "Largest single AI investment by Meta. Triggered Google + OpenAI to cut ties with Scale." },
+      { date: "2025", round: "Capex raise", raised: "FY25 capex ~$72B", postValuation: "META", leadInvestors: "Public market", publicParticipants: [], arrAtRound: "$201B FY25 rev", kpis: "Llama 4 family in training; 30 DCs operational/planned", notes: "Up from FY24 $40B; first major AI capex inflection year." },
+      { date: "Mar 2023", round: "Milestone", raised: "Llama-1 released (open-weight)", postValuation: "META ~$500B", leadInvestors: "Public market", publicParticipants: [], arrAtRound: "$135B FY23 rev", kpis: "First open-weight LLM at scale", notes: "Began Meta's open-weight strategy. Llama family becomes most-downloaded OSS LLMs." },
     ],
   },
 };
@@ -338,6 +443,32 @@ const AI_CAPEX_DATA = {
       spendingOn: "AWS data centers, Nvidia GPUs + Trainium 2/3 custom chips, Anthropic partnership ($100B/5GW), Project Kuiper, robotics",
       news: "Q1 2026 (Apr 29): Total rev $181.5B (+17% YoY), EPS $2.78 vs $1.63 est. AWS rev $37.6B (+28% YoY) — fastest growth in 15 quarters; AWS op income $14.2B. AI run-rate >$15B (triple-digit growth). Chips business (Graviton+Trainium+Nitro) at >$20B run rate. 2026 capex ~$200B (reaffirmed); Q1 cash capex $43.2B. >$225B Trainium revenue commitments. Trn3 30-40% better price/perf vs Trn2, nearly fully subscribed.",
       partners: "Nvidia (GPUs), Annapurna Labs/Trainium (custom), Anthropic ($13B+ invested incl Apr 2026 $5B add, option for $20B more; $100B/10-yr 5 GW Trainium), OpenAI ($38B 7-yr GB200/GB300 deal Nov 2025), CoreWeave",
+      allocation: [
+        { area: "GPU + Trainium silicon", pct: 50, detail: "Nvidia GB200/Vera Rubin + Trainium 2/3" },
+        { area: "DC infrastructure", pct: 30, detail: "New DC buildout, hyperscale fit-out, networking" },
+        { area: "Power & cooling", pct: 12, detail: "Nuclear PPAs, liquid cooling, grid hookups" },
+        { area: "Networking, Kuiper, other", pct: 8, detail: "AWS Nitro DPU, Project Kuiper sat broadband" },
+      ],
+      customers: [
+        { name: "Anthropic", deal: "$100B / 10-yr / 5 GW Trainium framework", tag: "Anchor (captive)" },
+        { name: "OpenAI", deal: "$38B / 7-yr GB200/GB300 (Nov 2025)", tag: "Anchor" },
+        { name: "AWS enterprise", deal: "Core cloud workloads (~50% AWS rev)", tag: "Core" },
+        { name: "Apple", deal: "Apple Intelligence private cloud", tag: "Tier-2" },
+      ],
+      contracts: [
+        { date: "Apr 2026", text: "Anthropic +$5B add'l investment (option for +$20B more)" },
+        { date: "Nov 2025", text: "OpenAI $38B / 7-yr GB200/GB300 deal" },
+        { date: "Mid-2025", text: "Anthropic $100B / 10-yr / 5 GW Trainium framework" },
+        { date: "Q1 2026", text: "Trainium revenue commitments >$225B; Trn3 nearly fully subscribed" },
+      ],
+      supplyChain: {
+        gpu: "Nvidia GB200, Vera Rubin (primary)",
+        custom: "Trainium 2/3 (Annapurna Labs design)",
+        foundry: "TSMC (Trainium + Nvidia)",
+        memory: "SK Hynix / Samsung HBM3e/HBM4",
+        power: "Talen, X-Energy (nuclear), Dominion grid",
+        networking: "AWS Nitro DPU (in-house)",
+      },
     },
     { name: "Alphabet (Google)", ticker: "GOOGL", color: T_.blue,
       capex: [
@@ -348,6 +479,32 @@ const AI_CAPEX_DATA = {
       spendingOn: "TPU v7 Ironwood fabs, global DC expansion, Nvidia GPUs for GCP customers, subsea cables, DeepMind compute",
       news: "Q1 2026 (Apr 29): Total rev $109.9B (+22% YoY), net income $62.57B (+81%). GCP rev ~$20B (+63% YoY), Cloud op income $6.6B (32.9% margin, tripled YoY). Backlog $462B (~doubled QoQ from $240B); ~50% to convert in next 24 months. 2026 capex RAISED to $180-190B (from $175-185B); 2027 to 'significantly increase.' Pichai: 'compute constrained.'",
       partners: "Broadcom (TPU co-design thru 2031, expanded Apr 2026 — multi-GW for Anthropic), TSMC (fab), Anthropic (3.5 GW TPU 2027), Meta (TPU lease talks), Apple (Gemini deal ~$5B)",
+      allocation: [
+        { area: "TPU + Nvidia GPU", pct: 50, detail: "TPU v7 Ironwood + Nvidia GB200 for GCP" },
+        { area: "DC infrastructure", pct: 28, detail: "Global DC expansion, hyperscale fit-out" },
+        { area: "Power & cooling", pct: 15, detail: "Kairos nuclear, solar+wind PPAs" },
+        { area: "Subsea cables & misc", pct: 7, detail: "Submarine cable buildout, edge sites" },
+      ],
+      customers: [
+        { name: "Anthropic", deal: "3.5 GW TPU agreement for 2027", tag: "Anchor" },
+        { name: "Meta", deal: "TPU lease in active negotiation", tag: "Anchor (pending)" },
+        { name: "GCP enterprise", deal: "$462B backlog (~50% to convert in 24 mos)", tag: "Core" },
+        { name: "Apple", deal: "Gemini partnership (~$5B)", tag: "Tier-2" },
+      ],
+      contracts: [
+        { date: "Q1 2026", text: "Backlog ~$462B (~doubled QoQ from $240B); Pichai: 'compute constrained'" },
+        { date: "Apr 2026", text: "Broadcom TPU co-design extended thru 2031 (multi-GW for Anthropic)" },
+        { date: "Q1 2026", text: "2026 capex raised to $180-190B; 2027 'will significantly increase'" },
+        { date: "2025", text: "Anthropic 3.5 GW TPU contract for 2027" },
+      ],
+      supplyChain: {
+        gpu: "Nvidia (for GCP customers)",
+        custom: "TPU v7 Ironwood (Broadcom co-design)",
+        foundry: "TSMC (TPU + Nvidia)",
+        memory: "SK Hynix / Samsung HBM3e/HBM4",
+        power: "Kairos nuclear, solar/wind PPAs",
+        networking: "In-house OCS optical switching",
+      },
     },
     { name: "Microsoft (Azure)", ticker: "MSFT", color: T_.purple,
       capex: [
@@ -358,6 +515,32 @@ const AI_CAPEX_DATA = {
       spendingOn: "Azure AI DCs (Fairwater Wisconsin live Apr 2026), Nvidia GPUs (GB200/Vera Rubin for OpenAI), Maia custom chips, OpenAI hosting",
       news: "Q3 FY26 (Apr 29): Rev $82.9B (+18%), EPS $4.27 vs $4.06 est. Azure +40% (39% cc, above 37-38% guide). Microsoft Cloud rev $54.5B (+29%, +25% cc). Q3 capex $31.9B (below $34.9B est) but FY26 capex now ~$190B (+61% YoY); Hood cited $25B impact from higher component prices. Commercial RPO $627B (+99% YoY incl OpenAI; +26% ex-OpenAI). GM 67.6% — narrowest since 2022 on DC depreciation. AI run-rate $37B+ (+123% YoY). Wisconsin Fairwater DC live ahead of schedule (Apr 2026).",
       partners: "OpenAI (~27% equity stake, $250B Azure commit thru 2032 post-Oct 2025 restructure), Nvidia, Anthropic ($5B + $30B Azure compute Nov 2025), AMD, Nebius ($19.4B 5-yr), CoreWeave (~$10B), Lambda",
+      allocation: [
+        { area: "Nvidia GPU + Maia silicon", pct: 55, detail: "GB200/Vera Rubin for OpenAI + Maia custom" },
+        { area: "DC infrastructure", pct: 28, detail: "Fairwater Wisconsin, hyperscale buildout" },
+        { area: "Power & cooling", pct: 12, detail: "Three Mile Island PPA, liquid cooling" },
+        { area: "Networking & other", pct: 5, detail: "In-house networking + neocloud capacity" },
+      ],
+      customers: [
+        { name: "OpenAI", deal: "$250B Azure commit thru 2032 (~27% MSFT equity)", tag: "Anchor (captive)" },
+        { name: "Anthropic", deal: "$30B Azure compute (Nov 2025)", tag: "Anchor" },
+        { name: "Azure enterprise", deal: "Commercial RPO $627B (+99% YoY)", tag: "Core" },
+      ],
+      contracts: [
+        { date: "Q1 2026", text: "FY26 capex ~$190B (+61% YoY); $25B incremental from component prices (Hood)" },
+        { date: "Q1 2026", text: "Commercial RPO $627B (+99% YoY incl OpenAI; +26% ex-OpenAI)" },
+        { date: "Apr 2026", text: "Wisconsin Fairwater DC live ahead of schedule" },
+        { date: "Nov 2025", text: "Anthropic $5B + $30B Azure compute" },
+        { date: "Oct 2025", text: "OpenAI restructure: $250B Azure commit thru 2032" },
+      ],
+      supplyChain: {
+        gpu: "Nvidia GB200/Vera Rubin (primary), AMD MI355X",
+        custom: "Maia 100/200 (in-house, TSMC fab)",
+        foundry: "TSMC",
+        memory: "SK Hynix / Samsung HBM3e/HBM4",
+        power: "Constellation Three Mile Island 20-yr PPA (835 MW)",
+        networking: "In-house + Nvidia NVLink; Nebius $19.4B / CoreWeave ~$10B / Lambda capacity",
+      },
     },
     { name: "Meta Platforms", ticker: "META", color: T_.red,
       capex: [
@@ -368,6 +551,31 @@ const AI_CAPEX_DATA = {
       spendingOn: "Llama training clusters (Hyperion 5 GW, Prometheus 1+ GW), Nvidia GPUs, MTIA custom chips, global DC buildout, Reality Labs",
       news: "Q1 2026 (Apr 29): Rev $56.31B (+33% YoY), net income $26.77B (+61%, includes $8B OBBBA tax benefit). 2026 capex RAISED to $125-145B (from $115-135B) — higher component pricing + DC costs; stock -7% AH. Q2 rev guide $58-61B. Declines specific 2027 capex but: 'we have continued to underestimate our compute needs.' CoreWeave total $35.2B ($14.2B orig + $21B expansion Apr 2026 thru 2032). $27B Nebius (Vera Rubin, Mar 2026). 6.6 GW nuclear (Vistra/Oklo/TerraPower Jan 2026 + Constellation Clinton 2027).",
       partners: "Nvidia (primary GPU), CoreWeave ($35.2B total), Nebius ($27B Vera Rubin), Google (TPU talks), TSMC (MTIA fab), Vistra/Oklo/TerraPower/Constellation (nuclear)",
+      allocation: [
+        { area: "Nvidia GPU + MTIA", pct: 65, detail: "Hyperion 5 GW + Prometheus 1+ GW Llama clusters" },
+        { area: "DC infrastructure", pct: 22, detail: "Hyperscale DC + neocloud lease capacity" },
+        { area: "Power & cooling", pct: 10, detail: "6.6+ GW nuclear contracts" },
+        { area: "Reality Labs & misc", pct: 3, detail: "Smart glasses, Quest, AR/VR R&D compute" },
+      ],
+      customers: [
+        { name: "Internal — Llama / Meta AI", deal: "Llama training, Reels/Feed ranking, Meta AI assistant", tag: "Internal" },
+        { name: "Internal — Reality Labs", deal: "AR/VR compute, smart glasses inference", tag: "Internal" },
+      ],
+      contracts: [
+        { date: "Apr 2026", text: "CoreWeave expansion +$21B (total $35.2B incl orig $14.2B) thru 2032" },
+        { date: "Mar 2026", text: "Nebius $27B Vera Rubin GPU contract" },
+        { date: "Q1 2026", text: "2026 capex raised to $125-145B (component costs)" },
+        { date: "Jan 2026", text: "Vistra + Oklo + TerraPower nuclear (initial 6.6 GW)" },
+        { date: "2027", text: "Constellation Clinton nuclear comes online" },
+      ],
+      supplyChain: {
+        gpu: "Nvidia GB200/Vera Rubin (primary)",
+        custom: "MTIA v1/v2 (in-house, TSMC fab)",
+        foundry: "TSMC",
+        memory: "SK Hynix / Samsung HBM",
+        power: "Vistra, Oklo, TerraPower, Constellation Clinton (6.6+ GW nuclear)",
+        networking: "In-house; CoreWeave $35.2B + Nebius $27B neocloud capacity",
+      },
     },
     { name: "Oracle", ticker: "ORCL", color: T_.green,
       capex: [
@@ -378,6 +586,32 @@ const AI_CAPEX_DATA = {
       spendingOn: "Stargate DCs for OpenAI (Abilene 1.2 GW + MI/WI/WY/PA), OCI GPU clusters, Nvidia GB200/Vera Rubin racks, land/power acquisition",
       news: "RPO $553B at end Q3 FY26 (+325% YoY) incl ~$30B/yr OpenAI deal + Meta + xAI. Stargate at ~7-8 GW planned, $400B+ investment, 5 new sites announced (MI 1.4 GW, WI 'Lighthouse', WY, PA, TX). Crusoe Abilene 1.2 GW campus serving Oracle/OpenAI live; full mid-2026. Most equipment funded by customer prepayments. CreditSights upgraded to Outperform Apr 7 2026.",
       partners: "OpenAI/SoftBank (Stargate JV, ~$300B over 5 yrs), Nvidia, Arm, Crusoe (Abilene 1.2 GW), Vantage (WI 'Lighthouse'), Related Digital (MI 1+ GW)",
+      allocation: [
+        { area: "DC buildout (Stargate)", pct: 60, detail: "5 new sites: MI 1.4 GW, WI 'Lighthouse', WY, PA, TX" },
+        { area: "Nvidia GPU racks", pct: 30, detail: "GB200/Vera Rubin for OCI; customer prepayment funded" },
+        { area: "Land & power acquisition", pct: 10, detail: "Power-rich sites, water rights, grid interconnects" },
+      ],
+      customers: [
+        { name: "OpenAI", deal: "Stargate JV ~$300B / 5 yrs (~$60B/yr); 7-8 GW", tag: "Anchor (captive)" },
+        { name: "Meta", deal: "OCI capacity contract", tag: "Anchor" },
+        { name: "xAI", deal: "OCI capacity (Colossus support)", tag: "Anchor" },
+        { name: "OCI enterprise", deal: "Core OCI + ERP/DB workloads", tag: "Core" },
+      ],
+      contracts: [
+        { date: "Q3 FY26", text: "RPO $553B (+325% YoY) — OpenAI + Meta + xAI driven" },
+        { date: "Apr 2026", text: "CreditSights upgraded to Outperform" },
+        { date: "2025-2026", text: "Stargate ~7-8 GW planned, $400B+ investment, 5 new sites" },
+        { date: "Funding model", text: "Most equipment funded by customer prepayments — capital-light" },
+        { date: "2025", text: "Crusoe Abilene 1.2 GW campus live; full ramp mid-2026" },
+      ],
+      supplyChain: {
+        gpu: "Nvidia GB200/Vera Rubin (primary)",
+        custom: "None — Oracle consumes Nvidia",
+        foundry: "Nvidia/TSMC (indirect)",
+        memory: "SK Hynix / Samsung HBM (via Nvidia)",
+        power: "TX/MI/WI/WY/PA grid + on-site generation",
+        networking: "Nvidia InfiniBand + Oracle in-house; Crusoe (Abilene), Vantage (WI), Related Digital (MI) DC builders",
+      },
     },
   ],
   others: [
@@ -649,6 +883,31 @@ const SEMI_CAPEX_DATA = {
       breakdown: "70-80% advanced nodes (2nm/3nm), 10% specialty, 10-20% packaging (CoWoS/SoIC)",
       supplyTimeline: "N3 ramp: capex in 2023 → volume supply H2 2024. N2 HVM Q4 2025, volume H1 2026. CoWoS capacity: 75K wpm end-2025, target 130K wpm end-2026. Arizona Fab 21 P1 in production (4nm), P2 construction (3nm, 2027), P3 groundbreaking (2nm/A16, 2027).",
       notes: "Q1 2026: Rev $35.9B (+41% YoY), GM 66.2%, OM 58.1%. Record 4th consecutive quarter. HPC 61% of rev. FY2025 rev $122B. FY2026E rev ~$159B (+30%). Capex guided $52-56B (high end likely). Q2 guide $39-40.2B.",
+      allocation: [
+        { area: "Advanced nodes (N2, N3)", pct: 75, detail: "2nm HVM Q4 2025; N3 in volume since H2 2024" },
+        { area: "CoWoS / SoIC packaging", pct: 15, detail: "75K→130K wpm by end-2026; ~75% NVDA-allocated" },
+        { area: "Specialty (mature)", pct: 10, detail: "Auto, IoT, RF, analog 28-12nm" },
+      ],
+      customers: [
+        { name: "Nvidia", deal: "All H/B/Vera Rubin GPUs on 4N/3nm; ~70% CoWoS allocation", tag: "Anchor" },
+        { name: "Apple", deal: "A20/M6 first to N2 in 2026", tag: "Anchor" },
+        { name: "AMD", deal: "MI355X (N3) / MI455X (N2)", tag: "Anchor" },
+        { name: "Broadcom + ASICs", deal: "Hyperscaler ASICs (TPU, Maia, Trainium), Qualcomm, MediaTek", tag: "Core" },
+      ],
+      contracts: [
+        { date: "Q1 2026", text: "Rev $35.9B (+41% YoY), GM 66.2%, OM 58.1% — record 4th quarter" },
+        { date: "FY2026", text: "Capex guidance $52-56B (high end likely); HPC 61% of revenue" },
+        { date: "H1 2026", text: "N2 HVM volume production; CoWoS target 130K wpm end-2026" },
+        { date: "2027", text: "Arizona P2 (3nm) construction; P3 (2nm/A16) groundbreaking" },
+      ],
+      supplyChain: {
+        equipment: "ASML EUV (NXE:3800E) + High-NA EUV initial orders; Lam, AMAT, KLA, TEL",
+        materials: "Shin-Etsu / SUMCO wafers; JSR, TOK photoresist; specialty gases",
+        foundry: "In-house (Taiwan, Arizona, Japan Kumamoto, Germany Dresden)",
+        packaging: "In-house CoWoS / SoIC; integrated optics roadmap",
+        power: "Taiwan grid + green-energy commitments; US CHIPS Act subsidy",
+        eda: "Customers use Synopsys / Cadence",
+      },
     },
     { name: "Samsung Semi", ticker: "005930", segment: "Memory + Foundry", color: T_.blue,
       revenue: [
@@ -666,6 +925,31 @@ const SEMI_CAPEX_DATA = {
       breakdown: "~60% DRAM/HBM, ~25% NAND, ~15% foundry (Gate-All-Around)",
       supplyTimeline: "HBM3E qualified by Nvidia late 2025. HBM4: yield improved significantly, 1C process ramp H1 2026. P4L fab expansion online H2 2026. Pyeongtaek P5 resumed construction.",
       notes: "2026E capex >40T KRW (~$30B). Growth driven by DRAM/HBM. 35% HBM market share (Q3 2025). 2023 margin collapse from memory downturn (12% GM).",
+      allocation: [
+        { area: "DRAM / HBM", pct: 60, detail: "1c process ramp H1 2026; HBM4 mass prod since Sep 2025 at P3" },
+        { area: "NAND", pct: 25, detail: "V-NAND stacks; server SSDs" },
+        { area: "Foundry (GAA)", pct: 15, detail: "3nm GAA; OpenAI Titan ASIC + HBM4 fab" },
+      ],
+      customers: [
+        { name: "Nvidia (HBM3E)", deal: "Qualified late 2025; ramping HBM4", tag: "Anchor" },
+        { name: "OpenAI", deal: "HBM4 exclusive + Titan ASIC foundry (Mar 2026, via Broadcom $10B)", tag: "Anchor" },
+        { name: "Apple, Qualcomm, Google", deal: "Mobile foundry (Google Tensor) + DRAM", tag: "Core" },
+        { name: "Hyperscalers", deal: "Server DRAM, NAND SSDs", tag: "Core" },
+      ],
+      contracts: [
+        { date: "Mar 2026", text: "OpenAI exclusive HBM4 supply + Titan ASIC foundry deal" },
+        { date: "Sep 2025", text: "HBM4 mass production at Pyeongtaek P3; Nvidia-qualified" },
+        { date: "H2 2026", text: "P4L fab expansion online" },
+        { date: "TBD", text: "Pyeongtaek P5 construction resumed" },
+      ],
+      supplyChain: {
+        equipment: "ASML EUV, Lam, AMAT, KLA, TEL",
+        materials: "In-house wafers + Shin-Etsu; JSR, TOK photoresist",
+        foundry: "In-house (Korea, Taylor TX under CHIPS Act)",
+        packaging: "In-house I-Cube, X-Cube; TSV for HBM",
+        power: "Korea grid (KEPCO); US CHIPS Act subsidy for Taylor",
+        eda: "Synopsys, Cadence",
+      },
     },
     { name: "SK Hynix", ticker: "000660", segment: "Memory (HBM Leader)", color: T_.amber,
       revenue: [
@@ -683,6 +967,31 @@ const SEMI_CAPEX_DATA = {
       breakdown: "85-90% DRAM, of which HBM ~2.5T KRW. 10% NAND",
       supplyTimeline: "HBM3E: volume ramp 2024, sold out through 2026. HBM4: capacity expansion at M15x fab, equipment prep Q1 2026, Union Fab start Q1 2027. Current 160K wafers/mo HBM output.",
       notes: "53% HBM market share (Q3 2025). HBM4 specs raised by Nvidia to >11 Gbps. 2023 was negative gross margin from memory crash.",
+      allocation: [
+        { area: "DRAM / HBM", pct: 85, detail: "HBM3E sold out 2026; HBM4 capacity ramping at M15x" },
+        { area: "NAND", pct: 10, detail: "Solidigm consolidation; enterprise SSDs" },
+        { area: "Capacity expansion", pct: 5, detail: "Union Fab construction (production Q1 2027)" },
+      ],
+      customers: [
+        { name: "Nvidia", deal: "Primary HBM supplier; HBM4 specs raised to >11 Gbps", tag: "Anchor (captive)" },
+        { name: "AMD", deal: "HBM3E for MI355X; HBM4 for MI455X (H2 2026)", tag: "Anchor" },
+        { name: "Hyperscalers (server DRAM)", deal: "MSFT, Meta, Google, Amazon DDR5", tag: "Core" },
+        { name: "Mobile DRAM", deal: "Samsung, Apple LPDDR5X", tag: "Tier-2" },
+      ],
+      contracts: [
+        { date: "2024", text: "HBM3E volume ramp; ~53% HBM market share (Q3 2025)" },
+        { date: "Q1 2026", text: "HBM4 equipment prep at M15x fab" },
+        { date: "Q1 2027", text: "Union Fab HBM4 production starts" },
+        { date: "2026", text: "All HBM capacity sold out through 2026; 160K wafers/mo HBM output" },
+      ],
+      supplyChain: {
+        equipment: "ASML EUV, Lam, AMAT, KLA, TEL",
+        materials: "SUMCO wafers; JSR photoresist",
+        foundry: "In-house (Korea; Union Fab under construction)",
+        packaging: "In-house TSV, MR-MUF (HBM-specific bonding)",
+        power: "Korea grid (KEPCO)",
+        eda: "Synopsys, Cadence",
+      },
     },
     { name: "Micron", ticker: "MU", segment: "Memory (HBM + DRAM)", color: T_.purple,
       revenue: [
@@ -700,6 +1009,31 @@ const SEMI_CAPEX_DATA = {
       breakdown: "Primarily 1-gamma node DRAM + TSV equipment for HBM. Exited consumer memory (Dec 2025).",
       supplyTimeline: "HBM4E samples shipping at 11 Gbps. 2026 HBM sold out. New ID1 fab (Idaho, US): capex 2024-2026, operational not before 2027. NY fab progressing.",
       notes: "Q2 FY26 blowout: Rev $23.86B (+196%), EPS $12.20, GM 74.4%. Q3 guide $33.5B (GM ~81%, EPS $19.15). Capex raised >$25B. HBM4 volume prod for Vera Rubin. 30% dividend increase (Mar 2026). Idaho fab mid-2027, NY $100B campus H2 2028. 2023 was -8% GM from memory crash.",
+      allocation: [
+        { area: "HBM + TSV equipment", pct: 50, detail: "HBM4 volume production for Vera Rubin (11 Gbps)" },
+        { area: "DRAM (1-gamma node)", pct: 35, detail: "Idaho ID1 fab + NY campus buildout" },
+        { area: "NAND + fab expansion", pct: 15, detail: "Exited consumer memory Dec 2025; enterprise focus" },
+      ],
+      customers: [
+        { name: "Nvidia", deal: "HBM3E for Blackwell; HBM4 for Vera Rubin", tag: "Anchor" },
+        { name: "Hyperscalers", deal: "Server DRAM (DDR5) for AWS, Azure, GCP, Meta", tag: "Core" },
+        { name: "Industrial / auto", deal: "Discrete + module customers", tag: "Tier-2" },
+      ],
+      contracts: [
+        { date: "Q2 FY26", text: "Rev $23.86B (+196%); EPS $12.20; GM 74.4%" },
+        { date: "Q3 FY26 guide", text: "Rev $33.5B; GM ~81%; EPS $19.15" },
+        { date: "Mar 2026", text: "30% dividend increase; HBM4 11 Gbps samples shipping" },
+        { date: "Mid-2027", text: "Idaho ID1 fab operational" },
+        { date: "H2 2028", text: "NY $100B campus comes online" },
+      ],
+      supplyChain: {
+        equipment: "ASML EUV (first US-based EUV), Lam, AMAT, KLA",
+        materials: "SUMCO wafers; JSR photoresist",
+        foundry: "In-house (Idaho, NY, Taiwan, Singapore, Japan)",
+        packaging: "In-house TSV (HBM)",
+        power: "US grid + CHIPS Act $6.1B subsidy",
+        eda: "Synopsys, Cadence",
+      },
     },
     { name: "Intel", ticker: "INTC", segment: "Foundry + IDM", color: "#06B6D4",
       revenue: [
@@ -717,23 +1051,31 @@ const SEMI_CAPEX_DATA = {
       breakdown: "'5 nodes in 4 years' plan: Intel 7 → 4 → 3 → 20A → 18A. Foundry services (IFS) expansion.",
       supplyTimeline: "Intel 18A: risk production H2 2025, volume 2026. Ohio mega-fab: broke ground 2022, delayed, first chips ~2027-2028. Foundry spin-off under review.",
       notes: "Restructuring. $10B+ cost cuts. Foundry losses $7B in 2024. 18A is make-or-break. Margin erosion from foundry investments.",
-    },
-    { name: "Broadcom", ticker: "AVGO", segment: "ASIC Design", color: T_.red,
-      revenue: [
-        { year: 2022, value: 33.2 }, { year: 2023, value: 35.8 }, { year: 2024, value: 51.6 }, { year: 2025, value: 63.9 },
-        { year: 2026, value: 85, est: true }, { year: 2027, value: 105, est: true }, { year: 2028, value: 120, est: true }, { year: 2029, value: 130, est: true }, { year: 2030, value: 140, est: true },
+      allocation: [
+        { area: "Intel 18A fab buildout", pct: 50, detail: "Ohio mega-fab + Arizona Fab 52/62; 18A risk prod H2 2025" },
+        { area: "IDM products (Xeon, Core)", pct: 30, detail: "Granite Rapids, Clearwater Forest, Diamond Rapids" },
+        { area: "Foundry services (IFS)", pct: 20, detail: "Customer designs on Intel 18A — under spin-off review" },
       ],
-      grossMargin: [
-        { year: 2022, value: 74.7 }, { year: 2023, value: 74.0 }, { year: 2024, value: 76.2 }, { year: 2025, value: 77 },
-        { year: 2026, value: 77, est: true }, { year: 2027, value: 78, est: true }, { year: 2028, value: 78, est: true }, { year: 2029, value: 77, est: true }, { year: 2030, value: 77, est: true },
+      customers: [
+        { name: "PC OEMs", deal: "Dell, HP, Lenovo — Core / Ultra processors", tag: "Core" },
+        { name: "Server OEMs", deal: "HPE, Dell, Supermicro — Xeon", tag: "Core" },
+        { name: "IFS clients", deal: "TBD — foundry spin-off under review", tag: "Tier-2" },
       ],
-      capex: [
-        { year: 2022, value: 0.5 }, { year: 2023, value: 0.5 }, { year: 2024, value: 0.7 }, { year: 2025, value: 1.0 },
-        { year: 2026, value: 1.5, est: true }, { year: 2027, value: 2.0, est: true }, { year: 2028, value: 2.5, est: true }, { year: 2029, value: 2.5, est: true }, { year: 2030, value: 2.5, est: true },
+      contracts: [
+        { date: "H2 2025", text: "Intel 18A risk production starts" },
+        { date: "2026", text: "Intel 18A volume production" },
+        { date: "2027-2028", text: "Ohio mega-fab first chips (originally 2024 target, slipped)" },
+        { date: "2024-2025", text: "$10B+ cost cuts; foundry losses $7B in 2024" },
+        { date: "TBD", text: "Foundry spin-off under review" },
       ],
-      breakdown: "R&D-heavy, fab-light. Designs custom ASICs for Google (TPU), Meta (MTIA), OpenAI. Networking.",
-      supplyTimeline: "TPU v7 Ironwood co-designed with Google, ramping 2026. OpenAI custom ASIC in design, first silicon 2026-2027. Revenue from custom AI accelerators growing >3x YoY. Q2 FY26 AI rev guided $10.7B (+140% YoY).",
-      notes: "Q1 FY26: Rev $19.3B (+29%), AI rev $8.4B (+106%). Custom accelerators grew 140% YoY. 6 hyperscaler ASIC customers. $73B AI backlog. CEO: '$100B AI chip rev by 2027.' 77% gross margin — highest in semi.",
+      supplyChain: {
+        equipment: "ASML High-NA EUV (first customer), Lam, AMAT, KLA",
+        materials: "Standard wafers + photoresist suppliers",
+        foundry: "In-house (US, Ireland, Israel)",
+        packaging: "In-house Foveros (3D stacking), EMIB",
+        power: "US grid + CHIPS Act $8.5B grant + $11B loans",
+        eda: "Synopsys, Cadence",
+      },
     },
   ],
   aggregate: [
@@ -1302,6 +1644,210 @@ const s = {
   select: { padding: "6px 10px", fontSize: 12, background: "#0B0F19", border: `1px solid ${T_.border}`, borderRadius: 6, color: T_.textMid, outline: "none" },
 };
 
+// EXPERIMENTAL VISUALIZATIONS — "build everything, delete what doesn't help".
+// Iterating on the compute-pricing tab readability. Components below render
+// against historical GPU_DATA (hand-maintained) + live compute_prices (weekly cron).
+
+// (1) Cohort decay curve — every cohort indexed to 100 at launch, decays toward floor.
+// One chart, one image, tells the GPU-deflation story.
+function CohortDecayCurve() {
+  // Cohorts in display-decay order (most-deflated → newest)
+  const COHORTS = [
+    { gpu: "A100 SXM",     color: T_.textDim },
+    { gpu: "H100 SXM",     color: T_.blue },
+    { gpu: "H200 SXM",     color: "#60A5FA" },
+    { gpu: "B200 SXM",     color: T_.green },
+    { gpu: "GB200 NVL72",  color: T_.amber },
+  ];
+  // Build wide-format chartData with one row per period, one column per cohort.
+  // Value = % of cohort's launch (first non-zero) price.
+  const allPeriods = ["Q1 23","Q2 23","Q3 23","Q4 23","Q1 24","Q2 24","Q3 24","Q4 24","Q1 25","Q2 25","Q3 25","Q4 25","Q1 26","Q2 26"];
+  const chartData = allPeriods.map(p => ({ period: p }));
+  for (const c of COHORTS) {
+    const g = GPU_DATA.find(x => x.gpu === c.gpu);
+    if (!g) continue;
+    const launchVal = g.price.cloud.find(x => x.value > 0)?.value;
+    if (!launchVal) continue;
+    for (const entry of g.price.cloud) {
+      const row = chartData.find(r => r.period === entry.period);
+      if (row && entry.value > 0) row[c.gpu] = +(100 * entry.value / launchVal).toFixed(1);
+    }
+  }
+  return (
+    <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, display: "flex", flexDirection: "column", height: "100%" }}>
+      <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>
+        Cohort decay curve — % of launch price
+      </div>
+      <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 10 }}>
+        Each cohort indexed to 100 at first quarter of cloud-rental data.
+      </div>
+      <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap" }}>
+        {COHORTS.map(c => (
+          <div key={c.gpu} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
+            <div style={{ width: 10, height: 3, borderRadius: 1, background: c.color }} />
+            <span style={{ color: T_.textDim }}>{c.gpu}</span>
+          </div>
+        ))}
+      </div>
+      <div style={{ flex: 1, minHeight: 180 }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <LineChart data={chartData} margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
+            <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+            <YAxis tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={false} tickLine={false} width={48} domain={[0, 110]} tickFormatter={v => `${v}%`} />
+            <Tooltip contentStyle={tooltipStyleSm} formatter={(v, n) => [`${v.toFixed(0)}% of launch`, n]} />
+            {COHORTS.map(c => (
+              <Line key={c.gpu} type="monotone" dataKey={c.gpu} stroke={c.color} strokeWidth={2.5} dot={{ r: 3, fill: c.color }} connectNulls />
+            ))}
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
+      <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>
+        Source: hardcoded GPU_DATA · quarterly aggregates from SiliconData/Jarvislabs/RunPod/Lambda/AWS/GCP averages.
+      </div>
+    </div>
+  );
+}
+
+// (2) Per-cohort provider breakdown — for each cohort, bar chart of 6 provider list prices.
+// Uses live snapshot from compute_prices. As we accumulate weeks, this evolves into time series.
+function ProviderBreakdownByCohort() {
+  const [state, setState] = useState({ loading: true, asOf: null, byCohort: {}, error: null });
+  useEffect(() => {
+    loadLatestComputePrices().then(({ as_of, rows }) => {
+      const byCohort = {};
+      for (const r of rows) {
+        if (r.surface !== "on_demand") continue;
+        const v = +r.hourly_per_gpu_usd;
+        if (!isFinite(v)) continue;
+        const key = (byCohort[r.cohort] ??= {});
+        if (key[r.provider] == null || v < key[r.provider]) key[r.provider] = v;
+      }
+      setState({ loading: false, asOf: as_of, byCohort, error: null });
+    }).catch(err => setState({ loading: false, error: err.message }));
+  }, []);
+  const PROVIDERS = ["AWS", "Azure", "GCP", "CoreWeave", "Lambda", "Crusoe"];
+  const COLOR = { AWS: "#F97316", Azure: T_.blue, GCP: "#22D3EE", CoreWeave: "#A855F7", Lambda: "#FBBF24", Crusoe: "#EF4444" };
+  const renderCohort = (cohortName) => {
+    const row = state.byCohort[cohortName] || {};
+    const data = PROVIDERS.map(p => ({ provider: p, value: row[p] || 0 })).filter(d => d.value > 0);
+    if (data.length === 0) return null;
+    const max = Math.max(...data.map(d => d.value));
+    return (
+      <div key={cohortName} style={{ marginBottom: 4 }}>
+        <div style={{ fontSize: 11, fontWeight: 700, color: T_.text, marginBottom: 4 }}>{cohortName}</div>
+        {data.map(d => (
+          <div key={d.provider} style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 10, marginBottom: 2 }}>
+            <span style={{ width: 56, color: T_.textDim, flexShrink: 0 }}>{d.provider}</span>
+            <div style={{ flex: 1, height: 9, background: "#0B0F19", borderRadius: 2, overflow: "hidden" }}>
+              <div style={{ width: `${(d.value / max) * 100}%`, height: "100%", background: COLOR[d.provider], borderRadius: 2 }} />
+            </div>
+            <span style={{ minWidth: 36, textAlign: "right", color: T_.textMid, fontVariantNumeric: "tabular-nums", fontWeight: 600 }}>${d.value.toFixed(2)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+  return (
+    <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 14, height: "100%" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 8 }}>
+        <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>
+          Provider breakdown · $/GPU-hr
+        </div>
+        <div style={{ fontSize: 11, color: T_.textGhost }}>{state.asOf ? `as of ${state.asOf}` : ""}</div>
+      </div>
+      {state.loading ? <div style={{ color: T_.textDim, fontSize: 12 }}>Loading…</div> : (
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 10 }}>
+          {COHORT_ORDER.map(renderCohort)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Cross-cloud GPU $/hr matrix. Rows = cohort, columns = providers.
+// Data from compute_prices (weekly cron). Lowest on-demand $/GPU-hr per cell.
+function ComputePricingMatrix() {
+  const [state, setState] = useState({ loading: true, asOf: null, byCohort: {}, error: null });
+  useEffect(() => {
+    loadLatestComputePrices().then(({ as_of, rows }) => {
+      // Build {cohort: {provider: {on_demand: {value, sku}, spot: {...}, ...}}}
+      // Track SKU alongside the value so cell tooltip can show provenance.
+      const byCohort = {};
+      for (const r of rows) {
+        const v = +r.hourly_per_gpu_usd;
+        if (!isFinite(v)) continue;
+        const cell = (byCohort[r.cohort] ??= {})[r.provider] ??= {};
+        const cur = cell[r.surface];
+        if (cur == null || v < cur.value) cell[r.surface] = { value: v, sku: r.instance_sku, region: r.region };
+      }
+      setState({ loading: false, asOf: as_of, byCohort, error: null });
+    }).catch(err => setState({ loading: false, error: err.message }));
+  }, []);
+
+  const PROVIDERS = ["AWS", "Azure", "GCP", "CoreWeave", "Lambda", "Crusoe"];
+  const PROVIDER_COLOR = {
+    AWS: "#F97316", Azure: T_.blue, GCP: "#22D3EE",
+    CoreWeave: "#A855F7", Lambda: "#FBBF24", Crusoe: "#EF4444",
+  };
+  const fmt = v => v == null ? "—" : `$${v.toFixed(2)}`;
+
+  return (
+    <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, height: "100%", display: "flex", flexDirection: "column" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+        <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>
+          Headline · $/GPU-hr by Cohort × Provider · Lowest on-demand list (us regions)
+        </div>
+        <div style={{ fontSize: 11, color: T_.textGhost }}>
+          {state.loading ? "Loading…" : state.error ? `Error: ${state.error}`
+            : state.asOf ? `Data as of ${state.asOf} · Refreshes Sundays 08:00 UTC` : "No snapshot yet"}
+        </div>
+      </div>
+
+      {state.loading || state.error ? null : (
+        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
+          <thead>
+            <tr>
+              <th style={{ padding: "10px 12px", fontSize: 11, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: `1px solid ${T_.border}`, textAlign: "left" }}>Cohort</th>
+              {PROVIDERS.map(p => (
+                <th key={p} style={{ padding: "10px 12px", fontSize: 11, fontWeight: 600, color: PROVIDER_COLOR[p], textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: `1px solid ${T_.border}`, textAlign: "right" }}>{p}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {COHORT_ORDER.map(c => {
+              const row = state.byCohort[c] || {};
+              return (
+                <tr key={c}>
+                  <td style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}30`, fontWeight: 700, color: T_.text }}>{c}</td>
+                  {PROVIDERS.map(p => {
+                    const od = row[p]?.on_demand;
+                    const sp = row[p]?.spot;
+                    const tip = od ? `${od.sku} (${od.region})${sp ? `\nspot: ${sp.sku}` : ""}` : "";
+                    return (
+                      <td
+                        key={p}
+                        title={tip}
+                        style={{ padding: "10px 12px", borderBottom: `1px solid ${T_.border}30`, textAlign: "right", fontVariantNumeric: "tabular-nums", color: T_.textMid, cursor: od ? "help" : "default" }}
+                      >
+                        {fmt(od?.value)}
+                        {sp && <div style={{ fontSize: 10, color: T_.textGhost, fontWeight: 400, marginTop: 2 }}>spot {fmt(sp.value)}</div>}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      )}
+
+      <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 12, lineHeight: 1.5 }}>
+        Sources: AWS via Vantage instances.json · Azure Retail Prices API (eastus, ND-series) · GCP Cloud Billing Catalog (us regions). On-demand list price only; reserved / committed-short / spot stored separately. Lowest-priced SKU per (cohort, provider, surface) shown.
+      </div>
+    </div>
+  );
+}
+
 export default function IndustryResearch({ initialTab }) {
   const [mainTab, setMainTab] = useState(initialTab || "ailabs");
   // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
@@ -1493,28 +2039,6 @@ export default function IndustryResearch({ initialTab }) {
           );
         })()}
 
-        {/* LLM Pricing Key Observations */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>LLM Pricing — Key Observations</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
-            {[
-              { icon: "\ud83d\udcc9", title: "10x Annual Deflation", text: "LLM inference costs decline faster than any prior technology \u2014 faster than Moore's Law, PC compute, or dotcom bandwidth. GPT-4-equivalent output: $60 \u2192 ~$0.40/MTok in 3 years." },
-              { icon: "\ud83c\udfed", title: "Output 3-5x More Than Input", text: "All providers price output tokens 3-10x higher than input. Output requires sequential autoregressive generation while input parallelizes. Output-heavy apps face different economics." },
-              { icon: "\ud83d\udcd0", title: "Context Windows Exploded 62x", text: "GPT-4's 32K (Mar '23) \u2192 Gemini's 2M tokens (Jun '24). Anthropic and OpenAI at 1M standard. Eliminates chunking overhead and enables entirely new use cases." },
-              { icon: "\u2694\ufe0f", title: "Google Leads Price, Anthropic Quality-per-$", text: "Gemini Flash ($0.10-0.40/MTok output) undercuts all rivals. Anthropic Opus 4.6 dropped 67% from Opus 4 ($75\u2192$25). OpenAI GPT-5.4 balances cost + capability at $10/MTok." },
-              { icon: "\ud83d\udd04", title: "Batch + Caching = 75-90% Further Savings", text: "Prompt caching (90% savings on repeated content) and batch APIs (50% off for async) mean sticker price is the ceiling. Production workloads routinely pay 25% of list." },
-              { icon: "\ud83c\udde8\ud83c\uddf3", title: "DeepSeek Disrupted the Pricing Floor", text: "DeepSeek R1 at $0.55/$2.19 \u2014 90% below Western incumbents. Forces all providers to offer competitive value tiers or lose developer adoption." },
-            ].map((item, idx) => (
-              <div key={idx} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "14px 16px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-                  <span style={{ fontSize: 16 }}>{item.icon}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: T_.textMid }}>{item.title}</span>
-                </div>
-                <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.6 }}>{item.text}</div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         </>)}
 
@@ -1531,24 +2055,6 @@ export default function IndustryResearch({ initialTab }) {
             <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>Valuation</div>
             <div style={{ fontSize: 28, fontWeight: 700, color: T_.text, letterSpacing: "-1px" }}>{lab.valuation.current}</div>
             <div style={{ fontSize: 13, color: T_.textDim, marginTop: 2 }}>{lab.valuation.date} &middot; {lab.valuation.series}</div>
-          </div>
-        </div>
-
-        {/* Key Metrics Cards */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, marginBottom: 20 }}>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 18px", borderLeft: `3px solid ${T_.blue}` }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>Users / Reach</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: T_.blue }}>{lab.users.paying}</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>{lab.users.trend}</div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 18px", borderLeft: `3px solid ${T_.green}` }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>Burn / Profitability</div>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.green, lineHeight: 1.5 }}>{lab.burn}</div>
-          </div>
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 18px", borderLeft: `3px solid ${T_.amber}` }}>
-            <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>Latest Funding</div>
-            <div style={{ fontSize: 14, fontWeight: 700, color: T_.amber }}>{lab.valuation.series}</div>
-            <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4, lineHeight: 1.5 }}>{lab.valuation.investors}</div>
           </div>
         </div>
 
@@ -1986,27 +2492,83 @@ export default function IndustryResearch({ initialTab }) {
           );
         })()}
 
-        {/* Public Equity Exposure */}
+        {/* Funding & Equity History — combines compact public equity exposure + chronological funding rounds.
+            Public equity participants in each round are badged with their ticker so the user can
+            trace cumulative ownership directly. Replaces the standalone Public Equity Exposure block. */}
+        {lab.fundingHistory && (
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Public Equity Exposure</div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            {lab.equity.map((e, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, alignItems: "center" }}>
-                <div style={{
-                  minWidth: 70, padding: "6px 10px", borderRadius: 6,
-                  background: `${e.color}18`, border: `1px solid ${e.color}40`,
-                  fontSize: 16, fontWeight: 700, color: e.color, textAlign: "center", letterSpacing: "0.5px",
-                }}>
-                  {e.ticker}
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 14 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>
+              Funding &amp; Equity History
+            </div>
+            <div style={{ fontSize: 11, color: T_.textGhost }}>
+              Latest &rarr; 2023 &middot; public-equity participants tagged
+            </div>
+          </div>
+
+          {/* Compact "how to get exposure" header — replaces the old standalone block */}
+          <div style={{ background: "#0B0F19", borderRadius: 8, padding: "10px 14px", marginBottom: 14, borderLeft: `3px solid ${T_.green}` }}>
+            <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8 }}>
+              How to get exposure via public equity
+            </div>
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 14, rowGap: 6 }}>
+              {lab.equity.map((e, i) => (
+                <div key={i} style={{ display: "flex", alignItems: "baseline", gap: 6, fontSize: 11 }}>
+                  <span style={{ padding: "2px 6px", borderRadius: 4, background: `${e.color}18`, border: `1px solid ${e.color}40`, fontSize: 10, fontWeight: 700, color: e.color, letterSpacing: "0.5px", flexShrink: 0 }}>{e.ticker}</span>
+                  <span style={{ color: T_.textDim }}>{e.exposure}</span>
                 </div>
-                <div style={{ fontSize: 16, fontWeight: 600, color: T_.textMid, minWidth: 100 }}>{e.name}</div>
-                <div style={{ fontSize: 14, color: T_.textDim, flex: 1 }}>{e.exposure}</div>
-              </div>
-            ))}
+              ))}
+            </div>
+          </div>
+
+          {/* Funding rounds table */}
+          <div style={{ overflow: "auto" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+              <thead>
+                <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+                  {["Date","Round / Event","Raised","Post-Money","Lead Investors","Public Participants","ARR / KPIs at time"].map(h => (
+                    <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {lab.fundingHistory.map((f, fi) => (
+                  <tr key={fi} style={{ borderBottom: "1px solid #0B0F19" }}>
+                    <td style={{ padding: "10px 10px", color: T_.textDim, whiteSpace: "nowrap", fontSize: 11, verticalAlign: "top" }}>{f.date}</td>
+                    <td style={{ padding: "10px 10px", color: T_.textMid, fontWeight: 600, whiteSpace: "nowrap", verticalAlign: "top" }}>{f.round}</td>
+                    <td style={{ padding: "10px 10px", color: T_.amber, fontWeight: 700, whiteSpace: "nowrap", fontSize: 11, verticalAlign: "top" }}>{f.raised}</td>
+                    <td style={{ padding: "10px 10px", color: T_.text, fontWeight: 600, whiteSpace: "nowrap", fontSize: 11, verticalAlign: "top" }}>{f.postValuation}</td>
+                    <td style={{ padding: "10px 10px", color: T_.textDim, fontSize: 11, maxWidth: 220, verticalAlign: "top" }}>{f.leadInvestors}</td>
+                    <td style={{ padding: "10px 10px", maxWidth: 240, verticalAlign: "top" }}>
+                      {(!f.publicParticipants || f.publicParticipants.length === 0) ? (
+                        <span style={{ color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>&mdash;</span>
+                      ) : (
+                        <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                          {f.publicParticipants.map((p, pi) => (
+                            <div key={pi} style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                              <span style={{ padding: "1px 5px", borderRadius: 3, background: `${p.color}18`, border: `1px solid ${p.color}40`, fontSize: 10, fontWeight: 700, color: p.color, letterSpacing: "0.5px", flexShrink: 0 }}>{p.ticker}</span>
+                              <span style={{ fontSize: 11, color: T_.textDim }}>{p.amount}</span>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </td>
+                    <td style={{ padding: "10px 10px", color: T_.textDim, fontSize: 11, maxWidth: 240, verticalAlign: "top" }}>
+                      {f.arrAtRound && <div style={{ color: T_.green, fontWeight: 600, marginBottom: 2 }}>{f.arrAtRound}</div>}
+                      {f.kpis && <div>{f.kpis}</div>}
+                      {f.notes && <div style={{ marginTop: 3, color: T_.textGhost, fontStyle: "italic" }}>{f.notes}</div>}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 10, fontStyle: "italic" }}>
+            Sources: Company announcements, SEC filings, Bloomberg, CNBC, TechCrunch, Crunchbase, Sacra. Valuations are post-money. ARR snapshots reflect best estimate at time of round.
           </div>
         </div>
-
-
+        )}
 
         </>)}
 
@@ -2017,22 +2579,6 @@ export default function IndustryResearch({ initialTab }) {
       {mainTab === "ainative" && (<>
         <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>AI-Native Platforms</div>
         <div style={{ fontSize: 13, color: T_.textDim, marginBottom: 24 }}>AI-native companies with $100M+ ARR. These platforms represent the demand side of the GPU compute stack — every dollar of AI-native revenue ultimately requires GPU infrastructure from hyperscalers and neoclouds like CoreWeave.</div>
-
-        {/* Growth Trend Cards */}
-        <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
-          {[
-            { label: "AI-Native $50M+ ARR Companies", value: "30-50", sub: "Up from ~3 in 2023", color: T_.green },
-            { label: "Fastest 0→$1B ARR", value: "Cursor", sub: "24 months (Nov 2025). Previous record: ChatGPT ~18 months.", color: T_.blue },
-            { label: "AI-Native vs SaaS Speed", value: "2x faster", sub: "AI-native cos reach $1M ARR in half the time of B2B SaaS", color: T_.amber },
-            { label: "2026 AI Startup Funding", value: "$15B+ in 49 days", sub: "17 US AI cos raised $100M+ in first 49 days of 2026", color: T_.purple },
-          ].map((m, i) => (
-            <div key={i} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 18px", flex: "1 1 180px", minWidth: 180 }}>
-              <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>{m.label}</div>
-              <div style={{ fontSize: 22, fontWeight: 700, color: m.color }}>{m.value}</div>
-              <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 4 }}>{m.sub}</div>
-            </div>
-          ))}
-        </div>
 
         {/* AI Startup Formation Trend */}
         <div style={s.card}>
@@ -2146,40 +2692,11 @@ export default function IndustryResearch({ initialTab }) {
           total: a.value,
           est: !!a.est,
         }));
-        // Top 5 total 2025+2026
-        const top5Total2026 = AI_CAPEX_DATA.top5.reduce((s, co) => {
-          const pt = co.capex.find(c => c.year === 2026);
-          return s + (pt ? pt.value : 0);
-        }, 0);
-        const top5Total2025 = AI_CAPEX_DATA.top5.reduce((s, co) => {
-          const pt = co.capex.find(c => c.year === 2025);
-          return s + (pt ? pt.value : 0);
-        }, 0);
-        const top5Total2024 = AI_CAPEX_DATA.top5.reduce((s, co) => {
-          const pt = co.capex.find(c => c.year === 2024);
-          return s + (pt ? pt.value : 0);
-        }, 0);
-        const yoyGrowth = top5Total2025 > 0 ? ((top5Total2026 / top5Total2025 - 1) * 100) : 0;
-        const mc = (label, value, sub, color) => (
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 20px", flex: "1 1 0" }}>
-            <div style={{ fontSize: 12, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>{label}</div>
-            <div style={{ fontSize: 28, fontWeight: 700, color: color || T_.text, letterSpacing: "-0.5px" }}>{value}</div>
-            {sub && <div style={{ fontSize: 11, color: T_.textDim, marginTop: 3 }}>{sub}</div>}
-          </div>
-        );
         return (<>
         {/* Header */}
         <div style={{ marginBottom: 28, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>AI Capex Tracker</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Hyperscaler &amp; neocloud infrastructure spending · 2022–2030</div>
-        </div>
-
-        {/* Summary Cards */}
-        <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
-          {mc("2024 Actual (Top 5)", `$${top5Total2024}B`, "Amazon $83B · Alphabet $53B · MSFT $44B · Meta $39B · Oracle $12B")}
-          {mc("2025 Estimate (Top 5)", `$${top5Total2025}B`, `+${((top5Total2025 / top5Total2024 - 1) * 100).toFixed(0)}% y/y`, T_.amber)}
-          {mc("2026 Estimate (Top 5)", `$${top5Total2026}B`, `+${yoyGrowth.toFixed(0)}% y/y · ~75% for AI infra`, T_.blue)}
-          {mc("2026E All Players", `$${AI_CAPEX_DATA.aggregate.find(a => a.year === 2026)?.value || 0}B`, "Top 5 + neoclouds + others", T_.green)}
         </div>
 
         {/* Top 5 Trajectory + Aggregate Bar — side by side */}
@@ -2266,154 +2783,184 @@ export default function IndustryResearch({ initialTab }) {
         </div>
         </div>
 
-        {/* Cloud Revenue, Margin & Capex Table */}
-        {(() => {
-          const yrRange = [2022,2023,2024,2025,2026,2027,2028,2029,2030];
-          const getYoY = (data, yr) => {
-            const cur = data?.find(d => d.year === yr)?.value;
-            const prev = data?.find(d => d.year === yr - 1)?.value;
-            if (cur == null || prev == null || prev === 0) return null;
-            return ((cur / prev - 1) * 100);
-          };
-          return (
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>Cloud Revenue, Margin &amp; Capex ($B / %)</div>
-          <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 12 }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left", padding: "8px 10px", fontSize: 10, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>Company</th>
-                <th style={{ textAlign: "left", padding: "8px 10px", fontSize: 10, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}` }}>Metric</th>
-                {yrRange.map(yr => (
-                  <th key={yr} style={{ textAlign: "right", padding: "8px 6px", fontSize: 10, fontWeight: 600, color: yr >= 2026 ? T_.textDim : T_.textMid, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>
-                    {yr}{yr >= 2026 ? "E" : ""}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {AI_CAPEX_DATA.revenueVsCapex.map((co) => {
-                const rows = [
-                  { metric: "Revenue", data: co.rev, fmt: (v) => `$${v}B`, bold: true },
-                  { metric: "Revenue y/y", isYoY: true, srcData: co.rev },
-                  { metric: "Op. Margin", data: co.margin, fmt: (v) => `${v}%`, bold: false },
-                  { metric: "Capex", data: co.capex, fmt: (v) => `$${v}B`, bold: false },
-                  { metric: "Capex y/y", isYoY: true, srcData: co.capex },
-                ];
-                return rows.map((row, ri) => (
-                  <tr key={co.name + ri}
-                    onMouseEnter={e => e.currentTarget.style.background = `${T_.border}20`}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                  >
-                    {ri === 0 ? (
-                      <td rowSpan={5} style={{ padding: "8px 10px", borderBottom: `2px solid ${T_.border}`, fontWeight: 700, color: co.color, fontSize: 13, verticalAlign: "top" }}>
-                        {co.name}
-                      </td>
-                    ) : null}
-                    <td style={{ padding: "5px 10px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`, color: row.isYoY ? T_.textDim : T_.textDim, fontSize: row.isYoY ? 10 : 11, fontWeight: 600, fontStyle: row.isYoY ? "italic" : "normal" }}>{row.metric}</td>
-                    {yrRange.map(yr => {
-                      if (row.isYoY) {
-                        const yoy = getYoY(row.srcData, yr);
-                        return (
-                          <td key={yr} style={{ padding: "4px 6px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`, textAlign: "right", fontSize: 10, fontVariantNumeric: "tabular-nums", color: yoy == null ? T_.textDim : yoy >= 0 ? T_.green : T_.red }}>
-                            {yoy != null ? `${yoy >= 0 ? "+" : ""}${yoy.toFixed(0)}%` : "—"}
-                          </td>
-                        );
-                      }
-                      const pt = row.data?.find(d => d.year === yr);
-                      const val = pt?.value;
-                      const isEst = pt?.est;
-                      const isNeg = val < 0;
-                      return (
-                        <td key={yr} style={{
-                          padding: "5px 6px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`,
-                          textAlign: "right", fontVariantNumeric: "tabular-nums",
-                          color: row.metric === "Op. Margin" ? (isNeg ? T_.red : val >= 40 ? T_.green : T_.textMid) : (isEst ? T_.textDim : T_.textMid),
-                          fontWeight: row.bold ? 600 : 400, fontSize: 12,
-                        }}>
-                          {val != null ? row.fmt(val) : "—"}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ));
-              })}
-            </tbody>
-          </table>
-        </div>
-          );
-        })()}
-
-        {/* Top 5 Detail Cards */}
-        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Top 5 Hyperscalers — Detail</div>
+        {/* Top 5 Hyperscalers — Detail (robust per-company breakdown) */}
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>Top 5 Hyperscalers — Detail</div>
+        <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 14 }}>Where the capex is going: allocation, customers, contracts, and supply chain — per company.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
           {AI_CAPEX_DATA.top5.map((co, idx) => {
             const cap2026 = co.capex.find(c => c.year === 2026)?.value || 0;
-            const cap2025 = co.capex.find(c => c.year === 2025)?.value || 0;
-            const cap2024 = co.capex.find(c => c.year === 2024)?.value || 0;
-            const yoy = cap2025 > 0 ? ((cap2026 / cap2025 - 1) * 100) : 0;
+            const maxV = Math.max(...co.capex.map(c => c.value));
+            const fin = AI_CAPEX_DATA.revenueVsCapex[idx]; // same order as top5
+            const yrRange = [2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030];
+            const getYoY = (data, yr) => {
+              const cur = data?.find(d => d.year === yr)?.value;
+              const prev = data?.find(d => d.year === yr - 1)?.value;
+              if (cur == null || prev == null || prev <= 0) return null;
+              return ((cur / prev - 1) * 100);
+            };
+            const tagColor = (tag) => {
+              if (/anchor.*captive|captive/i.test(tag)) return co.color;
+              if (/anchor/i.test(tag)) return T_.amber;
+              if (/internal/i.test(tag)) return T_.purple;
+              if (/core/i.test(tag)) return T_.blue;
+              return T_.textDim;
+            };
             return (
-              <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, borderLeft: `3px solid ${co.color}` }}>
-                {/* Header row */}
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16 }}>
+              <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, borderLeft: `4px solid ${co.color}` }}>
+                {/* Header: identity + sparkline */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, gap: 14, flexWrap: "wrap" }}>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                    <span style={{ fontSize: 12, fontWeight: 700, color: co.color, background: `${co.color}18`, padding: "3px 8px", borderRadius: 4 }}>#{idx + 1}</span>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: T_.text }}>{co.name}</span>
-                    <span style={{ fontSize: 13, color: T_.textDim }}>{co.ticker}</span>
+                    <span style={{ fontSize: 11, fontWeight: 700, color: co.color, background: `${co.color}18`, padding: "3px 8px", borderRadius: 4 }}>#{idx + 1}</span>
+                    <span style={{ fontSize: 17, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                    <span style={{ fontSize: 12, color: T_.textDim }}>{co.ticker}</span>
                   </div>
-                  <div style={{ display: "flex", gap: 16, textAlign: "right" }}>
-                    <div>
-                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2024A</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: T_.textDim }}>${cap2024}B</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2025E</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: T_.textMid }}>${cap2025}B</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2026E</div>
-                      <div style={{ fontSize: 20, fontWeight: 700, color: co.color }}>${cap2026}B</div>
-                    </div>
-                    <div>
-                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>y/y</div>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: yoy >= 0 ? T_.green : T_.red }}>+{yoy.toFixed(0)}%</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Inline trajectory sparkline */}
-                <div style={{ marginBottom: 16 }}>
-                  <div style={{ display: "flex", alignItems: "flex-end", gap: 3, height: 48 }}>
-                    {co.capex.map((pt) => {
-                      const maxV = Math.max(...co.capex.map(c => c.value));
-                      const h = (pt.value / maxV) * 44;
-                      return (
-                        <div key={pt.year} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                          <div style={{ fontSize: 9, color: pt.est ? T_.textDim : "#CBD5E1", fontWeight: 600 }}>{pt.value}</div>
-                          <div style={{
-                            width: "100%", maxWidth: 40, height: Math.max(h, 3), borderRadius: "3px 3px 1px 1px",
-                            background: pt.est ? `${co.color}50` : co.color,
+                  {/* Mini sparkline 22-30 (capex) */}
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px" }}>Capex 22→30</span>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 26, width: 110 }}>
+                      {co.capex.map((pt) => {
+                        const h = (pt.value / maxV) * 24;
+                        return (
+                          <div key={pt.year} title={`${pt.year}: $${pt.value}B${pt.est ? " (est.)" : ""}`} style={{
+                            flex: 1, height: Math.max(h, 2), borderRadius: "2px 2px 0 0",
+                            background: pt.est ? `${co.color}55` : co.color,
                             border: pt.est ? `1px dashed ${co.color}` : "none",
                           }} />
-                          <div style={{ fontSize: 8, color: T_.textDim }}>{pt.year.toString().slice(-2)}</div>
-                        </div>
-                      );
-                    })}
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
-                {/* 3-column info grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
-                  <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Spending On</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.spendingOn}</div>
+                {/* Mini financials table — Revenue / Op Margin / Capex × 9 years */}
+                {fin && (
+                  <div style={{ background: "#0B0F19", borderRadius: 8, padding: "10px 12px", marginBottom: 12, overflow: "auto" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600 }}>Cloud / Segment Financials ($B / %)</div>
+                      <div style={{ fontSize: 9, color: T_.textDim, fontStyle: "italic" }}>{fin.name === co.name ? "" : fin.name}</div>
+                    </div>
+                    <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 11, fontVariantNumeric: "tabular-nums" }}>
+                      <thead>
+                        <tr>
+                          <th style={{ textAlign: "left", padding: "4px 6px", fontSize: 9, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.4px", borderBottom: `1px solid ${T_.border}` }}>Metric</th>
+                          {yrRange.map(yr => (
+                            <th key={yr} style={{ textAlign: "right", padding: "4px 4px", fontSize: 9, fontWeight: 600, color: yr >= 2026 ? T_.textDim : T_.textMid, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>{yr}{yr >= 2026 ? "E" : ""}</th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {[
+                          { label: "Revenue", data: fin.rev, fmt: (v) => `$${v}B`, color: T_.text, bold: true },
+                          { label: "Rev y/y", isYoY: true, src: fin.rev },
+                          { label: "Op. Margin", data: fin.margin, fmt: (v) => `${v}%`, color: T_.textMid },
+                          { label: "Capex", data: fin.capex, fmt: (v) => `$${v}B`, color: co.color, bold: true },
+                          { label: "Capex y/y", isYoY: true, src: fin.capex },
+                        ].map((row, ri) => (
+                          <tr key={ri}>
+                            <td style={{ padding: "4px 6px", fontSize: row.isYoY ? 9 : 10, fontWeight: 600, color: T_.textDim, fontStyle: row.isYoY ? "italic" : "normal" }}>{row.label}</td>
+                            {yrRange.map(yr => {
+                              if (row.isYoY) {
+                                const v = getYoY(row.src, yr);
+                                return <td key={yr} style={{ padding: "3px 4px", textAlign: "right", fontSize: 9, color: v == null ? T_.textDim : v >= 0 ? T_.green : T_.red }}>{v != null ? `${v >= 0 ? "+" : ""}${v.toFixed(0)}%` : "—"}</td>;
+                              }
+                              const pt = row.data?.find(d => d.year === yr);
+                              const val = pt?.value;
+                              const isEst = pt?.est;
+                              const isNeg = val < 0;
+                              return (
+                                <td key={yr} style={{
+                                  padding: "4px 4px", textAlign: "right", whiteSpace: "nowrap",
+                                  fontSize: 10, fontWeight: row.bold ? 700 : 500,
+                                  color: row.label === "Op. Margin" ? (isNeg ? T_.red : val >= 40 ? T_.green : T_.textMid) : (isEst ? T_.textDim : row.color),
+                                }}>
+                                  {val != null ? row.fmt(val) : "—"}
+                                </td>
+                              );
+                            })}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
+                )}
+
+                {/* 2-col: Allocation | Customers */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                  {/* CAPEX ALLOCATION */}
                   <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Major News &amp; Contracts</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.news}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600 }}>Capex Allocation</div>
+                      <div style={{ fontSize: 10, color: T_.textDim }}>2026E ≈ ${cap2026}B</div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {co.allocation.map((a, i) => {
+                        const dollars = Math.round(cap2026 * a.pct / 100);
+                        return (
+                          <div key={i}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+                              <div style={{ fontSize: 11, color: "#CBD5E1", fontWeight: 600 }}>{a.area}</div>
+                              <div style={{ fontSize: 11, color: co.color, fontVariantNumeric: "tabular-nums", fontWeight: 700 }}>{a.pct}% · ~${dollars}B</div>
+                            </div>
+                            <div style={{ height: 6, background: T_.border, borderRadius: 3, overflow: "hidden", marginBottom: 3 }}>
+                              <div style={{ width: `${a.pct}%`, height: "100%", background: co.color, borderRadius: 3 }} />
+                            </div>
+                            <div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{a.detail}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
+
+                  {/* TOP CUSTOMERS */}
                   <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Key Partners</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.partners}</div>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 10 }}>Top Customers / Destinations</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                      {co.customers.map((c, i) => (
+                        <div key={i} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <div style={{ fontSize: 12, color: "#CBD5E1", fontWeight: 700 }}>{c.name}</div>
+                            <span style={{ fontSize: 9, fontWeight: 600, color: tagColor(c.tag), background: `${tagColor(c.tag)}18`, padding: "1px 6px", borderRadius: 3, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.4px" }}>{c.tag}</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.35 }}>{c.deal}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* 2-col: Contracts | Supply Chain */}
+                <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12 }}>
+                  {/* CONTRACTS */}
+                  <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 8 }}>Major Contracts &amp; Milestones</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                      {co.contracts.map((k, i) => (
+                        <div key={i} style={{ display: "flex", gap: 10, alignItems: "baseline", fontSize: 11, lineHeight: 1.4 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: co.color, minWidth: 78, fontVariantNumeric: "tabular-nums" }}>{k.date}</span>
+                          <span style={{ color: "#CBD5E1" }}>{k.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* SUPPLY CHAIN — compact single col */}
+                  <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 8 }}>Supply Chain</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                      {[
+                        { label: "GPU", value: co.supplyChain.gpu },
+                        { label: "Custom", value: co.supplyChain.custom },
+                        { label: "Foundry", value: co.supplyChain.foundry },
+                        { label: "HBM", value: co.supplyChain.memory },
+                        { label: "Power", value: co.supplyChain.power },
+                        { label: "Network/DC", value: co.supplyChain.networking },
+                      ].map((s, i) => (
+                        <div key={i} style={{ display: "flex", gap: 6, fontSize: 10, lineHeight: 1.35 }}>
+                          <span style={{ minWidth: 64, fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.4px", fontWeight: 600 }}>{s.label}</span>
+                          <span style={{ color: "#CBD5E1", flex: 1 }}>{s.value}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2512,31 +3059,24 @@ export default function IndustryResearch({ initialTab }) {
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Semiconductor supply chain capex · Foundry, Memory/HBM, ASIC · 2020–2030</div>
         </div>
 
-        {/* Summary Cards */}
-        <div style={{ display: "flex", gap: 14, marginBottom: 24 }}>
-          {[
-            { label: "TSMC 2026E", value: "$54B", sub: "+33% y/y · 70-80% advanced nodes (2/3nm)", color: T_.green },
-            { label: "DRAM Industry 2026E", value: "$69.5B", sub: "SK Hynix $26B + Samsung $30B + Micron $13.5B", color: T_.amber },
-            { label: "Capex → Supply Lag", value: "18-24 mo", sub: "Capex today → volume production 1.5-2 yrs later", color: T_.blue },
-          ].map((c, i) => (
-            <div key={i} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "16px 20px", flex: "1 1 0" }}>
-              <div style={{ fontSize: 12, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 6 }}>{c.label}</div>
-              <div style={{ fontSize: 26, fontWeight: 700, color: c.color, letterSpacing: "-0.5px" }}>{c.value}</div>
-              <div style={{ fontSize: 11, color: T_.textDim, marginTop: 3 }}>{c.sub}</div>
-            </div>
-          ))}
-        </div>
-
-        {/* Trajectory Chart */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
+        {/* Trajectory + Aggregate — side by side (mirrors AI Capex) */}
+        {(() => {
+          const aggChartData = SEMI_CAPEX_DATA.aggregate.map(a => ({
+            year: a.year.toString(),
+            total: a.value,
+            est: !!a.est,
+          }));
+          return (
+        <div style={{ display: "flex", gap: 16, marginBottom: 20, flexWrap: "wrap" }}>
+        <div style={{ flex: "1 1 0", minWidth: 360, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14, gap: 12, flexWrap: "wrap" }}>
             <div>
               <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>Capex Trajectory by Company ($B)</div>
               <div style={{ fontSize: 12, color: T_.textDim, marginTop: 3 }}>Dashed = estimates · Solid = reported</div>
             </div>
-            <div style={{ display: "flex", gap: 14, flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
               {companies.map(co => (
-                <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
+                <div key={co.name} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11 }}>
                   <div style={{ width: 12, height: 3, borderRadius: 1, background: co.color }} />
                   <span style={{ color: T_.textDim }}>{co.name}</span>
                 </div>
@@ -2565,118 +3105,202 @@ export default function IndustryResearch({ initialTab }) {
           </ResponsiveContainer>
         </div>
 
-        {/* Revenue, Gross Margin & Capex Table per Company */}
-        {(() => {
-          const getYoY = (data, yr) => {
-            const cur = data?.find(d => d.year === yr)?.value;
-            const prev = data?.find(d => d.year === yr - 1)?.value;
-            if (cur == null || prev == null || prev <= 0) return null;
-            return ((cur / prev - 1) * 100);
-          };
-          return (
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>Revenue, Gross Margin &amp; Capex ($B / %)</div>
-          <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 12 }}>
-            <thead>
-              <tr>
-                <th style={{ textAlign: "left", padding: "8px 10px", fontSize: 10, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>Company</th>
-                <th style={{ textAlign: "left", padding: "8px 10px", fontSize: 10, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}` }}>Metric</th>
-                {years.map(yr => (
-                  <th key={yr} style={{ textAlign: "right", padding: "8px 6px", fontSize: 10, fontWeight: 600, color: yr >= 2026 ? T_.textDim : T_.textMid, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>
-                    {yr}{yr >= 2026 ? "E" : ""}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {companies.map((co) => {
-                const rows = [
-                  { metric: "Revenue", data: co.revenue, fmt: (v) => `$${v}B`, bold: true },
-                  { metric: "Revenue y/y", isYoY: true, srcData: co.revenue },
-                  { metric: "Gross Margin", data: co.grossMargin, fmt: (v) => `${v}%`, bold: false },
-                  { metric: "Capex", data: co.capex, fmt: (v) => `$${v}B`, bold: false },
-                  { metric: "Capex y/y", isYoY: true, srcData: co.capex },
-                ];
-                return rows.map((row, ri) => (
-                  <tr key={co.name + ri}
-                    onMouseEnter={e => e.currentTarget.style.background = `${T_.border}20`}
-                    onMouseLeave={e => e.currentTarget.style.background = "transparent"}
-                  >
-                    {ri === 0 ? (
-                      <td rowSpan={5} style={{ padding: "8px 10px", borderBottom: `2px solid ${T_.border}`, fontWeight: 700, color: co.color, fontSize: 13, verticalAlign: "top" }}>
-                        {co.name}<br/><span style={{ fontSize: 10, fontWeight: 400, color: T_.textDim }}>{co.segment}</span>
-                      </td>
-                    ) : null}
-                    <td style={{ padding: "5px 10px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`, color: T_.textDim, fontSize: row.isYoY ? 10 : 11, fontWeight: 600, fontStyle: row.isYoY ? "italic" : "normal" }}>{row.metric}</td>
-                    {years.map(yr => {
-                      if (row.isYoY) {
-                        const yoy = getYoY(row.srcData, yr);
-                        return (
-                          <td key={yr} style={{ padding: "4px 6px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`, textAlign: "right", fontSize: 10, fontVariantNumeric: "tabular-nums", color: yoy == null ? T_.textDim : yoy >= 0 ? T_.green : T_.red }}>
-                            {yoy != null ? `${yoy >= 0 ? "+" : ""}${yoy.toFixed(0)}%` : "—"}
-                          </td>
-                        );
-                      }
-                      const pt = row.data?.find(d => d.year === yr);
-                      const val = pt?.value;
-                      const isEst = pt?.est;
-                      const isNeg = val < 0;
-                      return (
-                        <td key={yr} style={{
-                          padding: "5px 6px", borderBottom: ri === 4 ? `2px solid ${T_.border}` : `1px solid ${T_.border}08`,
-                          textAlign: "right", fontVariantNumeric: "tabular-nums",
-                          color: row.metric === "Gross Margin" ? (isNeg ? T_.red : val >= 50 ? T_.green : T_.textMid) : (isEst ? T_.textDim : T_.textMid),
-                          fontWeight: row.bold ? 600 : 400, fontSize: 12,
-                        }}>
-                          {val != null ? row.fmt(val) : "—"}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ));
-              })}
-            </tbody>
-          </table>
+        {/* Aggregate Semi Industry Capex Bar Chart */}
+        <div style={{ flex: "1 1 0", minWidth: 360, background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, display: "flex", flexDirection: "column" }}>
+          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Aggregate Semi Industry Capex ($B) — All Players</div>
+          <div style={{ flex: 1, display: "flex", alignItems: "flex-end", gap: 6, minHeight: 340, padding: "0 8px" }}>
+            {aggChartData.map((d) => {
+              const maxVal = Math.max(...aggChartData.map(a => a.total));
+              const h = (d.total / maxVal) * 280;
+              return (
+                <div key={d.year} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: d.est ? T_.textDim : T_.text }}>${d.total}B</div>
+                  <div style={{
+                    width: "100%", maxWidth: 64, height: h, borderRadius: "6px 6px 2px 2px",
+                    background: d.est ? `linear-gradient(180deg, #15803D 0%, ${T_.border} 100%)` : `linear-gradient(180deg, ${T_.green} 0%, #15803D 100%)`,
+                    border: d.est ? `1px dashed ${T_.green}` : "none",
+                    transition: "height 0.3s",
+                  }} />
+                  <div style={{ fontSize: 11, color: T_.textDim, marginTop: 2, whiteSpace: "nowrap" }}>{d.year}{d.est ? " (est.)" : ""}</div>
+                </div>
+              );
+            })}
+          </div>
+          <div style={{ fontSize: 11, color: T_.textDim, marginTop: 12, fontStyle: "italic" }}>Sources: BofA, Goldman Sachs, CreditSights, SemiAnalysis, TrendForce, company capex guidance. Includes TSMC + Samsung Semi + SK Hynix + Micron + Intel + other foundry / mature-node / specialty capex.</div>
+        </div>
         </div>
           );
         })()}
 
-
-        {/* Company Detail Cards */}
-        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Company Detail</div>
+        {/* Company Detail — robust per-company (mirrors AI Capex layout) */}
+        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>Company Detail</div>
+        <div style={{ fontSize: 12, color: T_.textDim, marginBottom: 14 }}>Capex allocation, customer mix, contracts, and supply chain — per company.</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 14, marginBottom: 24 }}>
           {companies.map((co) => {
             const cap26 = co.capex.find(c => c.year === 2026)?.value || 0;
-            const cap25 = co.capex.find(c => c.year === 2025)?.value || 0;
-            const cap24 = co.capex.find(c => c.year === 2024)?.value || 0;
-            const yoy = cap25 > 0 ? ((cap26 / cap25 - 1) * 100) : 0;
+            const maxV = Math.max(...co.capex.map(c => c.value));
+            const getYoY = (data, yr) => {
+              const cur = data?.find(d => d.year === yr)?.value;
+              const prev = data?.find(d => d.year === yr - 1)?.value;
+              if (cur == null || prev == null || prev <= 0) return null;
+              return ((cur / prev - 1) * 100);
+            };
+            const tagColor = (tag) => {
+              if (/anchor.*captive|captive/i.test(tag)) return co.color;
+              if (/anchor/i.test(tag)) return T_.amber;
+              if (/internal/i.test(tag)) return T_.purple;
+              if (/core/i.test(tag)) return T_.blue;
+              return T_.textDim;
+            };
             return (
-              <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, borderLeft: `3px solid ${co.color}` }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
+              <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, borderLeft: `4px solid ${co.color}` }}>
+                {/* Header */}
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, gap: 14, flexWrap: "wrap" }}>
                   <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                    <span style={{ fontSize: 20, fontWeight: 700, color: T_.text }}>{co.name}</span>
-                    <span style={{ fontSize: 13, color: T_.textDim }}>{co.ticker} · {co.segment}</span>
+                    <span style={{ fontSize: 17, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                    <span style={{ fontSize: 12, color: T_.textDim }}>{co.ticker} · {co.segment}</span>
                   </div>
-                  <div style={{ display: "flex", gap: 16, textAlign: "right" }}>
-                    <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2024A</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.textDim }}>${cap24}B</div></div>
-                    <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2025</div><div style={{ fontSize: 16, fontWeight: 700, color: T_.textMid }}>${cap25}B</div></div>
-                    <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>2026E</div><div style={{ fontSize: 20, fontWeight: 700, color: co.color }}>${cap26}B</div></div>
-                    <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>y/y</div><div style={{ fontSize: 16, fontWeight: 700, color: yoy >= 0 ? T_.green : T_.red }}>{yoy >= 0 ? "+" : ""}{yoy.toFixed(0)}%</div></div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                    <span style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px" }}>Capex 22→30</span>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 26, width: 110 }}>
+                      {co.capex.map((pt) => {
+                        const h = (pt.value / maxV) * 24;
+                        return (
+                          <div key={pt.year} title={`${pt.year}: $${pt.value}B${pt.est ? " (est.)" : ""}`} style={{
+                            flex: 1, height: Math.max(h, 2), borderRadius: "2px 2px 0 0",
+                            background: pt.est ? `${co.color}55` : co.color,
+                            border: pt.est ? `1px dashed ${co.color}` : "none",
+                          }} />
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
-                {/* 3-column info */}
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14 }}>
+
+                {/* Mini financials table — Revenue / Gross Margin / Capex × 9 years */}
+                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "10px 12px", marginBottom: 12, overflow: "auto" }}>
+                  <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 6 }}>Revenue, Gross Margin &amp; Capex ($B / %)</div>
+                  <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 11, fontVariantNumeric: "tabular-nums" }}>
+                    <thead>
+                      <tr>
+                        <th style={{ textAlign: "left", padding: "4px 6px", fontSize: 9, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.4px", borderBottom: `1px solid ${T_.border}` }}>Metric</th>
+                        {years.map(yr => (
+                          <th key={yr} style={{ textAlign: "right", padding: "4px 4px", fontSize: 9, fontWeight: 600, color: yr >= 2026 ? T_.textDim : T_.textMid, textTransform: "uppercase", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap" }}>{yr}{yr >= 2026 ? "E" : ""}</th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {[
+                        { label: "Revenue", data: co.revenue, fmt: (v) => `$${v}B`, color: T_.text, bold: true },
+                        { label: "Rev y/y", isYoY: true, src: co.revenue },
+                        { label: "Gross Margin", data: co.grossMargin, fmt: (v) => `${v}%`, color: T_.textMid },
+                        { label: "Capex", data: co.capex, fmt: (v) => `$${v}B`, color: co.color, bold: true },
+                        { label: "Capex y/y", isYoY: true, src: co.capex },
+                      ].map((row, ri) => (
+                        <tr key={ri}>
+                          <td style={{ padding: "4px 6px", fontSize: row.isYoY ? 9 : 10, fontWeight: 600, color: T_.textDim, fontStyle: row.isYoY ? "italic" : "normal" }}>{row.label}</td>
+                          {years.map(yr => {
+                            if (row.isYoY) {
+                              const v = getYoY(row.src, yr);
+                              return <td key={yr} style={{ padding: "3px 4px", textAlign: "right", fontSize: 9, color: v == null ? T_.textDim : v >= 0 ? T_.green : T_.red }}>{v != null ? `${v >= 0 ? "+" : ""}${v.toFixed(0)}%` : "—"}</td>;
+                            }
+                            const pt = row.data?.find(d => d.year === yr);
+                            const val = pt?.value;
+                            const isEst = pt?.est;
+                            const isNeg = val < 0;
+                            return (
+                              <td key={yr} style={{
+                                padding: "4px 4px", textAlign: "right", whiteSpace: "nowrap",
+                                fontSize: 10, fontWeight: row.bold ? 700 : 500,
+                                color: row.label === "Gross Margin" ? (isNeg ? T_.red : val >= 50 ? T_.green : T_.textMid) : (isEst ? T_.textDim : row.color),
+                              }}>
+                                {val != null ? row.fmt(val) : "—"}
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* 2-col: Allocation | Customers */}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 12 }}>
+                  {/* CAPEX ALLOCATION */}
                   <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Capex Breakdown</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.breakdown}</div>
+                    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
+                      <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600 }}>Capex Allocation</div>
+                      <div style={{ fontSize: 10, color: T_.textDim }}>2026E ≈ ${cap26}B</div>
+                    </div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                      {(co.allocation || []).map((a, i) => {
+                        const dollars = (cap26 * a.pct / 100).toFixed(cap26 < 5 ? 1 : 0);
+                        return (
+                          <div key={i}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 3 }}>
+                              <div style={{ fontSize: 11, color: "#CBD5E1", fontWeight: 600 }}>{a.area}</div>
+                              <div style={{ fontSize: 11, color: co.color, fontVariantNumeric: "tabular-nums", fontWeight: 700 }}>{a.pct}% · ~${dollars}B</div>
+                            </div>
+                            <div style={{ height: 6, background: T_.border, borderRadius: 3, overflow: "hidden", marginBottom: 3 }}>
+                              <div style={{ width: `${a.pct}%`, height: "100%", background: co.color, borderRadius: 3 }} />
+                            </div>
+                            <div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4 }}>{a.detail}</div>
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
+
+                  {/* CUSTOMERS */}
                   <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Capex → Supply Timeline</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.supplyTimeline}</div>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 10 }}>Key Customers</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
+                      {(co.customers || []).map((c, i) => (
+                        <div key={i} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 8 }}>
+                            <div style={{ fontSize: 12, color: "#CBD5E1", fontWeight: 700 }}>{c.name}</div>
+                            <span style={{ fontSize: 9, fontWeight: 600, color: tagColor(c.tag), background: `${tagColor(c.tag)}18`, padding: "1px 6px", borderRadius: 3, whiteSpace: "nowrap", textTransform: "uppercase", letterSpacing: "0.4px" }}>{c.tag}</span>
+                          </div>
+                          <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.35 }}>{c.deal}</div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                </div>
+
+                {/* 2-col: Contracts | Supply Chain */}
+                <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: 12 }}>
+                  {/* CONTRACTS */}
                   <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                    <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Key Notes</div>
-                    <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.notes}</div>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 8 }}>Contracts &amp; Milestones</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                      {(co.contracts || []).map((k, i) => (
+                        <div key={i} style={{ display: "flex", gap: 10, alignItems: "baseline", fontSize: 11, lineHeight: 1.4 }}>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: co.color, minWidth: 86, fontVariantNumeric: "tabular-nums" }}>{k.date}</span>
+                          <span style={{ color: "#CBD5E1" }}>{k.text}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* SUPPLY CHAIN */}
+                  <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
+                    <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", fontWeight: 600, marginBottom: 8 }}>Supply Chain</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+                      {[
+                        { label: "Equipment", value: co.supplyChain?.equipment },
+                        { label: "Materials", value: co.supplyChain?.materials },
+                        { label: "Foundry", value: co.supplyChain?.foundry },
+                        { label: "Packaging", value: co.supplyChain?.packaging },
+                        { label: "Power", value: co.supplyChain?.power },
+                        { label: "EDA / IP", value: co.supplyChain?.eda },
+                      ].filter(s => s.value).map((s, i) => (
+                        <div key={i} style={{ display: "flex", gap: 6, fontSize: 10, lineHeight: 1.35 }}>
+                          <span style={{ minWidth: 64, fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.4px", fontWeight: 600 }}>{s.label}</span>
+                          <span style={{ color: "#CBD5E1", flex: 1 }}>{s.value}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -2729,21 +3353,6 @@ export default function IndustryResearch({ initialTab }) {
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Tracking AI accelerator generations across NVIDIA, AMD, Google, Amazon, Microsoft, Meta &amp; OpenAI</div>
         </div>
 
-        {/* GPU/ASIC Industry & Market Updates */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: T_.blue }}>●</span> Industry & Market Updates
-          </div>
-          <div style={{ maxHeight: 280, overflow: "auto", padding: "12px 16px" }}>
-            {GPU_ASIC_NEWS.map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
-                <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 50, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{item.date}</span>
-                <span style={{ fontSize: 13, color: "#CBD5E1" }}>{item.text}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Visual Timeline */}
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20, overflowX: "auto" }}>
           <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Release Timeline</div>
@@ -2785,6 +3394,94 @@ export default function IndustryResearch({ initialTab }) {
             <span style={{ borderBottom: `1px dashed ${T_.textDim}`, paddingBottom: 1 }}>┅ Planned / Announced</span>
           </div>
         </div>
+
+        {/* Vendor strategic summaries — positioning, current, next, roadmap per vendor */}
+        {(() => {
+          const VENDOR_SUMMARIES = [
+            {
+              vendor: "NVIDIA",
+              position: "Annual cadence on TSMC. ~70% CoWoS allocation. ~4M Hoppers + ~6M Blackwell GPUs shipped thru Oct 2025 (Jensen). All hyperscalers + neoclouds anchored here.",
+              shipping: "H100 · H200 · B200 · B300 (sold out thru mid-2026)",
+              next: { date: "H2 2026", chip: "Vera Rubin (VR200 NVL72)", detail: "3.3× B300 compute, HBM4, 3.6 EF FP4/rack. ~5-7K racks H2 2026." },
+              roadmap: "Rubin Ultra 2027 (21× GB200 perf, 1TB HBM4e) · Feynman 2028 (TSMC A16 1.6nm, 3D die stacking)",
+            },
+            {
+              vendor: "AMD",
+              position: "Closing gap via OAM rack-scale + aggressive memory specs. OpenAI 6 GW deal validates roadmap. $5B+ AI rev in 2024.",
+              shipping: "MI300X · MI325X · MI355X (300-600K units/quarter in 2026)",
+              next: { date: "H2 2026", chip: "MI455X (Helios rack)", detail: "10× MI355X perf · 320B transistors (12 N2 + 3 N3 chiplets) · 31 TB HBM4 per rack" },
+              roadmap: "MI500 2027 — annual cadence vs Rubin Ultra",
+            },
+            {
+              vendor: "Google",
+              position: "Captive TPU co-designed with Broadcom (extended thru 2031). 44% lower TCO vs Nvidia GB200. External customer pivot starting (Anthropic, Meta).",
+              shipping: "TPU v6e Trillium · TPU v7 Ironwood (GA late 2025)",
+              next: { date: "Ramping", chip: "TPU v7 Ironwood", detail: "First native FP8 TPU. Anthropic 1M-chip deal (3.5 GW for 2027). Meta TPU lease in active negotiation." },
+              roadmap: "TPU v8 2027 (annual cadence, likely HBM4)",
+            },
+            {
+              vendor: "Amazon",
+              position: "Captive Anthropic flywheel anchor ($100B / 10-yr / 5 GW Trainium). Annapurna Labs in-house design. Trainium 3 nearly fully subscribed.",
+              shipping: "Trainium 2 (500K+ at Anthropic Indiana DC) · Trainium 3 (GA Dec 2025)",
+              next: { date: "Q2 2026", chip: "Trainium 3 full production ramp", detail: "2.52 PFLOPS FP8/chip · 4.4× Trn2 perf · 144 GB HBM3e" },
+              roadmap: "Trainium 4 announced for late 2026",
+            },
+            {
+              vendor: "Microsoft",
+              position: "Inference-specialized — not a Nvidia replacement. OpenAI workload optimization. Still primarily Nvidia + AMD buyer for training capacity.",
+              shipping: "Maia 100 · Maia 200 (deployed Jan 2026, US Central / US West 3)",
+              next: { date: "Deployed", chip: "Maia 200", detail: "TSMC 3nm · 216 GB HBM3e · liquid-cooled · inference-optimized" },
+              roadmap: "Maia 280 planned 2027",
+            },
+            {
+              vendor: "Meta",
+              position: "Inference-only ASIC for ranking/recommendation + Llama inference at scale. Training stays Nvidia-anchored.",
+              shipping: "MTIA v1 · MTIA v2 (Llama inference at scale)",
+              next: { date: "Internal", chip: "MTIA v2", detail: "5nm TSMC · scaled up for Llama inference. v3 unconfirmed." },
+              roadmap: "Continued Nvidia dependency for training. Google TPU lease in talks for capacity diversification.",
+            },
+            {
+              vendor: "OpenAI",
+              position: "First in-house silicon via Broadcom co-design. Samsung HBM4 exclusive lock-up (Mar 2026). Captive cost lever vs Nvidia + AMD spend.",
+              shipping: "(none yet)",
+              next: { date: "H2 2026", chip: "Titan (Broadcom-designed ASIC)", detail: "TSMC N3 · Samsung HBM4 exclusive · $10B Broadcom order · deployment thru 2029" },
+              roadmap: "2nd-gen Titan on TSMC A16",
+            },
+          ];
+          const vendorList = chipVendorFilter === "All"
+            ? VENDOR_SUMMARIES
+            : VENDOR_SUMMARIES.filter(v => v.vendor === chipVendorFilter);
+          return (
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>Vendor Strategic Summary</div>
+            <div style={{ fontSize: 11, color: T_.textDim }}>Positioning · current · next · roadmap — per vendor</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 10, marginTop: 12 }}>
+            {vendorList.map((v) => (
+              <div key={v.vendor} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${vendorColors[v.vendor]}`, padding: "12px 14px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: vendorColors[v.vendor], letterSpacing: "-0.3px" }}>{v.vendor}</div>
+                </div>
+                <div style={{ fontSize: 11, color: "#CBD5E1", lineHeight: 1.5, marginBottom: 10 }}>{v.position}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 10, rowGap: 6 }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700, alignSelf: "center" }}>Shipping</div>
+                  <div style={{ fontSize: 11, color: "#CBD5E1", fontWeight: 600 }}>{v.shipping}</div>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700 }}>Next</div>
+                  <div style={{ fontSize: 11, color: "#CBD5E1" }}>
+                    <span style={{ fontWeight: 700, color: vendorColors[v.vendor] }}>{v.next.date}</span>
+                    <span style={{ color: T_.textMid }}> · {v.next.chip}</span>
+                    <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2, lineHeight: 1.4 }}>{v.next.detail}</div>
+                  </div>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700 }}>Roadmap</div>
+                  <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{v.roadmap}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+          );
+        })()}
 
         {/* Full Specs Table — filterable by vendor */}
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
@@ -2992,23 +3689,6 @@ export default function IndustryResearch({ initialTab }) {
           })()}
           <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 10, fontStyle: "italic" }}>Sources: Epoch AI, JP Morgan, Morgan Stanley, SemiAnalysis, company earnings, TechInsights. Cumulative shipped units. 2026E = estimates.</div>
         </div>
-
-        {/* Notes per chip — expandable */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20 }}>
-          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Key Notes &amp; Context</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-            {sorted.filter(c => c.notes).map((c, i) => (
-              <div key={i} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: vendorColors[c.vendor] }}>{c.vendor}</span>
-                  <span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{c.chip}</span>
-                  <span style={{ padding: "1px 6px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${statusColor(c.status)}20`, color: statusColor(c.status) }}>{c.status}</span>
-                </div>
-                <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.6 }}>{c.notes}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </>);
       })()}
 
@@ -3025,21 +3705,6 @@ export default function IndustryResearch({ initialTab }) {
         <div style={{ marginBottom: 28, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>CPU</div>
           <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Tracking server CPU generations across Intel, AMD, NVIDIA, ARM, Ampere, AWS, Microsoft, Google &amp; Alibaba — agentic AI is rebalancing the CPU:GPU ratio from 1:4-1:8 to 1:1-1:2</div>
-        </div>
-
-        {/* CPU Industry & Market Updates */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: T_.blue }}>●</span> Industry &amp; Market Updates
-          </div>
-          <div style={{ maxHeight: 280, overflow: "auto", padding: "12px 16px" }}>
-            {CPU_NEWS.map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
-                <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 75, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{item.date}</span>
-                <span style={{ fontSize: 13, color: "#CBD5E1" }}>{item.text}</span>
-              </div>
-            ))}
-          </div>
         </div>
 
         {/* Visual Timeline */}
@@ -3081,6 +3746,108 @@ export default function IndustryResearch({ initialTab }) {
             <span style={{ borderBottom: `1px dashed ${T_.textDim}`, paddingBottom: 1 }}>┅ Planned / Sampling / Announced</span>
           </div>
         </div>
+
+        {/* CPU Vendor strategic summaries — positioning, current, next, roadmap per vendor */}
+        {(() => {
+          const CPU_VENDOR_SUMMARIES = [
+            {
+              vendor: "Intel",
+              position: "x86 incumbent under pressure. 18A is make-or-break — yield issues threaten 2026 ramp. Losing share to AMD + hyperscaler in-house Arm.",
+              shipping: "Sapphire Rapids · Emerald Rapids · Granite Rapids · Sierra Forest (288 E-cores)",
+              next: { date: "H2 2026", chip: "Clearwater Forest (Xeon 6+)", detail: "First Intel 18A product · 288 E-cores · yield-risk could slip to 2027" },
+              roadmap: "Diamond Rapids (Xeon 7, Panther Cove P-core, 18A, sampling now)",
+            },
+            {
+              vendor: "AMD",
+              position: "Server share at ~30% in Q1 2026 on TSMC node leadership. EPYC Venice wins by default if Intel 18A slips.",
+              shipping: "EPYC Genoa · Bergamo (cloud-native) · Turin (192C/384T, current flagship)",
+              next: { date: "H2 2026", chip: "EPYC Venice (Zen 6, TSMC N2)", detail: "256C/512T — highest thread count · direct Diamond Rapids competitor" },
+              roadmap: "Annual cadence on TSMC leading-edge; closing in on agentic-AI CPU demand",
+            },
+            {
+              vendor: "NVIDIA",
+              position: "New CPU entrant. Grace was bundled with GPU; Vera now standalone (Mar 2026) opens a 2nd revenue line.",
+              shipping: "Grace (bundled with Hopper/Blackwell) · Vera (standalone since Mar 2026, 88-core Olympus Arm)",
+              next: { date: "Shipping", chip: "Vera", detail: "TSMC N3 · 88C custom Olympus · NVLink-C2C 1.8 TB/s · launch partners: Alibaba, ByteDance, Cloudflare, CoreWeave, Oracle, Together.AI" },
+              roadmap: "Rosa 2028 (Feynman platform, TSMC A16, NVLink-7 + silicon photonics)",
+            },
+            {
+              vendor: "ARM",
+              position: "35-yr IP licensor pivoted Mar 2026 with first in-house CPU. Customer overlap with licensees creates tension.",
+              shipping: "Neoverse V2 / V3 IP cores (licensed) · Arm AGI CPU (in-house, Mar 2026)",
+              next: { date: "Shipping", chip: "Arm AGI CPU", detail: "136 cores · TSMC N3 · 300W · launch partners Meta, OpenAI, Cerebras, Cloudflare, F5, SAP, SK Telecom" },
+              roadmap: "Per-core royalty for licensees + in-house AGI line co-existing",
+            },
+            {
+              vendor: "Ampere",
+              position: "First merchant Arm DC CPU at scale. Squeezed between hyperscaler in-house silicon (Graviton, Cobalt, Axion) and Arm's own AGI CPU.",
+              shipping: "Altra Max (128 cores) · AmpereOne (192 cores)",
+              next: { date: "H2 2026", chip: "AmpereOne MX", detail: "256-core custom Arm · TSMC 3nm · faces stiff competition from CSP in-house silicon" },
+              roadmap: "Competitive squeeze from CSPs + Arm in-house silicon — strategic position uncertain",
+            },
+            {
+              vendor: "AWS",
+              position: "Pioneer of hyperscaler in-house Arm CPU. Graviton enabled the broader CSP CSS era — multiple millions shipped.",
+              shipping: "Graviton2 · Graviton3 · Graviton4 (Neoverse V2, current flagship)",
+              next: { date: "2026", chip: "Graviton5", detail: "Neoverse V3 / Poseidon · TSMC 3nm class" },
+              roadmap: "Annual cadence; deepening AWS workload tie-in (M/C/R/I series instances)",
+            },
+            {
+              vendor: "Microsoft",
+              position: "2nd hyperscaler to ship in-house Arm CPU. Cobalt 100 on Azure today; Cobalt 200 in development.",
+              shipping: "Cobalt 100 (Neoverse N2, 128 cores, TSMC 5nm)",
+              next: { date: "2026-2027", chip: "Cobalt 200", detail: "Neoverse V3 / Poseidon · co-designed for Azure workloads" },
+              roadmap: "Maia + Cobalt vertical integration on Azure",
+            },
+            {
+              vendor: "Google",
+              position: "Late entrant via Axion C4A (Apr 2024). Closing in-house silicon stack to match AWS/MSFT.",
+              shipping: "Axion C4A (Neoverse V2, 96 cores, TSMC 5nm)",
+              next: { date: "TBD", chip: "Axion successor", detail: "Likely Neoverse V3 / Poseidon; not yet publicly detailed" },
+              roadmap: "Joins AWS + MSFT in hyperscaler CSP CSS era; pairs with TPU for compute stack",
+            },
+            {
+              vendor: "Alibaba",
+              position: "First major Chinese hyperscaler in-house Arm CPU. Powers Alibaba Cloud ECS Y series.",
+              shipping: "Yitian 710 (Neoverse N2, 128 cores, TSMC 5nm)",
+              next: { date: "2026 (rumored)", chip: "Yitian 720", detail: "Likely Neoverse V3 class; geo node-access constraints" },
+              roadmap: "Geopolitics-constrained roadmap; China-specific node access vs leading-edge",
+            },
+          ];
+          const cpuVendorList = cpuVendorFilter === "All"
+            ? CPU_VENDOR_SUMMARIES
+            : CPU_VENDOR_SUMMARIES.filter(v => v.vendor === cpuVendorFilter);
+          return (
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
+            <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px" }}>Vendor Strategic Summary</div>
+            <div style={{ fontSize: 11, color: T_.textDim }}>Positioning · current · next · roadmap — per vendor</div>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: 10, marginTop: 12 }}>
+            {cpuVendorList.map((v) => (
+              <div key={v.vendor} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, borderLeft: `3px solid ${cpuVendorColors[v.vendor]}`, padding: "12px 14px" }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                  <div style={{ fontSize: 14, fontWeight: 700, color: cpuVendorColors[v.vendor], letterSpacing: "-0.3px" }}>{v.vendor}</div>
+                </div>
+                <div style={{ fontSize: 11, color: "#CBD5E1", lineHeight: 1.5, marginBottom: 10 }}>{v.position}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "auto 1fr", columnGap: 10, rowGap: 6 }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700, alignSelf: "center" }}>Shipping</div>
+                  <div style={{ fontSize: 11, color: "#CBD5E1", fontWeight: 600 }}>{v.shipping}</div>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700 }}>Next</div>
+                  <div style={{ fontSize: 11, color: "#CBD5E1" }}>
+                    <span style={{ fontWeight: 700, color: cpuVendorColors[v.vendor] }}>{v.next.date}</span>
+                    <span style={{ color: T_.textMid }}> · {v.next.chip}</span>
+                    <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2, lineHeight: 1.4 }}>{v.next.detail}</div>
+                  </div>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", fontWeight: 700 }}>Roadmap</div>
+                  <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.4 }}>{v.roadmap}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+          );
+        })()}
 
         {/* Full Specs Table — filterable by vendor */}
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
@@ -3256,22 +4023,6 @@ export default function IndustryResearch({ initialTab }) {
           <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 10, fontStyle: "italic" }}>Sources: Mercury Research (x86 server CPU socket shipments), TrendForce, vendor disclosures, IDC. Arm DC subset estimated from hyperscaler in-house silicon ramps + Ampere shipments. 2026E = estimates with agentic-AI uplift assumed.</div>
         </div>
 
-        {/* Notes per chip — expandable */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 14 }}>
-          <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 10 }}>Key Notes &amp; Context</div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-            {cpuSorted.filter(c => c.notes).map((c, i) => (
-              <div key={i} style={{ background: "#0B0F19", borderRadius: 8, border: `1px solid ${T_.border}`, padding: "9px 11px" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 4, flexWrap: "wrap" }}>
-                  <span style={{ fontSize: 11, fontWeight: 700, color: cpuVendorColors[c.vendor] }}>{c.vendor}</span>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: T_.text }}>{c.chip}</span>
-                  <span style={{ padding: "1px 5px", borderRadius: 3, fontSize: 9, fontWeight: 600, background: `${cpuStatusColor(c.status)}20`, color: cpuStatusColor(c.status) }}>{c.status}</span>
-                </div>
-                <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.45 }}>{c.notes}</div>
-              </div>
-            ))}
-          </div>
-        </div>
       </>);
       })()}
 
@@ -3279,15 +4030,21 @@ export default function IndustryResearch({ initialTab }) {
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 24 }}>
             <div>
-              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Compute</div>
-              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>GPU compute pricing across generations &middot; on-demand spot &amp; contract</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Compute Pricing</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>GPU $/hr across hyperscalers + neoclouds &middot; weekly snapshot &middot; spot &amp; contract historical</div>
             </div>
           </div>
 
+          {/* Row: cohort decay + cloud rental side-by-side */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
+          {/* EXP-2 Cohort decay curve — % of launch over time */}
+          <CohortDecayCurve />
+
           {/* Cloud Rental Price History Chart */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>Cloud Rental Price ($/GPU-hr, on-demand avg.)</div>
-            <div style={{ display: "flex", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, display: "flex", flexDirection: "column", height: "100%" }}>
+            <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>Cloud Rental Price ($/GPU-hr, on-demand avg.)</div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 10 }}>Quarterly aggregate across providers · {/* matches Cohort Decay subtitle so cards align */} 14 quarters Q1 23 → Q2 26.</div>
+            <div style={{ display: "flex", gap: 14, marginBottom: 12, flexWrap: "wrap" }}>
               {[{ gpu: "A100 SXM", color: T_.textDim }, { gpu: "H100 SXM", color: T_.blue }, { gpu: "H200 SXM", color: "#60A5FA" }, { gpu: "B200 SXM", color: T_.green }, { gpu: "GB200 NVL72", color: T_.amber }].map(g => (
                 <div key={g.gpu} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 12 }}>
                   <div style={{ width: 10, height: 3, borderRadius: 1, background: g.color }} />
@@ -3306,10 +4063,11 @@ export default function IndustryResearch({ initialTab }) {
                 return row;
               });
               return (
-                <ResponsiveContainer width="100%" height={260}>
-                  <LineChart data={chartData} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
-                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
-                    <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={40} tickFormatter={(v) => `$${v}/hr`} domain={[0, 9]} />
+                <div style={{ flex: 1, minHeight: 180 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={chartData} margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
+                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+                    <YAxis tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={(v) => `$${v}/hr`} domain={[0, 9]} />
                     <Tooltip
                       contentStyle={tooltipStyleSm}
                       formatter={(value, name) => [`$${value.toFixed(2)}/hr`, name]}
@@ -3321,13 +4079,17 @@ export default function IndustryResearch({ initialTab }) {
                     <Line type="monotone" dataKey="GB200 NVL72" stroke={T_.amber} strokeWidth={2} dot={{ r: 4, fill: T_.amber }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
+                </div>
               );
             })()}
             <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>Sources: SiliconData GPU Rental Index, Jarvislabs, RunPod, Lambda, AWS/GCP on-demand. Avg of specialist providers.</div>
           </div>
+          </div> {/* end Row 1 grid */}
 
+          {/* Row: H100 spot tiers + B200 monthly side-by-side */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14, marginBottom: 14 }}>
           {/* H100 Spot Tiers vs 1-yr Contract — Time Series */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, display: "flex", flexDirection: "column", height: "100%" }}>
             <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>H100 Pricing — Spot Tiers vs 1-yr Contract</div>
             <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 16 }}>$/GPU-hr · Silicon Data spot index by tier (since Aug 2023) + SemiAnalysis H100 1-yr Contract Index (free monthly, since Oct 2025)</div>
             <div style={{ display: "flex", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
@@ -3359,10 +4121,11 @@ export default function IndustryResearch({ initialTab }) {
                 { period: "Q2 26", hyperscaler: 7.48, neocloud: 2.53, marketplace: 1.95, contract1y: 2.35 },
               ];
               return (
-                <ResponsiveContainer width="100%" height={300}>
-                  <LineChart data={H100_PRICING} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
-                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
-                    <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={40} tickFormatter={(v) => `$${v}/hr`} domain={[0, 10]} />
+                <div style={{ flex: 1, minHeight: 180 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={H100_PRICING} margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
+                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+                    <YAxis tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={(v) => `$${v}/hr`} domain={[0, 10]} />
                     <Tooltip contentStyle={tooltipStyleSm} formatter={(value, name) => [`$${value.toFixed(2)}/hr`, name]} />
                     <Line type="monotone" dataKey="hyperscaler" name="Hyperscaler Spot" stroke="#A78BFA" strokeWidth={2.5} dot={{ r: 3, fill: "#A78BFA" }} connectNulls />
                     <Line type="monotone" dataKey="neocloud" name="Neocloud Spot" stroke={T_.amber} strokeWidth={2.5} dot={{ r: 3, fill: T_.amber }} connectNulls />
@@ -3370,20 +4133,18 @@ export default function IndustryResearch({ initialTab }) {
                     <Line type="monotone" dataKey="contract1y" name="1-yr Contract" stroke={T_.blue} strokeWidth={3} strokeDasharray="6 3" dot={{ r: 4, fill: T_.blue }} connectNulls />
                   </LineChart>
                 </ResponsiveContainer>
+                </div>
               );
             })()}
-            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 10, fontStyle: "italic" }}>
-              Sources: <a href="https://www.silicondata.com/blog/h100-rental-price-over-time" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> H100 monthly index by tier (Aug 2023→); <a href="https://newsletter.semianalysis.com/p/the-great-gpu-shortage-rental-capacity" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>SemiAnalysis</a> H100 1-yr Contract Index (free monthly, launched Oct 2025; full multi-GPU coverage paywalled). Quarterly aggregates from monthly publications.
-            </div>
-            <div style={{ fontSize: 11, color: T_.textGhost, marginTop: 8, lineHeight: 1.6 }}>
-              <strong style={{ color: T_.amber }}>Read:</strong> 3-tier spot persists — hyperscaler premium reflects SLAs/networking; neocloud middle for committed buyers; marketplace floor for spot/burst. <strong style={{ color: T_.blue }}>Contract pricing</strong> sits ~25-30% below neocloud spot, but jumped +40% Oct 25 → Mar 26 ($1.70 → $2.35) as B200/H200 allocations tightened. Hyperscaler spot rebounding Q1 26 alongside contract premium — consistent with a re-tightening market.
+            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>
+              Sources: <a href="https://www.silicondata.com/blog/h100-rental-price-over-time" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> + <a href="https://newsletter.semianalysis.com/p/the-great-gpu-shortage-rental-capacity" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>SemiAnalysis</a> 1-yr contract index. Contract jumped +40% Oct 25 → Mar 26 as B200/H200 allocations tightened.
             </div>
           </div>
 
           {/* B200 Spot Trend — Q1 2026 */}
-          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
+          <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 16, display: "flex", flexDirection: "column", height: "100%" }}>
             <div style={{ fontSize: 13, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 4 }}>B200 Spot Index — Monthly Mean</div>
-            <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 16 }}>$/GPU-hr · Silicon Data B200 Index (since Jan 2026) — short window, watch the March surge</div>
+            <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 10 }}>$/GPU-hr · Silicon Data B200 Index (since Jan 2026) — short window, watch the March surge</div>
             {(() => {
               const B200_PRICING = [
                 { period: "Jan 26", b200: 4.41 },
@@ -3391,19 +4152,29 @@ export default function IndustryResearch({ initialTab }) {
                 { period: "Mar 26", b200: 5.09 },
               ];
               return (
-                <ResponsiveContainer width="100%" height={200}>
-                  <LineChart data={B200_PRICING} margin={{ top: 8, right: 20, left: 8, bottom: 4 }}>
-                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={{ stroke: T_.border }} tickLine={false} />
-                    <YAxis tick={{ fill: T_.textDim, fontSize: 11 }} axisLine={false} tickLine={false} width={40} tickFormatter={(v) => `$${v}/hr`} domain={[3.5, 6.5]} />
+                <div style={{ flex: 1, minHeight: 180 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={B200_PRICING} margin={{ top: 4, right: 16, left: 4, bottom: 0 }}>
+                    <XAxis dataKey="period" tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={{ stroke: T_.border }} tickLine={false} />
+                    <YAxis tick={{ fill: T_.textDim, fontSize: 10 }} axisLine={false} tickLine={false} width={48} tickFormatter={(v) => `$${v}/hr`} domain={[3.5, 6.5]} />
                     <Tooltip contentStyle={tooltipStyleSm} formatter={(value) => [`$${value.toFixed(2)}/hr`, "B200 monthly mean"]} />
                     <Line type="monotone" dataKey="b200" name="B200 monthly mean" stroke={T_.green} strokeWidth={2.5} dot={{ r: 4, fill: T_.green }} />
                   </LineChart>
                 </ResponsiveContainer>
+                </div>
               );
             })()}
-            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 10, fontStyle: "italic" }}>
-              Source: <a href="https://www.silicondata.com/blog/b200-rental-price-march-2026-update" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> B200 Index. March mean +12.6% MoM, +15.4% YTD; March daily high $6.11/hr on Mar 25 (YTD); 10-90th pctl band $4.56-$6.05.
+            <div style={{ fontSize: 11, color: T_.textDim, marginTop: 8, fontStyle: "italic" }}>
+              Source: <a href="https://www.silicondata.com/blog/b200-rental-price-march-2026-update" target="_blank" rel="noopener noreferrer" style={{ color: T_.blue, textDecoration: "none" }}>Silicon Data</a> B200 Index. March +24% MoM, peaked at $6.11/hr Mar 25; April marketplace floor crashed to $2.25/hr across 23 providers.
             </div>
+          </div>
+          </div> {/* end Row 2 grid */}
+
+          {/* Row: provider breakdown + headline matrix side-by-side.
+              alignItems default = stretch → both cards fill row height → bottoms align. */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
+            <ProviderBreakdownByCohort />
+            <ComputePricingMatrix />
           </div>
         </div>
       )}
@@ -3414,21 +4185,6 @@ export default function IndustryResearch({ initialTab }) {
           <div>
             <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Neoclouds</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{NEOCLOUD_DATA.length} providers &middot; GPU-as-a-Service for AI/HPC workloads</div>
-          </div>
-        </div>
-
-        {/* Neocloud Industry & Market Updates */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: T_.blue }}>●</span> Industry & Market Updates
-          </div>
-          <div style={{ maxHeight: 280, overflow: "auto", padding: "12px 16px" }}>
-            {NEOCLOUD_NEWS.map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
-                <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 50, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{item.date}</span>
-                <span style={{ fontSize: 13, color: "#CBD5E1" }}>{item.text}</span>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -3478,43 +4234,77 @@ export default function IndustryResearch({ initialTab }) {
           })()}
         </div>
 
-        {/* Detail Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
-          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", marginBottom: 16 }}>Sources: SEC filings (S-1, 10-Q, 10-K), company press releases, Bloomberg, The Information, ABI Research, Synergy Research Group, Mordor Intelligence. Backlog = total remaining performance obligations or announced deal values. As of Mar 2026.</div>
-          {NEOCLOUD_DATA.map((co) => (
-            <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, borderLeft: `3px solid ${co.color}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: T_.text }}>{co.name}</span>
-                  <span style={{ fontSize: 13, color: T_.textDim }}>{co.ticker} &middot; {co.status}</span>
+        {/* Detail Cards — tiered: top 5 expanded, others compact */}
+        {(() => {
+          const TOP_TIER = new Set(["CoreWeave", "Fluidstack", "Nebius", "Lambda Labs", "Crusoe Cloud"]);
+          const topTier = TOP_TIER.size ? NEOCLOUD_DATA.filter(c => TOP_TIER.has(c.name)) : [];
+          // Preserve user-requested ordering: CoreWeave, Fluidstack, Nebius, Lambda, Crusoe
+          const tierOrder = ["CoreWeave", "Fluidstack", "Nebius", "Lambda Labs", "Crusoe Cloud"];
+          topTier.sort((a, b) => tierOrder.indexOf(a.name) - tierOrder.indexOf(b.name));
+          const others = NEOCLOUD_DATA.filter(c => !TOP_TIER.has(c.name));
+          return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", marginBottom: 4 }}>Sources: SEC filings (S-1, 10-Q, 10-K), company press releases, Bloomberg, The Information, ABI Research, Synergy Research Group, Mordor Intelligence. Backlog = total remaining performance obligations or announced deal values. As of Mar 2026.</div>
+
+          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginTop: 8 }}>Top Neoclouds &mdash; Detailed</div>
+          {topTier.map((co) => (
+            <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", borderLeft: `3px solid ${co.color}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                  <span style={{ fontSize: 11, color: T_.textDim }}>{co.ticker} &middot; {co.status}</span>
                 </div>
-                <div style={{ display: "flex", gap: 16, textAlign: "right" }}>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Valuation</div><div style={{ fontSize: 16, fontWeight: 700, color: co.color }}>{co.valuation}</div></div>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Revenue</div><div style={{ fontSize: 14, fontWeight: 600, color: T_.textMid }}>{co.revenue || "N/A"}</div></div>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Backlog</div><div style={{ fontSize: 14, fontWeight: 600, color: T_.green }}>{co.backlog || "N/A"}</div></div>
+                <div style={{ display: "flex", gap: 14, fontSize: 11 }}>
+                  <span style={{ color: T_.textDim }}>Val: <span style={{ color: co.color, fontWeight: 700 }}>{co.valuation}</span></span>
+                  <span style={{ color: T_.textDim }}>Rev: <span style={{ color: T_.textMid, fontWeight: 600 }}>{co.revenue || "N/A"}</span></span>
+                  <span style={{ color: T_.textDim }}>Backlog: <span style={{ color: T_.green, fontWeight: 600 }}>{co.backlog || "N/A"}</span></span>
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Contracts &amp; Commitments</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.contracts}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Contracts &amp; Commitments</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.contracts}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.amber, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Equity, Converts &amp; Ecosystem</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.investors}</div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.amber, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Equity, Converts &amp; Ecosystem</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.investors}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Power &amp; Compute</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>Connected: {co.power.connected} &middot; Contracted: {co.power.contracted}<br/>GPUs: {co.gpus}</div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Power &amp; Compute</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>Connected: {co.power.connected} &middot; Contracted: {co.power.contracted}<br/>GPUs: {co.gpus}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Timeline &amp; Notes</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.timeline}<br/><span style={{ color: T_.textDim, fontStyle: "italic" }}>{co.notes}</span></div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Timeline &amp; Notes</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.timeline}<br/><span style={{ color: T_.textDim, fontStyle: "italic" }}>{co.notes}</span></div>
                 </div>
               </div>
             </div>
           ))}
+
+          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginTop: 16 }}>Other Neoclouds &mdash; Compact</div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 10 }}>
+            {others.map((co) => (
+              <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", borderLeft: `3px solid ${co.color}` }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                  <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                    <span style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                    <span style={{ fontSize: 11, color: T_.textDim }}>{co.ticker}</span>
+                  </div>
+                  <div style={{ display: "flex", gap: 12, fontSize: 11 }}>
+                    <span style={{ color: T_.textDim }}>Val: <span style={{ color: co.color, fontWeight: 600 }}>{co.valuation}</span></span>
+                    <span style={{ color: T_.textDim }}>Contracted: <span style={{ color: T_.text, fontWeight: 600 }}>{co.power.contracted}</span></span>
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.5 }}>
+                  <span style={{ color: "#CBD5E1" }}>{co.gpus}</span> &middot; {co.keyClients}
+                </div>
+                <div style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic", marginTop: 4, lineHeight: 1.4 }}>{co.notes}</div>
+              </div>
+            ))}
+          </div>
         </div>
+          );
+        })()}
         </div>
       )}
 
@@ -3524,21 +4314,6 @@ export default function IndustryResearch({ initialTab }) {
           <div>
             <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Infra + Power</div>
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>{SHELL_POWER_DATA.length} providers &middot; Infrastructure shell &amp; power for AI data centers</div>
-          </div>
-        </div>
-
-        {/* Shell + Power Industry & Market Updates */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-            <span style={{ color: T_.blue }}>●</span> Industry & Market Updates
-          </div>
-          <div style={{ maxHeight: 280, overflow: "auto", padding: "12px 16px" }}>
-            {SHELL_POWER_NEWS.map((item, i) => (
-              <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
-                <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 50, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{item.date}</span>
-                <span style={{ fontSize: 13, color: "#CBD5E1" }}>{item.text}</span>
-              </div>
-            ))}
           </div>
         </div>
 
@@ -3588,43 +4363,94 @@ export default function IndustryResearch({ initialTab }) {
           })()}
         </div>
 
-        {/* Detail Cards */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16, marginBottom: 24 }}>
-          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", marginBottom: 16 }}>Sources: SEC filings (S-1, 10-Q, 10-K), company press releases, Bloomberg, CBRE DC Market Report, JLL Data Center Outlook, Uptime Institute. Power capacity and contract values from public filings and press releases. As of Mar 2026.</div>
-          {SHELL_POWER_DATA.map((co) => (
-            <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, borderLeft: `3px solid ${co.color}` }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 14 }}>
-                <div style={{ display: "flex", alignItems: "baseline", gap: 10 }}>
-                  <span style={{ fontSize: 20, fontWeight: 700, color: T_.text }}>{co.name}</span>
-                  <span style={{ fontSize: 13, color: T_.textDim }}>{co.ticker} &middot; {co.status}</span>
+        {/* Detail Cards — tiered: top 5 expanded, others compact + grouped by sub-category */}
+        {(() => {
+          const TIER_ORDER = ["Applied Digital", "TeraWulf", "Core Scientific", "Cipher Mining", "Hut 8"];
+          const TOP_TIER = new Set(TIER_ORDER);
+          const topTier = SHELL_POWER_DATA.filter(c => TOP_TIER.has(c.name))
+            .sort((a, b) => TIER_ORDER.indexOf(a.name) - TIER_ORDER.indexOf(b.name));
+          // Compact sub-groups by player type
+          const SUB_GROUPS = [
+            { label: "AI DC Hosts — No AI Contracts Yet", names: ["Riot Platforms", "CleanSpark", "Marathon Digital"] },
+            { label: "Behind-the-Meter Power", names: ["Solaris Energy"] },
+            { label: "Utilities & Generators", names: ["Constellation Energy", "Vistra", "Talen Energy", "Oklo", "NRG Energy", "NextEra Energy"] },
+            { label: "DC Equipment & Infrastructure", names: ["GE Vernova", "Vertiv", "Eaton Corp", "Bloom Energy"] },
+          ];
+          const byName = Object.fromEntries(SHELL_POWER_DATA.map(c => [c.name, c]));
+          return (
+        <div style={{ display: "flex", flexDirection: "column", gap: 10, marginBottom: 20 }}>
+          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", marginBottom: 4 }}>Sources: SEC filings (S-1, 10-Q, 10-K), company press releases, Bloomberg, CBRE DC Market Report, JLL Data Center Outlook, Uptime Institute. Power capacity and contract values from public filings and press releases. As of Mar 2026.</div>
+
+          <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginTop: 8 }}>Top AI DC Platforms &mdash; Detailed</div>
+          {topTier.map((co) => (
+            <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", borderLeft: `3px solid ${co.color}` }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                  <span style={{ fontSize: 16, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                  <span style={{ fontSize: 11, color: T_.textDim }}>{co.ticker} &middot; {co.status}</span>
                 </div>
-                <div style={{ display: "flex", gap: 16, textAlign: "right" }}>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Valuation</div><div style={{ fontSize: 16, fontWeight: 700, color: co.color }}>{co.valuation}</div></div>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Power Type</div><div style={{ fontSize: 14, fontWeight: 600, color: T_.textMid }}>{co.powerType}</div></div>
-                  <div><div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase" }}>Backlog</div><div style={{ fontSize: 14, fontWeight: 600, color: T_.green }}>{co.backlog || "N/A"}</div></div>
+                <div style={{ display: "flex", gap: 14, fontSize: 11 }}>
+                  <span style={{ color: T_.textDim }}>Val: <span style={{ color: co.color, fontWeight: 700 }}>{co.valuation}</span></span>
+                  <span style={{ color: T_.textDim }}>Power: <span style={{ color: T_.textMid, fontWeight: 600 }}>{co.powerType}</span></span>
+                  <span style={{ color: T_.textDim }}>Backlog: <span style={{ color: T_.green, fontWeight: 600 }}>{co.backlog || "N/A"}</span></span>
                 </div>
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 14 }}>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Contracts &amp; Commitments</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.contracts}</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Contracts &amp; Commitments</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.contracts}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.amber, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Equity, Converts &amp; Ecosystem</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.ecosystem || "No disclosed relationships"}</div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.amber, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Equity, Converts &amp; Ecosystem</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.ecosystem || "No disclosed relationships"}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Power &amp; Infrastructure</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>Connected: {co.power.connected} &middot; Contracted: {co.power.contracted}<br/>Type: {co.powerType}<br/>Revenue: {co.revenue || "N/A"}</div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Power &amp; Infrastructure</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>Connected: {co.power.connected} &middot; Contracted: {co.power.contracted}<br/>Revenue: {co.revenue || "N/A"}</div>
                 </div>
-                <div style={{ background: "#0B0F19", borderRadius: 8, padding: "12px 14px" }}>
-                  <div style={{ fontSize: 11, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 8, fontWeight: 600 }}>Timeline &amp; Notes</div>
-                  <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.6 }}>{co.timeline}<br/><span style={{ color: T_.textDim, fontStyle: "italic" }}>{co.notes}</span></div>
+                <div style={{ background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                  <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 4, fontWeight: 700 }}>Timeline &amp; Notes</div>
+                  <div style={{ fontSize: 12, color: "#CBD5E1", lineHeight: 1.5 }}>{co.timeline}<br/><span style={{ color: T_.textDim, fontStyle: "italic" }}>{co.notes}</span></div>
                 </div>
               </div>
             </div>
           ))}
+
+          {SUB_GROUPS.map(group => {
+            const items = group.names.map(n => byName[n]).filter(Boolean);
+            if (!items.length) return null;
+            return (
+              <div key={group.label} style={{ marginTop: 12 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 10 }}>{group.label}</div>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(420px, 1fr))", gap: 10 }}>
+                  {items.map((co) => (
+                    <div key={co.name} style={{ background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "12px 14px", borderLeft: `3px solid ${co.color}` }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                        <div style={{ display: "flex", alignItems: "baseline", gap: 8 }}>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: T_.text }}>{co.name}</span>
+                          <span style={{ fontSize: 11, color: T_.textDim }}>{co.ticker}</span>
+                        </div>
+                        <div style={{ display: "flex", gap: 12, fontSize: 11 }}>
+                          <span style={{ color: T_.textDim }}>Val: <span style={{ color: co.color, fontWeight: 600 }}>{co.valuation}</span></span>
+                          <span style={{ color: T_.textDim }}>Contracted: <span style={{ color: T_.text, fontWeight: 600 }}>{co.power.contracted}</span></span>
+                          {co.backlog && co.backlog !== "N/A" && !co.backlog.startsWith("N/A") && (
+                            <span style={{ color: T_.textDim }}>Backlog: <span style={{ color: T_.green, fontWeight: 600 }}>{co.backlog}</span></span>
+                          )}
+                        </div>
+                      </div>
+                      <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.5 }}>
+                        <span style={{ color: "#CBD5E1" }}>{co.powerType}</span> &middot; {co.keyClients}
+                      </div>
+                      <div style={{ fontSize: 11, color: T_.textGhost, fontStyle: "italic", marginTop: 4, lineHeight: 1.4 }}>{co.notes}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
+          );
+        })()}
         </div>
       )}
 
