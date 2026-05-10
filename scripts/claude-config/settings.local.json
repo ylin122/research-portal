@@ -288,7 +288,7 @@
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3001\" -UseBasicParsing -TimeoutSec 5 -ErrorAction Stop; \"OK $\\($r.StatusCode\\)\" } catch { \"ERR: $\\($_.Exception.Message\\)\" })",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3001/api/quote?tickers=000660.KS,005930.KS\" -UseBasicParsing -TimeoutSec 25; $r.Content } catch { \"ERR: $\\($_.Exception.Message\\)\" })",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3001/src/components/StockSensitivityTab.jsx\" -UseBasicParsing -TimeoutSec 5; \"JSX module: $\\($r.StatusCode\\)\" } catch { \"ERR: $\\($_.Exception.Message\\)\" })",
-      "Bash(GCP_API_KEY=AIzaSyA3G_3tOn4zGUMiiuBdXfVhI4l0m1TGnvA node scripts/dry-run-pricing-cron.mjs)",
+      "Bash(GCP_API_KEY=* node scripts/dry-run-pricing-cron.mjs)",
       "PowerShell($env:DOTCLAUDE_NO_WINDOW = \"1\"; Start-Process -WindowStyle Hidden -FilePath \"cmd.exe\" -ArgumentList \"/c\",\"cd /d C:\\\\Users\\\\ylin1\\\\projects\\\\research-portal && npm run dev:vercel > C:\\\\Users\\\\ylin1\\\\projects\\\\research-portal\\\\.vercel-dev.log 2>&1\")",
       "PowerShell(Start-Process -WindowStyle Hidden -FilePath \"cmd.exe\" -ArgumentList \"/c\",\"cd /d C:\\\\Users\\\\ylin1\\\\projects\\\\research-portal && npm run dev:vercel > C:\\\\Users\\\\ylin1\\\\projects\\\\research-portal\\\\.vercel-dev.log 2>&1\")",
       "PowerShell(Start-Process -FilePath \"powershell.exe\" -ArgumentList \"-NoProfile\",\"-Command\",\"cd C:\\\\Users\\\\ylin1\\\\projects\\\\pa-dashboard; npm run dev:vercel\" -WindowStyle Hidden -WorkingDirectory \"C:\\\\Users\\\\ylin1\\\\projects\\\\pa-dashboard\")",
