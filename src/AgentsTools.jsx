@@ -45,7 +45,7 @@ const TOOLS = [
 
 const CLI_TOOLS = [
   {
-    name: "Reorg / Octus", path: "~/reorg-tools/",
+    name: "Reorg / Octus", path: "~/third-party-research-tools/reorg/",
     desc: "Articles, company coverage, and intelligence via authenticated session.",
     cmds: [
       { cmd: "lookup <name>", desc: "Search company ID" },
@@ -56,7 +56,7 @@ const CLI_TOOLS = [
     ],
   },
   {
-    name: "Third Bridge Forum", path: "~/thirdbridge-tools/",
+    name: "Third Bridge Forum", path: "~/third-party-research-tools/thirdbridge/",
     desc: "Expert interview transcripts from Third Bridge Forum.",
     cmds: [
       { cmd: "search <keyword>", desc: "Search interviews" },
@@ -67,7 +67,7 @@ const CLI_TOOLS = [
     ],
   },
   {
-    name: "CreditSights / LevFin / Covenant Review", path: "~/creditsights-tools/",
+    name: "CreditSights / LevFin / Covenant Review", path: "~/third-party-research-tools/creditsights/",
     desc: "Research articles, morning comments, top-read via Fitch Group SSO. Note: CR loan reports may show locked (entitlement, not auth).",
     cmds: [
       { cmd: "lookup <name>", desc: "Search company tag ID (CS/CR/LFI)" },
@@ -80,7 +80,7 @@ const CLI_TOOLS = [
     ],
   },
   {
-    name: "9fin", path: "~/9fin-tools/",
+    name: "9fin", path: "~/third-party-research-tools/9fin/",
     desc: "News, articles, morning coffee, company search, and calendar. Note: click around in product before signaling done — sessions can be flaky.",
     cmds: [
       { cmd: "search <keyword>", desc: "Search companies, instruments, docs" },
@@ -90,6 +90,16 @@ const CLI_TOOLS = [
       { cmd: "morningcoffee", desc: "Today's Morning Coffee" },
       { cmd: "calendar [--days N]", desc: "Upcoming events (default 7d)" },
       { cmd: "api GET|POST <path>", desc: "Raw 9fin API call" },
+    ],
+  },
+  {
+    name: "Sell-side broker research", path: "~/sellside-broker-tools/",
+    desc: "8 broker research portals: GS, MS, JPM, Barclays, BofA, DB, Citi, WF. Search analyst notes and download real broker PDFs. Powers the /sellside slash command. Repo: github.com/ylin122/sellside-broker-tools.",
+    cmds: [
+      { cmd: "search <keyword>", desc: "Slim JSON of recent research (run per-broker)" },
+      { cmd: "report <id>", desc: "Extracted text for a specific report" },
+      { cmd: "download <id> --out <path>", desc: "Download real broker PDF to local path" },
+      { cmd: "api GET|POST <path>", desc: "Raw API access (escape hatch)" },
     ],
   },
 ];
@@ -187,6 +197,18 @@ const SKILLS = [
     desc: "Full research pipeline — Gmail ingest, analyze new articles, sync Obsidian, push to GitHub, verify Vercel deploy.",
     usage: "/research-ingest",
     tools: "Read, Bash, Grep, Glob, Edit, Write, WebSearch, WebFetch, Gmail", mode: "Read + Write. End-to-end pipeline.",
+  },
+  {
+    name: "sellside", color: "#FB7185",
+    desc: "Sell-side research sweep — queries all 8 broker portals (GS, MS, JPM, Barclays, BofA, DB, Citi, WF) in parallel for a company. Searches, picks the latest company-specific note per broker, downloads the real broker PDFs to ~/sellside-research/<Company>/.",
+    usage: "/sellside",
+    tools: "Bash, Read, Grep, Glob", mode: "Read + Write (PDFs to local disk). Requires all 8 brokers authed (run /sellside-login first if any are dead).",
+  },
+  {
+    name: "sellside-login", color: "#FB7185",
+    desc: "Auth orchestrator for the 8 sell-side broker portals. Runs preflight, launches login.js for any dead broker in parallel, re-verifies. Auth-only; pair with /sellside for actual research downloads.",
+    usage: "/sellside-login",
+    tools: "Bash, Read", mode: "Read + interactive (launches Chromium for SSO + MFA). 15-min timeout.",
   },
 ];
 
