@@ -126,6 +126,19 @@ CREATE TABLE IF NOT EXISTS principles (
 ALTER TABLE principles ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
 ALTER TABLE principles ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
 
+-- goals: forward-looking targets, sibling to principles. Status: 'active' | 'done' | 'paused'.
+CREATE TABLE IF NOT EXISTS goals (
+  id           TEXT PRIMARY KEY,
+  title        TEXT,
+  status       TEXT DEFAULT 'active',
+  sort_order   INTEGER DEFAULT 0,
+  created_at   TIMESTAMPTZ DEFAULT now(),
+  updated_at   TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE goals ADD COLUMN IF NOT EXISTS status     TEXT DEFAULT 'active';
+ALTER TABLE goals ADD COLUMN IF NOT EXISTS sort_order INTEGER DEFAULT 0;
+ALTER TABLE goals ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT now();
+
 -- prompts: reusable Claude Code prompts.
 CREATE TABLE IF NOT EXISTS prompts (
   id           TEXT PRIMARY KEY,
@@ -322,7 +335,7 @@ DECLARE pol TEXT;
 BEGIN
   FOR t IN SELECT unnest(ARRAY[
     'companies','company_fields','kb_articles','concepts',
-    'deep_dives','principles','prompts','quick_notes','sources','agent_runs',
+    'deep_dives','principles','goals','prompts','quick_notes','sources','agent_runs',
     'agent_definitions','financials_cache','compute_prices',
     'company_notes','sector_notes',
     'news_cache','research_results','ideas','qa_log','watchlist'

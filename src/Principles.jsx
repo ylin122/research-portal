@@ -3,6 +3,7 @@ import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 import ErrorBanner from "./lib/ErrorBanner";
 import LastUpdated from "./lib/LastUpdated";
+import Goals from "./Goals";
 
 async function loadPrinciples() {
   const { data, error } = await supabase.from("principles").select("*").order("sort_order", { ascending: true });
@@ -181,6 +182,8 @@ export default function Principles() {
           No principles yet. Click "+ Add" to start.
         </div>
       )}
+
+      <Goals />
     </div>
   );
 }

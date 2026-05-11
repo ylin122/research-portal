@@ -104,9 +104,6 @@ function ConceptsTab() {
   const [loadError, setLoadError] = useState(null);
   const [filter, setFilter] = useState("all");
   const [expanded, setExpanded] = useState(null);
-  const [showAdd, setShowAdd] = useState(false);
-  const [addTitle, setAddTitle] = useState("");
-  const [addTopic, setAddTopic] = useState("ai");
   const [collapsedTopics, setCollapsedTopics] = useState({});
 
   const load = () => {
@@ -122,14 +119,6 @@ function ConceptsTab() {
   // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional: load data on mount
   useEffect(() => { load(); }, []);
 
-  const handleAdd = async () => {
-    if (!addTitle.trim()) return;
-    const c = { id: uid(), title: addTitle.trim(), topic: addTopic, one_liner: "", explanation: "", example: "", analogy: "", key_points: [], why_it_matters: "", related: [] };
-    await supabase.from("concepts").upsert(c);
-    setConcepts(prev => [...prev, c].sort((a, b) => a.title.localeCompare(b.title)));
-    setAddTitle(""); setShowAdd(false);
-  };
-
   const handleDelete = async (id) => {
     await supabase.from("concepts").delete().eq("id", id);
     setConcepts(prev => prev.filter(c => c.id !== id));
@@ -137,14 +126,11 @@ function ConceptsTab() {
 
   const filtered = concepts.filter(c => filter === "all" || c.topic === filter);
 
-  const inputStyle = { width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px", fontFamily: FONT, outline: "none", boxSizing: "border-box" };
-
   return (
     <div>
       <ErrorBanner message={loadError} onRetry={load} />
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
+      <div style={{ marginBottom: 16 }}>
         <LastUpdated rows={concepts} />
-        <button onClick={() => setShowAdd(true)} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px", borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>+ Add</button>
       </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
         {TOPIC_FILTERS.map(t => (
@@ -173,22 +159,6 @@ function ConceptsTab() {
               </div>
             );
           })}
-      {showAdd && (
-        <div style={{ position: "fixed", top: 0, left: 0, right: 0, bottom: 0, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }} onClick={() => setShowAdd(false)}>
-          <div style={{ background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, padding: 28, width: 440 }} onClick={e => e.stopPropagation()}>
-            <div style={{ fontSize: 16, fontWeight: 600, color: T_.accent, marginBottom: 20 }}>Add Concept</div>
-            <div style={{ marginBottom: 14 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Term</div>
-              <input style={inputStyle} placeholder="e.g. FLOPs, EBITDA, RAG..." value={addTitle} onChange={e => setAddTitle(e.target.value)} onKeyDown={e => { if (e.key === "Enter") handleAdd(); }} /></div>
-            <div style={{ marginBottom: 20 }}><div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Topic</div>
-              <select style={{ ...inputStyle, cursor: "pointer" }} value={addTopic} onChange={e => setAddTopic(e.target.value)}>{TOPIC_FILTERS.filter(t => t.key !== "all").map(t => <option key={t.key} value={t.key}>{t.label}</option>)}</select></div>
-            <p style={{ fontSize: 12, color: T_.textDim, marginBottom: 20 }}>Add the term, then run <span style={{ color: T_.accent }}>"compile my wiki"</span> to generate the explanation.</p>
-            <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-              <button onClick={() => setShowAdd(false)} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textMid, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: FONT }}>Cancel</button>
-              <button onClick={handleAdd} style={{ background: T_.accent, border: "none", color: T_.bg, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT }}>Add</button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
@@ -199,6 +169,10 @@ function ConceptsTab() {
 
 function DeepDiveDetail({ dive, onBack, onDelete }) {
   const sections = dive.sections || [];
+  const useSidebarLayout = dive.id === "cc_advanced_features";
+  const [activeSectionIdx, setActiveSectionIdx] = useState(0);
+  const activeSection = sections[activeSectionIdx] || sections[0];
+
   return (
     <div>
       <button onClick={onBack} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textMid, cursor: "pointer", fontSize: 12, padding: "6px 14px", borderRadius: 6, marginBottom: 20, fontFamily: FONT }}>← Back</button>
@@ -209,24 +183,65 @@ function DeepDiveDetail({ dive, onBack, onDelete }) {
       <h1 style={{ fontSize: 24, fontWeight: 700, color: T_.text, marginBottom: 8, lineHeight: 1.3 }}>{dive.title}</h1>
       {dive.summary && <p style={{ fontSize: 14, color: T_.textDim, marginBottom: 28, lineHeight: 1.6 }}>{dive.summary}</p>}
 
-      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
-        {sections.map((sec, i) => (
-          <div key={i} style={{ marginBottom: i < sections.length - 1 ? 24 : 0, paddingBottom: i < sections.length - 1 ? 24 : 0, borderBottom: i < sections.length - 1 ? `1px solid ${T_.border}` : "none" }}>
-            <div style={{ fontSize: 15, fontWeight: 600, color: T_.accent, marginBottom: 10 }}>{sec.title}</div>
-            {sec.content && <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.8, whiteSpace: "pre-wrap", marginBottom: sec.key_numbers?.length ? 12 : 0 }}>{sec.content}</div>}
-            {sec.key_numbers?.length > 0 && (
-              <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
-                {sec.key_numbers.map((kn, j) => (
-                  <div key={j} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "8px 14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 2 }}>{kn.label}</div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: T_.blue }}>{kn.value}</div>
-                  </div>
+      {useSidebarLayout ? (
+        <div style={{ display: "flex", background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, overflow: "hidden", minHeight: 480 }}>
+          <div style={{ width: 240, flexShrink: 0, borderRight: `1px solid ${T_.border}`, padding: "10px 0", background: T_.bg }}>
+            {sections.map((sec, i) => {
+              const active = i === activeSectionIdx;
+              return (
+                <div key={i} onClick={() => setActiveSectionIdx(i)} style={{
+                  padding: "9px 16px",
+                  fontSize: 12.5,
+                  fontWeight: active ? 700 : 500,
+                  color: active ? T_.text : T_.textDim,
+                  borderLeft: `3px solid ${active ? T_.accent : "transparent"}`,
+                  background: active ? `${T_.accent}10` : "transparent",
+                  cursor: "pointer",
+                  lineHeight: 1.4,
+                  transition: "color 0.12s, background 0.12s",
+                }}
+                  onMouseEnter={e => { if (!active) e.currentTarget.style.color = T_.textMid; }}
+                  onMouseLeave={e => { if (!active) e.currentTarget.style.color = T_.textDim; }}
+                >{sec.title}</div>
+              );
+            })}
+          </div>
+          <div style={{ flex: 1, padding: "22px 28px", minWidth: 0 }}>
+            <div style={{ fontSize: 13, color: T_.textGhost, marginBottom: 4 }}>{activeSectionIdx + 1} of {sections.length}</div>
+            <div style={{ fontSize: 17, fontWeight: 700, color: T_.text, marginBottom: 14 }}>{activeSection.title}</div>
+            {activeSection.content && <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.65, whiteSpace: "pre-wrap" }}>{activeSection.content}</div>}
+            {activeSection.key_numbers?.length > 0 && (
+              <div style={{ display: "flex", gap: 16, flexWrap: "wrap", marginTop: 18, paddingTop: 12, borderTop: `1px solid ${T_.border}`, fontSize: 11 }}>
+                {activeSection.key_numbers.map((kn, j) => (
+                  <span key={j}>
+                    <span style={{ color: T_.textGhost }}>{kn.label}:</span>{" "}
+                    <span style={{ color: T_.textMid, fontWeight: 600 }}>{kn.value}</span>
+                  </span>
                 ))}
               </div>
             )}
           </div>
-        ))}
-      </div>
+        </div>
+      ) : (
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 24 }}>
+          {sections.map((sec, i) => (
+            <div key={i} style={{ marginBottom: i < sections.length - 1 ? 24 : 0, paddingBottom: i < sections.length - 1 ? 24 : 0, borderBottom: i < sections.length - 1 ? `1px solid ${T_.border}` : "none" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: T_.accent, marginBottom: 10 }}>{sec.title}</div>
+              {sec.content && <div style={{ fontSize: 13, color: T_.text, lineHeight: 1.8, whiteSpace: "pre-wrap", marginBottom: sec.key_numbers?.length ? 12 : 0 }}>{sec.content}</div>}
+              {sec.key_numbers?.length > 0 && (
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginTop: 10 }}>
+                  {sec.key_numbers.map((kn, j) => (
+                    <div key={j} style={{ background: T_.bg, borderRadius: 8, border: `1px solid ${T_.border}`, padding: "8px 14px", textAlign: "center" }}>
+                      <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", marginBottom: 2 }}>{kn.label}</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: T_.blue }}>{kn.value}</div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
 
       {!dive._static && <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
         <button onClick={() => onDelete(dive.id)} style={{ background: "none", border: `1px solid ${T_.border}`, color: T_.textGhost, padding: "4px 12px", borderRadius: 6, cursor: "pointer", fontSize: 11, fontFamily: FONT }}
@@ -432,6 +447,52 @@ const STRATEGY_DIVES = [
           { label: "Profit Goes To", value: "Pricing × Share Gain" }
         ] }
     ] },
+  { id: "ai_inference_speed", title: "Inference Speed", topic: "ai", _static: true,
+    summary: "How to think about token throughput during LLM inference — the two-phase prefill/decode model, why decode is bandwidth-bound, the levers that speed it up (quantization, GQA, speculative decoding, MoE), and how test-time compute (extended thinking) changes the optimization problem from \"think faster\" to \"don't think when you don't need to.\"",
+    sections: [
+      { title: "Two Phases: Prefill vs Decode",
+        content: "Inference splits into two fundamentally different phases with different bottlenecks.\n\nPREFILL processes the input prompt. All tokens go through the model in parallel — one big matrix multiply that fills the KV cache. This phase is COMPUTE-BOUND: GPU FLOPs are the limit. Scales roughly linearly with input length. The output of prefill is TTFT — Time To First Token — typically dominated by sequence length and model size.\n\nDECODE generates the output, one token at a time. Each new token requires a full forward pass that reads the entire KV cache + model weights, then writes one new token to the cache. This phase is MEMORY-BANDWIDTH-BOUND, not compute-bound. The metric is TPOT — Time Per Output Token — typically constant across the generation regardless of where you are in the sequence.\n\nEnd-to-end latency: TTFT + (output_tokens × TPOT).\n\nThe two phases respond to different fixes. Adding compute (more FLOPs) helps prefill but does basically nothing for decode. Adding memory bandwidth (faster HBM) accelerates decode but barely moves prefill. This is why H100 vs B200 comparisons split into \"how fast can it ingest\" vs \"how fast can it generate\" — two separate numbers, two separate engineering problems.",
+        key_numbers: [
+          { label: "TTFT", value: "Time to first token (prefill)" },
+          { label: "TPOT", value: "Time per output token (decode)" },
+          { label: "Total", value: "TTFT + (out × TPOT)" }
+        ] },
+      { title: "Why Decode Is Slow (Bandwidth, Not Compute)",
+        content: "The decode bottleneck is unintuitive. Each generated token requires the GPU to load the entire model weights and KV cache from HBM to SRAM, do a single forward pass, and write one token back. The math FLOPs needed for that one pass are tiny compared to HBM throughput required to feed the operation. Result: the GPU sits underutilized on compute, waiting for memory.\n\nThis is why GPU bandwidth — not TFLOPs — is the headline number for inference performance. H100 has 3 TB/s HBM3 bandwidth; B200 has ~8 TB/s HBM3e. B200 decodes Llama-70B about 2.5–3× faster than H100 not because of more FLOPs (it has more, but they aren't the bottleneck) but because of bandwidth.\n\nThe corollary: you cannot trade more compute for faster decode. Adding more matrix multiply units does nothing if HBM can't feed them. The only ways to make decode faster are (1) shrink the data that has to move (quantization, KV compression), (2) increase HBM bandwidth (newer hardware), (3) amortize the bandwidth across more tokens per pass (speculative decoding, batching).\n\nLong context makes this worse. KV cache grows linearly with sequence length, so a 100K context decode is 100× the memory traffic of a 1K context decode for the same number of output tokens. This is why long-context decode is so brutal even at small batch sizes.",
+        key_numbers: [
+          { label: "H100 HBM", value: "3 TB/s" },
+          { label: "B200 HBM3e", value: "~8 TB/s" },
+          { label: "Bottleneck", value: "Memory bandwidth, not FLOPs" }
+        ] },
+      { title: "Levers to Speed Up Token Generation",
+        content: "Seven techniques that materially move TPOT or TTFT:\n\nQUANTIZATION — drop weight precision (FP16 → FP8 → INT4). Cuts memory bandwidth requirement proportionally because there's less data to move. FP8 ~2× decode speed vs FP16; INT4 ~3–4×. Slight quality degradation at lower bits; FP8 is essentially free in quality terms on most workloads.\n\nKV CACHE COMPRESSION — Multi-Query Attention (MQA) and Grouped-Query Attention (GQA) share K/V heads across query heads, shrinking KV cache by 4–8×. Multi-head Latent Attention (MLA, DeepSeek-V2) projects KV into a low-rank space for ~10× compression. Smaller cache = less bandwidth per token.\n\nSPECULATIVE DECODING — a small \"draft\" model proposes N tokens ahead; the big model verifies all N in one forward pass. If 3 of 4 drafted tokens are accepted, you get 3× speedup in those steps. Real speedups: 2–3× with a good draft model. EAGLE and Medusa are variants.\n\nFLASHATTENTION — fused attention kernel that tiles compute and avoids materializing the full attention matrix in HBM. Pure implementation win, no algorithm change. 2–4× speedup on attention, especially at long context.\n\nCONTINUOUS BATCHING (vLLM, TensorRT-LLM) — new requests can join an in-flight batch as old ones finish. Improves throughput (tokens/sec/GPU) by 5–10× under load, though it doesn't reduce single-user latency.\n\nMIXTURE OF EXPERTS (MoE) — only activate a subset of params per token. DeepSeek-V3 has 671B total params but only ~37B active per token. You get the bandwidth cost of a small model and the quality of a large one. The catch: total params still have to fit in memory.\n\nPROMPT CACHE — reuse KV cache across requests that share a prefix (system prompt, conversation history). Anthropic's prompt cache has a 5-minute TTL and gives ~10× TTFT speedup on cached prefixes. Massive for agent workflows that reuse the same system prompt.",
+        key_numbers: [
+          { label: "FP8 quantization", value: "~2× decode" },
+          { label: "Speculative decoding", value: "2–3× decode" },
+          { label: "Prompt cache", value: "~10× TTFT" }
+        ] },
+      { title: "Test-Time Compute Tradeoff",
+        content: "The reasoning-model paradigm (o1, o3, DeepSeek-R1, Claude extended thinking) consumes N× more decode tokens to reason internally before answering. Total latency becomes:\n\n  total = TTFT + (thinking_tokens + output_tokens) × TPOT\n\n10× thinking tokens = 10× wall-clock time. Test-time compute is a deliberate quality-for-latency trade.\n\nThe inversion this creates is important: when most of your compute is going into thinking, the optimization problem changes. \"Make the model faster\" stops being the highest-leverage lever — you've already amortized engineering effort into the model. The new highest-leverage lever is \"think less when you can get away with it.\"\n\nTypical thinking budgets in practice:\n• Quick lookup (price, definition): 0 reasoning tokens — sub-second response\n• Standard analysis (summarize, classify): 1–5K thinking tokens — 10–30 sec\n• Multi-step reasoning (build a thesis, debug): 10–50K thinking tokens — 1–5 min\n• Deep work (model a complex deal, careful fact-check): 50K–200K — 5–20 min\n• Overnight tier: 200K+ — \"run this and come back tomorrow\"\n\nEach tier has 10× the cost of the previous, with diminishing returns on quality past the inflection point for any given task. The skill is matching the budget to the question, not maxing it out every time.",
+        key_numbers: [
+          { label: "Latency formula", value: "TTFT + (think + out) × TPOT" },
+          { label: "Quick lookup", value: "0 thinking tokens" },
+          { label: "Deep work", value: "50–200K thinking tokens" }
+        ] },
+      { title: "Test-Time Compute Optimization Strategies",
+        content: "Five strategies for getting more quality per token of test-time compute:\n\nADAPTIVE THINKING — set the thinking budget based on query difficulty. Anthropic's extended thinking exposes a budget_tokens parameter; reasoning models like R1 have configurable depth. Hard problems get long reasoning, easy ones get none. A classifier or self-evaluation step can gate this automatically. The biggest single lever — most queries don't need extensive thinking, and routing the easy ones to short responses recovers most of the cost.\n\nPARALLEL SAMPLING + SELECT (best-of-N) — run N independent generations in parallel, then pick the best via a reward model, self-consistency vote, or verifier. Cost is linear in N, but it's parallelizable across machines so wall-clock barely moves. Quality gains plateau around N=8–16 for most tasks. Common in research evals, less common in production due to cost.\n\nTREE SEARCH (MCTS-style) — branch on uncertain reasoning steps, evaluate partial paths with a value model, prune low-promise branches. Used by AlphaCode, AlphaProof. More compute monotonically improves answer quality, which is a rare property. Engineering complexity is high; reserved for high-stakes, well-defined tasks (math, code, theorem proving).\n\nCACHE THE REASONING — if a reasoning trace will be reused (same system prompt across many user queries in an agent, repeated patterns in batch eval), cache the prefix KV. Anthropic prompt cache 5-min TTL is the production lever here.\n\nDISTILL DOWN — use the slow reasoning model to generate training data, then fine-tune a small model to perform the task directly without explicit reasoning. After distillation, inference cost drops 10–100× and reasoning happens implicitly in the small model's forward pass. Standard playbook now for production deployment of reasoning capabilities.",
+        key_numbers: [
+          { label: "Top lever", value: "Adaptive thinking budget" },
+          { label: "Best-of-N plateau", value: "N ≈ 8–16" },
+          { label: "Distillation", value: "10–100× cost reduction" }
+        ] },
+      { title: "Practical Framework — Match the Lever to the Bottleneck",
+        content: "When inference feels slow, diagnose which phase or metric is the actual bottleneck before reaching for a tool. Wrong lever, wrong problem.\n\nTTFT TOO HIGH (long wait before the first token streams):\n  • Prompt cache (huge win if system prompt is reused)\n  • Smaller prefill — truncate history, summarize old context\n  • Move to a model with better prefill throughput (MoE often wins here)\n\nTPOT TOO HIGH (tokens stream slowly once they start):\n  • Quantization (FP16 → FP8 or INT4)\n  • GQA / MLA architecture\n  • Speculative decoding\n  • Newer hardware (B200 over H100, etc.)\n\nTOTAL TIME TOO HIGH BECAUSE OF THINKING TOKENS:\n  • Adaptive budget — gate extended thinking by query complexity\n  • Switch to parallel best-of-N instead of one long sequential chain\n  • For agent workflows, distill the thinking step into a smaller fine-tuned model\n  • Cache the reasoning prefix if it's reused\n\nTHROUGHPUT TOO LOW (many concurrent users, not single-user latency):\n  • Continuous batching (vLLM, TensorRT-LLM)\n  • Tensor parallelism across more GPUs\n  • Reduce per-request KV via GQA / MLA / shorter context\n\nFor single-user work (e.g., using Claude for research), the dominant lever is ADAPTIVE THINKING. Routine queries should consume ~0 thinking tokens; only spend deep reasoning where the answer quality genuinely justifies the wait. Most quality complaints about reasoning models are actually \"I wanted a fast answer to an easy question and got a slow one.\"",
+        key_numbers: [
+          { label: "TTFT lever", value: "Prompt cache + smaller prefill" },
+          { label: "TPOT lever", value: "Quantization + GQA + spec decode" },
+          { label: "Single-user", value: "Adaptive thinking budget" }
+        ] },
+    ] },
   { id: "sw_lang_basics", title: "Programming Languages: A Refresher", topic: "software", _static: true,
     summary: "A working refresher on the major general-purpose languages — Python, JavaScript/TypeScript, Java, C, C++, Go, Rust, SQL — what makes each distinctive (type system, memory model, concurrency) and when to pick one over another. Aimed at restoring fluency, not teaching from scratch.",
     sections: [
@@ -496,6 +557,87 @@ const STRATEGY_DIVES = [
           { label: "Standardized", value: "1992, fragmented since" }
         ] }
     ] },
+  { id: "cc_advanced_features", title: "Claude Code: Advanced Features", topic: "ai", _static: true,
+    summary: "Workflow cheatsheet. Each tool: what it is, when to reach for it, the command, best use cases. Designed for mid-task recall — \"oh right, I should use a hook for this.\"",
+    sections: [
+      { title: "Pick the Right Tool (Decision Tree)",
+        content: "When you catch yourself thinking…\n\n\"Claude should always know X\"        →  CLAUDE.md\n\"Claude should remember this next time\"  →  memory (\"remember X\")\n\"Claude must NEVER do Y\"             →  settings.json deny\n\"Always run Z when this happens\"     →  hook\n\"I keep repeating this task\"         →  skill or command\n\"This work pollutes my context\"      →  subagent\n\"Claude needs my DB / API / Gmail\"   →  MCP server\n\nRule of thumb: pick the simplest one that works. Don't reach for a subagent when memory will do.",
+        key_numbers: [
+          { label: "Bias", value: "Simpler feature first" },
+          { label: "Memory beats", value: "Subagent for preferences" },
+          { label: "Hook beats", value: "CLAUDE.md for must-fire automation" }
+        ] },
+      { title: "CLAUDE.md",
+        content: "WHAT\nMarkdown files Claude reads at the start of every session.\n\nWHEN\n\"Claude should always know this\" — facts that don't change session to session.\n\nHOW\nEdit one of:\n  ~/.claude/CLAUDE.md           (global, every project)\n  <repo>/CLAUDE.md              (project, committed, team)\n  <repo>/CLAUDE.local.md        (project, gitignored, personal)\n\nBEST FOR\n  • Code style — \"use 2-space indent\"\n  • Build commands — \"run npm test before commit\"\n  • Repo layout — where things live, what's deployed where\n  • Identity — \"Research Portal lives at ~/projects/research-portal\"\n\nKeep it short (<200 lines). Don't put preferences here — those are memory.",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"always know this\"" },
+          { label: "File", value: "CLAUDE.md (global or project)" },
+          { label: "Size", value: "<200 lines" }
+        ] },
+      { title: "settings.json — Permissions",
+        content: "WHAT\nJSON file controlling what Claude can do without asking, and what it CAN'T do at all.\n\nWHEN\n\"Stop asking me about safe commands\" or \"Claude must never do this.\"\n\nHOW\nEdit .claude/settings.json (project) or ~/.claude/settings.json (global):\n\n  \"permissions\": {\n    \"allow\": [\"Bash(npm run *)\", \"Bash(git add *)\"],\n    \"deny\":  [\"Bash(rm -rf *)\", \"Bash(git push --force*)\"]\n  }\n\nDeny always beats allow. Shift+Tab cycles modes mid-session (auto-accept on/off).\n\nBEST FOR\n  • Skip prompts for safe commands you run constantly (npm, git add)\n  • Block destructive stuff (rm -rf, --force, --no-verify)\n  • Set default model: \"claude-opus-4-7\"\n  • Auto-accept edits when you trust the task",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"stop asking\" / \"never do this\"" },
+          { label: "Rule", value: "Deny wins over allow" },
+          { label: "Cycle modes", value: "Shift+Tab" }
+        ] },
+      { title: "Hooks — Automatic Triggers",
+        content: "WHAT\nShell commands that fire automatically on Claude Code events. The thing memory and CLAUDE.md can't do: guaranteed execution.\n\nWHEN\n\"Always run X when Y happens, no matter what.\"\n\nHOW\nAdd to settings.json. The three events you'll actually use:\n  SessionStart      → fires when you open a session\n  PreToolUse        → fires before any tool runs (can block)\n  Stop              → fires when Claude finishes responding\n\nExit code 0 = allow. Exit code 2 = block (Claude sees the error).\n\nBEST FOR\n  • Auto-pull latest from git when session starts\n  • Auto-start dev server (npm run dev) on session start\n  • Block rm -rf no matter what the allowlist says\n  • Play a sound / send notification when Claude finishes\n  • Inject current branch into every prompt automatically",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"always run X when…\"" },
+          { label: "Top 3 events", value: "SessionStart / PreToolUse / Stop" },
+          { label: "Block code", value: "exit 2" }
+        ] },
+      { title: "MCP — External Tool Plugins",
+        content: "WHAT\nThird-party plugins that give Claude new tools (DB queries, Gmail, Linear, etc).\n\nWHEN\n\"I want Claude to talk to <external system>.\"\n\nHOW\n  claude mcp add <name> -- <command>\n  claude mcp list\n  claude mcp remove <name>\n\nTools then appear as mcp__<server>__<tool>. Allow them in settings:\n  \"allow\": [\"mcp__git__*\", \"mcp__memory__*\"]\n\nBEST FOR\n  • Database queries (Postgres, Supabase)\n  • Gmail / Google Calendar / Drive\n  • GitHub / Linear / Slack\n  • Git operations as structured tools (vs raw bash)\n  • Persistent knowledge graph (memory MCP)\n\nSECURITY: every MCP is third-party code running on your machine. Audit before installing — run the audit-mcp subagent.",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"Claude needs to talk to X\"" },
+          { label: "Install", value: "claude mcp add" },
+          { label: "Rule", value: "Audit before install" }
+        ] },
+      { title: "Memory — Claude's Self-Notes",
+        content: "WHAT\nFiles Claude writes to itself, per-project, that persist across sessions.\n\nWHEN\n\"Remember this for next time.\"\n\nHOW\nJust say it in plain English. No file editing needed:\n  \"Remember that I prefer X\"\n  \"Don't shorten my prompts to agents\"\n  \"Forget that note about Z\"\n  \"Check memory\" — forces Claude to read before answering\n\nStored at ~/.claude/projects/<slug>/memory/. MEMORY.md is the index.\n\nBEST FOR\n  • Your preferences — \"always use Yahoo Finance for live prices\"\n  • Personal facts — \"my tax rates are 45%/30%\"\n  • Project context — \"PA Dashboard runs on port 3001\"\n  • Reference pointers — \"news tracked in Gmail label X\"\n\nGotcha: memories naming specific files/functions can go stale. Tell Claude to verify before acting on them.",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"remember this next time\"" },
+          { label: "Command", value: "\"remember X\" / \"forget X\"" },
+          { label: "Storage", value: "~/.claude/projects/<slug>/memory/" }
+        ] },
+      { title: "Skills — Reusable Workflows",
+        content: "WHAT\nBundled prompts you trigger with /name. Like a saved recipe Claude can also auto-load when relevant.\n\nWHEN\n\"I keep doing this same multi-step task.\"\n\nHOW\nCreate ~/.claude/skills/<name>/SKILL.md:\n\n  ---\n  description: Refresh portfolio pricing data\n  when_to_use: User asks to refresh prices or pull live quotes\n  ---\n  Step 1: pull Yahoo Finance quotes for these tickers...\n  Step 2: update Supabase...\n\nInvoke with /<name>. Live shell injection: !`git status --short` runs before Claude reads the skill.\n\nBEST FOR\n  • Data refresh routines (/research-ingest, /pa-refresh)\n  • Multi-step workflows with supporting scripts in the same folder\n  • Tasks you want Claude to auto-detect from your message\n  • Workflows that need their own model or tool allowlist",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"I keep repeating this\"" },
+          { label: "File", value: "~/.claude/skills/<name>/SKILL.md" },
+          { label: "Invoke", value: "/name (or auto)" }
+        ] },
+      { title: "Slash Commands — Quick Shortcuts",
+        content: "WHAT\nSingle-file shortcuts. Simpler than skills.\n\nWHEN\n\"One short command to kick off a known task.\"\n\nHOW\nCreate <repo>/.claude/commands/fix-issue.md:\n\n  ---\n  description: Investigate and fix a GitHub issue\n  argument-hint: <issue-number>\n  ---\n  Pull issue #$1 with gh, reproduce the bug, fix, open a PR.\n\nRun /fix-issue 142. $1, $2 are positional args; $ARGUMENTS is everything.\n\nBEST FOR\n  • One-line wrappers around a known workflow\n  • Project shortcuts you want everyone on the team to have (commit them to git)\n  • Quick prompts where a full skill is overkill\n  • Things like /sync-pull, /sync-push, /deploy\n\nSkills vs commands: use a skill if it needs supporting files; otherwise command.",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"one command for this task\"" },
+          { label: "File", value: ".claude/commands/<name>.md" },
+          { label: "Args", value: "$1, $2, $ARGUMENTS" }
+        ] },
+      { title: "Subagents — Isolated Workers",
+        content: "WHAT\nClaude instances with their own context window. They explore/work/research and report back a summary — your main conversation stays clean.\n\nWHEN\n\"This work would pollute my main thread\" or \"I want two things done in parallel.\"\n\nHOW\nClaude auto-picks one based on the task, or you can name it. Built-in types:\n  general-purpose   → open-ended multi-step work\n  Explore           → read-only codebase search\n  Plan              → read-only, deep thinking, for architecture\n\nCustom agents live at ~/.claude/agents/<name>.md (e.g. code-review, security-reviewer, fact-checker).\n\nBEST FOR\n  • Deep codebase search (Explore — keeps grep noise out of your context)\n  • Independent parallel work (send multiple Agent calls in one message)\n  • Specialized expertise (code-review, fact-check, security audit)\n  • Long research tasks where only the summary matters\n\nDon't use for: simple inline tasks, anything needing back-and-forth.",
+        key_numbers: [
+          { label: "Trigger thought", value: "\"don't pollute main context\"" },
+          { label: "Built-in", value: "general-purpose / Explore / Plan" },
+          { label: "Parallel", value: "Multiple Agent calls in one message" }
+        ] },
+      { title: "Plan Mode / Background / Schedule",
+        content: "Three timing controls. Often confused.\n\nPLAN MODE\nRead-only sandbox before risky changes. Claude can read/grep/research but can't write. You approve the plan, then it executes.\n  Trigger: Shift+Tab to cycle into it\n  Use for: large refactors, dependency upgrades, anything irreversible\n\nBACKGROUND TASKS\nLong jobs that run while you keep chatting.\n  Trigger: pass run_in_background: true on Bash/Agent calls\n  Use for: long builds, test suites, batch jobs\n  Don't poll — you're auto-notified on completion\n\nSCHEDULE / LOOP\n  /loop 5m /research-ingest    → repeat every 5 min while session open\n  /loop <prompt>               → Claude self-paces between iterations\n  /schedule                    → register a remote cron job (runs without your machine on)\n\nUse cases: daily portfolio refresh, weekly news sweep, polling until a deploy finishes.",
+        key_numbers: [
+          { label: "Plan mode", value: "Shift+Tab — read-only" },
+          { label: "Background", value: "run_in_background: true" },
+          { label: "Recurring", value: "/loop or /schedule" }
+        ] },
+      { title: "Security — The Three Rules",
+        content: "1. NEVER COMMIT SECRETS\nAdd .env, .env.local, credentials.json, token.json to .gitignore. Watch for API key patterns in committed files like settings.local.json:\n  AIzaSy*  (Google)\n  sk-*     (OpenAI / Anthropic)\n  ghp_*    (GitHub)\n  xoxb-*   (Slack)\nIf a key leaks → rotate immediately. GitHub indexes everything in minutes.\n\n2. NO DESTRUCTIVE GIT WITHOUT CONFIRMATION\nAdd to settings.json deny:\n  --force, --no-verify, reset --hard, branch -D\nNever amend pushed commits.\n\n3. AUDIT MCPs AND SKILLS BEFORE INSTALLING\nAnything that fetches external content is prompt-injection attack surface. Run the audit-mcp or security-reviewer subagent first. Re-audit periodically with weekly-mcp-audit.\n\nDefense in depth: settings deny → PreToolUse hook → user confirmation → diff review. Cheap to confirm, expensive to undo.",
+        key_numbers: [
+          { label: "Rule 1", value: "Never commit secrets" },
+          { label: "Rule 2", value: "Deny destructive git" },
+          { label: "Rule 3", value: "Audit before installing" }
+        ] },
+    ] },
 ];
 
 function DeepDivesTab() {
@@ -520,7 +662,7 @@ function DeepDivesTab() {
   useEffect(() => { load(); }, []);
 
   const handleDelete = async (id) => {
-    if (id.startsWith("strat_") || id.startsWith("infra_") || id.startsWith("sw_")) return;
+    if (id.startsWith("strat_") || id.startsWith("infra_") || id.startsWith("sw_") || id.startsWith("cc_") || id.startsWith("ai_")) return;
     await supabase.from("deep_dives").delete().eq("id", id);
     setDives(prev => prev.filter(d => d.id !== id));
     setSelected(null);
@@ -606,7 +748,7 @@ export default function KnowledgeInterests() {
   return (
     <div style={{ padding: 0 }}>
       <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", fontFamily: FONT }}>Knowledge / Interests</div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", fontFamily: FONT }}>Knowledge</div>
         <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, fontFamily: FONT }}>Learn, explore, and save interesting things.</div>
       </div>
       <TabBar tabs={TABS} active={activeTab} onChange={setActiveTab} />

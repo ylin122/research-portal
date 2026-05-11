@@ -87,7 +87,7 @@ const MOBILE_MORE_ITEMS = [
     type: "sector", sector: sk, label: sec.label, icon: "\u{1F4C1}"
   })),
   { type: null, label: "— Reference —", icon: "" },
-  { type: "knowledge", label: "Knowledge / Interests", icon: "\u{1F4D6}" },
+  { type: "knowledge", label: "Knowledge", icon: "\u{1F4D6}" },
   { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
   { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
   { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
@@ -548,9 +548,9 @@ function AppContent({ userEmail, onSignOut }) {
             })}
           </div>
 
-          {/* Knowledge / Interests */}
+          {/* Knowledge */}
           <div style={{ ...s.sectorHdr, color: view.type === "knowledge" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "knowledge" }); setEditingField(null); }}>
-            <span>Knowledge / Interests</span>
+            <span>Knowledge</span>
           </div>
 
           {/* Research Wiki */}

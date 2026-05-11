@@ -22,11 +22,6 @@ async function loadArticles() {
   return data || [];
 }
 
-async function upsertArticle(article) {
-  const { error } = await supabase.from("kb_articles").upsert(article, { onConflict: "id" });
-  if (error) console.error("upsertArticle:", error);
-}
-
 async function deleteArticle(id) {
   const { error } = await supabase.from("kb_articles").delete().eq("id", id);
   if (error) console.error("deleteArticle:", error);
@@ -242,88 +237,13 @@ function ArticleDetail({ article, onBack }) {
   );
 }
 
-// ─── Add Article Modal ───────────────────────────────
-function AddArticleModal({ onClose, onSave }) {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [sourceUrl, setSourceUrl] = useState("");
-  const [category, setCategory] = useState("articles");
-
-  const handleSave = () => {
-    if (!title.trim()) return;
-    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-    onSave({
-      id, title: title.trim(), content: content.trim(),
-      summary: content.trim().slice(0, 300), source_url: sourceUrl.trim(),
-      category, source_type: "manual", tags: [], themes: [],
-      key_takeaways: [], key_metrics: [], questions: [],
-      date: new Date().toISOString().slice(0, 10),
-    });
-    onClose();
-  };
-
-  const inputStyle = {
-    width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`,
-    borderRadius: 8, color: T_.text, fontSize: 14, padding: "10px 14px",
-    fontFamily: FONT, outline: "none", boxSizing: "border-box",
-  };
-
-  return (
-    <div style={{
-      position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-      background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000,
-    }} onClick={onClose}>
-      <div style={{
-        background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`,
-        padding: 28, width: 520, maxHeight: "80vh", overflow: "auto",
-      }} onClick={e => e.stopPropagation()}>
-        <div style={{ fontSize: 16, fontWeight: 600, color: T_.accent, marginBottom: 20 }}>Add Article</div>
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Title</div>
-          <input style={inputStyle} placeholder="Article title" value={title} onChange={e => setTitle(e.target.value)} />
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Source URL</div>
-          <input style={inputStyle} placeholder="https://..." value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} />
-        </div>
-        <div style={{ marginBottom: 14 }}>
-          <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Category</div>
-          <select style={{ ...inputStyle, cursor: "pointer" }} value={category} onChange={e => setCategory(e.target.value)}>
-            <option value="articles">Article</option>
-            <option value="notes">Note</option>
-            <option value="threads">Thread</option>
-            <option value="papers">Paper</option>
-          </select>
-        </div>
-        <div style={{ marginBottom: 20 }}>
-          <div style={{ fontSize: 11, color: T_.textGhost, textTransform: "uppercase", marginBottom: 6 }}>Content</div>
-          <textarea style={{ ...inputStyle, minHeight: 150, resize: "vertical", lineHeight: 1.7 }}
-            placeholder="Paste article content or notes..." value={content} onChange={e => setContent(e.target.value)} />
-        </div>
-        <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
-          <button onClick={onClose} style={{
-            background: "none", border: `1px solid ${T_.border}`, color: T_.textMid,
-            padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontFamily: FONT,
-          }}>Cancel</button>
-          <button onClick={handleSave} style={{
-            background: T_.accent, border: "none", color: T_.bg,
-            padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT,
-          }}>Save</button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 // ─── Main Component ──────────────────────────────────
 export default function KnowledgeBase() {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [search, setSearch] = useState("");
   const [selected, setSelected] = useState(null);
-  const [showAdd, setShowAdd] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -346,21 +266,7 @@ export default function KnowledgeBase() {
     if (selected?.id === id) setSelected(null);
   };
 
-  const handleAdd = async (article) => {
-    await upsertArticle(article);
-    setArticles(prev => [article, ...prev]);
-  };
-
-  const filtered = articles.filter(a => {
-    if (filter !== "all" && a.category !== filter) return false;
-    if (search) {
-      const q = search.toLowerCase();
-      return (a.title || "").toLowerCase().includes(q) ||
-             (a.summary || "").toLowerCase().includes(q) ||
-             (a.themes || []).some(t => t.toLowerCase().includes(q));
-    }
-    return true;
-  });
+  const filtered = articles.filter(a => filter === "all" || a.category === filter);
 
   const analyzed = articles.filter(a => a.key_takeaways?.length > 0).length;
 
@@ -381,25 +287,6 @@ export default function KnowledgeBase() {
       </p>
 
       <ErrorBanner message={loadError} onRetry={load} />
-
-      {/* Controls */}
-      <div style={{ display: "flex", gap: 10, marginBottom: 16, flexWrap: "wrap", alignItems: "center" }}>
-        <input
-          style={{
-            flex: 1, minWidth: 200, background: T_.bgInput, border: `1px solid ${T_.border}`,
-            borderRadius: 8, color: T_.text, fontSize: 13, padding: "9px 14px", fontFamily: FONT, outline: "none",
-          }}
-          placeholder="Search articles, themes..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-        <button onClick={() => setShowAdd(true)} style={{
-          background: T_.accent, border: "none", color: T_.bg, padding: "9px 16px",
-          borderRadius: 8, cursor: "pointer", fontSize: 13, fontWeight: 600, fontFamily: FONT,
-        }}>
-          + Add
-        </button>
-      </div>
 
       {/* Category Tabs */}
       <div style={{ display: "flex", gap: 4, marginBottom: 20 }}>
@@ -437,7 +324,7 @@ export default function KnowledgeBase() {
         <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center", lineHeight: 1.7 }}>
           {articles.length === 0
             ? "No articles yet. Email links to ylresearchwiki@gmail.com, run the ingest script, then compile."
-            : "No articles match your search."}
+            : "No articles in this category."}
         </div>
       ) : (
         <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
@@ -447,7 +334,6 @@ export default function KnowledgeBase() {
         </div>
       )}
 
-      {showAdd && <AddArticleModal onClose={() => setShowAdd(false)} onSave={handleAdd} />}
     </div>
   );
 }
