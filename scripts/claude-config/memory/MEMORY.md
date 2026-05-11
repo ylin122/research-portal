@@ -25,3 +25,7 @@
 - [reference_pa_dashboard.md](reference_pa_dashboard.md) — PA Dashboard: Vercel project, GitHub repo, Supabase project, local path
 - [reference_research_portal.md](reference_research_portal.md) — Research Portal: deployed at research-portal-one.vercel.app, ylin122/research-portal repo
 - [user_focus_projects.md](user_focus_projects.md) — User's two primary projects: pa-dashboard and research-portal — usage roles
+- [reference_sellside_brokers.md](reference_sellside_brokers.md) — Sell-side broker tools: 8 brokers at ~/sellside-broker-tools/<broker>/, github.com/ylin122/sellside-broker-tools, unified download subcommand
+- [reference_thirdbridge_login.md](reference_thirdbridge_login.md) — Third Bridge bot-resistant login: persistent profile + real Chrome + clipboard-paste (no scripted form submission)
+- [reference_third_party_research_tools.md](reference_third_party_research_tools.md) — Third-party research tools: 4 tools (reorg, 9fin, creditsights, thirdbridge) at ~/third-party-research-tools/, github.com/ylin122/third-party-research-tools, powers @third-party-research agent
+- [project_sellside_status_2026-05-11.md](project_sellside_status_2026-05-11.md) — Paused mid-build 2026-05-11. 8/8 brokers authed, 4 Amazon PDFs downloaded; pending: search-quality fixes (BofA/Citi/DB/WF) + portal integration
