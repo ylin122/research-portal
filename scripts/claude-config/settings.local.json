@@ -376,7 +376,19 @@
       "Bash(cp ~/dotclaude/skills/sellside-login/SKILL.md ~/.claude/skills/sellside-login/SKILL.md)",
       "PowerShell(Start-Process notepad.exe -ArgumentList \"$env:USERPROFILE\\\\third-party-research-tools\\\\reorg\\\\.env\"; \"Opened Reorg .env\")",
       "PowerShell(Start-Process notepad.exe -ArgumentList \"$env:USERPROFILE\\\\third-party-research-tools\\\\9fin\\\\.env\"; \"Opened 9fin .env\")",
-      "Bash(mkdir -p ~/dotclaude/agents ~/dotclaude/skills)"
+      "Bash(mkdir -p ~/dotclaude/agents ~/dotclaude/skills)",
+      "Bash(ls src *)",
+      "Bash(ls api *)",
+      "Bash(set -e)",
+      "Bash(rm -f ~/.claude/agents/fact-checker.md ~/.claude/agents/fact-disputer.md)",
+      "Bash([ -f \"$d/audit-mcp.md\" ])",
+      "Bash(echo \"\\(exit: $?\\)\")",
+      "Bash(sed -E 's/=.*/=<redacted>/' .env)",
+      "Bash(sed -E 's/=.*/=<value present>/' .env)",
+      "Bash(printf 'CS_PASSWORD=\\\\n')",
+      "Bash(echo \"\\(.env is in .gitignore: $\\(grep -q '^\\\\.env$\\\\|^\\\\.env' .gitignore && echo yes || echo NO\\) — so the password will not be committed/pushed\\)\")",
+      "PowerShell(Start-Process notepad.exe -ArgumentList \"C:\\\\Users\\\\willi\\\\third-party-research-tools\\\\creditsights\\\\.env\"; \"Opened creditsights\\\\.env in Notepad.\")",
+      "Bash(cp ~/dotclaude/agents/third-party-research.md ~/.claude/agents/third-party-research.md)"
     ]
   }
 }
