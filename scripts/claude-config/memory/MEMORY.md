@@ -33,3 +33,4 @@
 - [reference_thirdbridge_login.md](reference_thirdbridge_login.md) — Third Bridge bot-resistant login: persistent profile + real Chrome + clipboard-paste (no scripted form submission)
 - [reference_third_party_research_tools.md](reference_third_party_research_tools.md) — Third-party research tools: 4 tools (reorg, 9fin, creditsights, thirdbridge) at ~/third-party-research-tools/, github.com/ylin122/third-party-research-tools, powers @third-party-research agent
 - [project_sellside_status_2026-05-11.md](project_sellside_status_2026-05-11.md) — Paused mid-build 2026-05-11. 8/8 brokers authed, 4 Amazon PDFs downloaded; pending: search-quality fixes (BofA/Citi/DB/WF) + portal integration
+- [reference_user_machines.md](reference_user_machines.md) — The user has two machines — "tablet" (Windows user willi) and "home" (Windows user ylin1) — each with its own home dir and ~/.claude/projects/C--Users-<user>/memory/ folder
