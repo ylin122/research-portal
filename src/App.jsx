@@ -8,6 +8,7 @@ const Accounting = lazy(() => import("./Accounting"));
 const CreditInstruments = lazy(() => import("./CreditInstruments"));
 import AuditLog from "./AuditLog";
 import KnowledgeBase from "./KnowledgeBase";
+import SellsideResearch from "./SellsideResearch";
 import Prompts from "./Prompts";
 import KnowledgeInterests from "./KnowledgeInterests";
 import Sources from "./Sources";
@@ -89,6 +90,7 @@ const MOBILE_MORE_ITEMS = [
   { type: null, label: "— Reference —", icon: "" },
   { type: "knowledge", label: "Knowledge", icon: "\u{1F4D6}" },
   { type: "researchWiki", label: "Research Wiki", icon: "\u{1F4DA}" },
+  { type: "sellsideResearch", label: "Sellside", icon: "\u{1F4C4}" },
   { type: "businessModels", label: "Business Models", icon: "\u{1F4CA}" },
   { type: "accounting", label: "Accounting", icon: "\u{1F4D1}" },
   { type: "creditInstruments", label: "Financial Instruments", icon: "\u{1F4B0}" },
@@ -558,6 +560,11 @@ function AppContent({ userEmail, onSignOut }) {
             <span>Research Wiki</span>
           </div>
 
+          {/* Sellside */}
+          <div style={{ ...s.sectorHdr, color: view.type === "sellsideResearch" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "sellsideResearch" }); setEditingField(null); }}>
+            <span>Sellside</span>
+          </div>
+
           {/* Restructuring */}
           <div style={{ ...s.sectorHdr, color: view.type === "restructuring" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "restructuring" }); setEditingField(null); }}>
             <span>Restructuring</span>
@@ -745,6 +752,13 @@ function AppContent({ userEmail, onSignOut }) {
         {view.type === "researchWiki" && (
           <div style={s.page}>
             <KnowledgeBase />
+          </div>
+        )}
+
+        {/* SELL-SIDE RESEARCH */}
+        {view.type === "sellsideResearch" && (
+          <div style={s.page}>
+            <SellsideResearch />
           </div>
         )}
 

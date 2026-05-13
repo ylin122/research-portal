@@ -81,6 +81,47 @@ ALTER TABLE kb_articles ADD COLUMN IF NOT EXISTS key_metrics             JSONB;
 ALTER TABLE kb_articles ADD COLUMN IF NOT EXISTS questions               JSONB;
 ALTER TABLE kb_articles ADD COLUMN IF NOT EXISTS investment_implications TEXT;
 
+-- sellside_articles: sell-side research reports ingested from Gmail [Sellside] tag.
+-- Mirror of kb_articles plus broker / analyst / tickers fields. Lives in a
+-- separate table so sell-side reports stay isolated from the general research
+-- wiki and can pick up broker-specific filters in the UI.
+CREATE TABLE IF NOT EXISTS sellside_articles (
+  id                       TEXT PRIMARY KEY,
+  gmail_id                 TEXT,
+  title                    TEXT NOT NULL,
+  date                     TIMESTAMPTZ,
+  category                 TEXT,
+  content                  TEXT,
+  summary                  TEXT,
+  source_url               TEXT,
+  source_type              TEXT,
+  published_date           TEXT,
+  broker                   TEXT,
+  analyst                  TEXT,
+  tickers                  JSONB,
+  tags                     JSONB,
+  themes                   JSONB,
+  key_takeaways            JSONB,
+  key_metrics              JSONB,
+  questions                JSONB,
+  investment_implications  TEXT,
+  created_at               TIMESTAMPTZ DEFAULT now()
+);
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS gmail_id                TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS broker                  TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS analyst                 TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS tickers                 JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS summary                 TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS source_url              TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS source_type             TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS published_date          TEXT;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS tags                    JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS themes                  JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS key_takeaways           JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS key_metrics             JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS questions               JSONB;
+ALTER TABLE sellside_articles ADD COLUMN IF NOT EXISTS investment_implications TEXT;
+
 -- concepts: short-form glossary terms (Knowledge / Interests > Concepts tab).
 CREATE TABLE IF NOT EXISTS concepts (
   id              TEXT PRIMARY KEY,
@@ -322,6 +363,8 @@ CREATE INDEX IF NOT EXISTS idx_company_fields_company ON company_fields(company_
 CREATE INDEX IF NOT EXISTS idx_company_notes_company  ON company_notes(company_id);
 CREATE INDEX IF NOT EXISTS idx_companies_sector       ON companies(sector);
 CREATE INDEX IF NOT EXISTS idx_kb_articles_created_at ON kb_articles(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_sellside_articles_created_at ON sellside_articles(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_sellside_articles_broker     ON sellside_articles(broker);
 CREATE INDEX IF NOT EXISTS idx_concepts_title         ON concepts(title);
 CREATE INDEX IF NOT EXISTS idx_agent_runs_created_at  ON agent_runs(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_agent_runs_project     ON agent_runs(project);
@@ -334,7 +377,7 @@ DECLARE t TEXT;
 DECLARE pol TEXT;
 BEGIN
   FOR t IN SELECT unnest(ARRAY[
-    'companies','company_fields','kb_articles','concepts',
+    'companies','company_fields','kb_articles','sellside_articles','concepts',
     'deep_dives','principles','goals','prompts','quick_notes','sources','agent_runs',
     'agent_definitions','financials_cache','compute_prices',
     'company_notes','sector_notes',

@@ -405,7 +405,11 @@
       "PowerShell($ports = 3000, 3002, 3003, 60471 | ForEach-Object { try { $r = Invoke-WebRequest \"http://localhost:$_/flows.html\" -UseBasicParsing -TimeoutSec 2; \"port $_  HTTP $\\($r.StatusCode\\)  bytes=$\\($r.RawContentLength\\)\" } catch { \"port $_  $\\($_.Exception.Message.Substring\\(0, [Math]::Min\\(60,$_.Exception.Message.Length\\)\\)\\)\" } }; $ports)",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 3; Write-Output \"RP serving: $\\($r.StatusCode\\)\" } catch { Write-Output \"RP down: $_\" })",
       "Bash(echo \"ahead/behind: $\\(git rev-list --left-right --count origin/main...HEAD\\)\")",
-      "PowerShell(powershell.exe -ExecutionPolicy Bypass -File \"$HOME\\\\dotclaude\\\\scripts\\\\open-projects.ps1\")"
+      "PowerShell(powershell.exe -ExecutionPolicy Bypass -File \"$HOME\\\\dotclaude\\\\scripts\\\\open-projects.ps1\")",
+      "PowerShell(Start-Process -WindowStyle Hidden -FilePath chrome.exe -ArgumentList \"http://localhost:3000/\")",
+      "PowerShell(Start-Process -WindowStyle Hidden -FilePath chrome.exe -ArgumentList \"https://console.cloud.google.com/apis/credentials\")",
+      "PowerShell(explorer.exe \"C:\\\\Users\\\\willi\\\\projects\\\\research-portal\\\\scripts\")",
+      "PowerShell(Start-Process -WindowStyle Hidden -FilePath chrome.exe -ArgumentList \"https://supabase.com/dashboard/project/azhbbywzspflrxpqrdqw/settings/api-keys\")"
     ]
   }
 }

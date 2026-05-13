@@ -35,3 +35,6 @@ scripts/token.json
 
 # Screenshot debug captures
 shots-*.png
+
+# Sellside PDF binaries (do not commit)
+scripts/pdfs/

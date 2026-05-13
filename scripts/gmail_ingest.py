@@ -52,6 +52,7 @@ SCOPES = ["https://www.googleapis.com/auth/gmail.readonly"]
 
 # Tags to search for
 TAG_RESEARCH = "[Research]"  # → kb_articles table
+TAG_SELLSIDE = "[Sellside]"  # → sellside_articles table
 
 load_dotenv(PROJECT_DIR / ".env")
 load_dotenv(PROJECT_DIR / ".env.local", override=True)
@@ -205,7 +206,10 @@ def parse_email(service, msg):
 
     # Strip tags from subject
     clean_subject = subject
-    for tag in [TAG_RESEARCH, "[Research]", "[research]", "[RESEARCH]", "[RW]", "[rw]"]:
+    for tag in [TAG_RESEARCH, TAG_SELLSIDE,
+                "[Research]", "[research]", "[RESEARCH]",
+                "[Sellside]", "[sellside]", "[SELLSIDE]",
+                "[RW]", "[rw]"]:
         clean_subject = clean_subject.replace(tag, "").strip()
 
     # Get body text
@@ -316,19 +320,27 @@ def upsert_to_supabase(table, record):
 
 # ─── Main ─────────────────────────────────────────────
 def main():
-    parser = argparse.ArgumentParser(description="Gmail → Supabase Research Wiki Ingest")
+    parser = argparse.ArgumentParser(description="Gmail → Supabase Research Wiki / Sellside Ingest")
     parser.add_argument("--dry-run", action="store_true", help="Preview without writing to Supabase")
     parser.add_argument("--max", type=int, default=50, help="Max emails to process (default: 50)")
-    parser.add_argument("--all", action="store_true", help="Also match 'subject:Research' without brackets")
+    parser.add_argument("--all", action="store_true", help="Also match the tag without brackets (e.g. 'subject:Research')")
+    parser.add_argument("--sellside", action="store_true", help="Ingest [Sellside] tagged emails into sellside_articles instead of [Research]/kb_articles")
     args = parser.parse_args()
 
     print("Connecting to Gmail...")
     service = get_gmail_service()
 
-    query = 'subject:[Research]'
-    if args.all:
-        query = 'subject:Research OR subject:[Research]'
-    print(f"Searching: {query}")
+    if args.sellside:
+        table_name = "sellside_articles"
+        query = 'subject:[Sellside]'
+        if args.all:
+            query = 'subject:Sellside OR subject:[Sellside]'
+    else:
+        table_name = "kb_articles"
+        query = 'subject:[Research]'
+        if args.all:
+            query = 'subject:Research OR subject:[Research]'
+    print(f"Searching: {query}  →  table: {table_name}")
 
     results = service.users().messages().list(
         userId="me", q=query, maxResults=args.max
@@ -341,7 +353,7 @@ def main():
 
     print(f"Found {len(messages)} email(s)")
 
-    existing = get_existing_gmail_ids("kb_articles")
+    existing = get_existing_gmail_ids(table_name)
     print(f"Already ingested: {len(existing)} email(s)")
 
     new_count = 0
@@ -359,6 +371,17 @@ def main():
 
         parsed = parse_email(service, msg)
 
+        # In sell-side mode, the PDF is the report; the email body is usually
+        # just a forwarding wrapper (signature + work disclaimer). Drop body
+        # text and body-derived URLs when a PDF is attached so the stored
+        # `content` is the report only.
+        if args.sellside and parsed["has_pdf"]:
+            body_text = parsed["body"]
+            marker_idx = body_text.find("\n\n--- ")
+            if marker_idx > 0:
+                parsed["body"] = body_text[marker_idx + 2:].strip()
+            parsed["urls"] = []
+
         # Skip non-research emails (Google Cloud notifications, etc.)
         skip_keywords = ["reinstated", "google cloud platform", "suspended", "billing", "your project has been"]
         body_lower = parsed["body"][:500].lower()
@@ -369,7 +392,7 @@ def main():
             continue
 
         print(f"\n{'[DRY RUN] ' if args.dry_run else ''}Processing: {parsed['subject']}")
-        print(f"  Category: {parsed['category']} → kb_articles")
+        print(f"  Category: {parsed['category']} → {table_name}")
         print(f"  Date: {parsed['date']}")
         print(f"  URLs: {len(parsed['urls'])}")
         if parsed["has_pdf"]:
@@ -400,9 +423,12 @@ def main():
             "date": parsed["date"][:10],
             "created_at": parsed["date"],
         }
+        # broker / analyst / tickers are filled in by the sellside-research-ingest
+        # analysis step (Claude reads the PDF / email body and identifies them).
+        # Leaving them NULL here so the table is dedup-safe on re-ingest.
 
-        if upsert_to_supabase("kb_articles", record):
-            print(f"  \u2713 Saved to kb_articles")
+        if upsert_to_supabase(table_name, record):
+            print(f"  \u2713 Saved to {table_name}")
             new_count += 1
         else:
             print(f"  \u2717 Failed")
