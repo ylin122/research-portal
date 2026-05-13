@@ -210,7 +210,6 @@
       "WebFetch(domain:www.google.com)",
       "WebFetch(domain:www.silicondata.com)",
       "WebFetch(domain:artificialanalysis.ai)",
-      "Bash(cp '/c/Users/ylin1/.claude/agents/*.md' /c/Users/ylin1/projects/research-portal/scripts/claude-config/agents/)",
       "Bash(PORT=5174 npm run dev -- --port 5174)",
       "PowerShell(Get-Command *)",
       "Bash(nohup vercel dev --listen 3000)",
