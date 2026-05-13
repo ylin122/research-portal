@@ -1,37 +1,37 @@
 # Memory Index
 
-- [feedback_no_shortening.md](feedback_no_shortening.md) — Never shorten or abbreviate user prompts when delegating to agents
-- [project_research_portal.md](project_research_portal.md) — Research Portal project context and structure
-- [project_portal_state.md](project_portal_state.md) — Research Portal app snapshot: tech stack, feature inventory, company count, architecture (as of March 2026; pre-flatten paths/ports superseded by project_research_portal.md)
-- [project_pa_dashboard.md](project_pa_dashboard.md) — PA Dashboard at ~/projects/pa-dashboard — portfolio analytics with Yahoo Finance API on Vercel
-- [feedback_chrome_default.md](feedback_chrome_default.md) — Always use Google Chrome when opening URLs in the browser
-- [feedback_research_ingest.md](feedback_research_ingest.md) — "Research ingest" means full pipeline: Gmail ingest + analyze + Obsidian sync
-- [feedback_article_dates.md](feedback_article_dates.md) — Always include publication date in analyzed research article titles
-- [feedback_news_portfolio_only.md](feedback_news_portfolio_only.md) — Dashboard news updates must be portfolio-specific, no broad market/macro noise
-- [user_tax_rates.md](user_tax_rates.md) — Tax rates: 45% short-term, 30% long-term (federal + state combined)
-- [user_wife_accounts.md](user_wife_accounts.md) — Willie Ni's accounts (Individual W, Roth W, Rollover W) and Individual Q — ETFs only, no single stocks
-- [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use Yahoo Finance API for live prices in portfolio analysis, not stale code values
-- [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — Portfolio exposure line in research articles must be on its own separate line
-- [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
-- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — "Research Portal" always means ~/projects/research-portal, never the PA Dashboard
-- [feedback_open_localhost.md](feedback_open_localhost.md) — Always auto-start vercel dev and open localhost when user begins working on either project
-- [feedback_workflow.md](feedback_workflow.md) — Workflow prefs: batch company adds via .cjs insert scripts (never SQL paste), fast UI iteration + push-to-deploy, best-guess sectors, terminal paste is broken, verify data via web search
+- [feedback_article_dates.md](feedback_article_dates.md) — Always include publication date in analyzed research articles
+- [feedback_chrome_default.md](feedback_chrome_default.md) — Open URLs in Chrome via PowerShell Start-Process — cmd.exe method is unreliable
+- [feedback_commit_claude_commands.md](feedback_commit_claude_commands.md) — Custom .claude/commands should be committed to git repos so they sync across machines and work via web
 - [feedback_credit_philosophy.md](feedback_credit_philosophy.md) — EV is the ultimate margin of safety in credit — think through-cycle, not just cash flow/debt service
-- [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — "Deep Dive" always means the Knowledge / Interests tab in the Research Portal
-- [user_investment_philosophy.md](user_investment_philosophy.md) — Investment philosophy: 90-day trading restriction, averaging-down, SPY as dry powder, software background not semi infra
-- [user_role.md](user_role.md) — User is in investment/PE research; tracks ~20+ PE-owned & public tech companies across software, AI infra, IT services, hardware, education, healthcare IT; focus on M&A, competitive dynamics, exit/valuation
-- [user_research_prompt.md](user_research_prompt.md) — Standard company research-brief template: Sections 0–6 (updates, overview, business/products, customers, industry, competitive, transactions) filled; Section 7 (financials) left empty; bullet format, no periods, PM tone
-- [feedback_no_windows.md](feedback_no_windows.md) — Launch background processes hidden — no visible cmd/PowerShell windows
-- [feedback_commit_claude_commands.md](feedback_commit_claude_commands.md) — Custom .claude/commands should be committed to git repos so they sync across machines
-- [feedback_edgartools_financials_order.md](feedback_edgartools_financials_order.md) — edgartools financials display periods left-to-right earliest → latest
-- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — Which PA Dashboard charts use total return (adjclose) vs price return (close-only)
-- [project_research_portal_vision.md](project_research_portal_vision.md) — Longer-term vision for research-portal as aggregated research hub (2026-04-21)
-- [reference_pa_dashboard.md](reference_pa_dashboard.md) — PA Dashboard: Vercel project, GitHub repo, Supabase project, local path
-- [reference_research_portal.md](reference_research_portal.md) — Research Portal: deployed at research-portal-one.vercel.app, ylin122/research-portal repo
-- [user_focus_projects.md](user_focus_projects.md) — User's two primary projects: pa-dashboard and research-portal — usage roles
-- [reference_sellside_brokers.md](reference_sellside_brokers.md) — Sell-side broker tools: 8 brokers at ~/sellside-broker-tools/<broker>/, github.com/ylin122/sellside-broker-tools, unified download subcommand
-- [reference_thirdbridge_login.md](reference_thirdbridge_login.md) — Third Bridge bot-resistant login: persistent profile + real Chrome + clipboard-paste (no scripted form submission)
-- [reference_third_party_research_tools.md](reference_third_party_research_tools.md) — Third-party research tools: 4 tools (reorg, 9fin, creditsights, thirdbridge) at ~/third-party-research-tools/, github.com/ylin122/third-party-research-tools, powers @third-party-research agent
-- [project_sellside_status_2026-05-11.md](project_sellside_status_2026-05-11.md) — Paused mid-build 2026-05-11. 8/8 brokers authed, 4 Amazon PDFs downloaded; pending: search-quality fixes (BofA/Citi/DB/WF) + portal integration
+- [feedback_deep_dive_mapping.md](feedback_deep_dive_mapping.md) — When user says "Deep Dive" it always means the Knowledge / Interests tab in the research portal
+- [feedback_edgartools_financials_order.md](feedback_edgartools_financials_order.md) — When pulling financials with edgartools, always display periods left-to-right from earliest to latest
+- [feedback_max_effort.md](feedback_max_effort.md) — Always use maximum reasoning effort unless user explicitly changes it
+- [feedback_news_portfolio_only.md](feedback_news_portfolio_only.md) — Industry & Market Updates section should only contain news directly tied to portfolio tickers, not general market/macro updates
+- [feedback_no_shortening.md](feedback_no_shortening.md) — Never shorten, abbreviate, or paraphrase user prompts when delegating to research agents — use the exact prompt provided
+- [feedback_no_windows.md](feedback_no_windows.md) — Launch background processes hidden — never spawn visible cmd/PowerShell windows the user didn't ask for
+- [feedback_open_localhost.md](feedback_open_localhost.md) — Always start the dev server and open localhost in Chrome when user begins working on PA Dashboard or Research Portal
+- [feedback_pa_returns_convention.md](feedback_pa_returns_convention.md) — Which charts/metrics in the PA dashboard use total return (adjclose) vs price return (close-only). Critical to remember.
+- [feedback_portfolio_exposure.md](feedback_portfolio_exposure.md) — In research wiki article analysis, always put "Portfolio exposure:" on its own separate line with a double newline before it
+- [feedback_research_ingest.md](feedback_research_ingest.md) — When user says "research ingest" — run the full pipeline: Gmail ingest, analyze, sync to Supabase and Obsidian
+- [feedback_research_portal_identity.md](feedback_research_portal_identity.md) — Research portal" always means ~/projects/research-portal — never the PA dashboard
+- [feedback_use_yahoo_api.md](feedback_use_yahoo_api.md) — Always use the dashboard's Yahoo Finance API (/api/quote) to fetch latest prices when running portfolio analysis — never rely on stale static prices in code
+- [feedback_workflow.md](feedback_workflow.md) — How the user prefers to work — batch company additions, UI iteration, and deployment workflow
+- [project_browser_automation_planned.md](project_browser_automation_planned.md) — User wants a Playwright + persistent-Chrome harness built; deferred as of 2026-05-12
+- [project_pa_dashboard.md](project_pa_dashboard.md) — PA dashboard (portfolio analytics) at ~/projects/pa-dashboard — built and developed via Claude Code CLI
+- [project_portal_state.md](project_portal_state.md) — Current state of the research portal app — tech stack, features, company count, and architecture decisions as of March 2026
+- [project_research_portal.md](project_research_portal.md) — Vite + React + Supabase research portal for tracking software/tech companies — structure, DB patterns, and workflow
+- [project_research_portal_vision.md](project_research_portal_vision.md) — User's longer-term vision for research-portal — aggregated research hub, architectural decisions made 2026-04-21
+- [project_sellside_status_2026-05-11.md](project_sellside_status_2026-05-11.md) — In-progress state of sellside tooling at home machine — what works, what's pending, where to resume
+- [reference_pa_dashboard.md](reference_pa_dashboard.md) — PA positions dashboard — Vercel, GitHub repo, Supabase project, and local path
+- [reference_research_portal.md](reference_research_portal.md) — Research portal project — Vercel project, deployment URL, GitHub repo, local path
+- [reference_sellside_brokers.md](reference_sellside_brokers.md) — Sell-side login + research scrapers — git repo location, login pattern, broker-specific quirks, output target
+- [reference_third_party_research_tools.md](reference_third_party_research_tools.md) — Third-party research scrapers — git repo location, login flows, per-tool quirks
+- [reference_thirdbridge_login.md](reference_thirdbridge_login.md) — How to log into Third Bridge Forum without triggering bot detection — clipboard-paste hybrid
 - [reference_user_machines.md](reference_user_machines.md) — The user has two machines — "tablet" (Windows user willi) and "home" (Windows user ylin1) — each with its own home dir and ~/.claude/projects/C--Users-<user>/memory/ folder
-- [project_browser_automation_planned.md](project_browser_automation_planned.md) — Playwright + persistent-Chrome harness — approved 2026-05-12, deferred; first target = StockAnalysis ETF-weights scraper → constants.js
+- [user_focus_projects.md](user_focus_projects.md) — User's two primary projects and how each is used — pa-dashboard for PA positions, research-portal for research/agents/notes
+- [user_investment_philosophy.md](user_investment_philosophy.md) — Investment philosophy, constraints, and portfolio strategy — single stock restrictions, averaging-down approach, semi conviction, SPY as dry powder
+- [user_research_prompt.md](user_research_prompt.md) — The standard prompt template used to generate company research briefs for the portal. Replace [COMPANY NAME] and [COMPANY] with target company. Sections 0-6 get filled, section 7 (financials) left empty.
+- [user_role.md](user_role.md) — User is in investment/PE research, tracks PE-owned and public tech companies, uses a Bloomberg-style research portal
+- [user_tax_rates.md](user_tax_rates.md) — User's NYC marginal capital gains tax stack — LT 34.526%, ST 51.526%. Single source of truth in PA dashboard's TAX_RATES constant.
+- [user_wife_accounts.md](user_wife_accounts.md) — Willie Ni's accounts (Individual W, Roth W, Rollover W) and Individual Q — ETFs only, no single stocks. Single stocks only in Individual Y, Joint WROS, and Rollover W (IRA).

@@ -130,12 +130,6 @@ const AGENTS = [
     tools: "Read, Bash, Grep, Glob", mode: "Read + Write (git operations)",
   },
   {
-    name: "audit-mcp", color: "#F97316",
-    desc: "Security audit on MCP servers, Claude Code skills, or plugins before installation. Checks for supply chain risk, prompt injection, and data exfiltration.",
-    usage: "@audit-mcp review the new slack MCP",
-    tools: "Read, Grep, Glob, Bash, Agent", mode: "Read-only",
-  },
-  {
     name: "security-reviewer", color: T_.red,
     desc: "Audits MCP servers, skills, subagents, and plugins for supply chain, prompt injection, and data exfiltration risk. Periodic or pre-install.",
     usage: "@security-reviewer audit all installed MCPs",
@@ -209,6 +203,16 @@ const SKILLS = [
     desc: "Auth orchestrator for the 8 sell-side broker portals. Runs preflight, launches login.js for any dead broker in parallel, re-verifies. Auth-only; pair with /sellside for actual research downloads.",
     usage: "/sellside-login",
     tools: "Bash, Read", mode: "Read + interactive (launches Chromium for SSO + MFA). 15-min timeout.",
+  },
+];
+
+const MAPS = [
+  {
+    name: "Work Flow Map",
+    color: "#f0a020",
+    desc: "Visual map of all 13 flows in the portal — Ingestion → Storage → Views → Agents.",
+    url: "/flows.html",
+    detail: "13 flows · 4 lanes · click step cards for file paths & detail.",
   },
 ];
 
@@ -292,6 +296,29 @@ export default function AgentsTools() {
       <ErrorBanner message={loadError} onRetry={load} />
 
       <div style={{ background: T_.bgPanel, border: `1px solid ${T_.border}`, borderRadius: 10, padding: 20, marginBottom: 20 }}>
+        {/* ── Maps (quick-access reference links) ── */}
+        <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 10 }}>
+          Maps
+          <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>visual reference — opens in a new tab</span>
+        </div>
+        {MAPS.map(map => (
+          <div
+            key={map.name}
+            style={{ background: T_.bgInput, border: `1px solid ${T_.borderLight}`, borderRadius: 8, padding: "10px 14px", marginBottom: 16, cursor: "pointer" }}
+            onClick={() => window.open(map.url, "_blank", "noopener,noreferrer")}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
+              <span style={{ fontSize: 13, fontWeight: 700, color: map.color, fontFamily: "monospace" }}>{map.name}</span>
+              <span style={{ fontSize: 11, color: T_.textDim, flex: 1 }}>{map.desc}</span>
+              <span style={{ fontSize: 11, color: T_.textGhost }}>↗</span>
+            </div>
+            <div style={{ display: "flex", gap: 16, fontSize: 11, color: T_.textGhost }}>
+              <span><span style={{ fontWeight: 600, color: T_.textDim }}>URL:</span> <span style={{ fontFamily: "monospace", color: map.color }}>{map.url}</span></span>
+              <span>{map.detail}</span>
+            </div>
+          </div>
+        ))}
+
         <div style={{ fontSize: 13, fontWeight: 600, color: T_.textMid, letterSpacing: 0.3, marginBottom: 14 }}>
           Agents
           <span style={{ fontSize: 11, color: T_.textGhost, fontWeight: 400, marginLeft: 12 }}>~/.claude/agents/ — click any row to view & copy its prompt</span>

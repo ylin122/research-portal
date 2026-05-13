@@ -1,0 +1,192 @@
+{
+  "meta": {
+    "title": "Research Portal — Work Flow Map",
+    "subtitle": "How data and work move through the 4-layer pipeline (Ingestion → Storage → Views → Agents)",
+    "as_of": "2026-05-13",
+    "repo": "~/projects/research-portal",
+    "vercel": "https://research-portal-one.vercel.app",
+    "vision_note": "Lanes follow the framing from the vision doc — a new source should be a new adapter into Ingestion, not a UI rewrite."
+  },
+  "lanes": [
+    { "id": "ingestion", "label": "Ingestion", "blurb": "Sources that bring new data or user intent in", "color": "#f0a020" },
+    { "id": "storage",   "label": "Storage",   "blurb": "Supabase tables + filesystem vaults",          "color": "#4a90ff" },
+    { "id": "views",     "label": "Views",     "blurb": "UI screens that read from storage",            "color": "#3ac06b" },
+    { "id": "agents",    "label": "Agents",    "blurb": "Scripts / serverless funcs that read+write",   "color": "#c060c0" }
+  ],
+  "flows": [
+    {
+      "id": "gmail-ingest",
+      "name": "Gmail research ingest",
+      "status": "active",
+      "trigger": "User runs the research-ingest CLI when new [Research]-tagged emails accrue",
+      "frequency": "Ad-hoc / weekly habit",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Gmail [Research] inbox",        "file": "scripts/gmail_ingest.py",                            "detail": "ylresearchwiki@gmail.com via OAuth (scripts/credentials.json + token.json). PDFs extracted with PyMuPDF; HTML bodies cleaned with BeautifulSoup." },
+        { "n": 2, "lane": "storage",   "label": "kb_articles row",               "file": "Supabase · kb_articles",                             "detail": "Title, source_url, content, date, category. PDF attachment text inlined. PDFs cached to scripts/pdfs/." },
+        { "n": 3, "lane": "agents",    "label": "Analyze new",                   "file": "scripts/analyze_new.py",                             "detail": "Generates summary, key_takeaways, themes, questions, investment_implications + Portfolio exposure: TICKERS line. Published_date pulled from source, not email date." },
+        { "n": 4, "lane": "storage",   "label": "kb_articles (enriched)",        "file": "Supabase · kb_articles",                             "detail": "Same row, analysis columns populated." },
+        { "n": 5, "lane": "agents",    "label": "Obsidian export",               "file": "scripts/sync_obsidian.py",                           "detail": "Writes one markdown file per article to C:/Users/ylin1/obsidianvault/Research Wiki/{category}/{title}.md with frontmatter." },
+        { "n": 6, "lane": "views",     "label": "Knowledge Base + Dashboard feed", "file": "src/KnowledgeBase.jsx · src/Dashboard.jsx",        "detail": "Dashboard.jsx pulls latest 5 ordered by created_at; KnowledgeBase.jsx shows the full list and supports delete." }
+      ],
+      "memory_refs": ["feedback_research_ingest", "feedback_article_dates", "feedback_portfolio_exposure"]
+    },
+    {
+      "id": "company-add",
+      "name": "Add companies (batch insert)",
+      "status": "active",
+      "trigger": "User writes a .cjs insert script and runs `node insert-batchN.cjs`",
+      "frequency": "Ad-hoc, batched",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": ".cjs insert script",            "file": "insert-batchN.cjs",                                  "detail": "Pattern: dotenv + @supabase/supabase-js, upserts the company row plus a row per field. ID convention: `companyname_s`." },
+        { "n": 2, "lane": "storage",   "label": "companies + company_fields",    "file": "Supabase · companies / company_fields",              "detail": "companies: name, sector, sub_sector, priority, is_public. company_fields: one row per (company_id, field_key) — overview / products / customers / industry / competitive / transactions. Financials field intentionally left empty." },
+        { "n": 3, "lane": "views",     "label": "Sector pages + GenericReview",  "file": "src/App.jsx · src/GenericReview.jsx",                "detail": "App.jsx groups by sector → opens GenericReview.jsx for non-bespoke tickers (CoreWeave / Oracle / Meta / etc. have hand-built pages)." }
+      ],
+      "memory_refs": ["feedback_workflow"]
+    },
+    {
+      "id": "field-edit",
+      "name": "Inline field edit (auto-save)",
+      "status": "active",
+      "trigger": "User types in any of the 6 structured fields on a company page",
+      "frequency": "Continuous",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Keystroke in GenericReview",    "file": "src/App.jsx · src/GenericReview.jsx",                "detail": "useAutoSave debounces 700ms after last keystroke, then fires upsertField." },
+        { "n": 2, "lane": "storage",   "label": "company_fields upsert",         "file": "src/lib/db.js · Supabase · company_fields",          "detail": "Single row replaced per (company_id, field_key). edited_at updates — this is what drives the Recent Updates feed." },
+        { "n": 3, "lane": "views",     "label": "Dashboard · Recent Updates",    "file": "src/Dashboard.jsx",                                  "detail": "Home page lists most-recently-edited companies, priority-filterable (High / Medium / Low)." },
+        { "n": 4, "lane": "agents",    "label": "Field coverage audit",          "file": "scripts/audit/01_field_coverage.cjs · src/AuditLog.jsx", "detail": "Flags companies with mostly-empty fields. Audit results surface in the AuditLog tab." }
+      ]
+    },
+    {
+      "id": "deep-dive",
+      "name": "Deep Dive (Knowledge / Interests)",
+      "status": "active",
+      "trigger": "User adds a concept or deep-dive entry via a .cjs update script",
+      "frequency": "Ad-hoc, when a topic warrants a long-form take",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "add_deep_dive / update_concept scripts", "file": "scripts/add_deep_dive_ttc.cjs · scripts/update_concept_inference_time_scaling.cjs", "detail": "Concept-first scripts seed or rewrite a topic; deep-dive scripts attach the long-form analysis." },
+        { "n": 2, "lane": "storage",   "label": "concepts + deep_dives",         "file": "Supabase · concepts / deep_dives",                   "detail": "Two tables: concepts (short definitions / glossary) and deep_dives (long-form linked to concept)." },
+        { "n": 3, "lane": "views",     "label": "Knowledge / Interests tab",     "file": "src/KnowledgeInterests.jsx",                         "detail": "User convention: 'Deep Dive' always means this tab in the portal." },
+        { "n": 4, "lane": "agents",    "label": "Verify + dump scripts",         "file": "scripts/verify_deep_dive_ttc.cjs · scripts/dump_inference_dives.cjs", "detail": "Validation + export-for-review utilities." }
+      ],
+      "memory_refs": ["feedback_deep_dive_mapping"]
+    },
+    {
+      "id": "financials-live",
+      "name": "Live financials fetch",
+      "status": "active",
+      "trigger": "User opens the Financials tab on a company review",
+      "frequency": "On demand",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Open Financials tab",           "file": "src/FinancialsTab.jsx",                              "detail": "Frontend hits /api/financials with ticker + JWT auth header (session-gated)." },
+        { "n": 2, "lane": "agents",    "label": "/api/financials function",      "file": "api/financials.mjs",                                 "detail": "Pulls SEC EDGAR XBRL company facts (CIK-mapped for MU, ORCL, NVDA, AMZN, MSFT, GOOGL, TSLA, LITE, COHR, APLD, CIFR, WULF, CRWV) + Yahoo Finance for live price / PE." },
+        { "n": 3, "lane": "storage",   "label": "financials_cache",              "file": "Supabase · financials_cache",                        "detail": "Cached response to avoid hammering EDGAR. Manual snapshots intentionally avoided — page always shows live or near-live." },
+        { "n": 4, "lane": "views",     "label": "FinancialsTab render",          "file": "src/FinancialsTab.jsx",                              "detail": "Statements, ratios, price chart." }
+      ]
+    },
+    {
+      "id": "compute-pricing",
+      "name": "GPU compute pricing (weekly cron)",
+      "status": "active",
+      "trigger": "Vercel cron — Sundays 08:00 UTC",
+      "frequency": "Weekly (0 8 * * 0)",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Cron trigger",                  "file": "vercel.json",                                        "detail": "vercel.json `crons` block hits /api/cron-compute-pricing with CRON_SECRET." },
+        { "n": 2, "lane": "agents",    "label": "Pull AWS / Azure / GCP / Neoclouds", "file": "api/cron-compute-pricing.mjs · src/data/computeCohortMap.js", "detail": "Vantage (AWS p*/g*/trn/inf/dl families), Azure Retail Prices API, GCP Cloud Billing Catalog; classifies SKUs via COHORT_MAP." },
+        { "n": 3, "lane": "storage",   "label": "compute_prices",                "file": "Supabase · compute_prices",                          "detail": "Upserts by (sku, date). Service-role key bypasses RLS for writes." },
+        { "n": 4, "lane": "views",     "label": "Digital Infra / AI tabs",       "file": "src/AIDisruption.jsx · src/IndustryResearch.jsx",    "detail": "Cohort-average pricing trends rendered with Recharts." }
+      ]
+    },
+    {
+      "id": "audit-run",
+      "name": "Portal audit suite",
+      "status": "active",
+      "trigger": "User runs `node scripts/audit/09_report.cjs` (or individual stages 01-08)",
+      "frequency": "Ad-hoc / pre-push sanity check",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Run audit stages",              "file": "scripts/audit/",                                     "detail": "01 field_coverage · 02 labels_and_classification · 03 freshness · 04 industry_research_hardcoded · 05 knowledge_base · 06 agents_and_pipeline · 07 cross_checks · 08 accuracy_spot_check · 09 report" },
+        { "n": 2, "lane": "agents",    "label": "Audit scripts read Supabase + repo", "file": "scripts/audit/0*.cjs",                          "detail": "Each stage writes findings to scripts/audit/results/." },
+        { "n": 3, "lane": "storage",   "label": "agent_runs (logged)",           "file": "Supabase · agent_runs · log-agent-run.cjs",          "detail": "One row per run; supports a historical audit trail." },
+        { "n": 4, "lane": "views",     "label": "AuditLog tab",                  "file": "src/AuditLog.jsx",                                   "detail": "Surfaces latest findings + run history." }
+      ]
+    },
+    {
+      "id": "sellside-planned",
+      "name": "Sell-side research aggregation",
+      "status": "planned",
+      "trigger": "User runs the @sellside skill for a company",
+      "frequency": "Per company, ad-hoc",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "@sellside · 8 brokers in parallel", "file": "~/sellside-broker-tools/ (out of repo)",          "detail": "GS, MS, JPM, Barclays, BofA, DB, Citi, WF. Auto-spawns @sellside-login if any broker is unauthed." },
+        { "n": 2, "lane": "storage",   "label": "Filesystem — ~/Claude/Sellside/<Company>/", "file": "filesystem (NOT in Supabase yet)",       "detail": "Currently PDFs only. No portal-side landing table yet." },
+        { "n": 3, "lane": "views",     "label": "(planned) Per-company sell-side section", "file": "TBD",                                       "detail": "Per vision doc: adapter writes broker reports into a documents table; company page renders them with broker / date filter." },
+        { "n": 4, "lane": "agents",    "label": "(planned) Summarize + tag",     "file": "TBD",                                                "detail": "Mirror analyze_new.py pattern — summary, key_takeaways, attribution." }
+      ],
+      "memory_refs": ["project_research_portal_vision", "project_sellside_status_2026-05-11", "reference_sellside_brokers"]
+    },
+    {
+      "id": "thirdparty-planned",
+      "name": "Third-party research aggregation",
+      "status": "planned",
+      "trigger": "User runs the @third-party-research agent for a company",
+      "frequency": "Per company, ad-hoc",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "@third-party-research · 4 sources in parallel", "file": "~/third-party-research-tools/ (out of repo)", "detail": "Reorg, 9fin, CreditSights, Third Bridge." },
+        { "n": 2, "lane": "storage",   "label": "(planned) documents table",     "file": "TBD",                                                "detail": "Per vision: one normalized documents table — source_type, company link, date, content." },
+        { "n": 3, "lane": "views",     "label": "(planned) Third-party tab",     "file": "TBD",                                                "detail": "Aggregated coverage view with source filter on each company page." },
+        { "n": 4, "lane": "agents",    "label": "(planned) Same analyze pattern", "file": "TBD",                                                "detail": "Reuse analyze_new.py logic over this content." }
+      ],
+      "memory_refs": ["project_research_portal_vision", "reference_third_party_research_tools", "reference_thirdbridge_login"]
+    },
+    {
+      "id": "content-trackers",
+      "name": "In-app content trackers (6 tabs, one pattern)",
+      "status": "active",
+      "trigger": "User CRUDs a row in Prompts / Principles / Sources / Quick Notes / Goals / Agents tabs",
+      "frequency": "Continuous · same pattern across 6 trackers",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "In-tab edit (1s debounce) + optional CLI seed", "file": "src/{Prompts,Principles,Sources,QuickNotes,Goals,AgentsTools}.jsx", "detail": "Prompts: save_prompt / save_prompt2 / save_prompt3.py seed the company-analysis template, plus inline edit. Principles & Goals: inline CRUD + drag-reorder (sort_order). Sources: import_sources.py seeds ~25 sources by category (news / research / sellside / filings) + inline add/delete. Quick Notes: insert-only, no inline edit. Agents: seed-agents.cjs populates agent_definitions; log-agent-run.cjs writes a run row from any caller (audits, etc.)." },
+        { "n": 2, "lane": "storage",   "label": "Per-tracker tables",                    "file": "Supabase · prompts / principles / sources / quick_notes / goals / agent_definitions + agent_runs", "detail": "Each tracker owns one table (Agents owns two: definitions + runs). All RLS-gated; writes need a valid session JWT." },
+        { "n": 3, "lane": "views",     "label": "One .jsx per tracker",                  "file": "src/Prompts.jsx · Principles.jsx · Sources.jsx · QuickNotes.jsx · Goals.jsx · AgentsTools.jsx", "detail": "Each tab reads its table on mount, renders editable rows, and persists changes back. agent_runs also surfaces in the AuditLog tab." }
+      ]
+    },
+    {
+      "id": "bespoke-reviews",
+      "name": "Bespoke company reviews (no-DB)",
+      "status": "active",
+      "trigger": "User edits a hand-rolled src/<Company>Review.jsx file in their IDE",
+      "frequency": "Ad-hoc · per company event (earnings, deal, news)",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Edit JSX directly",                     "file": "src/CoreweaveReview.jsx · AppliedDigitalReview · CipherDigitalReview · TerawulfReview · MicronReview · OracleReview · MetaReview · TractCapitalReview", "detail": "8 hand-rolled review pages. CoreWeave is 1,241 lines. Vision doc explicitly defers the CoreWeave refactor — called out as a heavy lift to be done in iterations, not next-priority." },
+        { "n": 2, "lane": "storage",   "label": "(none — content IS the source)",         "file": "git",                                                  "detail": "No Supabase rows. The source files ARE the storage. Implication: edits can't be made from inside the deployed app — only via IDE → push." },
+        { "n": 3, "lane": "views",     "label": "Rich per-company pages",                "file": "Imported by src/App.jsx",                              "detail": "App.jsx routes specific tickers to their bespoke review; everything else falls through to GenericReview.jsx (the schema-driven path)." },
+        { "n": 4, "lane": "agents",    "label": "git push → Vercel auto-deploy",          "file": "GitHub · Vercel · scripts/verify-deploy.mjs",          "detail": "Vercel project `research-portal` auto-deploys on push to main. verify-deploy.mjs confirms the deploy." }
+      ]
+    },
+    {
+      "id": "static-tabs",
+      "name": "Static reference tabs (no-DB)",
+      "status": "active",
+      "trigger": "User edits a reference src/<Tab>.jsx file in their IDE",
+      "frequency": "Ad-hoc · when reference material needs updating",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Edit JSX directly",                     "file": "src/Primer.jsx · BusinessModels.jsx · Accounting.jsx · CreditInstruments.jsx · Restructuring.jsx · CaseStudies.jsx · IndustryResearch.jsx · AIDisruption.jsx · ProductPrimer.jsx · PrimerNewTabs.jsx · PrimerNewTabs2.jsx", "detail": "Pure JSX with hardcoded content — no Supabase reads. Same edit-and-push lifecycle as bespoke reviews, but content is general-purpose reference (industry primers, accounting, restructuring), not per-company." },
+        { "n": 2, "lane": "storage",   "label": "(none — content IS the source)",         "file": "git",                                                  "detail": "Same constraint as bespoke reviews: cannot be edited from inside the app." },
+        { "n": 3, "lane": "views",     "label": "Reference tabs",                        "file": "Imported by src/App.jsx",                              "detail": "Mostly read-only education / reference. Primer / PrimerNewTabs / PrimerNewTabs2 is the iteration history of the industry primer." },
+        { "n": 4, "lane": "agents",    "label": "git push → Vercel auto-deploy",          "file": "GitHub · Vercel",                                      "detail": "Same deploy path." }
+      ]
+    },
+    {
+      "id": "maintenance-fixes",
+      "name": "Maintenance / one-off scripts",
+      "status": "active",
+      "trigger": "User runs a fix-up or migration script manually when something needs patching",
+      "frequency": "Ad-hoc · rare",
+      "steps": [
+        { "n": 1, "lane": "ingestion", "label": "Run a maintenance script",              "file": "scripts/",                                             "detail": "fix_portfolio_line.cjs · rewrite_analysis.py · write_analysis.py · portfolio_implications.py · migrate-hex-to-tokens.cjs · check_inference_terms.cjs · dry-run-pricing-cron.mjs · trial-pricing-apis.mjs · verify-compute-prices.mjs · verify-deploy.mjs." },
+        { "n": 2, "lane": "agents",    "label": "Script patches DB or runs a smoke test", "file": "scripts/*.cjs · *.py · *.mjs",                         "detail": "fix_portfolio_line patches kb_articles so 'Portfolio exposure:' sits on its own line. rewrite_analysis bulk-updates investment_implications. portfolio_implications keyword-matches against PORTFOLIO_TICKERS to set portfolio exposure. migrate-hex-to-tokens was a one-shot theme migration. verify-compute-prices / trial-pricing-apis / dry-run-pricing-cron are read-only smoke tests for the weekly compute-pricing cron. verify-deploy.mjs confirms the Vercel deployment." },
+        { "n": 3, "lane": "storage",   "label": "Patches to existing tables",            "file": "Supabase · kb_articles (mostly)",                      "detail": "Most fix-ups target kb_articles. Some hit compute_prices for verification (read-only)." },
+        { "n": 4, "lane": "views",     "label": "Re-render with fix",                    "file": "src/KnowledgeBase.jsx · src/Dashboard.jsx",            "detail": "No dedicated view — same tabs as the underlying data flow." }
+      ]
+    }
+  ]
+}

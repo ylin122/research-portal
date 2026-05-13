@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Research Portal — Work Flow Map</title>
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --panel: #14141a;
+    --panel-2: #1a1a22;
+    --border: #232330;
+    --border-light: #2d2d3a;
+    --text: #e8e8ee;
+    --text-mid: #b8b8c5;
+    --text-dim: #7a7a90;
+    --accent: #f0a020;
+    --green: #3ac06b;
+    --blue: #4a90ff;
+    --purple: #c060c0;
+    --red: #e05555;
+    --yellow: #d8c050;
+  }
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0; padding: 0;
+    background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .mono { font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Courier New", monospace; }
+  a { color: var(--blue); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ── Header ───────────────────────────── */
+  header.page {
+    padding: 28px 32px 18px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, #101018 0%, var(--bg) 100%);
+  }
+  header.page h1 {
+    margin: 0;
+    font-size: 22px; font-weight: 700; letter-spacing: -0.4px;
+    color: var(--text);
+  }
+  header.page .subtitle {
+    margin-top: 6px;
+    font-size: 13px; color: var(--text-mid);
+  }
+  header.page .meta-row {
+    margin-top: 10px;
+    display: flex; flex-wrap: wrap; gap: 18px;
+    font-size: 11px; color: var(--text-dim);
+  }
+  header.page .meta-row b { color: var(--text-mid); font-weight: 600; margin-right: 4px; }
+
+  /* ── Legend ───────────────────────────── */
+  .legend {
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex; flex-wrap: wrap; gap: 18px; align-items: center;
+    background: var(--panel);
+  }
+  .legend .lane-chip {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-mid);
+  }
+  .legend .swatch {
+    width: 10px; height: 10px; border-radius: 2px;
+  }
+  .legend .blurb { color: var(--text-dim); font-size: 11px; }
+  .legend .status-key {
+    margin-left: auto; display: flex; gap: 10px; font-size: 11px; color: var(--text-dim);
+  }
+  .legend .status-key .badge { font-size: 10px; }
+
+  /* ── Lane Header Row (sticky) ───────────── */
+  .grid-wrap { padding: 0 32px 32px; }
+  .lane-header {
+    display: grid;
+    grid-template-columns: 260px repeat(4, 1fr);
+    gap: 12px;
+    position: sticky; top: 0; z-index: 20;
+    background: var(--bg);
+    padding: 18px 0 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .lane-header .corner {
+    font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+    color: var(--text-dim); padding-left: 4px;
+    align-self: end;
+  }
+  .lane-header .lane-cell {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+  .lane-header .lane-cell .lane-name {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; font-weight: 600; color: var(--text);
+    text-transform: uppercase; letter-spacing: 0.5px;
+  }
+  .lane-header .lane-cell .lane-name .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .lane-header .lane-cell .lane-blurb {
+    font-size: 10px; color: var(--text-dim); margin-top: 4px;
+  }
+
+  /* ── Flow Row ───────────────────────────── */
+  .flow {
+    display: grid;
+    grid-template-columns: 260px repeat(4, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .flow .flow-header {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 6px;
+    padding: 14px;
+  }
+  .flow.status-planned .flow-header { border-left-color: var(--yellow); opacity: 0.92; }
+  .flow.status-deprecated .flow-header { border-left-color: var(--red); opacity: 0.7; }
+
+  .flow .flow-name {
+    font-size: 14px; font-weight: 600; color: var(--text);
+    line-height: 1.3;
+  }
+  .flow .badge {
+    display: inline-block; font-size: 10px; padding: 2px 6px;
+    border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px;
+    margin-top: 8px; font-weight: 600;
+  }
+  .badge.active { background: rgba(58,192,107,0.15); color: var(--green); }
+  .badge.planned { background: rgba(216,192,80,0.15); color: var(--yellow); }
+  .badge.deprecated { background: rgba(224,85,85,0.15); color: var(--red); }
+  .flow .row-meta {
+    margin-top: 10px;
+    font-size: 11px; color: var(--text-dim);
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .flow .row-meta b { color: var(--text-mid); font-weight: 600; }
+  .flow .memory-refs {
+    margin-top: 8px;
+    font-size: 10px; color: var(--text-dim);
+  }
+  .flow .memory-refs .ref {
+    display: inline-block; margin: 2px 4px 0 0;
+    padding: 1px 5px; border-radius: 3px;
+    background: rgba(74,144,255,0.10); color: var(--blue);
+    font-family: "SF Mono", "JetBrains Mono", Menlo, Consolas, "Courier New", monospace;
+    font-size: 9px;
+  }
+
+  /* ── Lane cells (step containers) ───────── */
+  .flow .lane-bin {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex; flex-direction: column; gap: 8px;
+    min-height: 80px;
+  }
+  .flow .lane-bin.empty {
+    border-style: dashed; opacity: 0.45;
+  }
+  .flow .lane-bin.empty::before {
+    content: "—"; color: var(--text-dim); font-size: 14px;
+    margin: auto; text-align: center;
+  }
+
+  /* ── Step card ──────────────────────────── */
+  .step {
+    background: var(--panel-2);
+    border: 1px solid var(--border-light);
+    border-radius: 5px;
+    padding: 8px 10px;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    position: relative;
+  }
+  .step:hover { border-color: var(--accent); background: #1f1f28; }
+  .step.expanded { border-color: var(--accent); background: #1f1f28; }
+  .step .step-top {
+    display: flex; align-items: flex-start; gap: 8px;
+  }
+  .step .step-n {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    background: var(--accent); color: #1a1308;
+    border-radius: 50%;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1; margin-top: 1px;
+  }
+  .flow.status-planned .step .step-n { background: var(--yellow); }
+  .step .step-label {
+    flex: 1;
+    font-size: 12px; color: var(--text); font-weight: 500;
+    line-height: 1.35;
+  }
+  .step .step-file {
+    margin-top: 6px; padding-left: 26px;
+    font-size: 10px; color: var(--text-dim);
+    word-break: break-all;
+  }
+  .step .step-detail {
+    margin-top: 8px; padding-left: 26px;
+    font-size: 11px; color: var(--text-mid);
+    line-height: 1.5;
+    display: none;
+  }
+  .step.expanded .step-detail { display: block; }
+
+  /* ── Footer ─────────────────────────────── */
+  footer.page {
+    padding: 18px 32px 36px;
+    color: var(--text-dim); font-size: 11px;
+    border-top: 1px solid var(--border);
+    line-height: 1.6;
+  }
+  footer.page b { color: var(--text-mid); }
+
+  /* ── Error pane ─────────────────────────── */
+  .error-pane {
+    margin: 60px auto; max-width: 580px;
+    background: var(--panel); border: 1px solid var(--border);
+    border-left: 3px solid var(--red);
+    border-radius: 6px; padding: 20px 24px;
+    color: var(--text-mid); font-size: 13px; line-height: 1.6;
+  }
+  .error-pane h2 { margin: 0 0 8px; color: var(--red); font-size: 15px; }
+  .error-pane code {
+    background: #1a1a22; padding: 2px 6px; border-radius: 3px;
+    font-size: 12px; color: var(--accent);
+  }
+
+  /* ── Responsive (narrow) ─────────────────── */
+  @media (max-width: 1100px) {
+    .lane-header, .flow {
+      grid-template-columns: 220px repeat(4, minmax(160px, 1fr));
+      overflow-x: auto;
+    }
+    .grid-wrap { overflow-x: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page">
+  <h1 id="title">Research Portal — Work Flow Map</h1>
+  <div class="subtitle" id="subtitle"></div>
+  <div class="meta-row">
+    <span><b>As of</b><span id="asof"></span></span>
+    <span><b>Repo</b><span class="mono" id="repo"></span></span>
+    <span><b>Live</b><a id="vercel" target="_blank" rel="noopener"></a></span>
+    <span><b>Data</b><a class="mono" href="./flows.json" target="_blank">flows.json</a></span>
+  </div>
+</header>
+
+<div class="legend" id="legend"></div>
+
+<div class="grid-wrap" id="grid-wrap">
+  <div class="lane-header" id="lane-header"></div>
+  <div id="flows"></div>
+</div>
+
+<footer class="page">
+  <div id="vision-note"></div>
+  <div style="margin-top:8px;">
+    <b>Click any step card</b> to expand its detail.
+    <b>Active</b> flows are running today; <b>Planned</b> flows are next-build per the vision doc — the storage / views columns are intentionally placeholder.
+  </div>
+</footer>
+
+<script>
+(async function() {
+  const grid = document.getElementById('grid-wrap');
+
+  let data;
+  try {
+    const r = await fetch('./flows.json', { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    data = await r.json();
+  } catch (e) {
+    grid.innerHTML = `
+      <div class="error-pane">
+        <h2>Could not load flows.json</h2>
+        <p>Browsers block <code>fetch()</code> when this file is opened via <code>file://</code>.
+        Open it through the dev server instead:</p>
+        <ol>
+          <li>Run <code>npm run dev</code> in <code>~/projects/research-portal</code></li>
+          <li>Visit <code>http://localhost:3000/flows/</code></li>
+        </ol>
+        <p style="margin-top:14px;font-size:11px;color:var(--text-dim);">Underlying error: ${String(e)}</p>
+      </div>`;
+    return;
+  }
+
+  // ── Header ──────────────────────────────
+  document.getElementById('title').textContent = data.meta.title;
+  document.getElementById('subtitle').textContent = data.meta.subtitle;
+  document.getElementById('asof').textContent = ' ' + data.meta.as_of;
+  document.getElementById('repo').textContent = ' ' + data.meta.repo;
+  const vercelA = document.getElementById('vercel');
+  vercelA.href = data.meta.vercel;
+  vercelA.textContent = ' ' + data.meta.vercel.replace(/^https?:\/\//, '');
+
+  // ── Legend ──────────────────────────────
+  const legend = document.getElementById('legend');
+  data.lanes.forEach(l => {
+    const chip = document.createElement('div');
+    chip.className = 'lane-chip';
+    chip.innerHTML = `
+      <span class="swatch" style="background:${l.color}"></span>
+      <span><b style="color:var(--text);font-weight:600;">${l.label}</b> <span class="blurb">· ${l.blurb}</span></span>`;
+    legend.appendChild(chip);
+  });
+  const statusKey = document.createElement('div');
+  statusKey.className = 'status-key';
+  statusKey.innerHTML = `
+    <span class="badge active">active</span>
+    <span class="badge planned">planned</span>`;
+  legend.appendChild(statusKey);
+
+  // ── Lane header row ─────────────────────
+  const laneHeader = document.getElementById('lane-header');
+  laneHeader.innerHTML = `<div class="corner">FLOW</div>`;
+  data.lanes.forEach(l => {
+    const cell = document.createElement('div');
+    cell.className = 'lane-cell';
+    cell.innerHTML = `
+      <div class="lane-name"><span class="dot" style="background:${l.color}"></span>${l.label}</div>
+      <div class="lane-blurb">${l.blurb}</div>`;
+    laneHeader.appendChild(cell);
+  });
+
+  // ── Flow rows ───────────────────────────
+  const flowsEl = document.getElementById('flows');
+  const laneIds = data.lanes.map(l => l.id);
+
+  data.flows.forEach(flow => {
+    const row = document.createElement('div');
+    row.className = 'flow status-' + flow.status;
+
+    // Flow header cell
+    const header = document.createElement('div');
+    header.className = 'flow-header';
+    const memRefs = (flow.memory_refs || []).map(r => `<span class="ref">${r}</span>`).join('');
+    header.innerHTML = `
+      <div class="flow-name">${flow.name}</div>
+      <span class="badge ${flow.status}">${flow.status}</span>
+      <div class="row-meta">
+        <div><b>Trigger</b> · ${flow.trigger}</div>
+        <div><b>Cadence</b> · ${flow.frequency}</div>
+      </div>
+      ${memRefs ? `<div class="memory-refs"><b style="color:var(--text-mid);font-weight:600;">Memory</b><br/>${memRefs}</div>` : ''}
+    `;
+    row.appendChild(header);
+
+    // Bucket steps by lane, preserving order
+    const buckets = Object.fromEntries(laneIds.map(id => [id, []]));
+    flow.steps.forEach(s => { if (buckets[s.lane]) buckets[s.lane].push(s); });
+
+    // Lane cells in lane order
+    laneIds.forEach(id => {
+      const bin = document.createElement('div');
+      const steps = buckets[id];
+      bin.className = 'lane-bin' + (steps.length === 0 ? ' empty' : '');
+      steps.forEach(s => {
+        const card = document.createElement('div');
+        card.className = 'step';
+        card.innerHTML = `
+          <div class="step-top">
+            <span class="step-n">${s.n}</span>
+            <span class="step-label">${s.label}</span>
+          </div>
+          ${s.file ? `<div class="step-file mono">${s.file}</div>` : ''}
+          ${s.detail ? `<div class="step-detail">${s.detail}</div>` : ''}`;
+        card.addEventListener('click', () => card.classList.toggle('expanded'));
+        bin.appendChild(card);
+      });
+      row.appendChild(bin);
+    });
+
+    flowsEl.appendChild(row);
+  });
+
+  // ── Footer ──────────────────────────────
+  if (data.meta.vision_note) {
+    document.getElementById('vision-note').innerHTML =
+      `<b>Vision framing</b> · ${data.meta.vision_note}`;
+  }
+})();
+</script>
+</body>
+</html>
