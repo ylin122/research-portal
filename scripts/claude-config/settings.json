@@ -4,7 +4,7 @@
   },
   "extraKnownMarketplaces": {},
   "autoUpdatesChannel": "latest",
-  "enableAllProjectMcpServers": true,
+  "enableAllProjectMcpServers": false,
   "effortLevel": "xhigh",
   "hooks": {
     "SessionStart": [

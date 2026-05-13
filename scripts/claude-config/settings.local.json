@@ -210,6 +210,7 @@
       "WebFetch(domain:www.google.com)",
       "WebFetch(domain:www.silicondata.com)",
       "WebFetch(domain:artificialanalysis.ai)",
+      "Bash(cp '/c/Users/ylin1/.claude/agents/*.md' /c/Users/ylin1/projects/research-portal/scripts/claude-config/agents/)",
       "Bash(PORT=5174 npm run dev -- --port 5174)",
       "PowerShell(Get-Command *)",
       "Bash(nohup vercel dev --listen 3000)",
@@ -402,7 +403,9 @@
       "PowerShell($r = Invoke-WebRequest -Uri \"http://localhost:3000/flows/index.html\" -UseBasicParsing -TimeoutSec 5; \"EXPLICIT status=$\\($r.StatusCode\\) bytes=$\\($r.RawContentLength\\)\"; $r.Content.Substring\\(0,200\\))",
       "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 3; if \\($r.StatusCode -eq 200\\) { Write-Output \"RP still serving 200 OK \\(Vite HMR will pick up edits\\)\" } } catch { Write-Output \"RP down: $_\" })",
       "PowerShell($ports = 3000, 3002, 3003, 60471 | ForEach-Object { try { $r = Invoke-WebRequest \"http://localhost:$_/flows.html\" -UseBasicParsing -TimeoutSec 2; \"port $_  HTTP $\\($r.StatusCode\\)  bytes=$\\($r.RawContentLength\\)\" } catch { \"port $_  $\\($_.Exception.Message.Substring\\(0, [Math]::Min\\(60,$_.Exception.Message.Length\\)\\)\\)\" } }; $ports)",
-      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 3; Write-Output \"RP serving: $\\($r.StatusCode\\)\" } catch { Write-Output \"RP down: $_\" })"
+      "PowerShell(try { $r = Invoke-WebRequest -Uri \"http://localhost:3000\" -UseBasicParsing -TimeoutSec 3; Write-Output \"RP serving: $\\($r.StatusCode\\)\" } catch { Write-Output \"RP down: $_\" })",
+      "Bash(echo \"ahead/behind: $\\(git rev-list --left-right --count origin/main...HEAD\\)\")",
+      "PowerShell(powershell.exe -ExecutionPolicy Bypass -File \"$HOME\\\\dotclaude\\\\scripts\\\\open-projects.ps1\")"
     ]
   }
 }

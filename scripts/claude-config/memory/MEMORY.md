@@ -35,3 +35,4 @@
 - [user_role.md](user_role.md) — User is in investment/PE research, tracks PE-owned and public tech companies, uses a Bloomberg-style research portal
 - [user_tax_rates.md](user_tax_rates.md) — User's NYC marginal capital gains tax stack — LT 34.526%, ST 51.526%. Single source of truth in PA dashboard's TAX_RATES constant.
 - [user_wife_accounts.md](user_wife_accounts.md) — Willie Ni's accounts (Individual W, Roth W, Rollover W) and Individual Q — ETFs only, no single stocks. Single stocks only in Individual Y, Joint WROS, and Rollover W (IRA).
+- [feedback_beta_3y_only.md](feedback_beta_3y_only.md) — User wants 3Y beta only — never asked for 5Y. BETA_STATIC in PA Dashboard must be 3Y, computed from daily adjclose returns vs SPY, never Yahoo's 5Y monthly.
