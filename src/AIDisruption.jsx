@@ -995,7 +995,6 @@ export default function AIDisruption({ companies, initialTab }) {
         <div>
           <div style={{ marginBottom: 24 }}>
             <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>AI Disruption Map</div>
-            <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>How AI reshapes each sector I cover. Risk levels, timelines, winners, losers, and what to watch</div>
           </div>
 
       {/* Legend */}

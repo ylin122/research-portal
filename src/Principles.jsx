@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 import ErrorBanner from "./lib/ErrorBanner";
-import LastUpdated from "./lib/LastUpdated";
 import Goals from "./Goals";
 
 async function loadPrinciples() {
@@ -87,11 +86,7 @@ export default function Principles() {
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
         <div>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-            <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Principles & Epiphanies</div>
-            <LastUpdated rows={principles} field="updated_at" />
-          </div>
-          <div style={{ fontSize: 13, color: T_.textDim, marginTop: 4 }}>Fundamental beliefs that guide decisions. Review before acting.</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Convictions & Goals</div>
         </div>
         <button
           onClick={() => setAdding(!adding)}
@@ -112,7 +107,7 @@ export default function Principles() {
           <textarea
             value={newTitle}
             onChange={e => setNewTitle(e.target.value)}
-            placeholder="Write your principle..."
+            placeholder="Write your conviction..."
             rows={3}
             style={{
               width: "100%", background: T_.bgInput, border: `1px solid ${T_.border}`, borderRadius: 6,
@@ -179,7 +174,7 @@ export default function Principles() {
 
       {principles.length === 0 && !adding && (
         <div style={{ textAlign: "center", color: T_.textGhost, padding: "60px 0", fontSize: 14 }}>
-          No principles yet. Click "+ Add" to start.
+          No convictions yet. Click "+ Add" to start.
         </div>
       )}
 

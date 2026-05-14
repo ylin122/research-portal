@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 import ErrorBanner from "./lib/ErrorBanner";
-import LastUpdated from "./lib/LastUpdated";
 
 async function loadPrompts() {
   const { data, error } = await supabase.from("prompts").select("*").order("created_at", { ascending: true });
@@ -80,10 +79,7 @@ export default function Prompts() {
   return (
     <div style={{ fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24 }}>
-        <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", margin: 0 }}>Prompts</div>
-          <LastUpdated rows={prompts} field="updated_at" />
-        </div>
+        <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", margin: 0 }}>Prompts</div>
         <button onClick={() => setAdding(true)} style={{
           background: T_.accent, border: "none", color: "#000", fontWeight: 600,
           fontSize: 13, padding: "8px 18px", borderRadius: 6, cursor: "pointer", fontFamily: FONT,

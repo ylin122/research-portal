@@ -148,6 +148,12 @@ const AGENTS = [
     tools: "Bash, Read, Edit, Write, Grep, Glob, WebFetch", mode: "Read + Write",
   },
   {
+    name: "pa-txn", color: T_.green,
+    desc: "Record a buy/sell/dividend/transfer for the PA Dashboard. Writes Supabase activity + tax_lots, edits constants.js (INITIAL_HOLDINGS + COST_BASIS + cash row), runs new-ticker onboarding if needed, rebuilds daily_values, build-gates the changes.",
+    usage: "@pa-txn bought 412 DRAM at $48.67 today in Individual W",
+    tools: "Bash, Read, Edit, Write, Grep, Glob, WebFetch", mode: "Read + Write (constants.js + Supabase + scratch scripts). Never commits.",
+  },
+  {
     name: "refresh", color: "#14B8A6",
     desc: "Updates any tab with the latest info from the web. Searches for current news, data, and developments. Fact-checks existing content.",
     usage: "@refresh update the AI Research tab",
@@ -203,6 +209,12 @@ const SKILLS = [
     desc: "Auth orchestrator for the 8 sell-side broker portals. Runs preflight, launches login.js for any dead broker in parallel, re-verifies. Auth-only; pair with /sellside for actual research downloads.",
     usage: "/sellside-login",
     tools: "Bash, Read", mode: "Read + interactive (launches Chromium for SSO + MFA). 15-min timeout.",
+  },
+  {
+    name: "sellside-research-ingest", color: "#FB7185",
+    desc: "Sell-side research pipeline — Gmail ingest of [Sellside]-tagged emails, extracts broker / analyst / tickers, generates summary + key takeaways + investment implications, pushes to GitHub, verifies Vercel deploy. Does not sync to Obsidian.",
+    usage: "/sellside-research-ingest",
+    tools: "Read, Bash", mode: "Read + Write. End-to-end Gmail → Supabase → GitHub pipeline.",
   },
 ];
 
@@ -288,10 +300,7 @@ export default function AgentsTools() {
 
   return (
     <div style={{ padding: "36px 52px", fontFamily: FONT }}>
-      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 4 }}>Agents / Tools</div>
-      <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 28 }}>
-        Claude Code agents, skills, MCP servers, and installed tools. Agents: <span style={{ color: T_.accent, fontFamily: "monospace" }}>@agent-name</span> &nbsp; Skills: <span style={{ color: "#E879F9", fontFamily: "monospace" }}>/skill-name</span>
-      </p>
+      <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", marginBottom: 28 }}>Agents / Tools</div>
 
       <ErrorBanner message={loadError} onRetry={load} />
 

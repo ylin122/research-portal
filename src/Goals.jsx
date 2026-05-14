@@ -101,7 +101,6 @@ export default function Goals() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
         <div>
           <div style={{ fontSize: 18, fontWeight: 700, color: T_.text, letterSpacing: "-0.3px" }}>Goals</div>
-          <div style={{ fontSize: 12, color: T_.textDim, marginTop: 2 }}>Forward-looking targets. Click status to cycle: active → done → paused.</div>
         </div>
         <button
           onClick={() => setAdding(!adding)}

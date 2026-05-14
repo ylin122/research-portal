@@ -324,28 +324,28 @@ export default function CreditInstruments({ initialTab }) {
             <div style={{ fontSize: 14, color: T_.textDim, marginTop: 8, lineHeight: 1.6, fontStyle: "italic" }}>{inst.subtitle}</div>
           </div>
 
-          <Section title="What It Is" color={T_.blue}>
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.whatItIs}</div>
+          <Section compact title="What It Is" color={T_.blue}>
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.whatItIs}</div>
           </Section>
 
-          <Section title="How It's Structured" subtitle="Mechanics, cash flows, key terms" color={T_.accent}>
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.structure}</div>
+          <Section compact title="How It's Structured" subtitle="Mechanics, cash flows, key terms" color={T_.accent}>
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.structure}</div>
           </Section>
 
-          <Section title="Who Uses It & Why" subtitle="Issuers, investors, hedgers" color={T_.green}>
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.whoUses}</div>
+          <Section compact title="Who Uses It & Why" subtitle="Issuers, investors, hedgers" color={T_.green}>
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.whoUses}</div>
           </Section>
 
-          <Section title="Key Risks" color={T_.red}>
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.risks}</div>
+          <Section compact title="Key Risks" color={T_.red}>
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.risks}</div>
           </Section>
 
-          <Section title="How to Analyze It" subtitle="Metrics, frameworks, red flags" color={T_.amber}>
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.howToAnalyze}</div>
+          <Section compact title="How to Analyze It" subtitle="Metrics, frameworks, red flags" color={T_.amber}>
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.howToAnalyze}</div>
           </Section>
 
-          <Section title="Capital Structure Position" subtitle="Priority of claim, recovery expectations" color="#A855F7">
-            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.7 }}>{inst.capitalStructure}</div>
+          <Section compact title="Capital Structure Position" subtitle="Priority of claim, recovery expectations" color="#A855F7">
+            <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6 }}>{inst.capitalStructure}</div>
           </Section>
         </div>
       )}

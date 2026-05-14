@@ -3,7 +3,6 @@ import { supabase } from "./lib/supabase";
 import { T_, FONT } from "./lib/theme";
 import TabBar from "./lib/TabBar";
 import ErrorBanner from "./lib/ErrorBanner";
-import LastUpdated from "./lib/LastUpdated";
 
 const TABS = [
   { key: "concepts", label: "Concepts" },
@@ -129,9 +128,6 @@ function ConceptsTab() {
   return (
     <div>
       <ErrorBanner message={loadError} onRetry={load} />
-      <div style={{ marginBottom: 16 }}>
-        <LastUpdated rows={concepts} />
-      </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
         {TOPIC_FILTERS.map(t => (
           <button key={t.key} onClick={() => setFilter(t.key)} style={{
@@ -140,7 +136,6 @@ function ConceptsTab() {
           }}>{t.label}{t.key !== "all" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>{concepts.filter(c => c.topic === t.key).length}</span>}</button>
         ))}
       </div>
-      <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}><span style={{ color: T_.text, fontWeight: 600 }}>{filtered.length}</span> concepts grouped by topic. Click any topic header to collapse.</div>
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
         : filtered.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>{concepts.length === 0 ? "No concepts yet." : "No match."}</div>
         : TOPIC_FILTERS.filter(t => t.key !== "all").map(topic => {
@@ -677,9 +672,6 @@ function DeepDivesTab() {
   return (
     <div>
       <ErrorBanner message={loadError} onRetry={load} />
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
-        <LastUpdated rows={dives} />
-      </div>
       <div style={{ display: "flex", gap: 4, marginBottom: 20, flexWrap: "wrap" }}>
         {TOPIC_FILTERS.map(t => (
           <button key={t.key} onClick={() => setFilter(t.key)} style={{
@@ -688,10 +680,6 @@ function DeepDivesTab() {
           }}>{t.label}{t.key !== "all" && <span style={{ marginLeft: 6, fontSize: 11, opacity: 0.7 }}>{allDives.filter(d => d.topic === t.key).length}</span>}</button>
         ))}
       </div>
-      <div style={{ fontSize: 12, color: T_.textGhost, marginBottom: 16 }}>
-        <span style={{ color: T_.text, fontWeight: 600 }}>{filtered.length}</span> dives grouped by topic. Click any topic header to collapse.
-      </div>
-
       {loading ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>Loading...</div>
         : filtered.length === 0 ? <div style={{ color: T_.textDim, fontSize: 14, padding: "40px 0", textAlign: "center" }}>{allDives.length === 0 ? "No deep dives yet." : "No match."}</div>
         : TOPIC_FILTERS.filter(t => t.key !== "all").map(topic => {
@@ -749,7 +737,6 @@ export default function KnowledgeInterests() {
     <div style={{ padding: 0 }}>
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px", fontFamily: FONT }}>Knowledge</div>
-        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4, fontFamily: FONT }}>Learn, explore, and save interesting things.</div>
       </div>
       <TabBar tabs={TABS} active={activeTab} onChange={setActiveTab} />
       {activeTab === "concepts" && <ConceptsTab />}

@@ -386,7 +386,7 @@ function AppContent({ userEmail, onSignOut }) {
         <div style={s.navTree}>
           {/* Principles */}
           <div style={{ ...s.sectorHdr, marginTop: 0, color: view.type === "principles" ? T_.accent : T_.textDim }} onClick={() => { setView({ type: "principles" }); setEditingField(null); }}>
-            <span>Principles & Epiphanies</span>
+            <span>Convictions & Goals</span>
           </div>
 
           {/* Agents / Tools */}
