@@ -19,11 +19,12 @@ const AGENT_COLORS = {
 };
 const DEFAULT_COLOR = { bg: `${T_.textGhost}22`, color: T_.textDim, border: `${T_.textGhost}44` };
 
-// Hide automated cron jobs and one-off test artifacts. The audit log surfaces
-// what *you* did — subagents, skills, slash commands — not background machinery.
+// Hide automated cron jobs, unclassified runs, and one-off test artifacts.
+// The audit log surfaces what *you* did — subagents, skills, slash commands — not background machinery.
 const isUserAction = (name) => {
   if (!name) return false;
   if (name.startsWith("refresh-")) return false;  // hides refresh-prices etc; keeps plain "refresh" subagent
+  if (name === "unknown") return false;  // hook couldn't classify the run — noise, not a real subagent
   if (name === "hook-test" || name === "manual-test") return false;
   return true;
 };
@@ -84,10 +85,6 @@ export default function AuditLog() {
           <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Audit Log</div>
           <LastUpdated rows={runs} label="Last run" />
         </div>
-        <button style={{
-          padding: "8px 16px", fontSize: 12, borderRadius: 6, cursor: "pointer",
-          background: T_.accent, color: "#000", border: "none", fontFamily: FONT, fontWeight: 500,
-        }} onClick={fetchRuns}>Refresh</button>
       </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
         Subagents, skills, and slash commands you've run. Background cron jobs hidden.
