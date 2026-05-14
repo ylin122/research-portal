@@ -19,6 +19,15 @@ const AGENT_COLORS = {
 };
 const DEFAULT_COLOR = { bg: `${T_.textGhost}22`, color: T_.textDim, border: `${T_.textGhost}44` };
 
+// Hide automated cron jobs and one-off test artifacts. The audit log surfaces
+// what *you* did — subagents, skills, slash commands — not background machinery.
+const isUserAction = (name) => {
+  if (!name) return false;
+  if (name.startsWith("refresh-")) return false;  // hides refresh-prices etc; keeps plain "refresh" subagent
+  if (name === "hook-test" || name === "manual-test") return false;
+  return true;
+};
+
 function fmtDate(d) { return new Date(d).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }); }
 function fmtTime(d) { return new Date(d).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" }); }
 function fmtDuration(ms) {
@@ -47,7 +56,7 @@ export default function AuditLog() {
       setLoading(false);
       return;
     }
-    setRuns(data || []);
+    setRuns((data || []).filter(r => isUserAction(r.agent_name)));
     setLoading(false);
   }
 
@@ -72,7 +81,7 @@ export default function AuditLog() {
     <div style={{ padding: "36px 52px", maxWidth: "none", fontFamily: FONT }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
         <div style={{ display: "flex", alignItems: "baseline", gap: 12 }}>
-          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Agent Run Log</div>
+          <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Audit Log</div>
           <LastUpdated rows={runs} label="Last run" />
         </div>
         <button style={{
@@ -81,7 +90,7 @@ export default function AuditLog() {
         }} onClick={fetchRuns}>Refresh</button>
       </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Every agent run logged with task, changes, and files modified.
+        Subagents, skills, and slash commands you've run. Background cron jobs hidden.
         <span style={{ color: T_.textGhost, marginLeft: 8 }}>{runs.length} runs</span>
       </p>
 
