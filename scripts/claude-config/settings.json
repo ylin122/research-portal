@@ -18,6 +18,28 @@
           }
         ]
       }
+    ],
+    "SubagentStop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $HOME/.claude/hooks/log-subagent-run.cjs",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node $HOME/.claude/hooks/log-user-prompt.cjs",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   }
 }

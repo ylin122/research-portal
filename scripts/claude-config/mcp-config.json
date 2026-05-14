@@ -4,7 +4,7 @@
       "command": "py",
       "args": ["-m", "edgar.ai"],
       "env": {
-        "EDGAR_IDENTITY": "Yuan Lin ylin122@gmail.com"
+        "EDGAR_IDENTITY": "Yuan Lin ylin1@gmail.com"
       }
     }
   }
