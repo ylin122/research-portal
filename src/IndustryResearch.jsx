@@ -4995,6 +4995,344 @@ export default function IndustryResearch({ initialTab }) {
         );
       })()}
 
+      {mainTab === "optics" && (() => {
+        const LITE_C = "#22d3ee";   // Lumentum
+        const COHR_C = "#34d399";   // Coherent
+        const NVDA_C = "#76B900";
+
+        // === Header stat tiles ===
+        const headerTiles = [
+          { label: "AI Optics TAM 2026E", value: "~$26B", sub: "+~60% YoY (LightCounting)" },
+          { label: "AI Optics 2026-30", value: "~$100B", sub: "cumulative (LightCounting)" },
+          { label: "800G+ Units", value: "24M→63M", sub: "2025→2026E, 2.6x (TrendForce)" },
+          { label: "Volume Leader 2026", value: "800G", sub: "1.6T ramps 2026→2027" },
+          { label: "EML Bottleneck", value: "LITE ~55%", sub: "only vol. 200G/λ supplier" },
+          { label: "NVIDIA Optics Bet", value: "$4B", sub: "$2B LITE + $2B COHR (Mar'26)" },
+          { label: "Supply Gap", value: "30%+", sub: "demand > supply thru CY27" },
+        ];
+
+        // === Market growth (AI-cluster Ethernet optics, $B) ===
+        const mktGrowth = [
+          { yr: "2024", v: 9, est: false },
+          { yr: "2025", v: 16.5, est: false },
+          { yr: "2026E", v: 26, est: true },
+          { yr: "2027E", v: 33, est: true },
+          { yr: "2028E", v: 40, est: true },
+        ];
+        const maxMkt = Math.max(...mktGrowth.map(m => m.v));
+
+        // === Demand drivers ===
+        const demandDrivers = [
+          { t: "Copper reach collapse", d: "At 200G/lane (for 1.6T), passive copper barely reaches inside a rack. Every speed generation pushes optics deeper into the network — scale-up moving from copper to optical is the next leg." },
+          { t: "~1:1 optical attach per GPU", d: "GB200/GB300 NVL72 carry roughly one optical transceiver per GPU on the scale-out fabric. Vera Rubin NVL144 holds the ratio at 1.6T. Optical content per rack rises every generation." },
+          { t: "Speed gens ramp concurrently", d: "400G / 800G / 1.6T / 3.2T are ramping in parallel, not sequentially — compressing the upgrade cycle vs. prior optical waves and front-loading laser-chip demand." },
+          { t: "Persistent supply shortfall", d: "McKinsey: 800G output 40-60% short of demand through 2027; 1.6T 30-40% short through 2029. Scarcity sits upstream at the InP laser chip — pricing power for chip owners." },
+        ];
+
+        // === Speed roadmap ===
+        const speedRoadmap = [
+          { speed: "400G", status: "Legacy / declining", lane: "100G/λ", units: "Being displaced", note: "Prior-gen scale-out; volume rolling off into 800G" },
+          { speed: "800G", status: "Volume leader 2026", lane: "100-200G/λ", units: ">40M (2026E)", note: "Primary AI scale-out rate; GB200/GB300 back-end fabric", hot: true },
+          { speed: "1.6T", status: "Ramping H2'25 → 2027", lane: "200G/λ", units: ">30M (2026E)", note: "GB300 / Vera Rubin; gated by 200G/λ EML supply", hot: true },
+          { speed: "3.2T", status: "2027-28 (early)", lane: "200-400G/λ", units: "Sampling", note: "Next-gen Rubin Ultra era; CPO-leaning" },
+        ];
+
+        // === Technology stack ===
+        const techStack = [
+          { name: "Pluggable (DSP)", tag: "Dominant thru 2027", color: T_.blue, d: "Standard OSFP/QSFP-DD modules with a DSP. Bulk of all unit volume today. DSP = Broadcom / Marvell duopoly." },
+          { name: "LPO — linear-drive", tag: "Near-term winner 2025-27", color: T_.green, d: "Removes the DSP for lower power/cost. 4-5 customers incl. Oracle; Google rolling out 1.6T LRO in 2026. Lower-risk efficiency play than CPO." },
+          { name: "CPO — co-packaged", tag: "Volume 2027-28", color: T_.amber, d: "Optics co-packaged with the switch ASIC. NVIDIA Quantum-X (early'26), Spectrum-X Photonics (2H'26); Broadcom Bailly/Davisson shipping. ~70% lower interconnect power. Real, but a 2027+ volume story." },
+          { name: "SiPh vs InP", tag: "InP = the moat", color: COHR_C, d: "Silicon photonics is the CPO/LPO platform (~60% share by 2030) — but it does NOT remove the InP laser chip. EML/CW lasers stay InP. Chip layer keeps the economics." },
+        ];
+
+        // === Value chain (top demand → down to assembly) ===
+        const valueChain = [
+          { label: "AI Demand", items: [
+            { name: "Hyperscalers", sub: "MSFT / GOOGL / AMZN / META capex" },
+            { name: "NVIDIA (platform)", sub: "Sets optical content per rack", c: NVDA_C },
+            { name: "Neoclouds", sub: "CoreWeave, Nebius, Crusoe" },
+          ]},
+          { label: "Switch / System", items: [
+            { name: "NVIDIA", sub: "Quantum-X / Spectrum-X (CPO)", c: NVDA_C },
+            { name: "Broadcom", sub: "Tomahawk + Bailly/Davisson CPO" },
+            { name: "Cisco / Arista / Ciena", sub: "Systems + coherent DCI" },
+          ]},
+          { label: "Optical DSP — silicon duopoly · high margin", items: [
+            { name: "Broadcom", sub: "Taurus 1.6T/3.2T DSP (3nm)" },
+            { name: "Marvell", sub: "Ara 3nm; 1.6T mass volume" },
+          ]},
+          { label: "Laser Chip — EML / CW (InP) · ★ moat + bottleneck", items: [
+            { name: "Lumentum", sub: "EML leader ~55%; only 200G/λ at volume", c: LITE_C, star: true },
+            { name: "Coherent", sub: "#2 EML; 6-inch InP cost lead", c: COHR_C, star: true },
+            { name: "Mitsubishi", sub: "Third merchant EML source" },
+          ]},
+          { label: "Transceiver Module Assembly · margin-compressing", items: [
+            { name: "InnoLight", sub: "#1 module, ~55% of 1.6T (China)" },
+            { name: "Eoptolink", sub: "#2; H1'25 rev +283% (China)" },
+            { name: "Coherent", sub: "Vertically integrated chip+module", c: COHR_C, star: true },
+            { name: "AAOI", sub: "US, integrated but sub-scale" },
+            { name: "Source Photonics / Accelink", sub: "Second-tier assemblers" },
+          ]},
+          { label: "Contract Mfg / Test", items: [
+            { name: "Fabrinet", sub: "EMS for NVIDIA / Cisco; no IP" },
+          ]},
+        ];
+
+        // === Quality ladder ===
+        const ladder = [
+          { tier: "Tier 1 — Silicon / platform IP", color: T_.purple, who: "NVIDIA · Broadcom · Marvell", why: "Own the highest-value, hardest-to-replicate IP (DSP, switch, CPO). Widest moat, least customer-concentration risk, CPO optionality." },
+          { tier: "Tier 2 — Vertically integrated chip + module", color: LITE_C, who: "Coherent · Lumentum", why: "Control the InP laser chip AND the module — the differentiator vs. pure assemblers. This is why they earn quality status despite smaller module share. The investable optics names.", hot: true },
+          { tier: "Tier 3 — Scale module, partial integration", color: T_.amber, who: "InnoLight · Eoptolink", why: "Dominant volume/share, hyper-growth, but module-assembly mix, thinner IP moat, China geopolitical / tariff overhang." },
+          { tier: "Tier 4 — Assemblers / contract", color: T_.textGhost, who: "AAOI · Source Photonics · Accelink · Fabrinet", why: "Lower barriers, compressing margins or pure EMS economics (Fabrinet = no IP but indispensable, lowest-risk)." },
+        ];
+
+        // === Covered-name deep cards ===
+        const names = [
+          { tk: "LITE", nm: "Lumentum", c: LITE_C, sub: "NASDAQ: LITE · FYE ~Jun · Pure-play optics",
+            rev: "$808M Q3 FY26 (+90% YoY)", guide: "Q4 guide $960M-$1.01B (record)", mkt: "~$70B mkt cap · ~80x fwd P/E",
+            metrics: [
+              ["Mix", "Components $533M (66%) · Systems $275M (34%)"],
+              ["EML", "Shipments >2x YoY; 200G/λ rev >2x QoQ; only volume 200G/λ supplier"],
+              ["NVIDIA", "$2B equity + multibillion purchase commitment + capacity rights (Mar'26)"],
+              ["Targets", "~$2B qtrly run-rate by ~FY28; mgmt ~$30 EPS / ~40% op-margin model"],
+            ],
+            bull: "Sole-source 200G/λ EML leader, NVIDIA capacity lock-in, operating leverage just inflecting toward $2B/qtr.",
+            bear: "~80x fwd prices near-perfection; Coherent 6-inch InP cost edge; supply-driven (not demand-proven) rev; high NVIDIA/hyperscaler concentration." },
+          { tk: "COHR", nm: "Coherent", c: COHR_C, sub: "NYSE: COHR · FYE ~Jun · Diversified, deleveraging",
+            rev: "$1.81B Q3 FY26 (+21% YoY)", guide: "Q4 guide $1.91-2.05B", mkt: "~$79B mkt cap · ~45x fwd P/E",
+            metrics: [
+              ["Mix", "Datacenter & Comms $1.36B (~75%) · Industrial $444M (soft)"],
+              ["Integration", "Owns InP + SiC epi; 6-inch InP in full production (~half die cost)"],
+              ["NVIDIA", "$2B equity + multi-year CPO supply agreement (Mar'26)"],
+              ["Strategy", "Anderson: exit non #1/#2 lines; A&D + Mat'l Tools divested; debt ~$3.2B, delevering"],
+            ],
+            bull: "Broadest vertical integration (InP+SiC+module), 6-inch InP cost lead, NVIDIA CPO offtake, margin inflection (op-margin 4.8%→11.1% YoY).",
+            bear: "~45x fwd; cyclical Industrial drag; heavy capex; ~$3.2B debt; customer concentration; CPO long-term cannibalization of pluggables." },
+        ];
+
+        // === Industry news / catalysts ===
+        const news = [
+          { date: "May'26", text: "Both report record Q3 FY26: LITE $808M (+90% YoY), COHR $1.81B (+21%); guidance steps up sequentially." },
+          { date: "Mar'26", text: "NVIDIA commits $4B to optics — $2B equity each into Lumentum & Coherent + multibillion purchase/capacity commitments. Largest vertical-integration signal of the cycle." },
+          { date: "Mar'26", text: "Broadcom launches Taurus 1.6T/3.2T DSP (3nm); Marvell Ara in mass volume — DSP duopoly extends to 200G/λ." },
+          { date: "Mar'26", text: "Lumentum acquires 5th InP fab (Greensboro, NC ex-Qorvo); announces new US InP fab (ramps mid-2028). Coherent 6-inch InP in full production, a year ahead." },
+          { date: "Q1'26", text: "NVIDIA Quantum-X (InfiniBand CPO) commercial; Spectrum-X Photonics (Ethernet CPO) targeted 2H'26 — CPO inflection begins, volume still a 2027-28 story." },
+          { date: "Mar'26", text: "AAOI inflects: >$250B combined 800G+1.6T orders in a single month; second hyperscaler added — supply base broadening behind the leaders." },
+        ];
+
+        const tile = { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 16px", flex: "1 1 130px", minWidth: 130 };
+        const panel = { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 };
+        const panelHdr = { fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 };
+        const panelSub = { fontSize: 12, color: T_.textGhost, marginBottom: 16, lineHeight: 1.5 };
+
+        return (
+        <div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: 20, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
+            <div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Optics &mdash; AI Datacenter Interconnect</div>
+              <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>The optical-transceiver supercycle &middot; where Lumentum &amp; Coherent sit in the value chain</div>
+            </div>
+            <div style={{ textAlign: "right", fontSize: 11, color: T_.textGhost }}>As of 2026-05-16</div>
+          </div>
+
+          {/* Header tiles */}
+          <div style={{ display: "flex", gap: 12, marginBottom: 20, flexWrap: "wrap" }}>
+            {headerTiles.map(t => (
+              <div key={t.label} style={tile}>
+                <div style={{ fontSize: 10, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.7px", marginBottom: 4 }}>{t.label}</div>
+                <div style={{ fontSize: 19, fontWeight: 700, color: T_.text }}>{t.value}</div>
+                <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 2 }}>{t.sub}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Thesis callout */}
+          <div style={{ ...panel, borderLeft: `3px solid ${LITE_C}` }}>
+            <div style={panelHdr}>The Thesis &mdash; the interconnect boom, then the quality names</div>
+            <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.65 }}>
+              AI clusters scale by adding GPUs that must talk to each other at line rate. As lane speeds climb to 200G, copper reach collapses and <b style={{ color: T_.text }}>optics gets pushed deeper into the network every generation</b> &mdash; first scale-out, now scale-up. That makes optical transceivers one of the highest-visibility demand curves in AI infrastructure (~$26B in 2026E, ~$100B cumulative 2026-30). The economics do not sit in the module &mdash; they sit one layer up, in the <b style={{ color: T_.text }}>InP laser chip (EML / CW)</b>, which is structurally supply-short and controlled by a handful of vertically integrated players. <b style={{ color: LITE_C }}>Lumentum</b> and <b style={{ color: COHR_C }}>Coherent</b> own that chip layer end-to-end &mdash; the reason NVIDIA put $2B of equity into each. They are the quality way to own the boom.
+            </div>
+          </div>
+
+          {/* Market growth + demand drivers */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1.4fr", gap: 16, marginBottom: 16 }}>
+            <div style={panel}>
+              <div style={panelHdr}>AI Optics Market ($B)</div>
+              <div style={panelSub}>AI-cluster Ethernet optics &middot; LightCounting. 2026+ estimated; decel to ~15-20% CAGR post-2027.</div>
+              <div style={{ display: "flex", alignItems: "flex-end", gap: 10, height: 170 }}>
+                {mktGrowth.map(m => (
+                  <div key={m.yr} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 6 }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: m.est ? T_.textDim : T_.text }}>${m.v}B</div>
+                    <div style={{ width: "100%", height: (m.v / maxMkt) * 120, background: m.est ? `${LITE_C}55` : LITE_C, borderRadius: "4px 4px 0 0", transition: "height .3s" }} />
+                    <div style={{ fontSize: 11, color: T_.textDim }}>{m.yr}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div style={panel}>
+              <div style={panelHdr}>Why Optics &mdash; Demand Drivers</div>
+              <div style={panelSub}>What forces optical content up every GPU generation.</div>
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                {demandDrivers.map(d => (
+                  <div key={d.t} style={{ background: "#0B0F19", borderRadius: 6, padding: "10px 12px" }}>
+                    <div style={{ fontSize: 12, fontWeight: 700, color: T_.text, marginBottom: 4 }}>{d.t}</div>
+                    <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.5 }}>{d.d}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Speed roadmap */}
+          <div style={{ ...panel, padding: 0, overflow: "auto" }}>
+            <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}` }}>Speed Roadmap &mdash; 800G is the 2026 volume leader, 1.6T ramps into 2027</div>
+            <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 13 }}>
+              <thead>
+                <tr>
+                  {["Speed", "Status", "Lane", "Units", "Context"].map((h, i) => (
+                    <th key={h} style={{ padding: "10px 14px", fontSize: 10, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: `1px solid ${T_.border}`, textAlign: i === 0 ? "left" : "left", whiteSpace: "nowrap" }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {speedRoadmap.map(r => (
+                  <tr key={r.speed} style={{ background: r.hot ? `${LITE_C}0d` : "transparent" }}>
+                    <td style={{ padding: "11px 14px", borderBottom: `1px solid ${T_.border}10`, fontWeight: 700, color: r.hot ? LITE_C : T_.text, fontSize: 15 }}>{r.speed}</td>
+                    <td style={{ padding: "11px 14px", borderBottom: `1px solid ${T_.border}10`, color: T_.textMid, fontWeight: 600 }}>{r.status}</td>
+                    <td style={{ padding: "11px 14px", borderBottom: `1px solid ${T_.border}10`, color: T_.textDim }}>{r.lane}</td>
+                    <td style={{ padding: "11px 14px", borderBottom: `1px solid ${T_.border}10`, color: T_.textMid, fontVariantNumeric: "tabular-nums" }}>{r.units}</td>
+                    <td style={{ padding: "11px 14px", borderBottom: `1px solid ${T_.border}10`, color: T_.textDim, fontSize: 12 }}>{r.note}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Technology stack */}
+          <div style={panel}>
+            <div style={panelHdr}>Technology &mdash; Pluggable vs LPO vs CPO, and why InP is the moat</div>
+            <div style={panelSub}>Module architecture is shifting, but the laser chip stays InP regardless of which form factor wins.</div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 10 }}>
+              {techStack.map(t => (
+                <div key={t.name} style={{ background: "#0B0F19", borderRadius: 6, padding: "12px 14px", borderTop: `2px solid ${t.color}` }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 6 }}>
+                    <span style={{ fontSize: 13, fontWeight: 700, color: T_.text }}>{t.name}</span>
+                  </div>
+                  <span style={{ fontSize: 10, fontWeight: 700, padding: "2px 8px", borderRadius: 4, background: `${t.color}22`, color: t.color }}>{t.tag}</span>
+                  <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.55, marginTop: 8 }}>{t.d}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottleneck callout */}
+          <div style={{ ...panel, borderLeft: `3px solid ${T_.amber}` }}>
+            <div style={panelHdr}>The Bottleneck &mdash; the 200G/λ EML laser chip</div>
+            <div style={{ fontSize: 13, color: "#CBD5E1", lineHeight: 1.65 }}>
+              1.6T modules need a 200G-per-lane EML (electro-absorption modulated laser). It is far harder to make than 100G EML, demand exceeds supply by ~30%, and capacity is locked under long-term agreements through CY2027. <b style={{ color: LITE_C }}>Lumentum is the only supplier shipping 200G/λ EML at volume</b> (~50-60% of the high-end laser-chip market). <b style={{ color: COHR_C }}>Coherent</b> is the #2, closing on cost with the world&apos;s first 6-inch InP fab (~4x dies/wafer, ~60% lower die cost). This single chip is the highest-leverage chokepoint &mdash; and the entire margin pool &mdash; in the value chain. Module market share &ne; value-chain dominance.
+            </div>
+          </div>
+
+          {/* Value chain */}
+          <div style={panel}>
+            <div style={panelHdr}>Value Chain &mdash; where the money sits</div>
+            <div style={panelSub}>Revenue flows downward; margin &amp; moat concentrate in DSP silicon and the InP laser chip. <span style={{ color: LITE_C }}>Lumentum</span> / <span style={{ color: COHR_C }}>Coherent</span> highlighted &mdash; covered names.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {valueChain.map(layer => {
+                const moat = layer.label.includes("★") || layer.label.includes("DSP");
+                return (
+                <div key={layer.label} style={{ display: "grid", gridTemplateColumns: "200px 1fr", gap: 12, alignItems: "stretch" }}>
+                  <div style={{ display: "flex", alignItems: "center", fontSize: 11, fontWeight: 700, color: moat ? T_.amber : T_.textDim, textTransform: "uppercase", letterSpacing: "0.4px", lineHeight: 1.35 }}>{layer.label}</div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                    {layer.items.map(it => (
+                      <div key={it.name} style={{ flex: "1 1 150px", minWidth: 150, background: it.star ? `${it.c}14` : "#0B0F19", borderRadius: 6, padding: "8px 10px", border: it.star ? `1px solid ${it.c}` : `1px solid ${T_.border}` }}>
+                        <div style={{ fontSize: 12, fontWeight: 700, color: it.c || T_.textMid }}>{it.name}{it.star ? " ★" : ""}</div>
+                        <div style={{ fontSize: 10, color: T_.textDim, lineHeight: 1.4, marginTop: 2 }}>{it.sub}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Quality ladder */}
+          <div style={panel}>
+            <div style={panelHdr}>Quality Ladder &mdash; why Lumentum &amp; Coherent are the quality names</div>
+            <div style={panelSub}>Vertically integrated chip+module &gt; scale assembler. The debate is not demand (visibility is unprecedented) &mdash; it is CPO cannibalization timing and valuation.</div>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {ladder.map(l => (
+                <div key={l.tier} style={{ display: "grid", gridTemplateColumns: "230px 200px 1fr", gap: 12, background: l.hot ? `${LITE_C}0f` : "#0B0F19", borderRadius: 6, padding: "12px 14px", borderLeft: `3px solid ${l.color}`, alignItems: "center" }}>
+                  <div style={{ fontSize: 12, fontWeight: 700, color: l.hot ? LITE_C : T_.text }}>{l.tier}</div>
+                  <div style={{ fontSize: 12, fontWeight: 600, color: T_.textMid }}>{l.who}</div>
+                  <div style={{ fontSize: 11, color: T_.textDim, lineHeight: 1.5 }}>{l.why}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Covered-name deep cards */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 16 }}>
+            {names.map(n => (
+              <div key={n.tk} style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, borderTop: `3px solid ${n.c}`, padding: 18 }}>
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 4 }}>
+                  <div>
+                    <span style={{ fontSize: 18, fontWeight: 700, color: T_.text }}>{n.nm}</span>
+                    <span style={{ fontSize: 12, fontWeight: 700, color: n.c, marginLeft: 8 }}>{n.tk}</span>
+                  </div>
+                </div>
+                <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 12 }}>{n.sub}</div>
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap", marginBottom: 12 }}>
+                  {[["Latest", n.rev], ["Guide", n.guide], ["Valuation", n.mkt]].map(([k, v]) => (
+                    <div key={k} style={{ flex: "1 1 120px", background: "#0B0F19", borderRadius: 6, padding: "8px 10px" }}>
+                      <div style={{ fontSize: 9, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.5px", marginBottom: 3 }}>{k}</div>
+                      <div style={{ fontSize: 11, fontWeight: 600, color: T_.textMid, lineHeight: 1.35 }}>{v}</div>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ marginBottom: 12 }}>
+                  {n.metrics.map(([k, v]) => (
+                    <div key={k} style={{ display: "flex", gap: 10, fontSize: 11, lineHeight: 1.6, borderBottom: `1px solid ${T_.border}10`, padding: "4px 0" }}>
+                      <span style={{ minWidth: 78, color: T_.textDim, fontWeight: 700 }}>{k}</span>
+                      <span style={{ color: "#CBD5E1" }}>{v}</span>
+                    </div>
+                  ))}
+                </div>
+                <div style={{ background: `${T_.green}12`, borderRadius: 6, padding: "8px 10px", marginBottom: 6 }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Bull</span>
+                  <div style={{ fontSize: 11, color: "#CBD5E1", lineHeight: 1.5, marginTop: 2 }}>{n.bull}</div>
+                </div>
+                <div style={{ background: `${T_.red}12`, borderRadius: 6, padding: "8px 10px" }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px" }}>Bear</span>
+                  <div style={{ fontSize: 11, color: "#CBD5E1", lineHeight: 1.5, marginTop: 2 }}>{n.bear}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Industry news */}
+          <div style={{ ...panel, padding: 0, overflow: "hidden" }}>
+            <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
+              <span style={{ color: LITE_C }}>&#9679;</span> Industry &amp; Catalysts
+            </div>
+            <div style={{ padding: "12px 16px" }}>
+              {news.map((it, i) => (
+                <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
+                  <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 52, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{it.date}</span>
+                  <span style={{ fontSize: 13, color: "#CBD5E1" }}>{it.text}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", lineHeight: 1.6 }}>
+            Sources: LightCounting (AI-cluster optics market &amp; growth), Dell&apos;Oro, TrendForce (unit volumes), McKinsey (supply shortfall), company Q3 FY2026 releases &amp; transcripts (Lumentum 5/5/26, Coherent 5/6/26), NVIDIA newsroom (Mar 2026 partnerships), Broadcom / Marvell product releases. Market figures 2026+ are estimates; growth-rate revisions and unit splits are directional &mdash; sources do not fully reconcile. As of 2026-05-16. Not investment advice.
+          </div>
+        </div>
+        );
+      })()}
+
 
     </div>
   );

@@ -413,7 +413,7 @@ function AppContent({ userEmail, onSignOut }) {
                 <span style={{ fontSize: 9, color: T_.textDim, transition: "transform .15s", transform: industryOpen ? "rotate(90deg)" : "rotate(0)", display: "inline-block" }}>&#9654;</span>
                 <span style={{ color: view.type === "industryResearch" ? T_.accent : T_.textDim }}>Industry Research</span>
               </div>
-              <span style={s.badge}>10</span>
+              <span style={s.badge}>11</span>
             </div>
             {industryOpen && (
               <>
@@ -428,6 +428,7 @@ function AppContent({ userEmail, onSignOut }) {
                   { key: "cpuroadmap", label: "CPU" },
                   { key: "neoclouds", label: "Neoclouds" },
                   { key: "shellpower", label: "Infra + Power" },
+                  { key: "optics", label: "Optics" },
                 ].map(tab => {
                   const active = view.type === "industryResearch" && view.sub === tab.key;
                   return (
