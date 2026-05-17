@@ -5110,16 +5110,6 @@ export default function IndustryResearch({ initialTab }) {
             bear: "~45x fwd; cyclical Industrial drag; heavy capex; ~$3.2B debt; customer concentration; CPO long-term cannibalization of pluggables." },
         ];
 
-        // === Industry news / catalysts ===
-        const news = [
-          { date: "May'26", text: "Both report record Q3 FY26: LITE $808M (+90% YoY), COHR $1.81B (+21%); guidance steps up sequentially." },
-          { date: "Mar'26", text: "NVIDIA commits $4B to optics — $2B equity each into Lumentum & Coherent + multibillion purchase/capacity commitments. Largest vertical-integration signal of the cycle." },
-          { date: "Mar'26", text: "Broadcom launches Taurus 1.6T/3.2T DSP (3nm); Marvell Ara in mass volume — DSP duopoly extends to 200G/λ." },
-          { date: "Mar'26", text: "Lumentum acquires 5th InP fab (Greensboro, NC ex-Qorvo); announces new US InP fab (ramps mid-2028). Coherent 6-inch InP in full production, a year ahead." },
-          { date: "Q1'26", text: "NVIDIA Quantum-X (InfiniBand CPO) commercial; Spectrum-X Photonics (Ethernet CPO) targeted 2H'26 — CPO inflection begins, volume still a 2027-28 story." },
-          { date: "Mar'26", text: "AAOI inflects: >$250B combined 800G+1.6T orders in a single month; second hyperscaler added — supply base broadening behind the leaders." },
-        ];
-
         const tile = { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "14px 16px", flex: "1 1 130px", minWidth: 130 };
         const panel = { background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 16 };
         const panelHdr = { fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 };
@@ -5309,21 +5299,6 @@ export default function IndustryResearch({ initialTab }) {
                 </div>
               </div>
             ))}
-          </div>
-
-          {/* Industry news */}
-          <div style={{ ...panel, padding: 0, overflow: "hidden" }}>
-            <div style={{ padding: "14px 16px", fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px", borderBottom: `1px solid ${T_.border}`, display: "flex", alignItems: "center", gap: 8 }}>
-              <span style={{ color: LITE_C }}>&#9679;</span> Industry &amp; Catalysts
-            </div>
-            <div style={{ padding: "12px 16px" }}>
-              {news.map((it, i) => (
-                <div key={i} style={{ display: "flex", gap: 12, marginBottom: 8, lineHeight: 1.5 }}>
-                  <span style={{ fontSize: 11, color: T_.textGhost, minWidth: 52, flexShrink: 0, fontWeight: 600, marginTop: 1 }}>{it.date}</span>
-                  <span style={{ fontSize: 13, color: "#CBD5E1" }}>{it.text}</span>
-                </div>
-              ))}
-            </div>
           </div>
 
           <div style={{ fontSize: 10, color: T_.textGhost, fontStyle: "italic", lineHeight: 1.6 }}>
