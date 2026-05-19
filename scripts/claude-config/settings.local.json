@@ -420,7 +420,24 @@
       "Bash(curl -s \"http://localhost:3001/api/trading?view=performance&period=YTD\" -o perf.tmp.json)",
       "Bash(rm -f dash.png)",
       "Bash('/c/Program Files/Google/Chrome/Application/chrome.exe' --headless=new --disable-gpu --hide-scrollbars --no-first-run --user-data-dir=__TRACKED_VAR__/.cache/chrome-shot --virtual-time-budget=22000 --window-size=1680,3200 '--screenshot=C:\\\\Users\\\\willi\\\\projects\\\\pa-dashboard\\\\dash.png' http://localhost:3001)",
-      "Bash(pkill -f chrome-shot)"
+      "Bash(pkill -f chrome-shot)",
+      "WebFetch(domain:commons.wikimedia.org)",
+      "WebFetch(domain:semiconductor.substack.com)",
+      "WebFetch(domain:www.a16z.news)",
+      "WebFetch(domain:login.matrix.ms.com)",
+      "WebFetch(domain:en.sedaily.com)",
+      "WebFetch(domain:www.crucial.com)",
+      "WebFetch(domain:semiconductor.samsung.com)",
+      "WebFetch(domain:www.sandisk.com)",
+      "Bash(MSYS_NO_PATHCONV=1 node query.js report \"/content/research/en/reports/2026/03/19/19d6bf8c-b45a-4cce-988a-2d05b5e1bbce.html\")",
+      "Bash(MSYS_NO_PATHCONV=1 node query.js report \"/content/research/en/reports/2026/02/08/2f9623db-5a3c-448d-932b-c72d75dc7011.html\")",
+      "Bash(MSYS_NO_PATHCONV=1 node query.js report \"2795-96e7b31c_1c93_11f1_a98e_aaeb9f9dd04e_604-20260310\")",
+      "WebFetch(domain:www.amazon.com)",
+      "WebFetch(domain:www.seagate.com)",
+      "WebFetch(domain:shop.sandisk.com)",
+      "WebFetch(domain:www.westerndigital.com)",
+      "WebFetch(domain:www.samsung.com)",
+      "WebFetch(domain:product.skhynix.com)"
     ]
   }
 }
