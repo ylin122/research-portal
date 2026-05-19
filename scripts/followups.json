@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "comment": "Open follow-ups for the research pipeline. gmail_ingest.py scans this at the end of each run, prints open items, and auto-closes any whose trigger_regex matches a newly-ingested article title.",
+  "items": [
+    {
+      "id": "deep-moats-part-2",
+      "added": "2026-05-18",
+      "kind": "part-2-watch",
+      "source": "Pushkar Ranade, Bits and Bytes (semiconductor.substack.com)",
+      "part_1_url": "https://semiconductor.substack.com/p/deep-moats-and-platform-shifts-in",
+      "part_1_published": "2026-04-25",
+      "trigger_regex": "(?i)deep moats and platform shifts.*part\\s*2",
+      "note": "Re-analyze the full Deep Moats series when Part 2 lands — Part 2 is where the operative NVIDIA call sits.",
+      "status": "open"
+    }
+  ]
+}

@@ -22,11 +22,13 @@ Setup:
 import os
 import sys
 import io
+import json
 import base64
 import re
 import argparse
 import tempfile
 from datetime import datetime, timezone
+from functools import lru_cache
 from pathlib import Path
 from email.utils import parsedate_to_datetime
 
@@ -164,6 +166,89 @@ def extract_urls(text):
     return re.findall(r'https?://[^\s<>"\')\]]+', text)
 
 
+# ─── URL canonicalization & subject-pattern dedup ─────
+# Short-link / share-link URL patterns. Two different short URLs can resolve
+# to the same canonical article, so we follow redirects before dedup.
+URL_SHORT_PATTERNS = [
+    re.compile(r"^https?://substack\.com/home/post/p-\d+", re.IGNORECASE),
+    re.compile(r"^https?://open\.substack\.com/pub/", re.IGNORECASE),
+    re.compile(r"^https?://t\.co/", re.IGNORECASE),
+    re.compile(r"^https?://lnkd\.in/", re.IGNORECASE),
+    re.compile(r"^https?://bit\.ly/", re.IGNORECASE),
+    re.compile(r"^https?://buff\.ly/", re.IGNORECASE),
+]
+
+# Tracking params stripped from canonicalized URLs so query-only differences
+# don't break dedup (`?utm_medium=ios` vs `?triedRedirect=true`, etc.).
+TRACKING_PARAM_KEYS = {
+    "utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term",
+    "triedRedirect", "r", "ref", "src", "source", "share",
+}
+
+# Generic subject patterns that should trigger title fallback. Substack share
+# links often arrive with subject `P 195466534` (the raw post ID) instead of
+# the article title — treat those as generic.
+GENERIC_SUBJECT_PATTERNS = [
+    re.compile(r"^P\s+\d+$", re.IGNORECASE),
+    re.compile(r"^p-\d+$", re.IGNORECASE),
+]
+GENERIC_SUBJECT_LITERALS = {"research", "fwd:", "fwd", "fw:", "fw", "re:", "re"}
+
+
+def is_generic_subject(s: str) -> bool:
+    if not s:
+        return True
+    s = s.strip()
+    if s.lower() in GENERIC_SUBJECT_LITERALS:
+        return True
+    return any(p.match(s) for p in GENERIC_SUBJECT_PATTERNS)
+
+
+def strip_tracking_params(url: str) -> str:
+    if "?" not in url:
+        return url
+    base, qs = url.split("?", 1)
+    keep = []
+    for pair in qs.split("&"):
+        if not pair:
+            continue
+        k = pair.split("=", 1)[0]
+        if k in TRACKING_PARAM_KEYS:
+            continue
+        keep.append(pair)
+    return base + ("?" + "&".join(keep) if keep else "")
+
+
+@lru_cache(maxsize=2048)
+def canonicalize_url(url: str) -> str:
+    """Follow redirects + strip tracking params for known short-link patterns.
+    Returns the original URL on network failure so the pipeline never blocks."""
+    if not url or not any(p.match(url) for p in URL_SHORT_PATTERNS):
+        return url
+    try:
+        # HEAD is faster but Substack 405s on some shapes — fall back to GET.
+        try:
+            r = httpx.head(url, follow_redirects=True, timeout=10.0)
+            if r.status_code >= 400:
+                raise httpx.HTTPError(f"HEAD {r.status_code}")
+        except (httpx.HTTPError, httpx.RequestError):
+            r = httpx.get(url, follow_redirects=True, timeout=10.0)
+        return strip_tracking_params(str(r.url))
+    except Exception as e:
+        print(f"  WARN: canonicalize failed for {url}: {e}")
+        return url
+
+
+def slug_from_url(url: str) -> str:
+    """Pull a human-readable title slug from a (canonical) URL's last path segment."""
+    slug = url.rstrip("/").split("/")[-1].split("?")[0]
+    # Trim Substack's `p-<id>-` prefix if present
+    slug = re.sub(r"^p-\d+-?", "", slug)
+    if len(slug) < 5:
+        return ""
+    return slug.replace("-", " ").replace("_", " ").title()[:120]
+
+
 def get_pdf_parts(payload):
     """Find all PDF attachment parts in the email."""
     pdfs = []
@@ -217,7 +302,8 @@ def parse_email(service, msg):
     urls = extract_urls(body)
 
     # If subject is empty or generic after stripping, try to extract title from body content
-    if not clean_subject or clean_subject.lower() in ("research", "fwd:", "fwd", "fw:", "fw", "re:", "re"):
+    if is_generic_subject(clean_subject):
+        clean_subject = ""
         # Try to find a heading in the body (markdown # or first meaningful line)
         for line in body.split("\n"):
             line = line.strip()
@@ -228,12 +314,13 @@ def parse_email(service, msg):
             if len(line) > 15 and not line.startswith("http") and not line.startswith("Sent from"):
                 clean_subject = line[:120]
                 break
-        # If still generic, try to extract from URL slug
-        if not clean_subject or clean_subject.lower() in ("research",):
+        # If still generic, canonicalize the URL and use its slug (much more
+        # meaningful than a raw `p-<id>` share-link slug).
+        if is_generic_subject(clean_subject):
             for u in urls:
-                slug = u.rstrip("/").split("/")[-1].split("?")[0]
-                if len(slug) > 5:
-                    clean_subject = slug.replace("-", " ").replace("_", " ").title()[:120]
+                slug = slug_from_url(canonicalize_url(u))
+                if slug:
+                    clean_subject = slug
                     break
         if not clean_subject:
             clean_subject = "Untitled Research"
@@ -300,6 +387,21 @@ def get_existing_gmail_ids(table="kb_articles"):
     return set()
 
 
+def get_existing_source_urls(table="kb_articles"):
+    """Pull (gmail_id, source_url) pairs for canonical-URL dedup."""
+    r = httpx.get(
+        f"{SUPABASE_URL}/rest/v1/{table}?select=gmail_id,source_url&source_url=not.is.null",
+        headers={
+            "apikey": SUPABASE_KEY,
+            "Authorization": f"Bearer {SUPABASE_KEY}",
+        },
+        timeout=30,
+    )
+    if r.status_code == 200:
+        return [(row["gmail_id"], row["source_url"]) for row in r.json()]
+    return []
+
+
 def upsert_to_supabase(table, record):
     r = httpx.post(
         f"{SUPABASE_URL}/rest/v1/{table}",
@@ -316,6 +418,53 @@ def upsert_to_supabase(table, record):
         print(f"  ERROR inserting into {table}: {r.status_code} {r.text}")
         return False
     return True
+
+
+# ─── Followups ────────────────────────────────────────
+FOLLOWUPS_PATH = SCRIPT_DIR / "followups.json"
+
+
+def check_followups(new_titles):
+    """Scan followups.json: print any open items, and flag any whose
+    trigger_regex matches a title ingested this run. Auto-close matched items."""
+    if not FOLLOWUPS_PATH.exists():
+        return
+    try:
+        data = json.loads(FOLLOWUPS_PATH.read_text(encoding="utf-8"))
+    except Exception as e:
+        print(f"\nWARN: followups.json unreadable: {e}")
+        return
+
+    items = data.get("items", [])
+    open_items = [x for x in items if x.get("status") == "open"]
+    if not open_items:
+        return
+
+    print("\n─── Open followups ───")
+    changed = False
+    for it in open_items:
+        rx = it.get("trigger_regex")
+        match = None
+        if rx and new_titles:
+            try:
+                pat = re.compile(rx)
+                for t in new_titles:
+                    if pat.search(t):
+                        match = t
+                        break
+            except re.error as e:
+                print(f"  WARN: bad regex in followup {it.get('id')}: {e}")
+        marker = "✓ MATCHED" if match else "·"
+        print(f"  {marker} [{it.get('id')}] {it.get('note', '')[:90]}")
+        if match:
+            print(f"     → matched newly-ingested: {match}")
+            it["status"] = "closed"
+            it["closed_at"] = datetime.now(timezone.utc).date().isoformat()
+            it["closed_by_title"] = match
+            changed = True
+    if changed:
+        FOLLOWUPS_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+        print("  (followups.json updated — matched items auto-closed)")
 
 
 # ─── Main ─────────────────────────────────────────────
@@ -356,8 +505,17 @@ def main():
     existing = get_existing_gmail_ids(table_name)
     print(f"Already ingested: {len(existing)} email(s)")
 
+    # Build canonical-URL → gmail_id map from existing rows for cross-share-link
+    # dedup (e.g., substack.com/home/post/p-X and open.substack.com/pub/Y/p/X
+    # both resolve to the same canonical post).
+    canonical_to_gmail = {}
+    for gid, surl in get_existing_source_urls(table_name):
+        c = canonicalize_url(surl)
+        canonical_to_gmail.setdefault(c, gid)
+
     new_count = 0
     skip_count = 0
+    new_titles = []  # for followup matching at end of run
 
     for msg_meta in messages:
         msg_id = msg_meta["id"]
@@ -391,6 +549,18 @@ def main():
             skip_count += 1
             continue
 
+        # Canonicalize the primary URL (follow share-link redirects, strip
+        # tracking params) and dedup against any existing row pointing to the
+        # same article. This catches re-forwards of the same Substack post.
+        canonical_url = None
+        if parsed["urls"]:
+            canonical_url = canonicalize_url(parsed["urls"][0])
+            if canonical_url in canonical_to_gmail:
+                print(f"  SKIP (duplicate of {canonical_to_gmail[canonical_url]}): {parsed['subject'][:60]}")
+                skip_count += 1
+                continue
+            canonical_to_gmail[canonical_url] = msg_id
+
         print(f"\n{'[DRY RUN] ' if args.dry_run else ''}Processing: {parsed['subject']}")
         print(f"  Category: {parsed['category']} → {table_name}")
         print(f"  Date: {parsed['date']}")
@@ -416,7 +586,7 @@ def main():
             "gmail_id": msg_id,
             "title": parsed["subject"],
             "content": parsed["body"][:5000],
-            "source_url": parsed["urls"][0] if parsed["urls"] else None,
+            "source_url": canonical_url if canonical_url else (parsed["urls"][0] if parsed["urls"] else None),
             "source_type": "paper" if parsed["has_pdf"] else ("article" if parsed["urls"] else "note"),
             "category": parsed["category"],
             "tags": tags,
@@ -430,10 +600,14 @@ def main():
         if upsert_to_supabase(table_name, record):
             print(f"  \u2713 Saved to {table_name}")
             new_count += 1
+            new_titles.append(parsed["subject"])
         else:
             print(f"  \u2717 Failed")
 
     print(f"\nDone. New: {new_count}, Skipped (already ingested): {skip_count}")
+
+    # Print followups status (matches against newly-ingested titles + any open queue items)
+    check_followups(new_titles)
 
 
 if __name__ == "__main__":
