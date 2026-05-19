@@ -437,7 +437,26 @@
       "WebFetch(domain:shop.sandisk.com)",
       "WebFetch(domain:www.westerndigital.com)",
       "WebFetch(domain:www.samsung.com)",
-      "WebFetch(domain:product.skhynix.com)"
+      "WebFetch(domain:product.skhynix.com)",
+      "Bash(echo \"exit=$?\")",
+      "Bash(grep -rn '\\\\[\"SMH\".*\"SOXX\".*\"DRAM\"\\\\]' src)",
+      "Bash(grep -rn '=== \"SMH\"' src)",
+      "Bash(grep -rn 'BUCKET_MAP\\\\|HYPERSCALER\\\\|SEMI_SINGLES' src)",
+      "Bash(grep -rn '\"TSM\"' src)",
+      "Bash(echo \"EXIT_CODE=$?\")",
+      "Bash(tasklist //FI \"IMAGENAME eq node.exe\")",
+      "WebFetch(domain:www.sammyfans.com)",
+      "WebFetch(domain:www.sammobile.com)",
+      "WebFetch(domain:news.skhynix.com)",
+      "WebFetch(domain:www.digitimes.com)",
+      "WebFetch(domain:www.trendforce.com)",
+      "WebFetch(domain:www.agbi.com)",
+      "WebFetch(domain:www.tomshardware.com)",
+      "WebFetch(domain:conventuslaw.com)",
+      "Bash(npx vite *)",
+      "Bash(echo \"VITE_EXIT=$?\")",
+      "Bash(powershell -NoProfile -Command \"Start-Sleep -Seconds 30\")",
+      "Bash(powershell *)"
     ]
   }
 }
