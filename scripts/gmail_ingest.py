@@ -25,8 +25,10 @@ import io
 import json
 import base64
 import re
+import time
 import argparse
 import tempfile
+import contextlib
 from datetime import datetime, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -422,49 +424,96 @@ def upsert_to_supabase(table, record):
 
 # ─── Followups ────────────────────────────────────────
 FOLLOWUPS_PATH = SCRIPT_DIR / "followups.json"
+FOLLOWUPS_LOCK = SCRIPT_DIR / "followups.json.lock"
+
+
+@contextlib.contextmanager
+def _file_lock(lock_path: Path, timeout: float = 30.0):
+    """Cross-platform exclusive lock via O_CREAT|O_EXCL on a sidecar lockfile.
+    Steals locks older than `timeout` so a crashed prior run can't deadlock
+    the pipeline. Lockfile is .gitignored."""
+    start = time.time()
+    fd = None
+    while fd is None:
+        try:
+            fd = os.open(str(lock_path), os.O_CREAT | os.O_EXCL | os.O_WRONLY)
+        except FileExistsError:
+            try:
+                age = time.time() - lock_path.stat().st_mtime
+                if age > timeout:
+                    print(f"  WARN: stealing stale lock {lock_path.name} (age {age:.0f}s)")
+                    lock_path.unlink()
+                    continue
+            except FileNotFoundError:
+                continue  # race: prior holder cleaned up between stat and unlink
+            if time.time() - start > timeout:
+                raise TimeoutError(f"Could not acquire {lock_path} within {timeout}s")
+            time.sleep(0.2)
+    try:
+        os.write(fd, str(os.getpid()).encode())
+        yield
+    finally:
+        try:
+            os.close(fd)
+        except OSError:
+            pass
+        try:
+            lock_path.unlink()
+        except FileNotFoundError:
+            pass
+
+
+def _atomic_write_json(path: Path, data: dict) -> None:
+    """Write JSON via temp file + os.replace (atomic on POSIX and Windows)."""
+    tmp = path.with_suffix(path.suffix + ".tmp")
+    tmp.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    os.replace(str(tmp), str(path))
 
 
 def check_followups(new_titles):
     """Scan followups.json: print any open items, and flag any whose
-    trigger_regex matches a title ingested this run. Auto-close matched items."""
+    trigger_regex matches a title ingested this run. Auto-close matched items.
+    Read+write happen inside a file lock so concurrent ingests (e.g. from two
+    machines) don't lose each other's closed-item updates."""
     if not FOLLOWUPS_PATH.exists():
         return
-    try:
-        data = json.loads(FOLLOWUPS_PATH.read_text(encoding="utf-8"))
-    except Exception as e:
-        print(f"\nWARN: followups.json unreadable: {e}")
-        return
+    with _file_lock(FOLLOWUPS_LOCK):
+        try:
+            data = json.loads(FOLLOWUPS_PATH.read_text(encoding="utf-8"))
+        except Exception as e:
+            print(f"\nWARN: followups.json unreadable: {e}")
+            return
 
-    items = data.get("items", [])
-    open_items = [x for x in items if x.get("status") == "open"]
-    if not open_items:
-        return
+        items = data.get("items", [])
+        open_items = [x for x in items if x.get("status") == "open"]
+        if not open_items:
+            return
 
-    print("\n─── Open followups ───")
-    changed = False
-    for it in open_items:
-        rx = it.get("trigger_regex")
-        match = None
-        if rx and new_titles:
-            try:
-                pat = re.compile(rx)
-                for t in new_titles:
-                    if pat.search(t):
-                        match = t
-                        break
-            except re.error as e:
-                print(f"  WARN: bad regex in followup {it.get('id')}: {e}")
-        marker = "✓ MATCHED" if match else "·"
-        print(f"  {marker} [{it.get('id')}] {it.get('note', '')[:90]}")
-        if match:
-            print(f"     → matched newly-ingested: {match}")
-            it["status"] = "closed"
-            it["closed_at"] = datetime.now(timezone.utc).date().isoformat()
-            it["closed_by_title"] = match
-            changed = True
-    if changed:
-        FOLLOWUPS_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
-        print("  (followups.json updated — matched items auto-closed)")
+        print("\n─── Open followups ───")
+        changed = False
+        for it in open_items:
+            rx = it.get("trigger_regex")
+            match = None
+            if rx and new_titles:
+                try:
+                    pat = re.compile(rx)
+                    for t in new_titles:
+                        if pat.search(t):
+                            match = t
+                            break
+                except re.error as e:
+                    print(f"  WARN: bad regex in followup {it.get('id')}: {e}")
+            marker = "✓ MATCHED" if match else "·"
+            print(f"  {marker} [{it.get('id')}] {it.get('note', '')[:90]}")
+            if match:
+                print(f"     → matched newly-ingested: {match}")
+                it["status"] = "closed"
+                it["closed_at"] = datetime.now(timezone.utc).date().isoformat()
+                it["closed_by_title"] = match
+                changed = True
+        if changed:
+            _atomic_write_json(FOLLOWUPS_PATH, data)
+            print("  (followups.json updated — matched items auto-closed)")
 
 
 # ─── Main ─────────────────────────────────────────────
@@ -552,6 +601,10 @@ def main():
         # Canonicalize the primary URL (follow share-link redirects, strip
         # tracking params) and dedup against any existing row pointing to the
         # same article. This catches re-forwards of the same Substack post.
+        # Applies to BOTH --research and --sellside modes (the dedup map is
+        # built per-table from get_existing_source_urls(table_name)). For
+        # sellside-with-PDF, parsed["urls"] is cleared above so this block is
+        # a no-op — PDF-content dedup would be a separate concern.
         canonical_url = None
         if parsed["urls"]:
             canonical_url = canonicalize_url(parsed["urls"][0])

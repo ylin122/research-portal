@@ -38,3 +38,11 @@ shots-*.png
 
 # Sellside PDF binaries (do not commit)
 scripts/pdfs/
+
+# Python build artifacts
+**/__pycache__/
+*.pyc
+
+# Followups queue ephemera (lock + atomic-write temp)
+scripts/followups.json.lock
+scripts/followups.json.tmp
