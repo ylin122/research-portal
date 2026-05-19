@@ -5,20 +5,22 @@
 // As of 2026-05-05: agents and skills live in the ~/dotclaude git repo (no longer
 // synced via Supabase — the anon key is RLS-blocked from writes and we wanted to
 // avoid managing a service-role key per machine). dotclaude is the source of truth
-// for ~/.claude/{CLAUDE.md, settings.json, agents/, skills/}.
+// for ~/.claude/{CLAUDE.md, settings.json, agents/, skills/, hooks/}.
 //
 // Architecture:
 //   ~/dotclaude/                    ← git repo (push from any machine, pull on others)
 //     ├── CLAUDE.md
 //     ├── settings.json
 //     ├── agents/                   ← all agent .md files
-//     └── skills/                   ← all skill SKILL.md files
+//     ├── skills/                   ← all skill SKILL.md files
+//     └── hooks/                    ← audit-log hook scripts (.cjs)
 //
 //   ~/.claude/                      ← local Claude Code config (overwritten on sync)
 //     ├── CLAUDE.md                 ← copied from dotclaude
 //     ├── settings.json             ← copied from dotclaude
 //     ├── agents/                   ← copied from dotclaude
-//     └── skills/                   ← copied from dotclaude
+//     ├── skills/                   ← copied from dotclaude
+//     └── hooks/                    ← .cjs scripts copied from dotclaude (creds preserved)
 
 const fs = require('fs');
 const path = require('path');
@@ -100,6 +102,19 @@ function findRepo(name) {
     fs.cpSync(skillsSrc, skillsDst, { recursive: true, force: true });
     const skillCount = fs.readdirSync(skillsSrc).filter(f => f !== '.gitkeep').length;
     console.log(`  OK: ~/.claude/skills/ refreshed (${skillCount} skill${skillCount === 1 ? '' : 's'})`);
+  }
+
+  // Hooks — .cjs scripts only. supabase-creds.env is intentionally NOT synced:
+  // it holds machine-local Supabase creds that can differ from the dotclaude copy.
+  const hooksSrc = path.join(DOTCLAUDE, 'hooks');
+  const hooksDst = path.join(CLAUDE, 'hooks');
+  if (fs.existsSync(hooksSrc)) {
+    fs.mkdirSync(hooksDst, { recursive: true });
+    const files = fs.readdirSync(hooksSrc).filter(f => f.endsWith('.cjs'));
+    for (const f of files) {
+      fs.copyFileSync(path.join(hooksSrc, f), path.join(hooksDst, f));
+    }
+    console.log(`  OK: ~/.claude/hooks/ refreshed (${files.length} hook${files.length === 1 ? '' : 's'})`);
   }
 
   console.log('\nDone. GitHub + dotclaude up to date. No API keys required.');
