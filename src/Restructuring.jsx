@@ -30,22 +30,193 @@ function ConceptAccordion({ items }) {
 
 
 /* ═══════════════════════════════════════════════════════
+   FRAMEWORK COMPONENTS — Key Lessons (closed) vs Update Log (live)
+   ═══════════════════════════════════════════════════════ */
+
+function SectionHeader({ label, color, meta }) {
+  return (
+    <div style={{ display: "flex", alignItems: "baseline", gap: 12, marginBottom: 10 }}>
+      <div style={{ fontSize: 11, fontWeight: 700, color, letterSpacing: 1.2, textTransform: "uppercase" }}>{label}</div>
+      {meta && <div style={{ fontSize: 11, color: T_.textGhost }}>{meta}</div>}
+    </div>
+  );
+}
+
+function KeyLessons({ items }) {
+  const populated = Array.isArray(items) && items.length > 0;
+  return (
+    <div style={{ background: T_.bgPanel, border: `1px ${populated ? "solid" : "dashed"} ${populated ? T_.border : T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 20 }}>
+      <SectionHeader label="Key Lessons" color={populated ? T_.accent : T_.textGhost} meta={null} />
+      {populated ? (
+        <ol style={{ margin: 0, paddingLeft: 22, display: "flex", flexDirection: "column", gap: 8 }}>
+          {items.map((item, i) => (
+            <li key={i} style={{ fontSize: 12.5, lineHeight: 1.65, color: T_.textMid }}>{item}</li>
+          ))}
+        </ol>
+      ) : (
+        <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>
+          Lessons not captured yet — extract 3–5 portable rules this case teaches (covenant mechanics, creditor positioning, structural traps, etc.).
+        </div>
+      )}
+    </div>
+  );
+}
+
+function UpdateLog({ entries }) {
+  const populated = Array.isArray(entries) && entries.length > 0;
+  const sorted = populated
+    ? [...entries].sort((a, b) => (b.date || "").localeCompare(a.date || "")).slice(0, 3)
+    : [];
+  return (
+    <div style={{ background: T_.bgPanel, border: `1px ${populated ? "solid" : "dashed"} ${populated ? T_.border : T_.borderLight}`, borderRadius: 8, padding: 14, marginBottom: 20 }}>
+      <SectionHeader
+        label="Update Log"
+        color={populated ? T_.accent : T_.textGhost}
+        meta={populated ? `latest 3 · most recent ${sorted[0].date}` : null}
+      />
+      {populated ? (
+        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+          {sorted.map((e, i) => (
+            <div key={i} style={{ display: "flex", gap: 12, fontSize: 12.5, lineHeight: 1.6, color: T_.textMid }}>
+              <span style={{ fontFamily: "ui-monospace, Menlo, Consolas, monospace", color: T_.textDim, flexShrink: 0, fontSize: 11, paddingTop: 1, minWidth: 78 }}>
+                {e.date}
+              </span>
+              <span style={{ flex: 1 }}>{e.text}</span>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div style={{ fontSize: 12, color: T_.textGhost, fontStyle: "italic" }}>
+          No updates logged yet — append newest-first dated bullets as the situation develops.
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════
    WINDSTREAM CASE
    ═══════════════════════════════════════════════════════ */
 
 const CASES = [
-  { key: "windstream", label: "Windstream Holdings", sector: "Telecom", year: "2019", color: T_.blue },
-  { key: "envision", label: "Envision Healthcare", sector: "Healthcare", year: "2023", color: T_.purple },
-  { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: T_.green },
-  { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: T_.amber },
-  { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899" },
-  { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4" },
-  { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6" },
-  { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
-  { key: "trinseo", label: "Trinseo plc", sector: "Specialty Chemicals · ONGOING", year: "2023-26", color: "#F472B6" },
-  { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: T_.red },
-  { key: "usrenalcare", label: "U.S. Renal Care", sector: "Dialysis · LME THAT WORKED", year: "2023-25", color: "#10B981" },
+  { key: "windstream", label: "Windstream Holdings", sector: "Telecom", year: "2019", color: T_.blue, kind: "study" },
+  { key: "envision", label: "Envision Healthcare", sector: "Healthcare", year: "2023", color: T_.purple, kind: "study" },
+  { key: "serta", label: "Serta Simmons Bedding", sector: "Consumer / Mattress", year: "2023", color: T_.green, kind: "study" },
+  { key: "diebold", label: "Diebold Nixdorf", sector: "Banking / Retail Tech", year: "2023", color: T_.amber, kind: "study" },
+  { key: "jcrew", label: "J.Crew Group", sector: "Retail / Apparel", year: "2020", color: "#EC4899", kind: "study" },
+  { key: "petsmart", label: "PetSmart / Chewy", sector: "Retail / Pet", year: "2018", color: "#06B6D4", kind: "study" },
+  { key: "incora", label: "Wesco / Incora", sector: "Aerospace / Distribution", year: "2023-25", color: "#14B8A6", kind: "study" },
+  { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308", kind: "study" },
+  { key: "xerox", label: "Xerox Holdings", sector: "Document / Print", year: "2025-26", color: T_.red, kind: "live" },
+  { key: "newfold", label: "Newfold Digital", sector: "Web Hosting / Domains", year: "2025-26", color: "#A78BFA", kind: "live" },
+  { key: "cdk", label: "CDK Global", sector: "Auto Dealer SaaS", year: "2025-26", color: "#FB923C", kind: "live" },
+  { key: "quest", label: "Quest Software", sector: "IT Mgmt SaaS", year: "2024-25", color: "#38BDF8", kind: "live" },
+  { key: "usrenalcare", label: "U.S. Renal Care", sector: "Dialysis (LME that worked)", year: "2023-25", color: "#10B981", kind: "study" },
 ];
+
+// Per-case Lessons (for kind: "study") and Updates (for kind: "live").
+// Sourced from cross-verified third-party research (Reorg, 9fin, CreditSights, Third Bridge)
+// run 2026-05-20. Empty entries render the placeholder/empty-state.
+const CASE_META = {
+  windstream: {
+    lessons: [
+      "A single litigious holdout in a small unsecured tranche can detonate an entire capital structure. Aurelius held only the 6.375% 2023 notes (~$700M of ~$13B total debt) yet forced acceleration on every other tranche via a sale-leaseback covenant default ruling. Read every covenant in every indenture — including ones that 'shouldn't matter.'",
+      "A REIT spin-off of mission-critical operating assets, labeled as tax/dividend optimization, IS a sale-leaseback for indenture purposes. The 2015 Uniti spin locked Windstream into rigid triple-net rent while it needed to invest in fiber; the 2017 tax cut later erased the original benefit. Sale-leasebacks of essential infrastructure are bankruptcy-remote in name only.",
+      "Being secured means nothing if senior liens consume the collateral. 2L was secured but recovered ~0% because 1L only recovered ~65% — zero residual collateral value remained. Recovery = collateral coverage minus senior-claim absorption, not lien priority in isolation.",
+    ],
+  },
+  envision: {
+    lessons: [
+      "Drop-down LMEs don't have to enrich ad-hoc lenders — they can vaporize value into the burning OpCo. Envision raised ~$1.1B at AmSurg unsub and pushed it up to Remainco to fund cash burn; non-ad-hoc lenders lost ~53% of value, and Ch.11 still came 13 months later. LMEs that buy time without fixing the operating thesis are short-term solutions, not solutions.",
+      "Two-step LME stacks compound creditor harm — drop-down + uptier hit different cohorts. Envision ran an April 2022 AmSurg drop-down then an August 2022 OpCo uptier; the $153M of non-participating Remainco term lenders sued post-filing. Excluded-lender litigation is the structural backstop, not the covenant.",
+      "Regulatory/payer cash-flow shocks (No Surprises Act) can turn an LBO underwriting wrong faster than rate hikes. Remainco EBITDA collapsed $443M YoY to negative $146M in 2022 as surprise-billing economics inverted; IDR arbitration is still being litigated through 5th Cir. en banc. Sponsor underwriting that depended on out-of-network leverage was structurally obsoleted.",
+    ],
+  },
+  serta: {
+    lessons: [
+      "'Open market purchase' is NOT a debt-for-debt exchange. The 5th Circuit (Dec 31, 2024) held an OMP exception covers only secondary-market purchases of syndicated loans, not privately-negotiated cashless rollovers; otherwise the Dutch-auction exception would be surplusage. Define the term, or don't rely on it.",
+      "'Serta blockers' are now standard covenant tech, distinct from J.Crew blockers. Post-Serta credit agreements explicitly bar OMP-exception uptiers; J.Crew blockers restrict IP drop-downs / collateral leakage. Both must be drafted — the 5th Cir. flagged 'Serta blocker' by name.",
+      "Plan-confirmed indemnities can be excised on appeal — equitable mootness offers no protection. The 5th Cir. struck the participating lenders' indemnity under §502(e)(1)(B); SCOTUS declined to take up the PTL lenders' cert petition on Nov 10, 2025. Plan settlements cannot reliably insulate LME-related liability post-confirmation.",
+    ],
+  },
+  diebold: {
+    lessons: [
+      "Prepack equity economics reward the DIP backstop, not the fulcrum class itself. DIP backstop parties took 27% of post-reorg equity (~$208M / ~16ppt on a $1.25B DIP, ~25% IRR), leaving non-backstop 1L with ~71.5%. Bet on backstops, not bonds, in well-organized prepacks.",
+      "'Business decisions' — paying out-of-the-money classes nominal recoveries — buy plan speed and supplier continuity. Diebold's stub 1L holdouts came 'back into the fold' and $72M of 8.5% stub unsecureds was cashed out at ~4.5% explicitly to minimize order disruption. Emerged in ~10 weeks with ~30% market share preserved.",
+      "In secular-decline industries, do not credit management projections — value off channel checks. CreditSights set $200-300M EBITDA via channel checks (RBR ATM data, SF Fed cash-usage, NCR/Hyosung) vs. debtor advisor Ducera's $2.15-2.45B EV; market priced 1L at ~20c at filing, vindicating the channel-check approach. Channel checks beat management forecasts in distressed industries.",
+    ],
+  },
+  jcrew: {
+    lessons: [
+      "The 'J.Crew trapdoor' is mechanically a pass-through investment-basket move, not a covenant gap. The 2017 transaction transferred IP (the J.Crew brand) to an unrestricted subsidiary via investment-basket capacity; the brand left the credit group without any explicit IP-transfer prohibition being breached.",
+      "'J.Crew blockers' are now standard covenant tech — but the protection depends on the amendment-vote threshold protecting it. STG Logistics' 2024 LME (Sixth Amendment) stripped its J.Crew blocker. A blocker without supermajority protection is amendable; check both the blocker AND the vote threshold to amend it.",
+      "J.Crew is the drop-down (asset-stripping) archetype, distinct from Serta-style uptier. Trapdoors move assets OUT via investment baskets; uptiers move debt UP in priority by amending lien-subordination via majority votes. Both exploit covenant flexibility but at different drafting points — modern docs must be scored on both axes independently.",
+    ],
+  },
+  petsmart: {
+    lessons: [
+      "Equity/stock distributions to the parent are mechanically different from IP-licensing strips — they exploit different covenant baskets. PetSmart used a board-declared dividend of 20% Chewy stock up to Argos plus a capital contribution of 16.5% to an unrestricted sub (June 1, 2018) — using restricted-payments / permitted-investment capacity, not IP carveouts. Screen baskets independently.",
+      "The unrestricted-subsidiary concept itself is the structural defect, not just basket sizing. Post-PetSmart and Aston Martin (late 2020), Covenant Review formally recommended eliminating the unrestricted-sub concept entirely — the 'J.Crew blocker' approach alone was insufficient. Block the entity type, not just one path of value migration.",
+      "Asset stripping does not require bankruptcy to be a credit-defining event. PetSmart never filed Ch.11, but unsecured bonds traded in the 40s by 2018-19 before the Chewy IPO lifted them out of distress. Covenant-only credits can lose recovery optionality entirely without ever defaulting; the credit event is the maneuver itself.",
+    ],
+  },
+  incora: {
+    lessons: [
+      "'Effect of' sacred-rights language is now narrow after Wesco. Judge Crane (SDTX, Dec 2025) read 'effect' to mean the IMMEDIATE effect of the amendment in isolation, not the multi-step chain — rejecting Bankruptcy Judge Isgur's 'domino' theory. Indentures must explicitly block vote-rigging (a 'Wesco protection'), not rely on broad effects language.",
+      "Vote-rigging via new-issue dilution is now sanctioned in SDTX. Issuing new notes with simple-majority consent to manufacture a 66⅔% supermajority for lien-stripping is permissible if each step independently complies. Minority lenders warn this makes any supermajority threshold below unanimity defeasible — and Serta + Incora together establish a textualist rule: the precise indenture language controls; no implied sacred rights.",
+      "Remedy risk is asymmetric for non-participating lenders. Crane held that even a breach yields only an unsecured damages claim, not lien restoration. 56% / 71% of post-LME companies file Ch.11 within 2 / 3 years — so the money-damages remedy against an already-insolvent debtor is functionally worthless.",
+    ],
+  },
+  caesars: {
+    // Note: 4 third-party tools (Reorg / 9fin / CreditSights / Third Bridge) have shallow
+    // article archives that don't reach back to 2015-17. Lessons below derive from the
+    // primary record (Davis examiner report, confirmed plan, court opinions) and the
+    // user-curated CaesarsCase() content in this file.
+    lessons: [
+      "Pre-petition asset transfers from a distressed entity to sister affiliates create fraudulent transfer liability that compels parent contribution. Apollo/TPG moved Strip real estate (~$4.75B to CERP) and four operating properties (~$2.2B to CGP) out of CEOC pre-filing; junior creditors weaponized $5.1B in fraudulent transfer claims against parent CEC to extract a ~$5B contribution to the plan. 'Good-bad splits' don't extinguish creditor claims — they relocate the litigation surface.",
+      "Court-appointed examiner findings transform plan negotiations. Examiner Richard Davis (Goldin Associates) was appointed March 2015; his report finding likely fraudulent transfers shifted leverage from CEOC's debtor plan to a junior-creditor plan with $5B+ parent contribution. Examiner appointment is the debtor's worst pre-confirmation outcome — sponsors fight hard against it for exactly this reason.",
+      "Parent contribution is the settlement currency when affiliate transfers are vulnerable. CEC ultimately contributed ~$5B (cash + equity in reorganized Caesars + structural concessions) to resolve the CEOC plan, alongside the VICI Properties REIT spin that provided creditor exit liquidity. Sponsors underwriting LBO downside must price the contingent liability that the PARENT, not the OpCo, ends up bearing the settlement cost.",
+    ],
+  },
+  usrenalcare: {
+    lessons: [
+      "High lender consent ex ante is the differentiator between an LME that resolves and one that ends up litigated. USRC closed the July 2023 uptier with 83.5% of term lenders + 68% of unsecured noteholders pre-committed, then opened identical terms to all creditors via second-stage joinder — vs. Envision's exclusionary 56% ad-hoc backstop that seeded post-filing litigation. The non-litigation premium is built ex ante, not negotiated ex post.",
+      "'Extend and pretend' only works if the operating cliff is genuine and reversible. USRC bought ~5 years (2026 → 2028 wall) into a recovering EBITDA setup (Q1'24 +35% to $450M; Moody's positive Dec '25; S&P upgraded to B- Nov '25). Envision and Instant Brands extended into structural / unfixable cash burn and filed within 6-12 months. The diagnosis must match the medicine.",
+      "Healthcare reimbursement is the LME's exogenous risk — capital structure can't fix it. The TDAPA cliff and CMS bundle reset are the dominant 2027-28 risks; an Octus Covenants score of 2.65 on draft Amendment No. 2 (Nov 2025) suggests a second, lighter-touch consensual amendment is already being staged into the 2028 wall.",
+    ],
+  },
+  xerox: {
+    updates: [
+      { date: "2026-05-14", text: "Czech firm Starteepo files 13D disclosing a 5.15% economic stake (~$14M cost basis) and publishes activist letter pushing top-line stabilization, margin expansion, and deleveraging via JV proceeds, discounted buybacks, warrant exchanges. Caveat: Starteepo manages only ~$29M AUM; its 2027 EBITDA estimate ($894M) is well above consensus ($716M) and Reorg's ($646M). Single-source flag." },
+      { date: "2026-04-30", text: "Q1'26 beat: revenue $1.846B (consensus $1.747B), pro forma -3.7% YoY (improving from Q4'25 -5.8%); FCF -$165M (seasonal). Repurchased $101M of 2028 notes at 44.55 (~$45M cash, ~55% discount, $56M discount captured) funded from IPCo JV proceeds. Guided to 1.5x deleveraging to 5.6x by year-end from 7x pro forma." },
+      { date: "2026-03-30", text: "Bandrowczak steps down; COO Louie Pastor named CEO effective immediately (ex-Icahn deputy GC, joined Xerox 2018). FY'26 guidance reaffirmed. Followed Mar 13 Moody's downgrade to Caa2 (neg.) and Mar 27 counsel switch to Simpson Thacher from Kirkland." },
+    ],
+  },
+  newfold: {
+    updates: [
+      { date: "2026-03-19", text: "Q4'25 call: repurchased post-LME bonds and loans using MarkMonitor sale proceeds (>$300M net); guided to flat FY'26 revenue. Q4'25 EBITDA fell 6.8-8% YoY to ~$99.5M on revenue -4.4%. Post-exchange deleveraging is real but operating trajectory remains negative — refi window pivots on a 2027 inflection." },
+      { date: "2026-01-15", text: "Fitch downgraded IDR to 'RD' on completion of the distressed exchange (closed Jan 9, 2026), then re-rated to 'B-' Stable; first-out at 'BB-'/RR1 and second-out at 'CCC'/RR6. Debt cut from $3.5B to $3.28B; projected 2026 leverage ~7.0x. S&P followed Jan 26 with upgrade to 'CCC+' Stable. Cap structure still viewed as unsustainable." },
+      { date: "2025-12-09", text: "Launched LME, exchanging existing debt into first-out / second-out tranches; took $102M of new-money TL from ad hoc group; extended maturities to 2029. S&P cut to 'D' and Moody's to 'D-PD' same day. Definitively averted the Feb 2026 RCF wall and reset the cap structure into a stressed-but-extended posture." },
+    ],
+  },
+  cdk: {
+    updates: [
+      { date: "2026-04-27", text: "Minority creditor group retained Cadwalader after the majority co-op installed a 13.5% cap on initial-party allowance with potentially unlimited carve-out premium for the steerco — signaling intra-creditor conflict that complicates LME execution. Two-side litigation risk now real before any deal is announced." },
+      { date: "2026-04-24", text: "CDK confirmed retention of Weil Gotshal (legal) + PJT Partners (financial) to evaluate balance-sheet options including an LME. 8% 1L notes trading ~54-66; leverage ~9.3x; Q4 EBITDA -15% YoY to $127M. Company-side LME engagement formalized." },
+      { date: "2026-04-23", text: "Majority creditor co-op signed (Gibson Dunn + Houlihan Lokey representing >70% of debt) ahead of LME negotiations with CDK. Loan had fallen from mid-80s to low-60s on AI-disruption fears (Tekion competition) layered on existing litigation / EBITDA deterioration. Lender side of LME formalized." },
+    ],
+  },
+  quest: {
+    // Note: agent reported no Quest-specific developments in past 6 months across all 4 sources;
+    // the most-recent dated cluster sits June 2025. Marking as stale via 11-month-old dates.
+    updates: [
+      { date: "2025-06-16", text: "S&P upgraded back to 'CCC+' Stable post-LME close. No new dated developments from any of the 4 third-party sources in the 11+ months since — situation appears to have stabilized into a stressed-but-extended posture. Flag for re-check if new activity surfaces." },
+      { date: "2025-06-10", text: "Refinanced cap structure (announced + closed May 30, 2025 per Quest/Clearlake press release; instrument issue date 2025-06-10): new $1.856B 4.25% 2029 TLB at OID-OL Intermediate I, LLC + $350M new-money TLB; revolver extended to Nov 2028. Clearlake rolled first-lien holdings into a new fourth-out tranche at par (Transacted.io, 9fin) — sponsor self-subordination, not new equity." },
+      { date: "2025-06-04", text: "S&P downgraded Quest to 'SD' on completion of the non-pro-rata LME. Last documented credit event before the ~11-month silence; sponsor (Clearlake) and creditors achieved consensual extension." },
+    ],
+  },
+};
 
 function WindstreamCase() {
   const [detail, setDetail] = useState(null);
@@ -3039,9 +3210,9 @@ function IncoraCase() {
     ),
     craneReversal: (
       <DetailPanel title="District Court Reversal — Judge Crane (Jan 2025 Preview / Dec 2025 Full Opinion)" onClose={() => setDetail(null)}>
-        <p><strong>The reversal came in two stages, 11 months apart:</strong></p>
-        <p><strong>January 2025 — the preview:</strong> U.S. District Judge <strong>Randy Crane</strong> (S.D. Texas) surprised the restructuring community with an oral/preview ruling indicating he would reverse the core of Isgur's July 2024 holding. The oral ruling didn't contain the full legal reasoning — practitioners had to wait.</p>
-        <p><strong>December 8-9, 2025 — the full written opinion:</strong> Crane released his complete written opinion with detailed legal reasoning, 11 months after the preview. Two separate holdings:</p>
+        <p><strong>The reversal came in two stages, ~3 months apart:</strong></p>
+        <p><strong>September 12, 2025 — the preview:</strong> At a status conference, U.S. District Judge <strong>Randy Crane</strong> (S.D. Texas) surprised the restructuring community with an oral/preview ruling indicating he would reverse the core of Isgur's July 2024 holding. The oral ruling didn't contain the full legal reasoning — practitioners had to wait.</p>
+        <p><strong>December 8, 2025 — the full written opinion:</strong> Crane released his complete written opinion with detailed legal reasoning, ~3 months after the September preview. Two separate holdings:</p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
           <li><strong>Reversed Isgur's integrated-transaction doctrine:</strong> Crane rejected the bankruptcy court's determination that issuance of new notes led directly to stripping of excluded noteholders' liens. He held that the 2026 indenture's sacred rights language, read textually, did not give minority noteholders the right to block the transaction. The indenture prohibited amendments that released <em>existing collateral</em>, but did not prohibit issuing new notes that diluted existing holders' voting power. "The minority noteholders didn't have that sacred right," Crane held.</li>
           <li><strong>Dismissed the 2024/2026 noteholders' breach of contract claims</strong> entirely — a separate holding beyond the sacred-rights analysis. The contract-breach theory failed on its own terms.</li>
@@ -3094,7 +3265,7 @@ function IncoraCase() {
     blockers: (
       <DetailPanel title="Market Impact & 'Incora Blockers'" onClose={() => setDetail(null)}>
         <p><strong>The doctrinal gift and the doctrinal takeback:</strong></p>
-        <p>For ~6 months between Isgur's July 2024 ruling and Crane's January 2025 reversal, <em>Incora</em> was the single most important minority-lender precedent in modern LME. Credit agreements were being redrafted to invoke the "integrated transaction doctrine." Post-Crane, most of that enthusiasm evaporated — but the drafting changes remain.</p>
+        <p>For ~14 months between Isgur's July 2024 ruling and Crane's September 2025 preview / December 2025 reversal, <em>Incora</em> was the single most important minority-lender precedent in modern LME. Credit agreements were being redrafted to invoke the "integrated transaction doctrine." Post-Crane, most of that enthusiasm evaporated — but the drafting changes remain.</p>
         <p><strong>"Incora Blockers":</strong></p>
         <p>New indentures and credit agreements post-2023 increasingly include covenant language preventing issuers from using majority-vote supplemental indentures to <strong>mint additional notes solely for the purpose of assembling a supermajority</strong> capable of releasing collateral or subordinating non-participants. This blocks the Step 1 of the Incora playbook.</p>
         <p>Common provisions now include:</p>
@@ -3352,7 +3523,7 @@ function IncoraCase() {
           { date: "Early 2024", event: "Adversary trial. Kobre & Kim deposes Incora CFO on uptier mechanics. Minority substantially survives summary judgment. Evidence of sponsor coordination between Platinum and PSP participants surfaces in discovery.", color: T_.blue },
           { date: "Jul 10, 2024", event: "★ ISGUR BENCH RULING: the March 2022 uptier breached both the 2026 and 2027 indentures. Adopts 'integrated transaction doctrine' — first post-trial bankruptcy court ruling to invalidate a major uptier. Restores 2026 lenders' liens. Separately holds Platinum's 2027 participation violated pro rata treatment.", color: T_.green },
           { date: "Dec 27, 2024", event: "Plan confirmed. Global settlement resolves adversary. Despite Isgur's ruling, PSP takes ~98.4% of reorganized equity + $420M convertible takeback notes. Minority gets ~1.6% equity + $7.5M cash. Old Platinum equity cancelled 100%.", color: T_.amber },
-          { date: "Jan 2025", event: "★ CRANE PREVIEW RULING: U.S. District Judge Randy Crane surprises practitioners with an oral/preview ruling indicating he will reverse core of Isgur's decision. Full reasoning not released.", color: T_.red },
+          { date: "Sep 12, 2025", event: "★ CRANE PREVIEW RULING: At a status conference, U.S. District Judge Randy Crane surprises practitioners with an oral/preview ruling indicating he will reverse core of Isgur's decision. Full reasoning not released.", color: T_.red },
           { date: "Jan 31, 2025", event: "EMERGENCE. ~20 months in Ch.11. Majority owned by former 1L secured noteholders (PSP Group). $100M exit debt. Incora continues as private aerospace distributor.", color: T_.green },
           { date: "Dec 8-9, 2025", event: "★ CRANE FULL OPINION (11 months after preview): written reversal released. Two holdings: (1) rejects integrated transaction doctrine — 2026 indenture sacred rights, read textually, don't block the uptier; (2) DISMISSES 2024/2026 noteholders' breach of contract claims entirely. Uptier 'perfectly proper' as written.", color: T_.red },
           { date: "Dec 10, 2025", event: "Octus Covenants frames the opinion: 'Breaking the Chain — District Court's Wesco Opinion Limits Effect of Sacred Rights Protections, a Boon for Vote-Rigging and Other Multi-Step LMEs.' Signals the broader market takeaway — Crane's narrow reading makes multi-step LMEs harder to attack.", color: T_.amber },
@@ -3839,744 +4010,979 @@ function CaesarsCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
-   XEROX HOLDINGS — ONGOING LME (2025-26)
-   The first "non-subsidiary" drop-down financing.
+   LIVE-TRACKING STUBS — Newfold / CDK / Quest
+   Minimal context cards; situation tracked via Update Log above.
    ═══════════════════════════════════════════════════════ */
 
-/* ═══════════════════════════════════════════════════════
-   TRINSEO CASE — pari-plus LME, ongoing as of Apr 2026
-   ═══════════════════════════════════════════════════════ */
-
-function TrinseoCase() {
+function NewfoldCase() {
   const [detail, setDetail] = useState(null);
   const toggle = (k) => setDetail(detail === k ? null : k);
 
   const panels = {
-    business: (
-      <DetailPanel title="The Business — Specialty Chemicals in Cyclical Decline" onClose={() => setDetail(null)}>
-        <p><strong>Trinseo plc</strong> (NYSE: TSE) is a specialty chemicals producer focused on engineered polymers (ABS, polystyrene), plastics solutions, and methacrylates (PMMA). Spun out of Dow in 2010 (initially as Styron); IPO'd 2014. End markets: <strong>autos, building &amp; construction, consumer durables, packaging</strong> — all deeply cyclical, all under pressure simultaneously since 2023.</p>
-        <p><strong>The structural problem:</strong> Asian polymer producers (China, South Korea, Taiwan) built capacity through the 2010s assuming continuous Chinese demand growth. Post-2022, China demand softened, capacity utilization in Asia dropped, and surplus product was redirected to North America and Europe — directly into Trinseo's footprint.</p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>ABS imports into Europe from South Korea: <strong>+18% YoY 1H 2025; +26% YoY Q2 2025</strong></li>
-          <li>ABS imports into the US from South Korea + Taiwan: <strong>+23% YoY</strong>; from Mexico (transshipment): <strong>+75%</strong></li>
-          <li>FY2025 Adj EBITDA guidance: cut from $200M → <strong>$167–177M</strong></li>
-          <li>FY2025 FCF guidance: <strong>negative $140M</strong> (improved from $-165M)</li>
-          <li>Year-end 2025 leverage (Moody's): <strong>{">"}10x</strong>; S&amp;P projects <strong>~15x</strong> by FY-end</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>Margin sensitivity:</strong> Per CEO Frank Bozich on Q3 2025 call — a 10% volume increase translates into ~<strong>$100M of EBITDA improvement</strong>. The business has high fixed costs and operating leverage works both directions; without volume recovery, no path to deleveraging through operations.</p>
-        <p style={{ color: T_.red }}><strong>European cost disadvantage:</strong> High-cost European production (vs. Asia and US Gulf Coast) is the persistent margin headwind Moody's cites. Closures of virgin MMA plants in Italy + polystyrene production in Germany announced — $30M annual EBITDA improvement / $10M annual capex reduction once executed; cash close costs of <strong>$60–70M</strong>, with $22M expensed in 2026.</p>
-        <p style={{ color: T_.amber }}><strong>The bull case (CEO's five triggers):</strong> trade certainty, continued Fed cuts, Ukraine resolution, Asian capacity rationalization, EU Chemical Industry Action Plan support. None are within company control. Substantial cash burn over 2024–2025 plus interest coverage <strong>{"<"}1.0x</strong> are what made the LME inevitable.</p>
+    sponsors: (
+      <DetailPanel title="Clearlake Capital + Siris Capital — Sponsors" onClose={() => setDetail(null)}>
+        <p>Clearlake Capital + Siris Capital co-own Newfold Digital. The LBO closed Feb 2021 via take-private of Endurance International Group and combination with Web.com (already a Clearlake/Siris portfolio company). 9fin's alias list references <strong>Endure Digital Investment Holdings, L.P.</strong> as the likely sponsor-level LP — unverified across all four sources.</p>
+        <p style={{ color: T_.red }}><strong>LME equity contribution: NONE DISCLOSED.</strong> Per all 4 third-party tools, neither Clearlake nor Siris contributed new equity to the December 2025 / January 2026 LME. No source reports they bought back debt at distressed levels either. Fitch explicitly flags: "PE ownership likely to sustain financial leverage … prioritize growth investment over voluntary debt repayment."</p>
+        <p style={{ color: T_.amber }}>The MarkMonitor sale proceeds (&gt;$300M) flowed to the corporate group, not to sponsor — used for opportunistic post-LME debt buybacks at material discounts.</p>
       </DetailPanel>
     ),
-    preLme: (
-      <DetailPanel title="Pre-LME Capital Structure (mid-2023)" onClose={() => setDetail(null)}>
-        <p>Before September 2023, Trinseo's debt stack was a relatively clean post-spin structure with ~$2.4B of funded debt against deteriorating earnings. The 2024 + 2025 maturity wall was the immediate trigger.</p>
-        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}>
-          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
-            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Size</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Maturity</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Coupon</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Lien</th>
-          </tr></thead>
-          <tbody>
-            {[
-              { t: "Senior Secured Term Loan", s: "$660M", m: "May 2024", c: "SOFR+250", l: "1L on US/Lux assets", col: T_.red },
-              { t: "5.375% Sr Secured Notes", s: "$500M", m: "Sep 2025", c: "5.375%", l: "1L on US/Lux assets", col: T_.red },
-              { t: "5.125% Sr Unsecured Notes", s: "$450M", m: "Apr 2029", c: "5.125%", l: "Unsecured", col: T_.amber },
-              { t: "5.250% Sr Unsecured Notes", s: "$447M", m: "Apr 2031", c: "5.250%", l: "Unsecured", col: T_.amber },
-              { t: "ABL Revolver", s: "$375M", m: "2026", c: "Floating", l: "1L ABL collateral", col: T_.green },
-              { t: "AR Securitization", s: "$150M", m: "Rolling", c: "Floating", l: "AR pool", col: T_.green },
-            ].map((r, i) => (
-              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
-                <td style={{ padding: "5px 8px", color: r.col, fontWeight: 600 }}>{r.t}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.s}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.m}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.c}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.l}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p style={{ color: T_.red, marginTop: 12 }}><strong>The trigger:</strong> $660M TL maturing May 2024 + $500M of secured notes maturing Sep 2025 = <strong>~$1.16B of secured debt due within 24 months</strong>. With Q3 2024 gross leverage already at <strong>12.2x</strong>, normal-course refinancing was off the table. The September 2023 transaction was designed to clear both maturities in one move.</p>
-        <p style={{ color: T_.amber }}><strong>Documentation enabling the LME:</strong> The 2021-vintage credit agreement permitted (i) incremental pari-passu debt against existing collateral subject to MFN + an incurrence basket, (ii) "excluded contributions" capacity allowing equity contributions to be re-routed into unrestricted subs, (iii) post-closing redesignation of restricted subs as unrestricted, and (iv) "limited" foreign-sub guarantees with carve-outs for §956 / CFC tax leakage. None of these were unusual at the time — the combination is what enabled the pari-plus.</p>
+    topco: (
+      <DetailPanel title="Newfold Digital Holdings Group, Inc. — Rated TopCo" onClose={() => setDetail(null)}>
+        <p>Publicly-rated TopCo. Fitch's Jan 15, 2026 action treats it as the rated parent with <strong>B-/Stable IDR</strong>.</p>
+        <p><strong>Pre-LME issuance:</strong> $380M RCF (matured Feb 2026) and $515M 11.75% 1L Secured Notes (issued Oct 2023 for a sponsor dividend recap — added leverage at a deteriorating moment).</p>
+        <p><strong>Post-LME:</strong> sits at the TOP of the rated hierarchy and is structurally subordinated to obligations at the new intermediate HoldCo and OpCo levels. Carries the <strong>Second-out TL ($543M) + Second-out Notes ($489M)</strong> — Fitch rates these CCC/RR6.</p>
+        <p style={{ color: T_.amber }}>9fin aliases group "Newfold Digital Holdings Group", "Endurance International Group Holdings", and "Endure Digital" — the entity has been renamed multiple times since the 2021 take-private.</p>
       </DetailPanel>
     ),
-    sept2023: (
-      <DetailPanel title="The September 2023 Pari-Plus Transaction (the original)" onClose={() => setDetail(null)}>
-        <p>Octus / Reorg explicitly classifies this as a <strong>"pari-plus"</strong> transaction. It is the textbook deal that defined the structure — Trinseo paired a pari-passu intercompany loan with a sidecar collateral pool routed through unrestricted subs and foreign guarantors.</p>
-        <p><strong>The new debt issued (Sep 8, 2023):</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>$1.077B new-money 1L term loan</strong> at <strong>SOFR+9.66%</strong>, maturing <strong>May 2028</strong>, with PIK-toggle interest feature</li>
-          <li>Issuers: <strong>Trinseo LuxCo Finance SPV Sàrl</strong> (Lux) + <strong>Trinseo NA Finance SPV LLC</strong> (US) — two new finance SPVs</li>
-          <li>Anchor lenders: <strong>Oaktree, Angelo Gordon, Apollo</strong></li>
-          <li>Use of proceeds: redeem $660M 2024 TL in full + ~75% of $500M 5.375% 2025 SSNs ($385M)</li>
-        </ul>
-        <p><strong>The "pari" leg — $948.4M intercompany TL:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Trinseo LuxCo Finance SPV Sàrl made an intercompany TL to <strong>Trinseo Holding Sàrl</strong> (fka Trinseo Materials Operating SCA) and <strong>Trinseo Materials Finance Inc.</strong> — the existing 1L TL borrowers</li>
-          <li>This intercompany TL ranks <strong>pari passu</strong> with the existing 1L TLs against the existing collateral pool. Existing lenders were <em>not</em> formally subordinated</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>The "plus" leg — sidecar collateral via unrestricted sub:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>A separate <strong>$128.9M intercompany TL</strong> from Trinseo LuxCo Finance SPV Sàrl → <strong>Trinseo Luxco Sàrl</strong> — used to fund an equity contribution classified as "excluded contributions"</li>
-          <li>The proceeds were routed into <strong>Trinseo Finance SPV LLC</strong>, designated as an <strong>unrestricted subsidiary</strong> — and Trinseo's <strong>50% stake in Americas Styrenics LLC JV</strong> was dropped into it</li>
-          <li>The new pari-plus tranche received <strong>exclusive lien</strong> on the JV stake — an asset existing 1L lenders no longer had any claim against</li>
-          <li>Plus <strong>"limited" guarantees</strong> from a designated set of foreign subs (carve-outs preserved §956 / CFC tax efficiency)</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>Net economic effect:</strong> Pari-plus lenders got pari-passu treatment in the existing collateral pool <em>plus</em> an exclusive collateral side pocket (Americas Styrenics JV + foreign guarantor support). Existing 1L lenders kept the same lien rank but watched their relative collateral coverage shrink. The "pari" label is technically accurate; the recovery math is dominated by the "plus" leg.</p>
-        <p style={{ color: T_.textMid }}><strong>Reorg's framing (Jan 16, 2026):</strong> "The new financing included a number of interesting features including a <em>'pari-plus' double dip</em>, a drop-down of assets into an unrestricted subsidiary and a PIK-interest toggle." The transaction is the canonical reference point for the structure.</p>
+    intermediate: (
+      <DetailPanel title="Newfold Digital Intermediate Holdings, Inc. — NEW LME LAYER" onClose={() => setDetail(null)}>
+        <p style={{ color: T_.accent }}><strong>Inserted as a new HoldCo layer via the LME — did NOT exist pre-LME.</strong> Fitch's Jan 15, 2026 action assigns it B- IDR and specifically rates the new-money first-out term loan ($102M, SOFR+575) at <strong>BB-/RR1 here</strong>.</p>
+        <p>Why insert a new HoldCo layer? <strong>Structural priority.</strong> By placing the new-money TL one level ABOVE the operating company (Newfold Digital, Inc.), the new-money lenders (ad hoc group — PIMCO + GoldenTree disclosed) get cleaner claim ordering: direct claim on Intermediate Holdings AND a guarantee from OpCo. Second-out lenders sitting at TopCo are structurally junior to BOTH.</p>
+        <p style={{ color: T_.amber }}>This is a softer alternative to a full uptier-with-subordination — it achieves priority via structural placement rather than contractual subordination, avoiding the Serta-style "sacred rights" attack surface. Compare to Incora's manufactured-supermajority approach (Wesco vs. Newfold).</p>
       </DetailPanel>
     ),
-    jan2025: (
-      <DetailPanel title="The January 2025 Tightening (pari-plus 2.0)" onClose={() => setDetail(null)}>
-        <p>By late 2024 the September 2023 deal had bought ~16 months of runway, but the 5.125% / 5.250% unsecured notes maturity wall (Apr 2029 / Apr 2031) was approaching and 2025 EBITDA continued to deteriorate. Trinseo executed a follow-on transaction — a transaction support agreement (TSA) negotiated with a majority unsecured noteholder cohort. The pari-plus structure was layered on top of itself and tightened materially.</p>
-        <p><strong>Three moves stacked in January 2025:</strong></p>
-        <p><strong>1. Pari-plus claim upsized $948.4M → $1.443B (+$500M)</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>The 5.125% sr unsecured notes due Apr 2029 were exchanged into <strong>7.625% pari-plus 2L notes due 2029</strong> at a <strong>15% discount</strong></li>
-          <li>The new 2L notes carry the same pari-plus collateral package as the 1L pari-plus TL — including the JV, the foreign guarantor support, and (after this transaction) Aristech + Altuglas</li>
-          <li>$300M superpriority RCF added — refinanced the 5.375% 2025 SSNs and replaced the legacy ABL revolver</li>
-        </ul>
-        <p><strong>2. Foreign guarantees: "limited" → fully secured (pari-plus tranche only)</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Limited foreign guarantees converted to <strong>full secured guarantees</strong> for the pari-plus tranche only — not for the existing intercompany TL</li>
-          <li>Now-full guarantors: <strong>Trinseo Belgium BV, Trinseo Operating Belgium BV, Trinseo Deutschland GmbH</strong> (+ 4 affiliated German entities), <strong>PT Trinseo Materials Indonesia, PT Trinseo Operating Indonesia, Taiwan Trinseo Ltd., Trinseo Europe GmbH</strong></li>
-          <li>Asymmetric guarantee — the existing intercompany TL kept its old "limited" foreign guarantee package while the pari-plus tranche got the upgrade</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>3. Aristech Surfaces LLC + Altuglas LLC redesignated as unrestricted</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Both entities were <strong>previously guarantors</strong> under the existing/incremental intercompany TL credit agreement</li>
-          <li>Under the Jan 2025 amendments, both were <strong>designated unrestricted</strong> with respect to that debt — releasing them as guarantors of the existing TL</li>
-          <li>They were then <strong>pledged as exclusive collateral</strong> to the pari-plus 1L TL and pari-plus 2L notes</li>
-          <li>Asset sale proceeds from Aristech and Altuglas are <strong>mandatory repayment</strong> for the pari-plus tranche (TL senior to notes)</li>
-          <li>This is a J. Crew-style drop-down inside the broader pari-plus chassis</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>Net effect of the Jan 2025 tightening:</strong> Pari-plus lenders went from a $948.4M pari claim + JV side pocket + partial foreign guarantee → to a <strong>$1.443B pari claim + JV + full secured foreign guarantor support + exclusive lien on Aristech &amp; Altuglas + senior superpriority RCF cushion</strong>. Existing 1L lenders watched their collateral pool shrink and their pari claim get diluted further.</p>
-        <p style={{ color: T_.amber }}><strong>Subordination wrinkle:</strong> Under the "Luxco merger amendment," the Sept 2023 $128.9M intercompany TL (Luxco→Luxco — the drop-down conduit) was <strong>subordinated</strong> to the existing/incremental intercompany TL. This was the consideration the existing TL group received in exchange for the Jan 2025 amendment package — a quiet upgrade in their relative position to the conduit, against their wholesale loss of relative position to the pari-plus tranche.</p>
+    opco: (
+      <DetailPanel title="Newfold Digital, Inc. (f/k/a Endure Digital, Inc.) — Main OpCo" onClose={() => setDetail(null)}>
+        <p>The primary operating company.</p>
+        <p><strong>Pre-LME issuance:</strong> $2.3B 1L TLB (SOFR+350, Feb 2028) and $500M of $685M Sr Unsec Notes (6.00%, due 2029 — Clearlake LBO financing 2021).</p>
+        <p><strong>Post-LME:</strong> issues the first-out RCF ($380M, $223M drawn), first-out TL ($1,566M), and first-out Notes ($327M). All first-out instruments are pari passu and secured by equity of borrowers, each guarantor, and each direct restricted subsidiary.</p>
+        <p style={{ color: T_.amber }}><strong>Naming history:</strong> born as "Endure Digital, Inc." in the 2021 LBO; renamed "Newfold Digital, Inc." sometime 2021-2022. 9fin treats both names as the same legal entity. Fitch withdrew Web.com Group's separate IDR in Jan 2026, consolidating the operating-issuer rating here.</p>
       </DetailPanel>
     ),
-    paripluseDef: (
-      <DetailPanel title="What 'Pari-Plus' Means — and Why It Beats an Uptier" onClose={() => setDetail(null)}>
-        <p>"Pari-plus" sits between two more familiar LME archetypes: <strong>the uptier</strong> (formal subordination of non-participants — Serta, Mitel) and <strong>the drop-down</strong> (asset transfer to an unrestricted sub — J.Crew, Envision). It borrows from both.</p>
-        <table style={{ width: "100%", fontSize: 12, borderCollapse: "collapse", marginTop: 6 }}>
-          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Archetype</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Mechanic</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Litigation risk</th>
-          </tr></thead>
-          <tbody>
-            {[
-              { a: "Uptier", m: "New tranche primes existing — non-participants formally subordinated", l: "High — sacred-rights challenges (LCM v Serta, Mitel)" },
-              { a: "Drop-Down", m: "Crown-jewel assets transferred to unrestricted sub; new debt raised there", l: "Moderate — fraudulent transfer / J.Crew blockers" },
-              { a: "Pari-Plus", m: "New tranche pari-passu vs existing collateral PLUS exclusive sidecar collateral & guarantees", l: "Lower — same lien rank means no formal subordination to challenge" },
-            ].map((r, i) => (
-              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
-                <td style={{ padding: "6px 8px", color: T_.text, fontWeight: 600 }}>{r.a}</td>
-                <td style={{ padding: "6px 8px", color: T_.textMid }}>{r.m}</td>
-                <td style={{ padding: "6px 8px", color: T_.amber }}>{r.l}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p style={{ color: T_.amber, marginTop: 12 }}><strong>The legal arbitrage:</strong> Most credit agreements protect the pro-rata right to existing collateral via sacred-rights provisions. They do NOT typically prohibit <em>asymmetric guarantees</em> or <em>asymmetric collateral</em> attached to a new pari-passu tranche. Pari-plus exploits that asymmetry. Because the new lender's lien rank against existing collateral is the same as existing lenders', no sacred right is breached — even though the economic outcome is functionally similar to subordination.</p>
-        <p style={{ color: T_.red }}><strong>Why issuers chose pari-plus over uptier in 2023–2024:</strong> Following the LCM v Serta NY appellate reversal (Dec 2024) and the in-bankruptcy uptier ruling against Serta in S.D. Tex. (Mar 2024), the uptier playbook became materially more legally fraught. Pari-plus emerged as the substitute — same economic effect, much harder to challenge under sacred-rights theories.</p>
-        <p style={{ color: T_.textMid }}><strong>Key recognition:</strong> The label "pari" is technically accurate (same lien rank, same collateral pool — for the existing collateral). The recovery math, however, is determined by the "plus" leg: JV + foreign guarantors + Aristech + Altuglas. Holdouts cannot reach those assets. Pari ranking ≠ equal recovery.</p>
+    webcom: (
+      <DetailPanel title="Web.com Group, Inc. — Subsidiary Issuer / Co-Guarantor" onClose={() => setDetail(null)}>
+        <p>Subsidiary issuer / guarantor of OpCo debt. Pre-LME, Web.com Group had its own Fitch IDR; this was <strong>WITHDRAWN</strong> by Fitch on Jan 15, 2026 in the post-LME consolidation, leaving Newfold Digital, Inc. as the consolidated operating-issuer rating.</p>
+        <p>Functionally, Web.com Group sits within the restricted group and cross-guarantees the OpCo debt. The "Web.com" brand itself was absorbed into Network Solutions in June 2025 — a brand consolidation, NOT a legal-entity merger per the press release. The legal entity persists; the brand does not.</p>
       </DetailPanel>
     ),
-    dropDown: (
-      <DetailPanel title="The Americas Styrenics Drop-Down (the 'plus' leg, Sep 2023)" onClose={() => setDetail(null)}>
-        <p><strong>Americas Styrenics LLC</strong> is a 50/50 joint venture between Trinseo and Chevron Phillips Chemical — a leading North American producer of styrene and polystyrene. CFO David Stasse on the Q3 2025 call: "kind of [on] the left side of the cost curve" — i.e., among the lowest-cost producers in the region. Trinseo's 50% equity stake is one of the company's most valuable single assets.</p>
-        <p><strong>The mechanic:</strong></p>
+    brands: (
+      <DetailPanel title="Operating Brand Subsidiaries" onClose={() => setDetail(null)}>
+        <p>Operating brands sit at the base of the structure. Specific legal-entity treatment per brand is NOT disclosed in third-party research — typically a credit-agreement / OM disclosure that the 4 tools don't carry.</p>
+        <p><strong>Active brands (post-Jun 2025 consolidation):</strong></p>
         <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>$128.9M of the $1.077B new-money proceeds were routed via Trinseo LuxCo Finance SPV Sàrl → <strong>Trinseo Luxco Sàrl</strong></li>
-          <li>That capital was contributed as <strong>"excluded contributions"</strong> under the existing credit agreement — a J. Crew-lineage investment basket that escapes the standard restricted-payments tests</li>
-          <li>Excluded-contribution dollars were used to fund equity into <strong>Trinseo Finance SPV LLC</strong>, designated as an <strong>unrestricted subsidiary</strong></li>
-          <li>The Americas Styrenics 50% stake was contributed into Trinseo Finance SPV LLC</li>
-          <li>The pari-plus 1L term loan received <strong>exclusive collateral</strong> on the JV stake (and any sale proceeds become mandatory repayment of the pari-plus debt)</li>
+          <li><strong>Bluehost</strong> — flagship SMB hosting; largest by subscriber count</li>
+          <li><strong>Network Solutions</strong> — absorbed Web.com brand + Register.com + Domain.com (Jun 2025)</li>
+          <li><strong>HostGator</strong> — secondary hosting brand</li>
+          <li><strong>Yoast</strong> — WordPress SEO software</li>
+          <li><strong>Constant Contact</strong> — email marketing / SaaS</li>
         </ul>
-        <p style={{ color: T_.amber }}><strong>Why the existing lenders couldn't block it:</strong> The credit agreement's drop-down protections at signing were standard 2021-vintage — investment baskets allowed up to ~$2.5B of asset transfers to unrestricted subs subject to availability. The "excluded contributions" prong let Trinseo recycle the new-money proceeds back into investment capacity without consuming the explicit drop-down basket. By the time existing lenders were aware, the JV was already contributed.</p>
-        <p style={{ color: T_.red }}><strong>Comparison to Envision:</strong> Envision's Apr 2022 dropdown moved 83% of AmSurg (representing ~61% of total Envision EV) out of the credit group. Trinseo's was structurally similar but smaller — a single asset (the JV) rather than a full silo. Per Octus's Feb 2025 retrospective on the 7 major drop-downs since 2022, Trinseo's value loss to non-ad-hoc participating lenders was estimated at <strong>~50%</strong> on the TLB-2 due 2028 — comparable to Envision's 53% but below Del Monte's 64%.</p>
-        <p style={{ color: T_.amber }}><strong>The mandatory repayment hook:</strong> Any future sale of the Americas Styrenics 50% stake — which has been speculated in S&amp;P commentary as a potential restructuring lever — must be applied to the pari-plus tranche. The existing intercompany TL has no claim on those proceeds. This eliminates the JV as a flexible liquidity tool for the broader credit group.</p>
-      </DetailPanel>
-    ),
-    aristechAltuglas: (
-      <DetailPanel title="Aristech &amp; Altuglas — The Jan 2025 Sister-Sub Carve-Out" onClose={() => setDetail(null)}>
-        <p>The Jan 2025 transaction's most aggressive feature was the <strong>redesignation of two existing operating subsidiaries</strong> — Aristech Surfaces LLC and Altuglas LLC (US PMMA businesses) — as unrestricted subsidiaries with respect to the existing intercompany TL, while simultaneously pledging them as exclusive collateral to the pari-plus tranche.</p>
-        <p><strong>Pre–Jan 2025 status:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Aristech and Altuglas were <strong>guarantors</strong> under the existing/incremental intercompany TL credit agreement</li>
-          <li>Their assets were part of the existing 1L TL collateral pool</li>
-          <li>Existing lenders had a direct claim on PMMA cash flows</li>
-        </ul>
-        <p><strong>Post–Jan 2025:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>Designated unrestricted</strong> under the existing/incremental intercompany TL + the superpriority RCF — released as guarantors</li>
-          <li><strong>Pledged as exclusive collateral</strong> to the pari-plus 1L TL and pari-plus 2L notes</li>
-          <li>Aristech / Altuglas IP held by Trinseo Europe GmbH was carved out — that subset gets its own collateral priority order (pari-plus first, then existing)</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>This is the structural innovation Reorg flagged:</strong> Existing 1L lenders had Aristech and Altuglas in their collateral pool one day, and not the next — without their consent. The credit agreement's <strong>post-closing redesignation right</strong> let the borrower flip the entities' status, and the existing TL had no anti-redesignation blocker. Once outside the existing TL's perimeter, the entities could be re-pledged elsewhere.</p>
-        <p style={{ color: T_.amber }}><strong>Why this matters for the playbook:</strong> The Aristech/Altuglas mechanic is portable to almost any credit agreement that allows post-closing unrestricted-sub redesignation without consent of the existing lenders. The "right to redesignate" was the back door. Post-Trinseo, well-drafted agreements now require <strong>existing lender consent</strong> for redesignation of guarantors as unrestricted, or cap the EBITDA / asset value of any single redesignation event.</p>
-        <p style={{ color: T_.textMid }}><strong>Mandatory repayment hook (same as JV):</strong> Sale proceeds from Aristech or Altuglas constitute mandatory repayment for the pari-plus 1L TL and 2L notes. The existing TL has no claim. PMMA — once a contributor to operating cash flows of the existing credit group — became a debt-service asset for the pari-plus tranche.</p>
-      </DetailPanel>
-    ),
-    covenants: (
-      <DetailPanel title="Covenant Architecture — What Changed in Jan 2025" onClose={() => setDetail(null)}>
-        <p>Per Reorg article 348683, the Jan 2025 amendments rewrote the existing TL's maintenance-covenant package and added a new superpriority covenant suite. The net effect was to remove a future tripwire on the existing TL while inserting tight covenants on the new superpriority RCF.</p>
-        <p><strong>Existing/incremental intercompany TL credit agreement — what changed:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>3.5x first lien net leverage maintenance test — REMOVED</strong>. With FY2025 leverage tracking 10x+ this would have been an immediate trigger for renegotiation absent waiver. Removal eliminated that pathway</li>
-          <li>Aristech + Altuglas guarantor releases (see separate panel)</li>
-          <li>$128.9M Luxco→Luxco intercompany TL (the original drop-down conduit) <strong>subordinated</strong> to the existing/incremental intercompany TL — quiet upgrade for the existing TL group's relative position to the conduit</li>
-        </ul>
-        <p><strong>Superpriority RCF — new covenants (Jan 2025 inception):</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>$100M minimum liquidity</strong> at Trinseo Holding Sàrl + restricted subs — defined as cash + RCF availability + AR sec availability — tested on <strong>last business day of each month</strong></li>
-          <li><strong>Anti-cash-hoarding:</strong> mandatory paydown of RCF borrowings with excess cash &gt; $100M at loan parties or &gt; $50M at non-loan parties</li>
-          <li><strong>1.5x superpriority lien net leverage ratio</strong> when 30%+ of RCF capacity drawn — tested quarterly</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>The economic story of these covenants:</strong> They lock cash inside the borrower group and force any excess to flow first to the superpriority RCF. The pari-plus tranche sits next in line. The existing TL is structurally last in line for cash sweeps even though its lien rank is technically pari-passu.</p>
-        <p style={{ color: T_.red }}><strong>Trinseo Europe GmbH wrinkle (per Reorg 348683):</strong> The collateral priority on Trinseo Europe GmbH's IP, license agreements, tolling agreements, and inventory differs from the priority on its other assets:</p>
-        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 6 }}>
-          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Asset</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>1st</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>2nd</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>3rd</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>4th</th>
-          </tr></thead>
-          <tbody>
-            <tr style={{ borderBottom: `1px solid ${T_.border}10` }}>
-              <td style={{ padding: "5px 8px", color: T_.textMid }}>IP / licenses / tolling / inventory (ex-Aristech/Altuglas IP)</td>
-              <td style={{ padding: "5px 8px", color: T_.green }}>Superpriority RCF</td>
-              <td style={{ padding: "5px 8px", color: T_.amber }}>Pari-plus 1L TL</td>
-              <td style={{ padding: "5px 8px", color: T_.amber }}>Pari-plus 2L Notes</td>
-              <td style={{ padding: "5px 8px", color: T_.red }}>Existing intercompany TL</td>
-            </tr>
-            <tr style={{ borderBottom: `1px solid ${T_.border}10` }}>
-              <td style={{ padding: "5px 8px", color: T_.textMid }}>All other assets of Trinseo Europe GmbH</td>
-              <td style={{ padding: "5px 8px", color: T_.green }}>Superpriority RCF</td>
-              <td style={{ padding: "5px 8px", color: T_.amber }}>Existing intercompany TL</td>
-              <td style={{ padding: "5px 8px", color: T_.red }}>Pari-plus 1L TL</td>
-              <td style={{ padding: "5px 8px", color: T_.red }}>Pari-plus 2L Notes</td>
-            </tr>
-          </tbody>
-        </table>
-        <p style={{ color: T_.textMid, marginTop: 12 }}>Existing lenders retained their priority on Trinseo Europe GmbH's <em>other</em> assets — but on the IP and license stream (the most monetizable portion), they sit fourth. This kind of asset-by-asset priority asymmetry is unique to pari-plus and is not visible from the headline lien-rank table.</p>
-      </DetailPanel>
-    ),
-    debtStack: (
-      <DetailPanel title="Capital Structure (Pro Forma, Apr 2026)" onClose={() => setDetail(null)}>
-        <p>Pro-forma capital structure as of April 2026, after the $50M incremental superpriority RCF (April 10) and ahead of the April 30 limited-waiver expiration. Trading levels per Reorg / IHS Markit / Solve mid-Jan 2026.</p>
-        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 8 }}>
-          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Tranche</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Issuer</th>
-            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Size</th>
-            <th style={{ textAlign: "left", padding: "6px 8px", color: T_.textGhost }}>Maturity</th>
-            <th style={{ textAlign: "right", padding: "6px 8px", color: T_.textGhost }}>Trading</th>
-          </tr></thead>
-          <tbody>
-            {[
-              { t: "Superpriority RCF (S+225)", iss: "Trinseo Holding Sàrl", s: "$300M", m: "Feb 2, 2028", p: "—", c: T_.green },
-              { t: "Incremental Superpriority RCF (S+900 PIK)", iss: "Trinseo Holding Sàrl", s: "$50M ($10.4M drawn)", m: "Feb 2, 2028", p: "—", c: T_.green },
-              { t: "Pari-Plus 1L TL (S+966 PIK toggle)", iss: "Trinseo LuxCo Finance SPV", s: "$1.2B", m: "May 2028", p: "72.5/75.3", c: T_.amber },
-              { t: "Pari-Plus 2L Notes (7.625%)", iss: "Trinseo LuxCo Finance SPV", s: "~$495M", m: "2029", p: "—", c: T_.amber },
-              { t: "Existing/Incremental Intercompany TL", iss: "Trinseo Holding Sàrl", s: "—", m: "2028", p: "10/13", c: T_.red },
-              { t: "5.250% Sr Unsecured Notes", iss: "Trinseo plc", s: "$447M", m: "Apr 2031", p: "single digits", c: T_.red },
-              { t: "AR Securitization (advance rate 90%)", iss: "Trinseo subs", s: "—", m: "Rolling", p: "—", c: T_.green },
-            ].map((r, i) => (
-              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
-                <td style={{ padding: "5px 8px", color: r.c, fontWeight: 600 }}>{r.t}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid, fontSize: 10 }}>{r.iss}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.s}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.m}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid, textAlign: "right" }}>{r.p}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p style={{ marginTop: 12, color: T_.amber }}><strong>Liquidity (Dec 31, 2025, per Moody's):</strong> $334M total — $139M cash + $192M revolver availability. Per Q3 2025 management guidance, expected to step up modestly with seasonal Q4 working-capital release. By April 2026, the $50M incremental RCF was added to extend runway through restructuring negotiations.</p>
-        <p style={{ color: T_.red }}><strong>Key trading-level read:</strong> The ~30-point gap between the pari-plus 1L TL (mid-70s) and the existing intercompany TL (low-teens) is the visible market-implied value of the "plus" leg. Both tranches are technically pari-passu in the existing collateral pool — but the market is pricing the pari-plus tranche as substantially better collateralized via the JV + foreign guarantor + Aristech/Altuglas package.</p>
-        <p style={{ color: T_.amber }}><strong>Stock:</strong> $0.55 (mid-Jan 2026); NYSE non-compliance notice received Dec 2025; delisting initiated Mar 2026.</p>
-      </DetailPanel>
-    ),
-    lenders: (
-      <DetailPanel title="Lender Dynamics — Two Adverse Camps" onClose={() => setDetail(null)}>
-        <p>Trinseo's 2026 restructuring talks are split between two clearly adverse lender camps, each with distinct collateral exposures. Unlike Envision (one ad hoc group across the stack), Trinseo's pari-plus structure deliberately created two separate creditor cohorts whose interests diverge.</p>
-        <p><strong>Camp 1 — Pari-Plus Lenders ("the new-money group")</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Anchor lenders (per Reorg): <strong>Oaktree, Angelo Gordon, Apollo</strong> — same group provided the Sept 2023 $1.077B new money and the April 2026 $50M incremental superpriority RCF</li>
-          <li>Counsel: <strong>Paul Hastings</strong></li>
-          <li>Financial advisor: <strong>PJT Partners</strong></li>
-          <li>Position: $1.2B pari-plus 1L TL + $495M pari-plus 2L notes; collateral package includes JV, foreign guarantors, Aristech/Altuglas</li>
-          <li>Trading: TL mid-70s, notes likely high-50s/low-60s — well-collateralized; expecting strong recovery in any Ch.11</li>
-        </ul>
-        <p><strong>Camp 2 — Existing/Incremental Intercompany TL ("the OpCo loan group")</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Counsel: <strong>Gibson Dunn</strong></li>
-          <li>Financial advisor: <strong>Lazard</strong></li>
-          <li>Position: existing 1L TL — pari-passu lien rank with the pari-plus tranche but excluded from the JV, foreign guarantor, and Aristech/Altuglas collateral</li>
-          <li>Trading: 10/13 — pricing in near-total-loss recovery</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>The structural problem:</strong> The two camps cannot agree on a Ch.11 plan because their best recoveries point in opposite directions. The pari-plus camp wants to monetize the JV + Aristech + Altuglas + foreign guarantors and apply proceeds to their tranche. The OpCo loan camp wants to expand the credit group's claim against those assets — which would require unwinding either or both of the LMEs via fraudulent-transfer or recharacterization theories. Any plan benefits one camp at the other's direct expense.</p>
-        <p style={{ color: T_.amber }}><strong>Trinseo's advisors:</strong> <strong>Latham &amp; Watkins</strong> (legal); <strong>Centerview Partners</strong> (financial restructuring); <strong>FTI Consulting</strong> (operational/financial advisor). Per Reorg article 360937 — confirmed Jan 16, 2026.</p>
-        <p style={{ color: T_.textMid }}><strong>Cooperation/no-trade dynamics:</strong> Pari-plus lenders cooperated with Trinseo on the Apr 10 incremental RCF amendment — Apollo, Oaktree, and Angelo Gordon are listed as the consenting lenders on the signature page. The OpCo loan group did not have a parallel cooperation arrangement disclosed.</p>
-      </DetailPanel>
-    ),
-    defaults: (
-      <DetailPanel title="The 2026 Default Cascade" onClose={() => setDetail(null)}>
-        <p>The default sequence Mar–Apr 2026 unfolded over five weeks, each event narrowing optionality before the next.</p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>Feb 23, 2026</strong> — Bloomberg (via Reorg 367664): "Trinseo Said to Be Considering Bankruptcy in Coming Weeks." First public reporting of a Ch.11 timeline.</li>
-          <li><strong>Mar 3, 2026</strong> — NYSE delisting initiated (per Reorg 369389). Stock had failed continued-listing standard for {">"}30 trading days.</li>
-          <li><strong>Mar 13, 2026</strong> — Going-concern "substantial doubt" disclosed in 10-K (Reorg 371201).</li>
-          <li><strong>Mar 19, 2026</strong> — Trinseo elected not to make interest under the pari-plus 1L TL and pari-plus 2L notes (Trinseo LuxCo Finance SPV S.à r.l.). Constituted event of default; cross-defaults triggered. Limited waivers entered with lenders (per Moody's Apr 2 ratings action).</li>
-          <li><strong>Apr 2, 2026</strong> — Moody's downgrade: <span style={{ color: T_.red }}><strong>CFR Caa2 → Ca</strong></span>; PDR <strong>Ca-PD/LD</strong> with limited-default designation. Speculative-grade liquidity SGL-3 → SGL-4. CIS-5 (very high governance risk).</li>
-          <li><strong>Apr 7, 2026</strong> — S&amp;P selective default ("SD") on the missed pari-plus interest.</li>
-          <li><strong>Apr 10, 2026</strong> — $50M incremental superpriority RCF executed at SOFR+9% PIK. Initial draw $10.4M. Apollo, Oaktree, Angelo Gordon are the consenting lenders.</li>
-          <li><strong>Apr 13, 2026</strong> — AR securitization advance rate reduced 92.5% → 90%; limited waiver to Apr 30 entered for AR sec facility.</li>
-          <li><strong>Apr 14, 2026</strong> — Trinseo elected not to pay <strong>$38M of interest</strong> due under the Sept 8, 2023 credit agreement (the pari-plus 1L TL). Per 8-K disclosure: lenders had previously agreed limited waivers of acceleration rights through April 30.</li>
-          <li><strong>Apr 30, 2026 (3 days from the case-publication date Apr 27, 2026)</strong> — Limited waivers expire. Absent further extension or restructuring announcement, lenders' acceleration rights revive.</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>Standstill on 2L notes:</strong> Per the intercreditor agreement, holders of the 7.625% pari-plus 2L notes are <strong>prohibited from enforcing collection action against collateral for 180 days following any acceleration</strong>. As of Apr 15, 2026 8-K disclosure, no notice or declaration of acceleration had been made on the 2L notes.</p>
-        <p style={{ color: T_.red }}><strong>What's likely next:</strong> Either (i) a further extension of the limited waivers to allow more negotiating runway, (ii) a prearranged Ch.11 filing aligning at least the pari-plus camp around a plan, or (iii) a free-fall Ch.11 if the two creditor camps cannot align on basic plan structure. Bloomberg's Feb 23 reporting suggested filing within weeks; six weeks have now passed since that report without filing, which is consistent with negotiated runway being extended.</p>
-      </DetailPanel>
-    ),
-    ratings: (
-      <DetailPanel title="Rating Actions — Moody's + S&amp;P" onClose={() => setDetail(null)}>
-        <p><strong>Moody's (Apr 2, 2026):</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>CFR: <strong>Ca</strong> from Caa2 (3-notch downgrade). Outlook stable.</li>
-          <li>PDR: <strong>Ca-PD/LD</strong> from Caa2-PD. /LD designation removed in 3 business days per standard convention.</li>
-          <li>Trinseo Holding S.à r.l. backed senior secured 1L TL B2 (existing): <strong>C</strong> from Caa3</li>
-          <li>Trinseo LuxCo Finance SPV S.à r.l. senior secured TLs (pari-plus): <strong>Caa3</strong> from Caa1</li>
-          <li>Trinseo LuxCo Finance SPV S.à r.l. backed senior secured 2L notes due 2029 (pari-plus): <strong>Ca</strong> from Caa2</li>
-          <li>SGL: <strong>SGL-4</strong> from SGL-3</li>
-          <li>CIS-5: very high governance risk (financial performance below management guidance, balance-sheet size, expected restructuring)</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>Moody's relative-recovery commentary:</strong> The Caa3 on pari-plus TL and Ca on pari-plus 2L "reflect their relative seniority to the other debt tranches. They only rank behind the $300M superpriority RCF (unrated)." Pari-plus has access to the 50% Americas Styrenics JV stake, US PMMA businesses (Aristech/Altuglas), and select foreign guarantor assets in Germany, Indonesia, Taiwan, Belgium. <strong>Proceeds from the sale of these assets would be used to repay Trinseo LuxCo Finance SPV S.à r.l.'s debt to the exclusion of other creditors.</strong> The C on the existing intercompany TL "reflects its junior position" — even though the lien rank is technically pari-passu.</p>
-        <p><strong>S&amp;P (timeline):</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Nov 2025: <strong>CCC</strong> from CCC+ — "macroeconomic headwinds and demand uncertainty will persist over the next 12 months"</li>
-          <li>Mar 3, 2026: SD on deferred interest (per Reorg 369463)</li>
-          <li>S&amp;P projection: leverage ~13x at Sep 30, 2025 → ~15x by FY-end 2025</li>
-          <li>Refinancing path: "absent any material improvement in its end-market demand or the sale of its stake in the Americas Styrenics joint venture, we don't anticipate the company will be able to successfully refinance its super HoldCo debt maturing in 2028"</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>Reading the agency split:</strong> Moody's Caa3 on pari-plus TL (vs C on existing TL) and Ca on pari-plus 2L (vs Ca-PD/LD CFR) imply a meaningful pari-plus recovery — likely 60–80% range — and near-total loss for the existing TL. The market-trading split (mid-70s vs low-teens) is consistent.</p>
-      </DetailPanel>
-    ),
-    valueLoss: (
-      <DetailPanel title="Octus Value-Loss Analysis (Feb 2025 retrospective)" onClose={() => setDetail(null)}>
-        <p>Octus published a Feb 2025 retrospective analyzing 7 major drop-down transactions since 2022 (AMC, Del Monte, Trinseo, Instant Brands, Rackspace, Envision, U.S. Renal Care). The report quantified the economic value transferred from non-ad-hoc participating lenders in each. <strong>Trinseo was measured separately</strong> from the 6 unrestricted-sub drop-downs because of its pari-plus structure.</p>
-        <p style={{ color: T_.amber }}><strong>Trinseo's value loss to non-ad-hoc participating term lenders:</strong> ~<strong>50%</strong> of pre-transaction value on the TLB-2 due 2028 — the legacy term loan tranche held by lenders who did not participate in the September 2023 new money.</p>
-        <p><strong>Comparison across the 7 LMEs (Octus aggressiveness ranking):</strong></p>
-        <table style={{ width: "100%", fontSize: 11, borderCollapse: "collapse", marginTop: 6 }}>
-          <thead><tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Issuer</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Type</th>
-            <th style={{ textAlign: "right", padding: "5px 8px", color: T_.textGhost }}>Value loss</th>
-            <th style={{ textAlign: "left", padding: "5px 8px", color: T_.textGhost }}>Outcome</th>
-          </tr></thead>
-          <tbody>
-            {[
-              { i: "Del Monte", t: "Drop-down", v: "64%", o: "Ch.11 Jul 2024", c: T_.red },
-              { i: "Envision", t: "Drop-down + uptier", v: "53%", o: "Ch.11 May 2023", c: T_.red },
-              { i: "Trinseo (TLB-2)", t: "Pari-plus", v: "~50%", o: "Default Apr 2026; Ch.11 expected", c: T_.red },
-              { i: "Instant Brands", t: "Drop-down", v: "30%", o: "Ch.11 Jun 2023", c: T_.amber },
-              { i: "U.S. Renal Care", t: "Drop-down", v: "20%", o: "Out-of-court LME 2023", c: T_.amber },
-              { i: "Rackspace", t: "Drop-down", v: "19%", o: "Out-of-court 2024", c: T_.green },
-              { i: "AMC (1L noteholders)", t: "Drop-down", v: "6–9%", o: "Refinanced 2024", c: T_.green },
-            ].map((r, i) => (
-              <tr key={i} style={{ borderBottom: `1px solid ${T_.border}10` }}>
-                <td style={{ padding: "5px 8px", color: r.c, fontWeight: 600 }}>{r.i}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.t}</td>
-                <td style={{ padding: "5px 8px", color: r.c, textAlign: "right" }}>{r.v}</td>
-                <td style={{ padding: "5px 8px", color: T_.textMid }}>{r.o}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <p style={{ color: T_.amber, marginTop: 12 }}><strong>Octus's framing:</strong> "Many of these transactions are ultimately followed by further LMT or a bankruptcy filing, resulting in downward pressure on recoveries." Trinseo is now the latest data point — Sept 2023 LME → Mar 2026 default = <strong>30 months of bought runway</strong> followed by terminal distress.</p>
-        <p style={{ color: T_.textMid }}><strong>Pattern across LME types:</strong> Drop-downs and pari-plus transactions tend to delay rather than prevent eventual Ch.11 when the underlying business problem is operating cash burn rather than balance-sheet structure. Trinseo's case follows the pattern: $1.077B was raised in Sept 2023 and consumed primarily by 2024–2025 cash burn (Adj EBITDA collapsed from positive guidance to negative FCF $140M FY2025) rather than structural deleveraging. New money ≠ deleveraging when end-market demand is the primary issue.</p>
-      </DetailPanel>
-    ),
-    lessons: (
-      <DetailPanel title="Lessons for a Credit Investor" onClose={() => setDetail(null)}>
-        <p>Five takeaways from Trinseo's pari-plus arc:</p>
-        <p style={{ color: T_.amber }}><strong>1. Pari ranking ≠ equal recovery.</strong> The label "pari" describes lien rank in the existing collateral pool — nothing more. The economic outcome is dominated by the "plus" leg: JV stake, foreign guarantors, redesignated guarantor assets. Holdouts cannot reach those. The 30-point trading gap between Trinseo's pari-plus TL (mid-70s) and existing intercompany TL (low-teens) is the visible value of the "plus." Underwriting "pari" without underwriting the asymmetric collateral package gives a misleading view of recovery.</p>
-        <p style={{ color: T_.amber }}><strong>2. Watch unrestricted-sub <em>redesignation</em> rights, not just basket math.</strong> Trinseo's Jan 2025 Aristech/Altuglas mechanic is the live-fire example. If the credit agreement allows post-closing redesignation of guarantors as unrestricted without existing-lender consent (or without an EBITDA / asset-value cap on each redesignation event), your collateral can shrink without any breach. Underwrite the redesignation rights as carefully as the debt incurrence baskets and the J.Crew blocker.</p>
-        <p style={{ color: T_.amber }}><strong>3. Limited foreign-sub guarantees can be unlocked one tranche at a time.</strong> Trinseo's foreign subs were <em>limited</em> guarantors of the existing TL but became <em>fully secured</em> guarantors of the pari-plus tranche. The asymmetry is the value transfer. If your credit doc allows a new tranche to take guarantor support that the existing tranche does not have — even with the existing guarantee package nominally unchanged — you are exposed even with a vanilla pari-passu lien rank.</p>
-        <p style={{ color: T_.amber }}><strong>4. Pari-plus typically buys 24–36 months and almost always precedes Ch.11.</strong> Trinseo: Sept 2023 → Apr 2026 default = <strong>30 months</strong>. Mitel uptier: Mar 2022 → Mar 2025 Ch.11 = 36 months. Wheel Pros double-dip: Sept 2023 → Sept 2024 Ch.11 = 12 months. Octus's explicit conclusion in the Feb 2025 retrospective: "many of these transactions are ultimately followed by further LMT or a bankruptcy filing." Treat the pari-plus as <em>the start of the restructuring, not a solution</em> — particularly when the new money is funding cash burn rather than structural deleveraging.</p>
-        <p style={{ color: T_.amber }}><strong>5. The asymmetric upside is for the participating lender, not the credit.</strong> Moody's Caa3 on the pari-plus TL versus C on the existing TL captures it: the same balance sheet produces near-par recoveries for one cohort and near-zero recoveries for the other, separated by 6+ rating notches. The takeaway for a long-only credit investor: <strong>either own the new-money pari-plus tranche or sell the existing TL before the deal prints</strong>. Sitting on the existing TL through a pari-plus is the worst outcome — you keep duration and credit risk while losing relative collateral coverage. Ad-hoc-group invitations to participate in new-money tranches are not goodwill — they are the credit's way of selecting which cohort gets the upside.</p>
-      </DetailPanel>
-    ),
-    forwardPath: (
-      <DetailPanel title="Forward Path — What Happens Next" onClose={() => setDetail(null)}>
-        <p>Status as of <strong>April 27, 2026:</strong> ongoing; pre-Ch.11; limited waivers expire Apr 30 (3 days). Several plausible paths:</p>
-        <p><strong>1. Further limited-waiver extension + continued negotiation:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Most likely near-term outcome — gives both creditor camps more time to align on plan structure</li>
-          <li>Each extension typically comes with additional consideration (fees, advisor reimbursements, covenant modifications)</li>
-          <li>$50M incremental superpriority RCF (Apr 10) provided ~30 days of runway; further drawdown contingent on liquidity tests</li>
-        </ul>
-        <p><strong>2. Prearranged Ch.11 filing:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Most likely structural outcome if pari-plus camp can align with company on plan terms</li>
-          <li>Likely involves: (i) DIP financing from pari-plus camp (Apollo, Oaktree, Angelo Gordon), (ii) sale of Americas Styrenics JV stake (proceeds mandatory to pari-plus), (iii) Aristech/Altuglas sale or equitization, (iv) existing intercompany TL claim heavily impaired, (v) unsecured 5.250% notes wiped</li>
-          <li>OpCo loan group (Gibson Dunn / Lazard) likely to fight via fraudulent-transfer / equitable-subordination theories on the Sept 2023 + Jan 2025 LMEs</li>
-        </ul>
-        <p><strong>3. Free-fall Ch.11:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>If the two creditor camps cannot align on basic plan structure</li>
-          <li>Substantially longer in court — 9–18 months vs. 4–6 for prearranged</li>
-          <li>Higher litigation costs; higher potential value loss to all stakeholders if asset sales are forced</li>
-        </ul>
-        <p><strong>4. Out-of-court resolution (low probability):</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li>Would require: third LME tightening (further extending maturities + cash interest deferral) OR a strategic sale of Americas Styrenics JV stake at a premium</li>
-          <li>Bozich previously indicated openness to JV monetization; structurally constrained because proceeds are mandatory to the pari-plus tranche</li>
-          <li>Market-implied probability low — existing intercompany TL trading 10/13 says the market expects Ch.11</li>
-        </ul>
-        <p style={{ color: T_.amber }}><strong>Litigation pathways for the OpCo loan group in any Ch.11:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>Fraudulent transfer (§548 / NY UVTA):</strong> challenge the Sept 2023 dropdown of Americas Styrenics + the Jan 2025 Aristech/Altuglas redesignation. Reasonably-equivalent-value test likely the focus. Faces standard problems around board independence + business judgment</li>
-          <li><strong>Equitable subordination (§510(c)):</strong> challenge the pari-plus tranche's recovery on grounds of inequitable conduct by the participating lenders (Apollo, Oaktree, Angelo Gordon). Difficult standard in non-insider context</li>
-          <li><strong>Recharacterization of unrestricted subs:</strong> argue Trinseo Finance SPV LLC + Trinseo LuxCo Finance SPV Sàrl operate as Trinseo subs in substance (cf. Robertshaw recharacterization). Robertshaw remedy was a $39.4M pro-rata damages claim — narrow even when the substance argument prevails</li>
-        </ul>
-        <p style={{ color: T_.red }}><strong>Source consensus on outlook:</strong></p>
-        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
-          <li><strong>Reorg / Octus (Apr 2026):</strong> defaults active; Ch.11 expected; pari-plus camp well-positioned for recovery</li>
-          <li><strong>Moody's (Apr 2):</strong> Ca / LD; expected debt restructuring; pari-plus has senior recovery position</li>
-          <li><strong>S&amp;P (Mar 3 / 2025 commentary):</strong> SD on missed interest; refinancing of 2028 super-HoldCo debt unlikely absent JV sale or end-market improvement</li>
-          <li><strong>CreditSights (active coverage):</strong> Trinseo at Marketperform reaffirmed Apr 14, 2026 — explicitly because pari-plus participants are likely to recover well even though the company itself is failing</li>
-        </ul>
+        <p style={{ color: T_.amber }}><strong>Divested:</strong> MarkMonitor (enterprise domain mgmt) — sold to Com Laude late 2025 for &gt;$300M net.</p>
+        <p style={{ color: T_.green }}><strong>Unrestricted-sub designation is PROHIBITED post-LME</strong> per Moody's Dec 15 indenture summary. Operating brands cannot be moved out of the restricted group via the J.Crew / Envision template. Material property transfer to non-guarantors is also blocked.</p>
       </DetailPanel>
     ),
   };
 
+  const chip = (label, value, color = T_.text) => (
+    <div style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.border}`, padding: "8px 10px" }}>
+      <div style={{ fontSize: 9, color: T_.textGhost, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color, fontFamily: "monospace" }}>{value}</div>
+    </div>
+  );
+
+  const trancheRow = (name, size, coupon, maturity, note, color = T_.textMid) => (
+    <tr style={{ borderBottom: `1px solid ${T_.border}40` }}>
+      <td style={{ padding: "6px 10px", color, fontWeight: 600, fontSize: 11.5 }}>{name}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5, textAlign: "right" }}>{size}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{coupon}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{maturity}</td>
+      <td style={{ padding: "6px 10px", color: T_.textGhost, fontSize: 11 }}>{note}</td>
+    </tr>
+  );
+
   return (
     <div>
-      {/* ── Status Banner ── */}
-      <div style={{ background: `${T_.red}12`, borderRadius: 8, border: `1px dashed ${T_.red}60`, padding: "10px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, color: T_.red, padding: "2px 8px", borderRadius: 4, background: `${T_.red}25` }}>ONGOING</span>
-        <span style={{ fontSize: 12, color: T_.textMid }}>Status as of <strong>Apr 27, 2026</strong>. Sept 2023 + Jan 2025 pari-plus LMEs executed. Mar 19 + Apr 14 interest defaults; limited waivers expire <strong>Apr 30</strong>. Ch.11 expected near-term.</span>
-      </div>
-
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
-          Trinseo plc (NYSE: TSE) is the textbook <span style={{ color: T_.accent }}><strong>pari-plus LME</strong></span> case — a structure that sits between an uptier (which formally subordinates) and a drop-down (which carves out crown-jewel assets). In <span style={{ color: T_.amber }}>September 2023</span>, Trinseo raised a <span style={{ color: T_.accent }}>$1.077B new-money 1L term loan at SOFR+9.66% with PIK toggle</span>, anchored by <strong>Oaktree, Angelo Gordon, Apollo</strong>. The "pari" leg: <strong>$948.4M</strong> intercompany TL pari-passu with the existing 1L TL against the existing collateral. The "plus" leg: <strong>$128.9M</strong> routed via "excluded contributions" to drop the <strong>50% Americas Styrenics JV stake</strong> into an unrestricted sub, plus <strong>"limited" foreign guarantees</strong> from German, Belgian, Indonesian, and Taiwanese subs. In <span style={{ color: T_.amber }}>January 2025</span> the pari-plus claim was upsized to <strong>$1.443B</strong> via a 5.125% sr unsec notes exchange at 15% discount into 7.625% pari-plus 2L notes; foreign guarantees were converted to <strong>full secured</strong>; <strong>Aristech Surfaces + Altuglas</strong> were redesignated unrestricted under the existing TL and pledged exclusively to the pari-plus tranche; the existing TL's <strong>3.5x first lien net leverage maintenance test was removed</strong>; and a $300M superpriority RCF was added. Per Octus's Feb 2025 retrospective, <strong>~50% of pre-transaction value</strong> was transferred away from non-ad-hoc participating term lenders. Trinseo bought <strong>30 months of runway</strong> before Mar/Apr 2026 interest defaults; Moody's downgraded to <span style={{ color: T_.red }}>Ca / LD</span> Apr 2; S&amp;P SD Mar 3. Pari-plus 1L TL trades <strong>72.5/75.3</strong> (Reorg, mid-Jan 2026); existing intercompany TL trades <strong>10/13</strong> — same lien rank, ~30 points of trading gap = the visible value of the "plus."
+          <strong>Newfold Digital</strong> (Clearlake + Siris portfolio; created 2021 via Endurance International + Web.com take-private merger) completed a <span style={{ color: T_.accent }}>distressed exchange on Jan 9, 2026</span> after launching Dec 9, 2025. Pre-LME debt <span style={{ color: T_.red }}>~$3.5B</span> (RCF + 1L TLB + 1L Notes + Sr Unsecured) restructured to <span style={{ color: T_.accent }}>~$3.28B</span> split into <strong>first-out / second-out tranches</strong> with maturities extended to <strong>2029</strong> and ~$254M of principal reduction. The mechanic: a <span style={{ color: T_.amber }}>non-pro-rata exchange</span> reserving a $102M new-money first-out TL (SOFR+575) for the ad hoc group (Akin Gump + Evercore — disclosed members include <strong>PIMCO + GoldenTree</strong>); minority lenders got a subsequent catch-up window at a steeper discount. New post-LME docs explicitly include <span style={{ color: T_.green }}>super-majority consent + ratable-priming protections + an unrestricted-subsidiary blocker</span> — deliberately closing the J.Crew / Envision / Xerox-style paths. Projected 2026 net leverage <strong>~7.0x</strong>. The <strong>MarkMonitor sale</strong> (to Com Laude, &gt;$300M net) closed late 2025; Q4'25 disclosure (Mar 18, 2026) confirms post-LME debt repurchases at material discounts — 1L TL traded at 65.62 vs. 83.5 three months prior. Op trajectory still negative: Q4'25 revenue -4.4% YoY, adj EBITDA -6.8%; subscriber base down ~1M since 2023 (-17% per S&P). Third Bridge: "too far behind to catch up [on AI] without partnering."
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
-          {[
-            { l: "Sept 2023 LME", v: "$1.077B", c: T_.amber },
-            { l: "Jan 2025 Upsizing", v: "→ $1.443B", c: T_.amber },
-            { l: "Existing TL Trading", v: "10/13", c: T_.red },
-            { l: "Pari-Plus TL Trading", v: "72.5/75.3", c: T_.green },
-            { l: "Value Loss (TLB-2)", v: "~50%", c: T_.red },
-            { l: "Moody's CFR", v: "Ca / LD", c: T_.red },
-            { l: "S&P CFR", v: "SD", c: T_.red },
-            { l: "Stock", v: "$0.55", c: T_.red },
-          ].map(m => (
-            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
-              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
-              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
-            </div>
-          ))}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(115px, 1fr))", gap: 8 }}>
+          {chip("Pre-LME Debt", "$3.5B", T_.red)}
+          {chip("Post-LME Debt", "$3.28B", T_.accent)}
+          {chip("New Money", "$102M", T_.green)}
+          {chip("Leverage (FY26E)", "~7.0x", T_.amber)}
+          {chip("S&P", "CCC+ Stable")}
+          {chip("Moody's", "Caa2")}
+          {chip("Fitch", "B- Stable")}
+          {chip("LME Closed", "Jan 9, 2026")}
         </div>
       </div>
 
-      {/* ════════════════════════════════════════════════════
-         ORG CHART — Pari-Plus Structure
-         ════════════════════════════════════════════════════ */}
-      <div style={{ margin: "0 auto" }}>
-      <div style={{ marginBottom: 8 }}>
-        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate &amp; Capital Structure (Post Jan 2025 Pari-Plus, Apr 2026)</div>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>The pari-plus tranche borrows from a separate finance SPV chain with exclusive collateral on the JV + foreign guarantors + Aristech/Altuglas. Click any box for details.</div>
-        <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
-          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Existing Restricted Group</span></span>
-          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.amber}50`, background: `${T_.amber}08`, display: "inline-block" }} /><span style={{ color: T_.amber }}>Pari-Plus / Sidecar Collateral</span></span>
-          <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted Subsidiaries</span></span>
+      {/* ── Capital Structure: Pre vs Post LME ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 14 }}>Capital Structure — Pre vs. Post LME</div>
+
+        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6 }}>Pre-LME (as of Dec 2025)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 18 }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRANCHE</th>
+              <th style={{ textAlign: "right", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>SIZE</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>COUPON</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>MATURITY</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>NOTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trancheRow("Revolver (RCF)", "$380M ($223M drawn)", "SOFR+spr", "Feb 2026", "The maturity wall that forced the LME", T_.red)}
+            {trancheRow("1L Term Loan B", "~$2.30B", "SOFR+350", "Feb 2028", "Endure Digital Inc. issuer", T_.amber)}
+            {trancheRow("1L Secured Notes", "$515M", "11.75%", "Oct 2028", "Oct 2023, sponsor dividend financing", T_.amber)}
+            {trancheRow("Sr Unsecured Notes", "~$500M (of $685M)", "6.00%", "2029", "Endure Digital — Clearlake LBO 2021", T_.purple)}
+            <tr style={{ borderTop: `2px solid ${T_.border}` }}>
+              <td style={{ padding: "8px 10px", fontWeight: 700, color: T_.text, fontSize: 12 }}>Total Funded Debt</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontWeight: 700, color: T_.red, fontFamily: "monospace", fontSize: 12 }}>~$3.5B</td>
+              <td colSpan={3} style={{ padding: "8px 10px", color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>Sep 2025 net leverage 7.5x</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6 }}>Post-LME (closed Jan 9, 2026)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRANCHE</th>
+              <th style={{ textAlign: "right", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>SIZE</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>COUPON</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>MATURITY</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>NOTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trancheRow("New RCF (first-out)", "$380M ($223M drawn)", "SOFR+spr", "Jan 2029", "Cashless roll, extended", T_.green)}
+            {trancheRow("First-out TL", "$1,566M", "SOFR+spr", "Apr 2029", "S&P B-/RR2 70%; Fitch BB-/RR1", T_.green)}
+            {trancheRow("New-Money first-out TL", "$100M headline ($102M BXSL line / $98.5M net)", "SOFR+575", "Apr 2029", "Reserved for ad hoc group", T_.accent)}
+            {trancheRow("First-out Notes", "$327M", "step-up", "2029", "From participating noteholders", T_.green)}
+            {trancheRow("Second-out TL", "$543M", "step-up", "2029", "Behind first-out", T_.amber)}
+            {trancheRow("Second-out Notes", "$489M", "step-up", "2029", "Ex-secured + ex-unsecured tranches", T_.amber)}
+            <tr style={{ borderTop: `2px solid ${T_.border}` }}>
+              <td style={{ padding: "8px 10px", fontWeight: 700, color: T_.text, fontSize: 12 }}>Total Funded Debt</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontWeight: 700, color: T_.accent, fontFamily: "monospace", fontSize: 12 }}>~$3.28B</td>
+              <td colSpan={3} style={{ padding: "8px 10px", color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>FY26E leverage ~7.0x; principal cut ~$254M</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ marginTop: 12, fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>
+          Sources: Fitch closing data Jan 15, 2026; Moody's Dec 15, 2025; S&P Dec 9, 2025 & Jan 26, 2026; 9fin LME-launch summary Dec 9, 2025; Reorg Q4'25 earnings coverage Mar 18, 2026. New-money TL rate (SOFR+575) per BXSL 10-K schedule of investments.
         </div>
       </div>
 
-      <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+      {/* ── Entity Structure (Post-LME) ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>Entity Structure (Post-LME)</div>
+        <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 18 }}>Click any entity for detail. Issuer / guarantor relationships per Fitch Jan 15, 2026 + Moody's Dec 15, 2025. The Intermediate Holdings layer was inserted via the LME — it did not exist before Jan 9, 2026.</div>
 
-        {/* ROW 1: Trinseo plc parent (full width) */}
-        <div onClick={() => toggle("business")} style={{ cursor: "pointer", marginBottom: 8 }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
-            label="Trinseo plc (NYSE: TSE)"
-            sub="Top parent · Listed (delisting underway Mar 2026) · Equity ~$0.55"
+            label="Clearlake Capital + Siris Capital"
+            sub="Sponsors · LBO Feb 2021 (Endurance International + Web.com take-private)"
+            color={T_.purple}
+            width={460}
+            onClick={() => toggle("sponsors")}
+            selected={detail === "sponsors"}
+            badges={[{ text: "NO LME EQUITY CONTRIBUTION", color: T_.red }]}
+          />
+        </div>
+        <VLineLabel label="100% equity · via Endure Digital Investment Holdings, L.P. (unverified)" color={T_.purple} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Newfold Digital Holdings Group, Inc."
+            sub="Rated TopCo · Fitch B-/Stable IDR"
             color={T_.red}
-            badges={[{ text: "Pari-Plus 2L Notes Guarantor", color: T_.amber }]}
+            width={480}
+            onClick={() => toggle("topco")}
+            selected={detail === "topco"}
+            badges={[{ text: "STRUCTURALLY SUBORDINATED POST-LME", color: T_.red }]}
+            debt={[
+              { name: "2nd-out TL (Fitch CCC/RR6)", amount: "$543M", color: T_.amber },
+              { name: "2nd-out Notes (Fitch CCC/RR6)", amount: "$489M", color: T_.amber },
+            ]}
           />
         </div>
+        <VLineLabel label="NEW HoldCo layer · inserted via LME (Jan 9, 2026)" color={T_.accent} />
 
-        <VLineLabel label="Owns" color={T_.textDim} />
-
-        {/* ROW 2: existing TL borrower + pari-plus SPV side-by-side */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.2fr 1fr", gap: 8, alignItems: "start" }}>
-          <div onClick={() => toggle("preLme")} style={{ cursor: "pointer" }}>
-            <Box
-              label="Trinseo Holding Sàrl + Trinseo Materials Finance Inc."
-              sub="Existing/Incremental Intercompany TL borrowers + Superpriority RCF borrower"
-              color={T_.green}
-              debt={[
-                { name: "Superpriority RCF (S+225)", amount: "$300M / Feb 2028", color: T_.green },
-                { name: "Incremental Superpriority RCF (S+900 PIK)", amount: "$50M / Feb 2028", color: T_.green },
-                { name: "Existing 1L Intercompany TL @ 10/13", amount: "Trading near zero", color: T_.red },
-                { name: "$948.4M pari-plus intercompany TL (pari leg)", amount: "Pari w/ existing TL", color: T_.amber },
-              ]}
-            />
-          </div>
-          <div style={{ paddingTop: 50, display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ fontSize: 9, color: T_.textGhost, textAlign: "center" }}>← SEPARATE<br/>FINANCE SPV<br/>CHAIN →</div>
-          </div>
-          <div onClick={() => toggle("sept2023")} style={{ cursor: "pointer" }}>
-            <Box
-              label="Trinseo LuxCo Finance SPV Sàrl + Trinseo NA Finance SPV LLC"
-              sub="PARI-PLUS BORROWERS · New finance SPVs (Sep 2023)"
-              color={T_.amber}
-              dashed
-              badges={[{ text: "Anchored by Oaktree / Angelo Gordon / Apollo", color: T_.amber }]}
-              debt={[
-                { name: "Pari-Plus 1L TL @ S+966 PIK toggle (May 2028)", amount: "$1.2B @ 72.5/75.3", color: T_.amber },
-                { name: "Pari-Plus 7.625% 2L Notes (2029)", amount: "~$495M", color: T_.amber },
-              ]}
-            />
-          </div>
-        </div>
-
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 0.2fr 1fr", gap: 8 }}>
-          <VLineLabel label="Owns operating subs + foreign subs" color={T_.green} />
-          <div />
-          <VLineLabel label="Lends $948.4M pari + $128.9M plus" color={T_.amber} />
-        </div>
-
-        {/* ROW 3: ops / unrestricted-sub breakout */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8 }}>
-          <div onClick={() => toggle("aristechAltuglas")} style={{ cursor: "pointer" }}>
-            <Box
-              label="Aristech Surfaces LLC + Altuglas LLC"
-              sub="US PMMA · WAS guarantor of existing TL · Jan 2025 redesignated UNRESTRICTED · pledged exclusively to pari-plus"
-              color={T_.red}
-              dashed
-              badges={[{ text: "Pari-plus exclusive collateral", color: T_.amber }]}
-            />
-          </div>
-          <div onClick={() => toggle("dropDown")} style={{ cursor: "pointer" }}>
-            <Box
-              label="Trinseo Finance SPV LLC"
-              sub="Unrestricted sub · Holds 50% Americas Styrenics JV · Sept 2023 dropdown"
-              color={T_.red}
-              dashed
-              badges={[{ text: "Pari-plus exclusive collateral", color: T_.amber }]}
-            />
-          </div>
+        <div style={{ display: "flex", justifyContent: "center" }}>
           <Box
-            label="Foreign Guarantors (Belgium, Germany, Indonesia, Taiwan + Trinseo Europe GmbH)"
-            sub="Were 'limited' guarantors → Jan 2025 became FULL secured guarantors of pari-plus only"
-            color={T_.amber}
+            label="Newfold Digital Intermediate Holdings, Inc."
+            sub="NEW · structural-priority HoldCo for the new-money tranche"
+            color={T_.accent}
+            width={480}
+            onClick={() => toggle("intermediate")}
+            selected={detail === "intermediate"}
+            badges={[{ text: "POST-LME ONLY", color: T_.accent }]}
+            debt={[
+              { name: "New-Money 1st-out TL (SOFR+575) · Fitch BB-/RR1", amount: "$102M", color: T_.accent },
+            ]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Newfold Digital, Inc. (f/k/a Endure Digital, Inc.)"
+            sub="Main OpCo · Borrower on RCF + 1st-out TL/Notes"
+            color={T_.green}
+            width={520}
+            onClick={() => toggle("opco")}
+            selected={detail === "opco"}
+            debt={[
+              { name: "1st-out RCF · S&P B-/RR2 70%", amount: "$380M ($223M drawn)", color: T_.green },
+              { name: "1st-out TL · Fitch BB-/RR1", amount: "$1,566M", color: T_.green },
+              { name: "1st-out Notes · Fitch BB-/RR1", amount: "$327M", color: T_.green },
+            ]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Web.com Group, Inc."
+            sub="Subsidiary issuer / co-guarantor · separate Fitch IDR withdrawn Jan 2026"
+            color={T_.blue}
+            width={420}
+            onClick={() => toggle("webcom")}
+            selected={detail === "webcom"}
+            badges={[{ text: "WEB.COM BRAND ABSORBED INTO NETWORK SOLUTIONS (Jun 2025)", color: T_.textDim }]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Operating Brand Subsidiaries"
+            sub="Bluehost · Network Solutions (absorbed Web.com, Register.com, Domain.com Jun 2025) · HostGator · Yoast · Constant Contact"
+            color={T_.textMid}
+            width={640}
+            onClick={() => toggle("brands")}
+            selected={detail === "brands"}
+            badges={[
+              { text: "UNRESTRICTED-SUB DESIGNATION PROHIBITED", color: T_.green },
+              { text: "MARKMONITOR DIVESTED LATE-2025", color: T_.amber },
+            ]}
           />
         </div>
 
-        {/* Action buttons row 1 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 16 }}>
-          <div onClick={() => toggle("business")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "business" ? `${T_.amber}12` : T_.bgInput,
-            border: `1px solid ${detail === "business" ? T_.amber : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Business — Asian Oversupply, Cyclical Markets</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Adj EBITDA $200M→$167–177M · FCF -$140M · Leverage 10x+ · ABS imports +18–26% YoY</div>
-          </div>
-          <div onClick={() => toggle("preLme")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "preLme" ? `${T_.blue}12` : T_.bgInput,
-            border: `1px solid ${detail === "preLme" ? T_.blue : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Pre-LME Capital Structure (mid-2023)</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$660M TL May'24 + $500M SSN Sep'25 = $1.16B wall · 12.2x leverage Q3'24</div>
-          </div>
-          <div onClick={() => toggle("paripluseDef")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "paripluseDef" ? `${T_.accent}12` : T_.bgInput,
-            border: `1px solid ${detail === "paripluseDef" ? T_.accent : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>What "Pari-Plus" Means — vs. Uptier &amp; Drop-Down</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Same lien rank · asymmetric collateral · post-Serta legal arbitrage</div>
-          </div>
+        {/* Detail panel renders below if anything selected */}
+        {detail && panels[detail]}
+
+        <div style={{ marginTop: 16, padding: "10px 14px", background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, fontSize: 11, color: T_.textDim, lineHeight: 1.6 }}>
+          <strong style={{ color: T_.accent }}>The structural insight:</strong> the new $102M new-money TL doesn't sit at OpCo or TopCo — it sits at a brand-new <strong>Intermediate Holdings</strong> entity inserted between them. This gives new-money lenders a guarantee-PLUS-direct claim that's structurally senior to the second-out lenders at TopCo, WITHOUT relying on contractual subordination (Serta-style) or manufactured-supermajority vote-rigging (Incora-style). Quieter, harder to attack.
         </div>
+      </div>
 
-        {/* Action buttons row 2 — the two LMEs */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: 8, marginTop: 8 }}>
-          <div onClick={() => toggle("sept2023")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "sept2023" ? `${T_.amber}12` : T_.bgInput,
-            border: `2px solid ${detail === "sept2023" ? T_.amber : T_.amber + "60"}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T_.amber }}>★ September 2023 — The Original Pari-Plus</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>$1.077B at S+966 · $948.4M pari · $128.9M plus · JV dropdown · Oaktree/AG/Apollo</div>
-          </div>
-          <div onClick={() => toggle("jan2025")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "jan2025" ? `${T_.red}12` : T_.bgInput,
-            border: `2px solid ${detail === "jan2025" ? T_.red : T_.red + "60"}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T_.red }}>★ January 2025 — Pari-Plus 2.0 (Tightening)</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Claim $948M→$1.443B · Aristech/Altuglas redesignated · $300M Superpriority RCF · 3.5x maint test removed</div>
-          </div>
-        </div>
-
-        {/* Action buttons row 3 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
-          <div onClick={() => toggle("dropDown")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "dropDown" ? `${T_.amber}12` : T_.bgInput,
-            border: `1px solid ${detail === "dropDown" ? T_.amber : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Americas Styrenics JV Dropdown (the "plus")</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>50% JV stake · "excluded contributions" basket · low-cost producer</div>
-          </div>
-          <div onClick={() => toggle("aristechAltuglas")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "aristechAltuglas" ? `${T_.red}12` : T_.bgInput,
-            border: `1px solid ${detail === "aristechAltuglas" ? T_.red : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Aristech &amp; Altuglas — Sister-Sub Carve-Out</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Were guarantors · Jan 2025 redesignated unrestricted · pledged exclusively to pari-plus</div>
-          </div>
-          <div onClick={() => toggle("covenants")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "covenants" ? `${T_.purple}12` : T_.bgInput,
-            border: `1px solid ${detail === "covenants" ? T_.purple : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Covenant Architecture — What Changed Jan 2025</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>3.5x maint test removed · $100M min liquidity · 1.5x SP lien net lev when 30%+ drawn</div>
-          </div>
-        </div>
-
-        {/* Action buttons row 4 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
-          <div onClick={() => toggle("debtStack")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "debtStack" ? `${T_.blue}12` : T_.bgInput,
-            border: `1px solid ${detail === "debtStack" ? T_.blue : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.blue }}>Full Debt Stack &amp; Trading Levels</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Pari-plus TL 72.5/75.3 · Existing intercompany TL 10/13 · 30-pt gap = "plus" value</div>
-          </div>
-          <div onClick={() => toggle("lenders")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "lenders" ? `${T_.purple}12` : T_.bgInput,
-            border: `1px solid ${detail === "lenders" ? T_.purple : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.purple }}>Lender Dynamics — Two Adverse Camps</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>PJT/Paul Hastings (Apollo/Oaktree/AG) vs. Lazard/Gibson Dunn (existing TL)</div>
-          </div>
-          <div onClick={() => toggle("defaults")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "defaults" ? `${T_.red}12` : T_.bgInput,
-            border: `1px solid ${detail === "defaults" ? T_.red : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>The 2026 Default Cascade</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Mar 19 + Apr 14 interest defaults · waivers expire Apr 30 · Ch.11 imminent</div>
-          </div>
-        </div>
-
-        {/* Action buttons row 5 */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 8, marginTop: 8 }}>
-          <div onClick={() => toggle("ratings")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "ratings" ? `${T_.red}12` : T_.bgInput,
-            border: `1px solid ${detail === "ratings" ? T_.red : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.red }}>Rating Actions — Moody's + S&amp;P</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Ca/LD · SD · Pari-plus Caa3 vs Existing TL C — 6+ notch split</div>
-          </div>
-          <div onClick={() => toggle("valueLoss")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "valueLoss" ? `${T_.amber}12` : T_.bgInput,
-            border: `1px solid ${detail === "valueLoss" ? T_.amber : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.amber }}>Octus Value-Loss Analysis (~50% on TLB-2)</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Ranked vs Del Monte 64% / Envision 53% / Instant Brands 30% / AMC 6–9%</div>
-          </div>
-          <div onClick={() => toggle("forwardPath")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "forwardPath" ? `${T_.accent}12` : T_.bgInput,
-            border: `1px solid ${detail === "forwardPath" ? T_.accent : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 600, color: T_.accent }}>Forward Path — Prearranged Ch.11 Most Likely</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Waivers expire Apr 30 · DIP from Apollo/Oaktree/AG · OpCo TL fight expected</div>
-          </div>
-        </div>
-
-        {/* Action buttons row 6 — lessons */}
-        <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 8, marginTop: 8 }}>
-          <div onClick={() => toggle("lessons")} style={{
-            padding: "10px 12px", borderRadius: 8, cursor: "pointer", textAlign: "center",
-            background: detail === "lessons" ? `${T_.green}12` : T_.bgInput,
-            border: `1px solid ${detail === "lessons" ? T_.green : T_.border}`, transition: "all .15s",
-          }}>
-            <div style={{ fontSize: 11, fontWeight: 700, color: T_.green }}>★ Five Lessons for a Credit Investor</div>
-            <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2 }}>Pari ranking ≠ equal recovery · watch redesignation rights · 24–36 month runway · own the new money or sell</div>
-          </div>
-        </div>
-
-      {/* ── Detail Panel ── */}
-      {detail && panels[detail] && panels[detail]}
-      </div>{/* end org chart box */}
-      </div>{/* end org chart max-width wrapper */}
-
-      {/* ════════════════════════════════════════════════════
-         KEY CONCEPTS
-         ════════════════════════════════════════════════════ */}
-      <div style={{ marginTop: 28, marginBottom: 24 }}>
+      {/* ── Key Concepts Accordion ── */}
+      <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
         <ConceptAccordion items={[
-          { label: "Pari-Plus = pari lien rank + asymmetric sidecar collateral", color: T_.accent, summary: "The new tranche is technically pari-passu but receives exclusive collateral and guarantee enhancements that holdouts cannot reach.", detail: "The 'pari' leg is an intercompany loan from a new finance SPV to the existing TL borrowers, ranking pari-passu against the existing collateral pool. The 'plus' leg is layered separately: collateral support from an unrestricted-sub asset (Trinseo: Americas Styrenics JV), plus 'limited' or full foreign-sub guarantees, plus (in tightening rounds) redesignation of restricted-sub guarantors as unrestricted with exclusive pledge to the new tranche. Because lien rank in the existing collateral is unchanged, sacred-rights provisions are not triggered. The recovery math, however, is dominated by the 'plus' leg. The label describes lien rank; the economics are determined by which assets each cohort can reach." },
-          { label: "Unrestricted-Subsidiary Redesignation (the back door)", color: T_.red, summary: "Trinseo's Jan 2025 redesignation of Aristech + Altuglas was the structural innovation — guarantor assets shrank without lender consent.", detail: "Most credit agreements allow the borrower to designate a restricted subsidiary as unrestricted post-closing, subject to availability under specified investment baskets. Trinseo's Jan 2025 amendments redesignated Aristech Surfaces LLC and Altuglas LLC — both previously guarantors of the existing intercompany TL — as unrestricted. This released them as guarantors and allowed them to be re-pledged as exclusive collateral to the pari-plus tranche. Existing TL lenders had no consent right and no ability to block. Post-Trinseo, well-drafted credit agreements require existing-lender consent for any redesignation that releases a material guarantor, or impose hard EBITDA / asset-value caps on cumulative redesignation events." },
-          { label: "Asymmetric Foreign-Sub Guarantees", color: T_.amber, summary: "Foreign subs were 'limited' guarantors of the existing TL but 'fully secured' guarantors of the pari-plus — same entities, asymmetric exposure.", detail: "Foreign subsidiaries (Belgium, Germany, Indonesia, Taiwan, Trinseo Europe GmbH) were initially structured as 'limited' guarantors with carve-outs for §956 / CFC tax leakage. The Jan 2025 amendments converted them to fully secured guarantors of the pari-plus tranche only — without changing the existing TL's older 'limited' guarantee package. This created an asymmetric guarantee architecture: same legal entities, materially different recovery exposure across the two pari-passu tranches. The mechanic is portable to any credit doc that allows new tranches to take guarantor support not available to existing tranches — even when the new tranche is technically pari-passu." },
-          { label: "Maintenance-Test Removal as Plan-Negotiation Tool", color: T_.purple, summary: "Removing the 3.5x first lien net leverage maint test in Jan 2025 eliminated a future tripwire — buying ~12 more months of runway.", detail: "Trinseo's existing intercompany TL credit agreement carried a quarterly 3.5x first lien net leverage maintenance test. With FY2025 leverage tracking 10x+ that test would have triggered immediately, forcing a renegotiation or amendment with the existing TL group. The Jan 2025 amendments removed it. This is a quiet but important LME feature — eliminating maintenance covenants from impaired credits is often the difference between buying 12 months of runway versus buying 24-36 months. The pari-plus camp consented to this removal because they had collateral protection through the 'plus' leg; the existing TL camp was the consideration recipient (subordination of the $128.9M intercompany conduit went the other way as their compensation)." },
-          { label: "Anti-Cash-Hoarding + Min Liquidity Covenant Architecture", color: T_.blue, summary: "Superpriority RCF covenants force excess cash to flow first to the new senior tranche — economic priming via cash sweep.", detail: "The Jan 2025 superpriority RCF includes (1) $100M minimum liquidity tested last business day of each month, (2) anti-cash-hoarding paydown if loan parties hold >$100M cash or non-loan parties hold >$50M, (3) 1.5x superpriority lien net leverage ratio test when 30%+ of RCF capacity is drawn. Net effect: cash that builds in the borrower group flows first to the superpriority RCF, then to the pari-plus, then (last) to the existing TL. Even though the existing TL is technically pari-passu in lien rank, it is structurally last in line for any cash sweep. This is a textbook example of how covenant architecture can prime a tranche economically even without changing lien rank." },
-          { label: "Trinseo Europe GmbH — Asset-Specific Priority Splits", color: T_.purple, summary: "On the same legal entity's balance sheet, IP / licenses / inventory go pari-plus first; other assets go existing TL first.", detail: "Per Reorg article 348683, the collateral priority on Trinseo Europe GmbH's IP, license agreements, tolling agreements, and inventory (excluding Aristech/Altuglas IP) follows: (1) Superpriority RCF, (2) Pari-plus 1L TL, (3) Pari-plus 2L Notes, (4) Existing intercompany TL. But priority on Trinseo Europe GmbH's other assets follows: (1) Superpriority RCF, (2) Existing intercompany TL, (3) Pari-plus 1L TL, (4) Pari-plus 2L Notes. This kind of asset-by-asset priority asymmetry within a single legal entity is unique to pari-plus structures and is invisible from headline lien-rank tables. The IP and license stream — typically the most liquid / monetizable portion — was allocated to the pari-plus tranche; the harder-to-realize physical assets remained existing-TL-favored." },
-          { label: "Why Pari-Plus Replaced Uptier in 2023–2024", color: T_.red, summary: "Post-Serta legal risk made formal subordination via uptier dangerous; pari-plus achieves similar economics without sacred-rights challenge.", detail: "The Serta uptier (2020) was the canonical priming maneuver for impaired credits. After LCM Loan Opp Fund 16 v. Serta Simmons (NY appellate court reversal Dec 2024) and the in-bankruptcy uptier ruling against Serta in S.D. Tex. (Mar 2024), the uptier playbook became materially more legally fraught — sacred-rights doctrine plus pro-rata-sharing covenants gave non-participants real challenge tools. Pari-plus emerged as the substitute. Same economic effect (participating lenders end up better-collateralized than non-participants), much harder to challenge under sacred-rights theories because lien rank is unchanged. Mitel uptier (Mar 2022) was the last major uptier before issuers pivoted; Trinseo (Sept 2023) was the first canonical pari-plus." },
-          { label: "30-Point Trading Gap = Visible Value of the 'Plus'", color: T_.green, summary: "Pari-plus TL trades 72.5/75.3; existing intercompany TL trades 10/13. Same lien rank, same balance sheet, ~30 points apart.", detail: "Per Reorg / IHS Markit (mid-Jan 2026), the pari-plus 1L term loan due May 2028 was bid 72.5 / offer 75.3, while the existing intercompany TL was bid 10 / offer 13. Both tranches are technically pari-passu in lien rank against the existing collateral pool. The market's pricing of the 30-point gap is the visible value of the 'plus' leg — the JV stake, the foreign guarantor support, the Aristech/Altuglas exclusive collateral. Moody's relative recoveries (Caa3 on pari-plus TL vs C on existing TL) and S&P recovery ratings tell the same story. For underwriting purposes: the 30-point gap is a real-time market estimate of what the 'plus' leg is worth in this credit. In any pari-plus, the trading-level gap between the new and existing tranche is the cleanest single read on how much economic value was transferred." },
-          { label: "30-Month Pari-Plus → Default Pattern", color: T_.amber, summary: "Trinseo Sept 2023 LME → Mar 2026 default = 30 months. Mitel uptier 36 months. Wheel Pros double-dip 12 months. Pattern matters.", detail: "Octus's Feb 2025 retrospective explicitly called out the pattern: 'many of these transactions are ultimately followed by further LMT or a bankruptcy filing, resulting in downward pressure on recoveries.' Trinseo confirms the pattern: $1.077B raised in Sept 2023, consumed primarily by 2024–2025 cash burn (FY2025 FCF -$140M) rather than structural deleveraging, terminal default 30 months later. Compare to Mitel (Mar 2022 uptier → Mar 2025 Ch.11 = 36 months) and Wheel Pros (Sept 2023 double-dip → Sept 2024 Ch.11 = 12 months). The implication: pari-plus is the start of the restructuring, not a solution. New money disguised as deleveraging when end-market demand is the underlying issue does not prevent eventual Ch.11 — it shifts who bears the loss. Underwriters should treat any pari-plus as a 24-36 month timer to bankruptcy unless the issuer's underlying earnings clearly improve." },
+          {
+            label: "The Maturity Wall + Why LME, Not Ch.11",
+            color: T_.red,
+            summary: "$380M RCF maturing Feb 2026 + $2.3B TLB maturing Feb 2028 + secular subscriber decline — bridged via LME because EV likely exceeded debt.",
+            detail: "The Feb 2026 RCF maturity was the forcing event. Net leverage was 7.5x at Sep 2025 with FCF generation thin but positive — sponsor-PE math favored consensual extension over filing. The post-LME 7.0x leverage is still distressed but the maturity wall pushes to 2029, giving Newfold 3+ years to either (a) execute the strategic AI partnership pivot Third Bridge experts flag, (b) sell additional non-core assets like MarkMonitor, or (c) line up a second-bite LME closer to 2028-29. Ch.11 was avoided but is plausibly delayed rather than averted.",
+          },
+          {
+            label: "Non-Pro-Rata Exchange — Tiered Participation",
+            color: T_.accent,
+            summary: "Ad hoc group got the better terms + exclusive new-money allocation; minority lenders given a worse catch-up window post-launch.",
+            detail: "The launch on Dec 9, 2025 disclosed terms favoring an ad hoc group that had been pre-negotiating under a six-month NDA (Kirkland template — similar to Better Health, Summit Behavioral). Non-ad-hoc lenders had a subsequent window to accede on materially worse pricing — typically the ratable-priming protection in modern docs would forbid this, but Newfold's pre-LME indenture lacked an Incora-style sacred-rights ratable-priming guard. The tiered mechanic created a >90% initial-round participation rate (S&P, Moody's). This non-pro-rata approach is structurally similar to Serta but does not appear to have produced material litigation — likely because the ad hoc group represented a large enough holder coalition that minority lenders had no path to a 2/3 sacred-rights challenge.",
+          },
+          {
+            label: "First-Out / Second-Out Tranching",
+            color: T_.blue,
+            summary: "Participating lenders rolled into first-out; non-participating (and ex-unsecureds) sit second-out, contractually subordinated for waterfall recovery.",
+            detail: "The post-LME structure has all first-out instruments (RCF + TL + New-Money + Notes) pari passu on collateral with a waterfall priority OVER second-out (TL + Notes). Rating agency LGD work: Fitch recovers first-out at RR1 (90%+), second-out at RR6 (0-10%); S&P assigns first-out B-/RR2 (70%). The new-money $102M TL participates in first-out alongside rolled debt, capturing all of the new senior-most position the ad hoc group bought. This is now the standard distressed-LME outcome structure when an LME can avoid Ch.11.",
+          },
+          {
+            label: "Post-LME Covenant Package — Closing Old Loopholes",
+            color: T_.green,
+            summary: "New docs include super-majority consent, ratable-priming protections, and an unrestricted-sub blocker — explicitly designed to prevent the next round of LME extraction.",
+            detail: "Per Moody's Dec 15 alert, the new credit docs incorporate (1) super-majority consent for sacred-rights-equivalent amendments — defeating the Incora-style 'manufactured supermajority via new-issue dilution', (2) explicit ratable-priming protection — addressing the Serta uptier mechanic, and (3) an outright unrestricted-subsidiary blocker — preventing J.Crew / Envision / Xerox-style drop-downs. This is the post-2024 modern LME covenant suite. Notably the new docs were FORWARD-LOOKING — they don't undo the non-pro-rata mechanic that just happened, but they prevent a repeat against the same lenders.",
+          },
+          {
+            label: "Ad Hoc Group — Akin/Evercore + PIMCO/GoldenTree",
+            color: T_.purple,
+            summary: "Majority ad hoc group: Akin Gump (legal) + Evercore (banker), Blackstone + PIMCO + GoldenTree disclosed lender members (per Bloomberg Dec 9, 2025). Minority: Glenn Agre + Guggenheim. Company: Kirkland & Ellis + PJT Partners.",
+            detail: "The ad hoc group composition matters for two reasons: (1) Blackstone, PIMCO, and GoldenTree are repeat-game distressed-credit shops that have led similar non-pro-rata exchanges across multiple borrowers — their participation telegraphed the mechanic months before launch and gave Kirkland time to align with them on the NDA structure. (2) The Glenn Agre / Guggenheim minority group was smaller and lacked the dollar weight to force pari-passu treatment — so they ended up accepting the catch-up window rather than litigating. Future LME analysis: who's in the ad hoc group on Day -180 tells you the mechanic on Day 0.",
+          },
+          {
+            label: "MarkMonitor Sale → Opportunistic Buybacks",
+            color: T_.amber,
+            summary: "Sold to Com Laude late 2025 for >$300M net; proceeds funding post-LME debt repurchases at material discounts (1L TL traded as low as 65.62).",
+            detail: "MarkMonitor (enterprise domain management — corporate brand protection) was acquired from Clarivate Oct 31, 2022 but Third Bridge experts confirm it was always run standalone; enterprise customer base was non-synergistic with Newfold's SMB hosting/domains focus. The sale to Com Laude was 'opportunistic' (Nov 14, 2025 TB expert) — explicitly tied to pre-LME liquidity. Post-LME, Newfold disclosed on the Q4'25 call (Mar 18, 2026) that it has used proceeds for bond + loan repurchases at material discounts. Specific tranches and discount levels not disclosed publicly, but Reorg secondary trade data shows the 1L TL fell from 83.5 to 65.62 in three months — implying recoverable economics on opportunistic buybacks.",
+          },
+          {
+            label: "Operating Trajectory — Subscriber Decline + AI Risk",
+            color: T_.red,
+            summary: "Subscriber base -17% since 2023 (~1M lost per S&P). R&D ~8% of rev vs GoDaddy 18%. Q4'25 revenue -4.4% YoY, EBITDA -6.8%.",
+            detail: "The credit thesis is fundamentally about whether the LME bought enough time for the operating story to turn. Bear case (S&P / Third Bridge): subscriber base is shrinking, R&D investment is too low to keep pace with GoDaddy, AI-driven website builders are eating into the value-add of traditional hosting. Bull case: hosting + domains is sticky cash flow, Newfold has scale (~6M subs even at the low end), and a strategic AI partnership could lift the franchise. Apr 14, 2026 Third Bridge: 'shift, not disintermediation' — but Newfold 'too far behind to catch up without partnering.' The 2029 maturity wall gives time for a turnaround OR a second LME if not.",
+          },
+          {
+            label: "Rating Agency Response",
+            color: T_.textMid,
+            summary: "S&P: CCC/Neg → D (Dec 9) → CCC+/Stable (Jan 26). Moody's: Caa1 → D-PD (Dec 15) → Caa2/CFR. Fitch: CCC-/RWN → RD → B-/Stable (Jan 15).",
+            detail: "All three agencies followed the same arc — temporary default rating on launch (distressed exchange = D event), upgrade to post-LME stable rating once closed. The upgrades reflect the maturity wall being averted and the principal reduction, NOT a view that the credit is fundamentally fixed. S&P explicitly notes 'cap structure still viewed as unsustainable' even at CCC+/Stable. Moody's projected leverage 6.5-7.0x. Fitch first-out RR1 / second-out RR6 spread tells you the agency view: first-out lenders are protected; second-out is impaired in a downside scenario.",
+          },
         ]} />
       </div>
 
-      {/* ════════════════════════════════════════════════════
-         TIMELINE
-         ════════════════════════════════════════════════════ */}
+      {/* ── Timeline ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
         <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
         {[
-          { date: "2010", event: "Styron spun out of Dow Chemical (private). Initial cap structure: $1.4B 1L TL + sponsor equity (Bain Capital).", color: T_.textMid },
-          { date: "Jun 18, 2014", event: "Trinseo IPO on NYSE (TSE). Use of proceeds: debt paydown.", color: T_.textMid },
-          { date: "2021", event: "Pre-LME credit agreement signed: incremental pari-debt baskets + 'excluded contributions' investment basket + post-closing unrestricted-sub redesignation rights — the documentary infrastructure that enabled the 2023+2025 LMEs.", color: T_.amber },
-          { date: "Mid-2023", event: "Q2 2023 EBITDA collapse driven by Asian polymer oversupply + European cost disadvantage. Q3 2024 leverage will reach 12.2x (S&P projection at the time). $660M TL maturing May 2024 + $500M 5.375% SSNs maturing Sep 2025 — the maturity wall that triggered the LME.", color: T_.amber },
-          { date: "Sep 8, 2023", event: "★ ORIGINAL PARI-PLUS — $1.077B new-money 1L TL at SOFR+9.66% with PIK toggle, anchored by Oaktree, Angelo Gordon, Apollo. Issued by Trinseo LuxCo Finance SPV Sàrl + Trinseo NA Finance SPV LLC. $948.4M intercompany TL pari-passu w/ existing TL ('pari'); $128.9M routed as 'excluded contributions' to drop Americas Styrenics JV stake into Trinseo Finance SPV LLC ('plus'). Limited foreign-sub guarantees. Proceeds: redeem 2024 TL + ~75% of 2025 SSNs.", color: T_.amber },
-          { date: "2024", event: "FY2024 cash burn substantial; FCF deeply negative. Adj EBITDA below 2023 levels. Asian polymer overcapacity continues to redirect to North America + Europe.", color: T_.textMid },
-          { date: "Late 2024", event: "Trinseo and creditors begin negotiating follow-on transaction to address 2025 + 2029 unsec note maturities. Transaction Support Agreement (TSA) negotiated with majority unsec noteholder cohort.", color: T_.amber },
-          { date: "Jan 2025", event: "★ PARI-PLUS 2.0 — Three moves stacked: (1) 5.125% sr unsec notes due 2029 exchanged into 7.625% pari-plus 2L notes due 2029 at 15% discount → pari-plus claim upsized $948.4M → $1.443B; (2) Foreign sub guarantees converted limited → full secured for pari-plus only; (3) Aristech Surfaces + Altuglas redesignated unrestricted under existing TL, pledged exclusively to pari-plus. $300M superpriority RCF added (Feb 2028 maturity, S+225). 3.5x first lien net leverage maint test removed. $128.9M Luxco→Luxco intercompany conduit subordinated to existing TL.", color: T_.red },
-          { date: "Q1–Q3 2025", event: "Continued operating deterioration. ABS imports from S. Korea +18% YoY 1H25, +26% YoY Q2. PMMA imports from Asia surging into Europe. CEO Bozich frames as transitory or structural — uncertain.", color: T_.textMid },
-          { date: "Nov 2025", event: "S&P downgrade CCC → CCC+ → CCC. Trinseo Q3 2025 earnings: FCF -$38M; FY25 Adj EBITDA cut to $167–177M; FCF guide -$140M. Bozich: '10% volume increase = ~$100M EBITDA improvement.'", color: T_.red },
-          { date: "Dec 2025", event: "NYSE non-compliance notice received (continued listing standard).", color: T_.red },
-          { date: "Jan 6, 2026", event: "Compensation committee approves one-time conditional retention bonus awards for NEOs.", color: T_.purple },
-          { date: "Jan 16, 2026", event: "Reorg article 360937: Trinseo working with Latham & Watkins (legal), Centerview (financial), FTI (operational). Pari-plus lenders working with Paul Hastings + PJT Partners. Existing TL lenders working with Gibson Dunn + Lazard. Pari-plus TL bid 72.5/75.3; existing TL bid 10/13. Stock $0.55.", color: T_.amber },
-          { date: "Feb 23, 2026", event: "Bloomberg (via Reorg 367664): 'Trinseo Said to Be Considering Bankruptcy in Coming Weeks.' First public Ch.11 timeline reporting.", color: T_.red },
-          { date: "Mar 3, 2026", event: "NYSE delisting initiated (Reorg 369389). S&P SD on missed pari-plus interest.", color: T_.red },
-          { date: "Mar 13, 2026", event: "Going-concern 'substantial doubt' disclosed in 10-K (Reorg 371201).", color: T_.red },
-          { date: "Mar 19, 2026", event: "★ Trinseo elects not to make interest under pari-plus 1L TL + pari-plus 2L notes (Trinseo LuxCo Finance SPV S.à r.l.). Event of default; cross-defaults triggered. Limited waivers entered with lenders.", color: T_.red },
-          { date: "Apr 2, 2026", event: "★ Moody's downgrade CFR Caa2 → Ca; PDR Ca-PD/LD; SGL-3 → SGL-4. CIS-5 (very high governance risk). Trinseo Holding Sàrl 1L TL B2 → C; Trinseo LuxCo Finance SPV TL → Caa3; SPV 2L notes → Ca.", color: T_.red },
-          { date: "Apr 10, 2026", event: "★ $50M incremental superpriority RCF executed at SOFR+9% PIK / SOFR+8% base. Initial draw $10.4M. Apollo, Oaktree, Angelo Gordon are the consenting lenders (per signature page). 3.5% closing fee PIK; 0.375% unused line fee.", color: T_.amber },
-          { date: "Apr 13, 2026", event: "AR securitization advance rate reduced 92.5% → 90%; structuring fee 0.25%. Limited waiver to Apr 30 entered for AR sec facility.", color: T_.amber },
-          { date: "Apr 14, 2026", event: "★ Trinseo elects not to pay $38M of interest under Sept 8, 2023 credit agreement (the pari-plus 1L TL). Per 8-K: limited waivers of acceleration rights extended through April 30. 2L notes intercreditor agreement provides 180-day standstill on collateral collection action.", color: T_.red },
-          { date: "Apr 27, 2026", event: "Status today. 3 days until limited-waiver expiration. Reorg coverage active; 9fin coverage unverified due to expired session. Ch.11 expected near-term.", color: T_.amber },
-          { date: "Apr 30, 2026", event: "Limited waivers expire absent further extension. Acceleration rights revive on existing facilities; 2L notes 180-day standstill protects from collateral action.", color: T_.red },
+          { date: "Feb 2021", event: "Clearlake + Siris close take-private of Endurance International Group; combine with Web.com (also Clearlake/Siris portfolio) to form Newfold Digital. Initial debt stack arranged ~$3.5B+.", color: T_.purple },
+          { date: "Oct 31, 2022", event: "Newfold acquires MarkMonitor (enterprise domain management) from Clarivate.", color: T_.textMid },
+          { date: "Oct 2023", event: "Issued $515M 11.75% 1L Secured Notes due 2028 (JPM-led) — proceeds funded a sponsor dividend recap, adding leverage at a deteriorating moment.", color: T_.amber },
+          { date: "Jun 2025", event: "Network Solutions consolidation completed — absorbed Web.com, Register.com, Domain.com under one brand. Operational restructuring before the financial restructuring.", color: T_.textMid },
+          { date: "Aug 20, 2025", event: "Fitch downgrades to CCC- / Rating Watch Negative. Credit thesis publicly turning.", color: T_.red },
+          { date: "Sep 18, 2025", event: "Moody's downgrades to Caa1. Q3'25 leverage 7.5x; sponsor and lenders begin LME prep under NDA.", color: T_.red },
+          { date: "Oct 20, 2025", event: "Reorg reports the ad hoc group (Akin Gump + Evercore) — disclosed members Blackstone + PIMCO + GoldenTree per Bloomberg (Dec 9, 2025) — under NDA; subsequently Glenn Agre + Guggenheim organize as minority group.", color: T_.amber },
+          { date: "Nov 14, 2025", event: "Third Bridge expert: MarkMonitor sale was 'opportunistic' — confirms pre-LME liquidity sourcing strategy.", color: T_.textMid },
+          { date: "Late 2025", event: "MarkMonitor sale to Com Laude closes — >$300M net proceeds.", color: T_.green },
+          { date: "Dec 9, 2025", event: "★ LME LAUNCHED. Distressed exchange offering first-out/second-out tranching + $102M new-money TL reserved for ad hoc group. S&P cuts to D. Moody's cuts to D-PD on Dec 15 (corporate family Caa2). Fitch to C on Dec 15.", color: T_.accent },
+          { date: "Jan 9, 2026", event: "★ LME CLOSED. >90% participation in initial round; subsequent catch-up window for holdouts at steeper discount. Maturities extended to 2029; principal cut ~$254M; new-money TL at SOFR+575.", color: T_.green },
+          { date: "Jan 15, 2026", event: "Fitch: RD → B- Stable. First-out at BB-/RR1; second-out at CCC/RR6. Total debt $3.5B → $3.28B; projected 2026 leverage ~7.0x.", color: T_.blue },
+          { date: "Jan 26, 2026", event: "S&P: D → CCC+ Stable. 'Cap structure still viewed as unsustainable.'", color: T_.blue },
+          { date: "Mar 18-19, 2026", event: "Q4'25 results: revenue $326M (-4.4% YoY), adj EBITDA $109M (-6.8%; 9fin reports $99.5M / -8% on different basis). Disclosed post-LME debt repurchases using MarkMonitor proceeds at material discounts (1L TL traded 65.62 vs. 83.5 three months prior). Guided to flat FY'26 revenue.", color: T_.green },
+          { date: "Apr 14, 2026", event: "Third Bridge expert (Newfold post-LME): AI is 'shift, not disintermediation' but Newfold 'too far behind to catch up without partnering' — validates S&P's R&D-underinvestment thesis (8% vs GoDaddy 18%).", color: T_.amber },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Sources ── */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg/Octus (LME mechanics, ad-hoc-group composition, secondary trade data, Q4'25 earnings) · 9fin / LevFin Insights (LME launch Dec 9, 2025 summary; Q4'25 EBITDA; buyback note) · S&P (Dec 9 D / Jan 26 CCC+ / RR work) · Moody's (Dec 15 D-PD / Caa2 CFR / new-doc covenant detail) · Fitch (Jan 15 RD→B-, RR1/RR6 split, $3.5B → $3.28B closing data) · Third Bridge (Nov 14, 2025 MarkMonitor divestiture expert; Apr 14, 2026 post-LME positioning) · BXSL 10-K (new-money TL SOFR+575 pricing). New-money TL rate verified via BDC schedule of investments. Sponsor (Clearlake/Siris) equity contribution not disclosed in any of the four sources — treat as no contribution.
+      </div>
+    </div>
+  );
+}
+
+function CDKCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    sponsor: (
+      <DetailPanel title="Brookfield Business Partners — Sponsor" onClose={() => setDetail(null)}>
+        <p>Brookfield Business Partners (BBU.UN / BBUC) acquired CDK Global July 2022 for <strong>~$8.3B</strong> (~10.1x PF EBITDA at the time). The LBO closed days before public-market multiples started compressing — and just two years before the Jun 2024 ransomware attack would gut margins.</p>
+        <p style={{ color: T_.amber }}><strong>Brookfield reportedly owns CDK debt — but this is INFERENCE, not a disclosed action.</strong> Reorg (Apr 27): "Sponsor Brookfield <em>is said to own</em> CDK Global debt, <em>according to sources</em>." LFI/CreditSights (May 8): Brookfield "<em>has bought up a sizeable amount</em>" of CDK's debt — citing "preliminary Q1'26 results" showing a ~$394.7M net-debt decline, attributed to "sources said." LFI never specifies whose Q1'26 release the figure comes from (BBP consolidated vs. CDK-level disclosure are different things). Reorg, LFI footers BOTH note Brookfield did not respond to comment requests. <strong>No SEC filing, no Brookfield press release, no IR statement cites a CDK debt purchase</strong>; CreditSights' own research note is silent on it. Treat as a sourcing hypothesis, not a confirmed transaction.</p>
+        <p style={{ color: T_.red }}>Third Bridge expert (Mar 25): "I find it hard to believe that the $8.3bn acquisition cost…is even in play anymore." Sponsor equity recovery expected to be minimal even in a successful LME.</p>
+      </DetailPanel>
+    ),
+    centralParent: (
+      <DetailPanel title="Central Parent LLC — HoldCo / Borrower Alias" onClose={() => setDetail(null)}>
+        <p>The HoldCo entity that holds CDK Global II LLC (the rated entity). Per Reorg's Apr 23 sector quarterly + 9fin company aliases.</p>
+        <p>Sits between Brookfield Business Partners (sponsor) and CDK Global II LLC (rated entity). The "Central Parent LLC" naming is the LBO-vehicle convention — opaque holdco name in the credit-agreement borrower stack.</p>
+        <p style={{ color: T_.amber }}><strong>No HoldCo paper has been issued at this level</strong> in third-party reporting — all rated debt sits at CDK Global II LLC and CDK Global Inc. If a future LME inserts a new layer above CDK Global II LLC (Newfold-style), Central Parent LLC would be the candidate holding entity.</p>
+      </DetailPanel>
+    ),
+    ratedTopco: (
+      <DetailPanel title="CDK Global II LLC — Rated TopCo" onClose={() => setDetail(null)}>
+        <p>The Moody's-rated topco. Per the Dec 16, 2025 Moody's affirmation: <strong>B3 CFR / B3-PD / B3 senior secured / Caa2 senior unsecured</strong>; outlook <strong>changed to Negative from Stable</strong>.</p>
+        <p>Moody's cites 9.4x debt/EBITDA, weak topline through 2027, FCF +$100M projected 2026/27 (vs. Octus more skeptical view of "slightly fall short of $100M").</p>
+        <p style={{ color: T_.amber }}>The B3/Caa2 secured/unsecured spread tells you the agency view on tranche-level recovery: secured paper expected to recover meaningfully more than unsecured in a downside scenario.</p>
+      </DetailPanel>
+    ),
+    opcoIssuer: (
+      <DetailPanel title="CDK Global Inc. — Operating Issuer" onClose={() => setDetail(null)}>
+        <p>Operating company. <strong>Co-issuer (alongside Central Parent LLC and CDK Financing Co., Inc.)</strong> of the 8% '29 Senior Secured Notes (per Cahill Gordon's Aug 2023 closing announcement; ISIN US154915AA07). Also borrower / co-borrower on the term loan + revolver alongside CDK Global II LLC.</p>
+        <p>Pre-LBO (2022), CDK Global was a NYSE-listed company. The take-private collapsed the corporate structure but the legal entity "CDK Global Inc." persists as the operating issuer.</p>
+      </DetailPanel>
+    ),
+    productLines: (
+      <DetailPanel title="Operating Product Lines (Drive · Lightspeed · Heavy Truck · CDK Modern)" onClose={() => setDetail(null)}>
+        <p>CDK serves three main vertical / product clusters:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>CDK Drive / Lightspeed</strong> — flagship DMS for franchise auto dealers (~50% U.S. share per S&P / Reorg; ~70% of top-100 dealer groups per Third Bridge expert)</li>
+          <li><strong>Heavy Truck</strong> — DMS for commercial truck dealers. Per Third Bridge (Mar 25), this division's revenue is "doing better" relative to franchise auto</li>
+          <li><strong>CDK Modern / Fortellis</strong> — newer cloud-native platform; data-network APIs marketed to dealers + OEMs</li>
+        </ul>
+        <p style={{ color: T_.amber }}>Per Third Bridge: <strong>NOT separately legal entities</strong> — Heavy Truck is a "division" not a sub. So a J.Crew-style drop-down of a product line would require new entity creation; not a snap maneuver.</p>
+        <p style={{ color: T_.red }}><strong>The Pinewood.AI / Lithia partnership</strong> (~200 dealer stores moving to a cloud-native AI-first DMS) is the most material competitive risk — Third Bridge calls it "the chink in the armor." Tekion has slowed; Pinewood is the new threat.</p>
+      </DetailPanel>
+    ),
+  };
+
+  const chip = (label, value, color = T_.text) => (
+    <div style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.border}`, padding: "8px 10px" }}>
+      <div style={{ fontSize: 9, color: T_.textGhost, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color, fontFamily: "monospace" }}>{value}</div>
+    </div>
+  );
+
+  const trancheRow = (name, size, coupon, maturity, trading, color = T_.textMid) => (
+    <tr style={{ borderBottom: `1px solid ${T_.border}40` }}>
+      <td style={{ padding: "6px 10px", color, fontWeight: 600, fontSize: 11.5 }}>{name}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5, textAlign: "right" }}>{size}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{coupon}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{maturity}</td>
+      <td style={{ padding: "6px 10px", color: T_.textGhost, fontSize: 11 }}>{trading}</td>
+    </tr>
+  );
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          <strong>CDK Global</strong> (Brookfield portfolio; take-private July 2022 at ~$8.3B / ~10.1x EBITDA) is the dominant automotive DMS provider for ~15K U.S. franchise dealers. Two compounding stressors: <span style={{ color: T_.red }}>(1) the June 2024 ransomware attack</span> drove $730M in total settlements ($630M antitrust class-action + $100M legacy data-access; $450M paid Q2'25, rest at $60M/yr through 2028) and compressed margins from ~45% to mid-30s; <span style={{ color: T_.red }}>(2) AI-narrative repricing</span> as Pinewood.AI + Lithia partnership (~200 stores) and Tekion's prior land grab raised the disruption thesis. Q4'25 adj EBITDA <strong>$127M (-15% YoY)</strong>; rev $390M (-1%); leverage ~9.3-9.4x. 8% 1L Notes fell from 66.25 (Apr 24) → 51.5 (Apr 28) in four days. The <span style={{ color: T_.accent }}>LME is mid-formation, not yet structured</span>: majority co-op (Gibson Dunn + Houlihan Lokey, &gt;70% of debt) signed Apr 23; minority group (Cadwalader, ~12.5%) emerged Apr 27 contesting the "unlimited carve-out premium for steerco" language; Akin Gump briefly led a competing faction in late Apr that disbanded. CDK retained Weil + PJT. <span style={{ color: T_.amber }}>Brookfield reportedly owns CDK debt</span> per Reorg + LFI (both hedged, two layers of "sources said"); ~$394.7M net-debt delta in "preliminary Q1'26 results" cited as evidence but issuer of that release is unspecified — treat as inference, not disclosed action. No LME template publicly named yet (Newfold first-out/second-out, Incora vote-rigging, Robertshaw non-sub, Serta uptier all in play).
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(115px, 1fr))", gap: 8 }}>
+          {chip("Total Debt", "~$5.62B", T_.red)}
+          {chip("Leverage", "~9.4x", T_.red)}
+          {chip("Q4 EBITDA", "$127M (-15%)", T_.red)}
+          {chip("Cyber Settlements", "$730M", T_.amber)}
+          {chip("Moody's CFR", "B3 / Neg", T_.amber)}
+          {chip("S&P", "leverage >9x", T_.amber)}
+          {chip("8% Notes Trading", "51-66", T_.red)}
+          {chip("Co-op Signed", "Apr 23, 2026")}
+        </div>
+      </div>
+
+      {/* ── Capital Structure ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 14 }}>Capital Structure (Sep 30, 2025)</div>
+        <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 10 }}>LME not yet executed. Current structure shown; trading levels per Reorg + LFI April 2026 secondary-market data.</div>
+
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRANCHE</th>
+              <th style={{ textAlign: "right", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>SIZE</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>COUPON</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>MATURITY</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRADING (Apr 2026)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trancheRow("Revolver (RCF)", "$650M (~$30M drawn)", "S+spr", "Jul 2027", "Springing 9.47x net 1L cov at 40% util", T_.green)}
+            {trancheRow("1L Term Loan B", "$4.03B", "SOFR+325", "2029", "48-67 (steerco tier vs non-coop)", T_.amber)}
+            {trancheRow("7.25% 1L Sr Sec Notes", "$750M", "7.25%", "2029", "Steerco 65-68 / non-coop ~50.5", T_.amber)}
+            {trancheRow("8% 1L Sr Sec Notes", "$755M", "8.00%", "2029", "51.5 (Apr 28) — was 66.25 on Apr 24", T_.red)}
+            {trancheRow("Legacy 4.875% SUNs", "~$15M", "4.875%", "2027", "~93 (Reorg)", T_.textMid)}
+            {trancheRow("Legacy 5.25% SUNs", "~$28M", "5.25%", "2029", "~97 (Reorg)", T_.textMid)}
+            <tr style={{ borderTop: `2px solid ${T_.border}` }}>
+              <td style={{ padding: "8px 10px", fontWeight: 700, color: T_.text, fontSize: 12 }}>Total 1L Funded Debt</td>
+              <td style={{ padding: "8px 10px", textAlign: "right", fontWeight: 700, color: T_.red, fontFamily: "monospace", fontSize: 12 }}>~$5.58B</td>
+              <td colSpan={3} style={{ padding: "8px 10px", color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>Plus ~$43M legacy SUNs · No HoldCo paper disclosed</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ marginTop: 12, fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>
+          Sources: Reorg Apr 23-28 LME developments + Feb 23 "Asymmetric Downside"; CreditSights/LFI May 8 sponsor-buyback piece; Moody's Dec 16, 2025 affirmation (B3 / Negative); 9fin instrument data (ISIN US154915AA07 for 8% '29). 9fin did NOT carry direct CDK news flow in this run.
+        </div>
+      </div>
+
+      {/* ── Entity Structure ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>Entity Structure</div>
+        <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 18 }}>Click any entity for detail. Naming per Reorg + 9fin company aliases + Moody's Dec 16, 2025.</div>
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Brookfield Business Partners"
+            sub="Sponsor · Take-private July 2022 at ~$8.3B / ~10.1x EBITDA"
+            color={T_.purple}
+            width={460}
+            onClick={() => toggle("sponsor")}
+            selected={detail === "sponsor"}
+            badges={[{ text: "REPORTEDLY HOLDS CDK DEBT (UNCONFIRMED — SEE PANEL)", color: T_.amber }]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Central Parent LLC"
+            sub="HoldCo / borrower alias · LBO vehicle naming convention"
+            color={T_.blue}
+            width={400}
+            onClick={() => toggle("centralParent")}
+            selected={detail === "centralParent"}
+            badges={[{ text: "NO HOLDCO PAPER DISCLOSED", color: T_.textDim }]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="CDK Global II LLC"
+            sub="Rated TopCo · Moody's B3 CFR / Negative · Caa2 unsecured"
+            color={T_.amber}
+            width={460}
+            onClick={() => toggle("ratedTopco")}
+            selected={detail === "ratedTopco"}
+            debt={[
+              { name: "1L Term Loan B (S+325)", amount: "$4.03B", color: T_.amber },
+              { name: "RCF", amount: "$650M ($30M drawn)", color: T_.green },
+            ]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="CDK Global Inc."
+            sub="Co-issuer (with Central Parent LLC + CDK Financing Co., Inc.) of 8% 1L Sr Sec Notes (US154915AA07)"
+            color={T_.green}
+            width={460}
+            onClick={() => toggle("opcoIssuer")}
+            selected={detail === "opcoIssuer"}
+            debt={[
+              { name: "7.25% 1L Sr Sec Notes", amount: "$750M", color: T_.amber },
+              { name: "8% 1L Sr Sec Notes", amount: "$755M", color: T_.red },
+              { name: "Legacy 4.875% / 5.25% SUNs", amount: "~$43M", color: T_.textMid },
+            ]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Operating Product Lines"
+            sub="CDK Drive / Lightspeed (franchise DMS, ~50% U.S. share) · Heavy Truck (division) · CDK Modern / Fortellis"
+            color={T_.textMid}
+            width={620}
+            onClick={() => toggle("productLines")}
+            selected={detail === "productLines"}
+            badges={[
+              { text: "NOT SEPARATELY LEGAL ENTITIES", color: T_.textDim },
+              { text: "PINEWOOD/LITHIA = COMPETITIVE THREAT", color: T_.red },
+            ]}
+          />
+        </div>
+
+        {detail && panels[detail]}
+
+        <div style={{ marginTop: 16, padding: "10px 14px", background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, fontSize: 11, color: T_.textDim, lineHeight: 1.6 }}>
+          <strong style={{ color: T_.accent }}>The structural read:</strong> CDK's debt is concentrated at TWO entities (CDK Global II LLC for TL/RCF, CDK Global Inc. for the secured notes) with no HoldCo paper to subordinate. That means an LME mechanic similar to Newfold (insert a new HoldCo above for new-money) is straightforward. Conversely, a Xerox-style "non-subsidiary" drop-down is harder — Heavy Truck and CDK Modern aren't separate legal entities and would need to be carved out first. Likely template: <strong>Newfold-style intermediate HoldCo insertion + first-out/second-out tranching</strong> with the co-op group anchoring the first-out and Brookfield-held debt either rolled or extinguished.
+        </div>
+      </div>
+
+      {/* ── Key Concepts Accordion ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          {
+            label: "The Ransomware Settlement Drag",
+            color: T_.red,
+            summary: "$730M of total settlements over four years: $450M paid Q2'25, $60M/yr through 2028. Margins compressed from ~45% to mid-30s.",
+            detail: "The June 2024 ransomware attack disrupted ~15K dealerships for weeks. Two settlements resulted: (1) ~$630M antitrust class-action with auto software vendors (final court approval Feb 25, 2025; attorney-fee award $185M / ~30% ruled Sept 2025 — separate event); (2) ~$100M legacy data-access settlement. $450M of the $630M was paid in Q2'25; the remaining $180M is paid evenly at $60M/yr through 2028. Margins compressed from ~45% pre-cyber to mid-30s. Active suits remain: Tekion antitrust (CDK summary-judgment motion filed Apr 24, 2026, hearing Jun 11) + two class-actions from non-deal businesses + consumers re: the 2024 cyber.",
+          },
+          {
+            label: "The Co-op Battlefield — Initial Party Carve-Out",
+            color: T_.accent,
+            summary: "Gibson Dunn pact uses 'carve-out premium' language without 'reasonable/customary' qualifier — interpreted as unlimited steerco compensation. Cadwalader minority is contesting.",
+            detail: "The majority co-op (Gibson Dunn + Houlihan Lokey, >70% signed Apr 22-23) installed a 13.5% cap on 'initial party' carve-out slots — but the carve-out premium ITSELF has no 'reasonable/customary' qualifier. Interpreted by some creditors as essentially unlimited steerco compensation. Mirrors Foundever carve-out language per Reorg. The Cadwalader minority group (~12.5% / ~$500M of TLB) emerged Apr 27 to contest. Akin Gump briefly led a competing faction late April; disbanded after Gibson amended the pact. Intra-creditor conflict is now structural before any deal is announced.",
+          },
+          {
+            label: "Reported Brookfield Debt Position — Inference, Not Disclosure",
+            color: T_.amber,
+            summary: "Reorg (Apr 27) + LFI (May 8) both REPORT Brookfield owns CDK debt — but both are hedged with 'sources said,' Brookfield declined comment, and no SEC filing / IR statement / press release confirms a transaction.",
+            detail: "Reorg (Apr 27, art. 377980): 'Sponsor Brookfield IS SAID TO OWN CDK Global debt, ACCORDING TO SOURCES.' LFI/CreditSights (May 8, art. 40025763): Brookfield 'HAS BOUGHT UP a sizeable amount of the auto software provider's debt, THEY CONTINUED. Disclosed in preliminary Q1'26 results was a net debt decline of approximately $394.7mn… SOURCES SAID.' Two layers of 'sources said' on the strongest claim. Critical ambiguity: LFI doesn't specify whose Q1'26 release the $394.7M figure comes from — CDK reports on a June fiscal year (Q1 ≠ calendar Q1) and is private since the 2022 LBO; BBP reports calendar Q1. If it's BBP's consolidated net-debt line, that could move from sponsor purchases OR from CDK-level prepayments / accounting reclass / FX. CreditSights' own research note is SILENT on Brookfield buying — more conservative than LFI's news desk. Both Reorg and LFI footers note Brookfield did not respond to comment requests. Treat as a sourcing hypothesis pending Brookfield's actual Q1'26 10-Q / IR materials, which the 4 credit tools do not ingest.",
+          },
+          {
+            label: "AI / Tekion / Pinewood — The Disruption Thesis",
+            color: T_.purple,
+            summary: "Tekion's growth has slowed; the new threat is Pinewood.AI + Lithia partnership (~200 stores). Third Bridge calls it 'a chink in the armor.'",
+            detail: "Third Bridge expert (Mar 25): CDK still holds ~50-70% market share depending on denominator (50% U.S. share per S&P; 70% of top-100 dealer groups per the expert). Tekion's much-feared land grab has 'slowed tremendously' post-peak. The new threat: Pinewood.AI's partnership with Lithia (~200 dealer stores moving to a cloud-native AI-first DMS). The expert pushes back on broad AI-disruption fears but flags Lithia specifically as 'a chink in the armor.' If Lithia migrates successfully, other large multi-store groups will follow — and the loan-trading market is pricing exactly that risk.",
+          },
+          {
+            label: "Sponsor / Lender Advisor Map",
+            color: T_.blue,
+            summary: "Company: Weil + PJT. Majority co-op: Gibson Dunn + Houlihan. Minority: Cadwalader (no banker yet). Akin disbanded.",
+            detail: "Company side: Weil Gotshal (legal) + PJT Partners (financial), retained Apr 23-24. Majority lender co-op (>70% of debt): Gibson Dunn (legal) + Houlihan Lokey (financial), pact signed Apr 22-23 with 13.5% cap on 'initial party' carve-outs. Minority lender group (~12.5%, $500M TLB): Cadwalader Wickersham, emerged Apr 27 contesting carve-out terms; first call Apr 29; financial advisor 'in the near term' per CreditSights. Akin Gump briefly led a competing creditor faction in late April but disbanded after Gibson amended the pact. Specific lender names NOT disclosed in any of the 4 third-party sources — all reporting anonymized. BDC schedule-of-investments data would surface specific holders if needed.",
+          },
+          {
+            label: "Operating Trajectory + EBITDA Bridge",
+            color: T_.red,
+            summary: "Q4'25 adj EBITDA $127M (-15% YoY); rev $390M (-1%); NRR ~97%; mid-30s margin vs ~45% pre-cyber.",
+            detail: "Q4'25 adj EBITDA $127M (-15% YoY) on rev $390M (-1%). NRR ~97% (multi-source). Margins now mid-30s vs. ~45% pre-cyber. Moody's projected FCF +$100M for 2026/27; Octus more skeptical at 'slightly fall short.' Octus also skeptical of $180M of management PF EBITDA adjustments, calling them 'extremely difficult to fully realize.' S&P forecasts leverage >9x for an extended period, interest coverage low-1x area. The thesis: even WITHOUT further competitive losses, the credit doesn't deleverage organically — the LME has to take debt out.",
+          },
+          {
+            label: "Rating Agency Response",
+            color: T_.textMid,
+            summary: "Moody's affirmed B3 / Negative Dec 16, 2025 — 9.4x leverage cited. S&P leverage >9x outlook. No Fitch action surfaced.",
+            detail: "Moody's (Dec 16, 2025) affirmed CDK Global II LLC at B3 CFR / B3-PD / B3 secured / Caa2 unsecured; outlook changed to Negative from Stable. Cites 9.4x debt/EBITDA, weak topline through 2027, FCF +$100M projected 2026/27. S&P (May 2025 report, referenced by Reorg): expects leverage >9x for extended period, interest coverage low-1x area; net 1L 6.6x on management PF EBITDA. No Fitch action surfaced in any of the 4 sources over LTM. The agency view is consistent: credit can survive but cap structure is unsustainable; LME is necessary.",
+          },
+          {
+            label: "LME Template Watch — Which One Will CDK Pick?",
+            color: T_.green,
+            summary: "No source has named the template. Likely candidates: Newfold (intermediate HoldCo + first-out/second-out), Incora (manufactured supermajority), Robertshaw (non-sub), Serta (uptier).",
+            detail: "As of May 20, 2026, no LME structure has been publicly announced. The co-op fight is over allocation of value among lender tiers, not yet the structural mechanic. The most likely template for CDK is Newfold-style: insert a new intermediate HoldCo above CDK Global II LLC, issue new-money TL at the new layer with structural priority, and split rolled debt into first-out (participating) / second-out (non-participating) tranches at the OpCo. A Xerox-style non-subsidiary drop-down is harder because Heavy Truck / CDK Modern aren't separate legal entities. The Cadwalader minority's leverage point will be whether they get pro-rata treatment or not — if not, expect Robertshaw-style breach-of-pro-rata-sharing litigation.",
+          },
+        ]} />
+      </div>
+
+      {/* ── Timeline ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "Jul 2022", event: "Brookfield Business Partners closes take-private of CDK Global at ~$8.3B / ~10.1x EBITDA. LBO financed with $4B+ of TL + $1.5B of secured notes.", color: T_.purple },
+          { date: "Aug 2023", event: "CDK issues $755M of 8% 1L Senior Secured Notes due 2029 — refinanced the original 2L. New issue carries the higher coupon.", color: T_.amber },
+          { date: "Jun 2024", event: "★ RANSOMWARE ATTACK. Multi-week disruption of ~15K dealerships. Business-interruption claims spiral.", color: T_.red },
+          { date: "Feb 25, 2025", event: "$630M antitrust class-action settlement receives final court approval (Madison, WI federal court). Plus separate ~$100M legacy data-access settlement.", color: T_.red },
+          { date: "Sep 2025", event: "Attorney-fee award in the antitrust case: ~$185M (~30% of $630M settlement). Distinct from the underlying settlement approval (Feb 25, 2025).", color: T_.textMid },
+          { date: "Q2 2025", event: "CDK pays $450M of the $630M settlement; remaining $180M paid at $60M/yr through 2028.", color: T_.red },
+          { date: "Dec 16, 2025", event: "Moody's affirms B3 CFR; outlook changed to Negative from Stable. Cites 9.4x leverage, weak topline.", color: T_.amber },
+          { date: "Feb 23, 2026", event: "Reorg publishes 'Asymmetric Downside' deep-dive — first major piece flagging the LME thesis.", color: T_.blue },
+          { date: "Mar 25, 2026", event: "Third Bridge analyst-led call: CDK still ~50-70% market share (denominator-dependent); Pinewood.AI + Lithia partnership flagged as 'chink in the armor.'", color: T_.textMid },
+          { date: "Apr 22-23, 2026", event: "★ MAJORITY CO-OP SIGNED. Gibson Dunn + Houlihan Lokey representing >70% of debt. 13.5% cap on initial-party carve-out slots; carve-out premium has no 'reasonable/customary' qualifier (contested).", color: T_.accent },
+          { date: "Apr 24, 2026", event: "★ COMPANY LME ENGAGEMENT. CDK retains Weil Gotshal (legal) + PJT Partners (financial) to evaluate balance-sheet options including LME. 8% '29 Notes drop from 66.25 → 51.5 in 4 days.", color: T_.accent },
+          { date: "Apr 24, 2026", event: "CDK files summary judgment motion in Tekion antitrust suit; hearing scheduled Jun 11, 2026.", color: T_.blue },
+          { date: "Apr 27, 2026", event: "★ MINORITY GROUP ORGANIZES. ~12.5% of TLB (~$500M) retains Cadwalader Wickersham. Akin Gump's competing faction disbands after Gibson amends pact. First Cadwalader call Apr 29.", color: T_.amber },
+          { date: "Apr 27, 2026", event: "Reorg reports Brookfield 'is said to own' CDK debt — hedged language, anonymous sources, no Brookfield comment. NOT a disclosed transaction.", color: T_.amber },
+          { date: "May 8, 2026", event: "LFI/CreditSights reports Brookfield 'has bought up' CDK debt citing ~$394.7M net-debt delta in 'preliminary Q1'26 results' (issuer unspecified). Two layers of 'sources said.' NOT confirmed by any SEC filing or Brookfield disclosure.", color: T_.amber },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 90, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Sources ── */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg/Octus (Apr 23-28 LME developments; Feb 23 'Asymmetric Downside' deep-dive; Dec 16 Moody's affirmation; sector quarterly) · CreditSights/LFI (Apr monthly digest; May 8 sponsor-buyback piece — key source for the Brookfield buyback claim) · Third Bridge (Mar 25 analyst-led call with ex-CDK national accounts exec; Mar 30 ex-CDK Senior Sales OEM transcript) · 9fin instrument data (8% '29 ISIN US154915AA07 + alias map for Central Parent LLC) — 9fin direct news flow on CDK was empty this run. Specific ad-hoc-group lender names NOT disclosed in any source — all reporting anonymized.
+      </div>
+    </div>
+  );
+}
+
+function QuestCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    sponsor: (
+      <DetailPanel title="Clearlake Capital — Sponsor" onClose={() => setDetail(null)}>
+        <p>Clearlake Capital Group, L.P. acquired Quest Software from Francisco Partners + Elliott in 2021/2022. Quest had originally been taken private from Dell in November 2016 by Francisco + Elliott — so Clearlake is the SECOND PE owner.</p>
+        <p style={{ color: T_.red }}><strong>LME equity contribution: NONE.</strong> Reorg (article 322850): "Clearlake co-announced the transaction" and the $350M new money is from <strong>existing lenders</strong>, NOT sponsor cash.</p>
+        <p style={{ color: T_.amber }}><strong>But Clearlake DID roll its lender position</strong> — Transacted.io and 9fin both report Clearlake rolled its existing first-lien loan holdings into a NEW <strong>'fourth-out' tranche at par</strong>. This is sponsor self-subordination as a lender (rare), distinct from new equity. Notable signal — sponsor accepts a junior position in the post-LME stack rather than being wiped or rolling pari with participating lenders.</p>
+        <p style={{ color: T_.amber }}><strong>Pre-LME divestiture attempt:</strong> Clearlake engaged JPMorgan + Moelis in Jan 2024 (Reorg 246395) to gauge interest in divesting Quest alongside RSA Security (another Clearlake portfolio). That sale path stalled; the LME presumably came after.</p>
+        <p>This pattern — Clearlake using new-money from existing lenders rather than equity contribution — is consistent across multiple Clearlake software portfolio LMEs and is structurally distinct from sponsor-led LMEs at Brookfield/Apollo names.</p>
+      </DetailPanel>
+    ),
+    seahawks: (
+      <DetailPanel title="Seahawks Holdings Limited — Top-Level Holding" onClose={() => setDetail(null)}>
+        <p>Cayman / UK holding entity at the top of Quest's corporate chain. Legacy from the 2016 Dell-Software take-private by Francisco + Elliott — the "Seahawks" code name was the deal alias.</p>
+        <p>Per 9fin company aliases (`company_id: 62350`), Seahawks Holdings Limited sits above the intermediate entities. Whether Clearlake's actual equity ownership runs through Seahawks Holdings directly or through a sponsor-level LP above it is NOT disclosed in the third-party tools — typical for offshore holding structures.</p>
+      </DetailPanel>
+    ),
+    questIdentity: (
+      <DetailPanel title="Quest Identity Intermediate Limited" onClose={() => setDetail(null)}>
+        <p>Intermediate holding company. The Moody's CFR has historically been carried at "Quest Identity" — the Feb 2024 downgrade to Caa1 / Stable (Reorg 252156) was at this entity level.</p>
+        <p>The naming convention "Identity" reflects the OneIdentity product line being a major value driver (separate from the broader Quest Software portfolio of database / IT-management tools).</p>
+      </DetailPanel>
+    ),
+    oidolHoldings: (
+      <DetailPanel title="OID-OL Holdings, Inc. — Renamed One Identity Holdings" onClose={() => setDetail(null)}>
+        <p>Intermediate entity. "OID-OL" is a coded naming derived from the OneIdentity product (OID = One IDentity, OL likely "One Login" or similar offering). 9fin aliases group this with the broader Quest Software corporate family.</p>
+        <p style={{ color: T_.amber }}>Notable: this entity was a PRE-EXISTING intermediate. The new LME-issuer entity (OID-OL Intermediate I, LLC, see below) appears to be a NEW SUBSIDIARY of this Holdings entity, inserted specifically as the obligor for the post-LME debt.</p>
+      </DetailPanel>
+    ),
+    oidolIntermediate: (
+      <DetailPanel title="OID-OL Intermediate I, LLC — NEW LME ISSUER ENTITY" onClose={() => setDetail(null)}>
+        <p style={{ color: T_.accent }}><strong>NEW issuer entity introduced via the LME. All post-LME tranches were issued at this entity on June 10, 2025</strong> per 9fin instrument data (issue_date verified across all post-LME tranches).</p>
+        <p>This is the Quest equivalent of Newfold's <strong>Newfold Digital Intermediate Holdings, Inc.</strong> — both deals insert a new HoldCo layer specifically to issue exchanged + new-money paper at a different layer of the corporate structure. The structural priority benefit is identical: new-money lenders get a guarantee-plus-direct claim above OpCo, ranking ABOVE any excluded / left-behind tranches at the original entities.</p>
+        <p style={{ color: T_.amber }}><strong>Inferred from 9fin aliases + issue dates</strong> — not confirmed by a narrative document. Worth pulling the actual credit agreement / S&P recovery report to confirm whether OID-OL Intermediate I LLC was newly formed for the LME or pre-existed as an inactive sub.</p>
+      </DetailPanel>
+    ),
+    questUS: (
+      <DetailPanel title="Quest Software US Holdings Inc. — Historical Rated Entity" onClose={() => setDetail(null)}>
+        <p>Quest's historical S&P-rated entity. S&P's issuer credit rating sits here. Post-LME (June 16, 2025), S&P moved this entity from 'SD' → 'CCC+' Stable.</p>
+        <p>The original 1L TLB (pre-LME $2.81B SOFR+4.25% Feb 2029) was issued at the Quest Software entity level. When OID-OL Intermediate I, LLC issued the exchange paper, S&P assigned 'D' to the OLD TL until repaid — clean indicator that the original instrument was being run off rather than carried forward.</p>
+      </DetailPanel>
+    ),
+    products: (
+      <DetailPanel title="Operating Product Lines" onClose={() => setDetail(null)}>
+        <p>Quest Software is split across two main product clusters:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>Database / DevOps:</strong> Toad (Oracle dev tooling, flagship), ApexSQL (SQL Server), Spotlight (database monitoring)</li>
+          <li><strong>IT Management / Security:</strong> KACE (endpoint management), Foglight (application monitoring), ChangeAuditor (compliance auditing)</li>
+          <li><strong>Identity / Access:</strong> OneIdentity (privileged access management) — the "OID" in the entity naming</li>
+          <li><strong>Backup:</strong> vRanger, NetVault (legacy backup tools)</li>
+        </ul>
+        <p style={{ color: T_.amber }}><strong>Whether each product line sits in a separate legal entity is NOT disclosed</strong> in third-party research. OneIdentity at minimum has its own naming presence in the corporate tree (Quest Identity Intermediate). Other product lines presumably consolidated into the operating company.</p>
+        <p style={{ color: T_.red }}><strong>The credit thesis pressure point:</strong> these are mature mid-market IT tools with limited new-customer growth. Revenue is mid-single-digit declining as customers migrate from perpetual licenses to subscription pricing AND defer IT spend.</p>
+      </DetailPanel>
+    ),
+  };
+
+  const chip = (label, value, color = T_.text) => (
+    <div style={{ background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.border}`, padding: "8px 10px" }}>
+      <div style={{ fontSize: 9, color: T_.textGhost, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 2 }}>{label}</div>
+      <div style={{ fontSize: 13, fontWeight: 700, color, fontFamily: "monospace" }}>{value}</div>
+    </div>
+  );
+
+  const trancheRow = (name, size, coupon, maturity, note, color = T_.textMid) => (
+    <tr style={{ borderBottom: `1px solid ${T_.border}40` }}>
+      <td style={{ padding: "6px 10px", color, fontWeight: 600, fontSize: 11.5 }}>{name}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5, textAlign: "right" }}>{size}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{coupon}</td>
+      <td style={{ padding: "6px 10px", color: T_.textMid, fontFamily: "monospace", fontSize: 11.5 }}>{maturity}</td>
+      <td style={{ padding: "6px 10px", color: T_.textGhost, fontSize: 11 }}>{note}</td>
+    </tr>
+  );
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          <strong>Quest Software</strong> (Clearlake Capital portfolio — bought from Francisco Partners + Elliott 2021/2022; originally taken private from Dell Nov 2016) executed a <span style={{ color: T_.accent }}>non-pro-rata distressed-debt exchange closed May 30, 2025</span>. S&P moved from CCC- (Mar 21) → 'SD' (Jun 4) → 'CCC+' Stable (Jun 16). Driver: unsustainable <strong>~$370M/yr cash interest</strong> against declining top line (perpetual-to-subscription shift + sales force attrition). The mechanic mirrors what Newfold would later do (Dec 2025): <strong>new intermediate issuer entity</strong> ("OID-OL Intermediate I, LLC") was inserted to carry the post-LME paper, with a $350M new-money 6.00% 2029 TLB infused by EXISTING LENDERS (not sponsor). Exchanged paper became $1.856B 4.25% 2029 TLB. Revolver extended to Nov 2028. Smaller stub tranches at 1.00% coupon (likely PIK-style haircut for late participants) and a $596M unpriced 2029 tranche (likely DDTL / unfunded commitment) round out the cap stack. <span style={{ color: T_.amber }}>Adjusted leverage remains ~11x post-LME</span> (S&P) — the LME bought time but didn't deleverage materially. Cash interest reduction at least $80M/yr. <span style={{ color: T_.green }}>Sponsor (Clearlake) contributed no equity</span>; entire deal lender-led. Coverage has been DEAD across all 4 sources for ~11 months post-close — situation appears to have stabilized into a stressed-but-extended posture. Flag for re-check if any new activity surfaces.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(115px, 1fr))", gap: 8 }}>
+          {chip("Pre-LME 1L TLB", "$2.81B", T_.red)}
+          {chip("Post-LME 1L TLB", "$1.856B", T_.accent)}
+          {chip("New Money", "$350M", T_.green)}
+          {chip("Cash Interest Cut", "≥$80M/yr", T_.green)}
+          {chip("Leverage (post-LME)", "~11x", T_.red)}
+          {chip("S&P", "CCC+ Stable", T_.amber)}
+          {chip("Moody's", "Caa1 Stable", T_.amber)}
+          {chip("LME Closed", "May 30, 2025")}
+        </div>
+      </div>
+
+      {/* ── Capital Structure: Pre vs Post LME ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 14 }}>Capital Structure — Pre vs. Post LME</div>
+
+        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6 }}>Pre-LME (early 2025)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 18 }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRANCHE</th>
+              <th style={{ textAlign: "right", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>SIZE</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>COUPON</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>MATURITY</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>NOTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trancheRow("Revolver (RCF)", "(size n.d.)", "S+spr", "(pre-extension)", "Extended to Nov 2028 in LME", T_.amber)}
+            {trancheRow("1L Term Loan B", "$2.81B", "SOFR+425", "Feb 2029", "Issued 2022-01-20 (Clearlake LBO refi); ind. 50-55 May 2025", T_.red)}
+            {trancheRow("2L Term Loan", "(size n.d.)", "n.d.", "2030", "Indicated 25-27 May 2025; 34 Oct 2024", T_.red)}
+            <tr style={{ borderTop: `2px solid ${T_.border}` }}>
+              <td colSpan={5} style={{ padding: "8px 10px", color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>TL-only structure (no secured/unsecured notes). Legacy "Quest – One Identity" TLs ($1.465B + $330M, mat 2025) refinanced into the 2022 Clearlake TLB.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, letterSpacing: 0.5, textTransform: "uppercase", marginBottom: 6 }}>Post-LME (issued June 10, 2025 — all at OID-OL Intermediate I, LLC)</div>
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>TRANCHE</th>
+              <th style={{ textAlign: "right", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>SIZE</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>COUPON</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>MATURITY</th>
+              <th style={{ textAlign: "left", padding: "6px 10px", color: T_.textGhost, fontSize: 10, fontWeight: 600, letterSpacing: 0.5 }}>NOTE</th>
+            </tr>
+          </thead>
+          <tbody>
+            {trancheRow("RCF (extended)", "$383.2M", "3.75%", "Nov 2028", "Participating lenders, extended", T_.green)}
+            {trancheRow("Secondary RCF (DDTL?)", "$430M", "n.d.", "2030", "Coupon unpriced — likely undrawn commitment", T_.green)}
+            {trancheRow("Participating 1L TLB", "$1.856B", "4.25%", "2029", "Exchanged from old TLB at par-equivalent", T_.green)}
+            {trancheRow("Late-joiner 4.25% TLB", "$84.78M", "4.25%", "2029", "Open-tender backstop", T_.green)}
+            {trancheRow("New-Money 1L TLB", "$350M", "6.00%", "2029", "From existing lenders (NOT sponsor)", T_.accent)}
+            {trancheRow("Stub 2030 TLB", "$335M", "1.00%", "2030", "Likely PIK/haircut stub for late participants", T_.amber)}
+            {trancheRow("Unpriced 2029 TLB", "$596M", "(null)", "2029", "Likely DDTL or unfunded commitment", T_.textMid)}
+            <tr style={{ borderTop: `2px solid ${T_.border}` }}>
+              <td colSpan={5} style={{ padding: "8px 10px", color: T_.textGhost, fontSize: 11, fontStyle: "italic" }}>S&P assigned 'D' to OLD TL until repaid (Jun 4, 2025); new debt ratings 'in coming days' per Reorg. Cash interest cut at least $80M/yr.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style={{ marginTop: 12, fontSize: 11, color: T_.textGhost, fontStyle: "italic" }}>
+          Sources: 9fin instrument schema (definitive on tranche-level data, issue_date 2025-06-10 confirmed across all post-LME tranches); Reorg articles 322850 + 323496 + 325286; S&P SD-then-CCC+ timeline. Pre-LME 2L TL size + Revolver pre-extension size NOT disclosed in pulled sources. Stub 1.00% tranche character (PIK vs. cash-pay) inferred from coupon level; not confirmed by narrative.
+        </div>
+      </div>
+
+      {/* ── Entity Structure ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 6 }}>Entity Structure (Post-LME)</div>
+        <div style={{ fontSize: 11, color: T_.textGhost, marginBottom: 18 }}>Click any entity for detail. Entity hierarchy per 9fin aliases (company_id 3130 + 62350) + Reorg + S&P. The OID-OL Intermediate I LLC issuer is the NEW post-LME layer — analogous to Newfold's Intermediate Holdings.</div>
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Clearlake Capital Group, L.P."
+            sub="Sponsor (since 2021/2022) · Bought Quest from Francisco Partners + Elliott"
+            color={T_.purple}
+            width={460}
+            onClick={() => toggle("sponsor")}
+            selected={detail === "sponsor"}
+            badges={[{ text: "NO LME EQUITY CONTRIBUTION", color: T_.red }]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Seahawks Holdings Limited"
+            sub="Cayman / UK top-level holding · Legacy from 2016 Dell-Software take-private"
+            color={T_.blue}
+            width={460}
+            onClick={() => toggle("seahawks")}
+            selected={detail === "seahawks"}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Quest Identity Intermediate Limited"
+            sub="Intermediate holding · Moody's CFR historically carried here (Caa1 Stable)"
+            color={T_.amber}
+            width={460}
+            onClick={() => toggle("questIdentity")}
+            selected={detail === "questIdentity"}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="OID-OL Holdings, Inc."
+            sub="Intermediate (renamed One Identity Holdings)"
+            color={T_.amber}
+            width={420}
+            onClick={() => toggle("oidolHoldings")}
+            selected={detail === "oidolHoldings"}
+          />
+        </div>
+        <VLineLabel label="NEW issuer entity · all post-LME debt issued here (Jun 10, 2025)" color={T_.accent} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="OID-OL Intermediate I, LLC"
+            sub="NEW · Post-LME issuer of ALL new tranches"
+            color={T_.accent}
+            width={480}
+            onClick={() => toggle("oidolIntermediate")}
+            selected={detail === "oidolIntermediate"}
+            badges={[{ text: "POST-LME ISSUER", color: T_.accent }]}
+            debt={[
+              { name: "Participating 1L TLB (4.25%)", amount: "$1.856B", color: T_.green },
+              { name: "New-Money 1L TLB (6.00%)", amount: "$350M", color: T_.accent },
+              { name: "Stub 2030 TLB (1.00%)", amount: "$335M", color: T_.amber },
+              { name: "RCF (extended Nov 2028)", amount: "$383M", color: T_.green },
+            ]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Quest Software US Holdings Inc."
+            sub="Historical S&P-rated entity · CCC+ Stable (Jun 16, 2025)"
+            color={T_.green}
+            width={440}
+            onClick={() => toggle("questUS")}
+            selected={detail === "questUS"}
+            badges={[{ text: "OLD 1L TL RATED 'D' UNTIL REPAID", color: T_.red }]}
+          />
+        </div>
+        <VLine h={28} />
+
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <Box
+            label="Operating Product Lines"
+            sub="Toad / ApexSQL (DB) · KACE / Foglight / ChangeAuditor (IT Mgmt) · OneIdentity (PAM) · vRanger / NetVault (Backup)"
+            color={T_.textMid}
+            width={640}
+            onClick={() => toggle("products")}
+            selected={detail === "products"}
+            badges={[{ text: "LEGAL-ENTITY MAP NOT DISCLOSED", color: T_.textDim }]}
+          />
+        </div>
+
+        {detail && panels[detail]}
+
+        <div style={{ marginTop: 16, padding: "10px 14px", background: T_.bgInput, borderRadius: 6, border: `1px solid ${T_.borderLight}`, fontSize: 11, color: T_.textDim, lineHeight: 1.6 }}>
+          <strong style={{ color: T_.accent }}>The Quest playbook = preview of Newfold:</strong> Quest's June 2025 LME inserted a new intermediate-level issuer entity (OID-OL Intermediate I, LLC) to carry both the exchanged paper and the new-money TL. Newfold did the SAME mechanic six months later with Newfold Digital Intermediate Holdings, Inc. — both deals achieve structural priority for new-money lenders via PLACEMENT (entity hierarchy) rather than CONTRACTUAL subordination (Serta-style) or VOTE-RIGGING (Incora-style). Quietly becoming a Clearlake-portfolio template; watch for the same structure in future Clearlake software LMEs.
+        </div>
+      </div>
+
+      {/* ── Key Concepts Accordion ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          {
+            label: "The Cash-Interest Crisis — ~$370M/yr Pre-LME",
+            color: T_.red,
+            summary: "Interest expense roughly tripled post-Clearlake LBO. Cash interest of ~$370M/yr against declining EBITDA was the trigger.",
+            detail: "Pre-LME annual cash interest ran ~$370M (S&P, per Reorg 273320) — driven by the 2022 Clearlake LBO refi at SOFR+425 on $2.81B + 2L paper. Combined with FY24 Q3 EBITDA of $108M (Reorg 246293) trending down on -5% revenue, the credit was structurally unsustainable. Post-LME cash interest cut by at least $80M/yr (Reorg 325286) — meaningful but not enough to fix the credit. Adjusted leverage ~11x post-LME per S&P. The LME bought time, not solvency.",
+          },
+          {
+            label: "New Intermediate Issuer Entity — OID-OL Intermediate I, LLC",
+            color: T_.accent,
+            summary: "Same structural mechanic that Newfold would later use (Dec 2025) — insert a new HoldCo layer to issue the exchanged + new-money TL.",
+            detail: "All post-LME tranches were issued at OID-OL Intermediate I, LLC on 2025-06-10 per 9fin instrument data. This is functionally identical to what Newfold Digital did six months later with Newfold Digital Intermediate Holdings, Inc. — both deals insert a new intermediate-level entity to achieve structural priority for new-money lenders via placement. The naming pattern 'OID-OL' suggests an existing entity within the One Identity sub-tree was renamed/repurposed rather than created brand new — worth pulling the credit agreement to confirm. Either way, the structural priority play is identical to Newfold and represents a quietly-emerging template alternative to Serta uptier + Incora vote-rigging.",
+          },
+          {
+            label: "Non-Pro-Rata Mechanic + Excluded Lenders",
+            color: T_.amber,
+            summary: "Majority lender ad hoc group only initially; minority excluded → Glenn Agre retained → eventually re-opened to all lenders post-close.",
+            detail: "The May 2025 transaction was structured as non-pro-rata: majority lender ad hoc group (Gibson Dunn + Houlihan) signed first; minority excluded lenders retained Glenn Agre (Reorg 313067). Per Reorg 322850, 'participation in the transaction is open to remaining holders' was the closing language — implying a re-open / no permanent subordination. But S&P's 'SD' designation (Jun 4-16, 2025) confirms the initial transaction left non-participants worse off. The 1.00% 2030 TLB stub ($335M) likely represents the haircut/PIK-style treatment for late participants who came in after close on worse terms. No covenant litigation has surfaced from minority lenders post-close — consistent with the eventual open-tender format giving them an out.",
+          },
+          {
+            label: "Perpetual-to-Subscription Decline + Sales Force Attrition",
+            color: T_.red,
+            summary: "Mid-single-digit revenue declines for 3+ fiscal years driven by perpetual-to-subscription pricing shift + sales force attrition (Reorg 313067).",
+            detail: "Top-line trend pre-LME: mid-single-digit declines for ~3 fiscal years (Reorg paraphrasing S&P). Subscription/SaaS growing mid-single-digits but offset by perpetual-license, professional-services, and maintenance declines. FY24 Q4 EBITDA $140M (-22% YoY); FY24 Q3 EBITDA $108M (-2.7%). FOCF expected -$15M to -$25M FY26 per S&P. The structural issue: Quest's product portfolio is mature mid-market IT tools (Toad, KACE, Foglight, OneIdentity) — limited new-customer growth, IT spend caution, and increasing customer-side preference for hyperscaler-native tools (AWS RDS replacing standalone DBAs, Microsoft Defender replacing standalone identity tools). The post-LME runway lets Clearlake pursue a subscription-pivot turnaround, but the credit-rating trajectory implies skepticism that the operating story will inflect.",
+          },
+          {
+            label: "Sponsor Playbook — Lender-Led, No Equity",
+            color: T_.purple,
+            summary: "Clearlake co-announced but contributed no equity. $350M new money came from EXISTING LENDERS, not sponsor.",
+            detail: "Clearlake's role in the Quest LME mirrors Newfold's Clearlake/Siris role and Brookfield's CDK pattern — sponsor co-announces but contributes no fresh equity. The $350M new money was explicitly from existing lenders per Reorg 322850. Clearlake had previously engaged JPMorgan + Moelis in Jan 2024 (Reorg 246395) to gauge interest in DIVESTING Quest alongside RSA Security; that stalled. The LME path was the alternative when sale couldn't be executed. Practical implication: sponsor optionality is limited — they're not adding equity and not extracting value through dividends; they're just waiting for either operational turnaround or an eventual sale at distressed-but-improved multiples.",
+          },
+          {
+            label: "Lender Composition — Carlyle / Ares / Blackstone / WhiteStar",
+            color: T_.blue,
+            summary: "Largest CLO exposures flagged (Carlyle, Ares, WhiteStar). BDC docs show Blackstone PCF, North Haven, Onex Falcon, Ares also held the legacy TLB.",
+            detail: "Reorg 323516 flagged the largest CLO holdings as Carlyle, Ares, and WhiteStar. BDC schedule-of-investments documents accessible via 9fin show Blackstone Private Credit Fund, North Haven, Onex Falcon, and Ares all held the legacy TLB pre-LME. Specific ad hoc group member names NOT disclosed in any source — typical for non-pro-rata LMEs where participating lenders prefer anonymity. The CLO-heavy holder base is structurally significant: CLO managers have weaker bargaining leverage than dedicated distressed funds (constrained by indenture rules + redemption mechanics), which likely contributed to the LME closing without litigation.",
+          },
+          {
+            label: "Stub 1% Tranche + Unpriced $596M — Interpretive Notes",
+            color: T_.textMid,
+            summary: "1.00% 2030 TLB stub ($335M) likely PIK-style haircut for late participants. Unpriced $596M 2029 likely DDTL / unfunded commitment.",
+            detail: "Two unusual tranches in the post-LME cap stack require interpretation. The $335M 1.00% 2030 TLB is anomalous — a 1.00% cash coupon on a syndicated TL is essentially nominal. Most likely interpretation: PIK-style haircut tranche for late participants or a structural-subordination stub for excluded lenders, where the 1% cash pays only interest-coverage covenants rather than economic return. The $596M 2029 TLB with null coupon is almost certainly a DDTL (delayed-draw term loan) or unfunded commitment — common in LMEs to backstop future acquisitions or settle additional creditor claims. Neither tranche is verified by a narrative source — both inferred from 9fin instrument data. Worth confirming via the actual credit agreement.",
+          },
+          {
+            label: "Coverage Went Dark Post-LME",
+            color: T_.amber,
+            summary: "Zero Quest-specific articles across all 4 platforms in the 11 months since June 2025. Situation appears stabilized.",
+            detail: "Confirmed coverage gap: Reorg's last Quest article was June 16, 2025 (post-LME S&P upgrade). 9fin company entity is active with rich tranche schema but zero narrative pieces post-June. CreditSights 2026 Outlook tags Quest among ~70 distressed names without analyst commentary. Third Bridge has zero relevant interviews. Interpretation: post-LME, the credit stabilized in a stressed-but-extended posture; nothing newsworthy has happened to trigger fresh coverage. If revenue declines accelerate or if the 2029 maturity wall starts to bite (still ~3 years out), expect coverage to re-emerge. For now, this is a passive watchlist name — the LME bought enough quiet to disappear from the headlines.",
+          },
+        ]} />
+      </div>
+
+      {/* ── Timeline ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "Nov 2016", event: "Francisco Partners + Elliott take Quest Software private from Dell (Seahawks deal code name). Original LBO debt arranged.", color: T_.purple },
+          { date: "2021-2022", event: "Clearlake Capital acquires Quest from Francisco + Elliott. LBO refi: $2.81B 1L TLB at SOFR+425 due Feb 2029 (issued 2022-01-20).", color: T_.purple },
+          { date: "Jan 2024", event: "Clearlake engages JPMorgan + Moelis (Reorg 246395) to gauge interest in divesting Quest alongside RSA Security. Sale path stalls.", color: T_.amber },
+          { date: "Feb 2024", event: "Moody's downgrades Quest Identity CFR to Caa1 / Stable. EBITDA decline + cash interest burden becoming structural.", color: T_.amber },
+          { date: "Jul 2024", event: "S&P revises outlook to Negative from Stable at 'CCC+'. Credit thesis turning publicly.", color: T_.red },
+          { date: "Mar 21, 2025", event: "S&P downgrades to 'CCC- / Negative'. LME prep clearly underway under NDA.", color: T_.red },
+          { date: "Spring 2025", event: "Ad hoc lender group organizes with Gibson Dunn (legal) + Houlihan Lokey (banker). Excluded lender group retains Glenn Agre. Company hires Kirkland + PJT.", color: T_.blue },
+          { date: "May 30, 2025", event: "★ LME CLOSED. Non-pro-rata distressed exchange. New issuer entity OID-OL Intermediate I, LLC issues all post-LME tranches on Jun 10. $350M new money from existing lenders. Old 1L TL rated 'D' by S&P.", color: T_.accent },
+          { date: "Jun 4, 2025", event: "S&P downgrades to 'SD' on completion of the distressed exchange (Reorg 323496). Confirms transaction left non-participants worse off initially.", color: T_.red },
+          { date: "Jun 16, 2025", event: "★ S&P RESOLVES: 'SD' → 'CCC+' Stable (Reorg 325286). Prior issue/recovery ratings withdrawn; new debt to be rated 'in coming days.' Revolver extended Nov 2028.", color: T_.green },
+          { date: "Jun 2025 onward", event: "Coverage goes silent. Zero Quest-specific narrative articles across Reorg / 9fin / CreditSights / Third Bridge in the 11 months since. Situation appears stabilized.", color: T_.textGhost },
+          { date: "Dec 2025", event: "CreditSights '2026 Outlook' tags Quest among ~70 distressed names; no analyst commentary on Quest specifically. The 'tag without writeup' signal.", color: T_.textGhost },
         ].map((e, i) => (
           <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
             <div style={{ width: 100, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
@@ -4586,14 +4992,18 @@ function TrinseoCase() {
         ))}
       </div>
 
-      {/* ── Sources footer ── */}
+      {/* ── Sources ── */}
       <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
-        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg / Octus — article 348683 (Nov 3, 2025: "Trinseo's Detailed Organizational Chart Now Available on Octus" — primary source for all org-chart details, guarantor lists, collateral priority tables, Sept 2023 + Jan 2025 mechanics, and explicit "pari-plus" labeling); article 360937 (Jan 16, 2026: Centerview / FTI / PJT advisor mandates, lender groups, stock at $0.55, pari-plus 72.5/75.3 vs existing TL 10/13 trading); article 350432 (Nov 7, 2025: Q3 2025 earnings analysis); article 374468 (Apr 2, 2026: Moody's Ca/LD ratings action, recovery commentary, end-2025 liquidity); article 375618 (Apr 13, 2026: $50M incremental superpriority RCF + AR sec waivers); article 375968 (Apr 15, 2026: $38M interest miss, 2L notes intercreditor 180-day standstill); article 367664 (Feb 23, 2026: Bloomberg Ch.11 timing); article 369389 (Mar 3, 2026: NYSE delisting); article 369463 (Mar 3, 2026: S&amp;P SD); article 371201 (Mar 13, 2026: going-concern); article 365529 (Feb 10, 2026: Trinseo weighing Ch.11) · Octus Feb 2025 retrospective on 7 drop-down LMEs (AMC, Del Monte, Trinseo, Instant Brands, Rackspace, Envision, U.S. Renal Care) — value-loss rankings · Trinseo SEC filings — 8-K disclosures (Jan 6, 2026 retention bonuses; Apr 10, 2026 incremental RCF; Apr 14, 2026 interest miss); FY2025 10-K (filed Mar 2026 with going-concern); Q3 2025 earnings call transcript (Frank Bozich, David Stasse) · Moody's ratings update (Apr 2, 2026 — full text in Reorg 374468) · S&amp;P Global Ratings commentary (Nov 2025 + Mar 3, 2026 SD) · IHS Markit + Solve trading-level marks (mid-Jan 2026) · Trinseo press releases for Sep 8, 2023 financing close + Jan 17, 2025 superpriority RCF + Apr 10, 2026 incremental RCF · CreditSights — "Trinseo: Live to Fight Another Day" (Sep 18, 2023 article 537221), "Chemicals 2025 Outlook: Styrene and Polystyrene" (Jan 30, 2025 article 627024), "U.S. Special Sits: 2026 Outlook &amp; 2025 Review" (Dec 9, 2025 article 686292), "Chemicals Weekly: Same Shock, Different Capture" (Apr 14, 2026 article 707390 — Marketperform reaffirmed). <strong style={{ color: T_.amber }}>Coverage gap:</strong> 9fin session expired during research (HTTP 401) — additional European-LME / term-sheet color may exist there. Third Bridge Forum session also expired — no Trinseo-specific expert call review available. Reorg + CreditSights coverage is sufficient for credit-investor-grade fact base. Ongoing case; all figures and characterizations current as of <strong>April 27, 2026</strong>.
+        <strong style={{ color: T_.textMid }}>Sources:</strong> Reorg/Octus (advisor map + S&P timeline through Jun 16, 2025 — articles 246395, 252156, 273320, 286434, 311039, 313067, 318129, 322850, 323496, 323516, 325286) · 9fin instrument schema (definitive on post-LME tranche-level data; new OID-OL Intermediate I, LLC issue date 2025-06-10 verified across all post-LME tranches; company aliases mapped Seahawks → Quest Identity → OID-OL Holdings → OID-OL Intermediate I) · CreditSights 2026 Outlook (tag-only, no Quest writeup body). Third Bridge has no Quest-specific interview coverage. Specific ad-hoc-group lender names NOT disclosed. Stub 1.00% tranche character (PIK vs. cash-pay) and $596M unpriced tranche character (DDTL vs. commitment) inferred from coupon level — not confirmed by narrative source.
       </div>
-
     </div>
   );
 }
+
+/* ═══════════════════════════════════════════════════════
+   XEROX HOLDINGS — ONGOING LME (2025-26)
+   The first "non-subsidiary" drop-down financing.
+   ═══════════════════════════════════════════════════════ */
 
 function XeroxCase() {
   const [detail, setDetail] = useState(null);
@@ -4752,7 +5162,7 @@ function XeroxCase() {
               { t: "ABL Revolver", iss: "Xerox Corp", s: "$425M committed (undrawn)", p: "—", r: "—", c: T_.green },
               { t: "IPCo TL (SOFR+8.125%, 2031)", iss: "XRX Brandco / IPCo", s: "$405M", p: "par", r: "n.r.", c: T_.amber },
               { t: "1L Term Loan B due 2029 (S+400)", iss: "Xerox Corp", s: "~$550M", p: "~60s", r: "B- / '2' (80%)", c: T_.blue },
-              { t: "10.25% 1L Secured Notes due 2029", iss: "Xerox Corp", s: "~$400M", p: "—", r: "B- / '2' (80%)", c: T_.blue },
+              { t: "10.25% 1L Secured Notes due 2030", iss: "Xerox Corp", s: "~$400M", p: "—", r: "B- / '2' (80%)", c: T_.blue },
               { t: "13.5% 2L Notes due 2031", iss: "Xerox Corp", s: "$500M", p: "37–53", r: "CCC / '5' (20%)", c: T_.amber },
               { t: "5.5% Sr Unsecured Notes due 2028", iss: "Xerox Holdings", s: "$750M", p: "low 40s", r: "CCC / '5'", c: T_.red },
               { t: "8.875% Sr Unsecured Notes due 2029", iss: "Xerox Corp", s: "$500M", p: "—", r: "CCC / '5'", c: T_.red },
@@ -4933,12 +5343,6 @@ function XeroxCase() {
 
   return (
     <div>
-      {/* ── Status Banner ── */}
-      <div style={{ background: `${T_.red}12`, borderRadius: 8, border: `1px dashed ${T_.red}60`, padding: "10px 16px", marginBottom: 14, display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ fontSize: 10, fontWeight: 700, letterSpacing: 0.5, color: T_.red, padding: "2px 8px", borderRadius: 4, background: `${T_.red}25` }}>ONGOING</span>
-        <span style={{ fontSize: 12, color: T_.textMid }}>Status as of <strong>Apr 17, 2026</strong>. TPG JV closed Feb 17, 2026; Xerox has not filed Ch.11. Creditor groups (Gibson Dunn / Paul Hastings / Cadwalader) organizing.</span>
-      </div>
-
       {/* ── Summary Bar ── */}
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
         <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
@@ -5029,7 +5433,7 @@ function XeroxCase() {
               debt={[
                 { name: "ABL Revolver (undrawn)", amount: "$425M", color: T_.green },
                 { name: "1L TLB due 2029 (S+400)", amount: "~$550M @ 60s", color: T_.blue },
-                { name: "10.25% 1L Secured Notes 2029", amount: "~$400M", color: T_.blue },
+                { name: "10.25% 1L Secured Notes 2030", amount: "~$400M", color: T_.blue },
                 { name: "13.5% 2L Notes due 2031", amount: "$500M @ 37–53", color: T_.amber },
                 { name: "8.875% SUNs due 2029", amount: "$500M", color: T_.red },
                 { name: "Legacy 6.75% Notes due 2039", amount: "~30", color: T_.red },
@@ -5898,20 +6302,90 @@ function USRenalCareCase() {
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
+function ModeSwitcher({ modes, active, onChange }) {
+  return (
+    <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+      {modes.map(m => {
+        const isActive = active === m.key;
+        return (
+          <button
+            key={m.key}
+            onClick={() => onChange(m.key)}
+            style={{
+              padding: "7px 16px",
+              fontSize: 12,
+              fontWeight: 600,
+              fontFamily: FONT,
+              cursor: "pointer",
+              border: `1px solid ${isActive ? m.color : T_.border}`,
+              borderRadius: 20,
+              background: isActive ? m.color + "22" : T_.bgPanel,
+              color: isActive ? m.color : T_.textDim,
+              letterSpacing: 0.2,
+              transition: "all .15s",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <span>{m.label}</span>
+            <span style={{ fontSize: 11, opacity: 0.75, fontFamily: "ui-monospace, Menlo, Consolas, monospace" }}>{m.count}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function Restructuring({ initialTab }) {
   const [activeCase, setActiveCase] = useState(initialTab || "windstream");
+  const initialMode = (CASES.find(c => c.key === (initialTab || "windstream"))?.kind) || "study";
+  const [activeMode, setActiveMode] = useState(initialMode);
 
   // eslint-disable-next-line react-hooks/set-state-in-effect -- syncs internal tab when sidebar changes initialTab on the same mounted instance
-  useEffect(() => { if (initialTab) setActiveCase(initialTab); }, [initialTab]);
+  useEffect(() => {
+    if (initialTab) {
+      setActiveCase(initialTab);
+      const k = CASES.find(c => c.key === initialTab)?.kind;
+      if (k) setActiveMode(k);
+    }
+  }, [initialTab]);
+
+  const handleModeChange = (newMode) => {
+    setActiveMode(newMode);
+    const currentInNewMode = CASES.find(c => c.key === activeCase && c.kind === newMode);
+    if (!currentInNewMode) {
+      const firstInMode = CASES.find(c => c.kind === newMode);
+      if (firstInMode) setActiveCase(firstInMode.key);
+    }
+  };
+
+  const modes = [
+    { key: "live", label: "Live Tracking", count: CASES.filter(c => c.kind === "live").length, color: T_.accent },
+    { key: "study", label: "Case Studies", count: CASES.filter(c => c.kind === "study").length, color: T_.blue },
+  ];
+
+  const filteredCases = CASES.filter(c => c.kind === activeMode);
+  const active = CASES.find(c => c.key === activeCase);
+  const meta = CASE_META[activeCase] || {};
 
   return (
     <div style={{ padding: "36px 52px", fontFamily: FONT, maxWidth: "100%", margin: "0 auto" }}>
       <div style={{ marginBottom: 24 }}>
         <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>Restructuring</div>
-        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>Case studies in distressed debt, liability management, and Chapter 11</div>
+        <div style={{ fontSize: 14, color: T_.textDim, marginTop: 4 }}>
+          {activeMode === "study"
+            ? "Closed situations — read once, extract portable lessons"
+            : "Live situations — scan latest updates, track thesis"}
+        </div>
       </div>
 
-      <TabBar tabs={CASES} active={activeCase} onChange={setActiveCase} />
+      <ModeSwitcher modes={modes} active={activeMode} onChange={handleModeChange} />
+
+      <TabBar tabs={filteredCases} active={activeCase} onChange={setActiveCase} />
+
+      {active?.kind === "study" && <KeyLessons items={meta.lessons} />}
+      {active?.kind === "live" && <UpdateLog entries={meta.updates} />}
 
       {activeCase === "windstream" && <WindstreamCase />}
       {activeCase === "envision" && <EnvisionCase />}
@@ -5921,8 +6395,10 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "petsmart" && <PetSmartCase />}
       {activeCase === "incora" && <IncoraCase />}
       {activeCase === "caesars" && <CaesarsCase />}
-      {activeCase === "trinseo" && <TrinseoCase />}
       {activeCase === "xerox" && <XeroxCase />}
+      {activeCase === "newfold" && <NewfoldCase />}
+      {activeCase === "cdk" && <CDKCase />}
+      {activeCase === "quest" && <QuestCase />}
       {activeCase === "usrenalcare" && <USRenalCareCase />}
     </div>
   );
