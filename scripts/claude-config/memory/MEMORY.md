@@ -43,3 +43,5 @@
 - [user_investable_universe.md](user_investable_universe.md) — User focuses PA single-name investments on tech + semis (domain expertise). Open to outside-scope ideas only if they qualify as a "free money trade" (asymmetric, near-certain, low-effort edge).
 - [feedback_no_assumed_mfa.md](feedback_no_assumed_mfa.md) — When walking the user through a login, don't preemptively mention MFA, SSO, or other auth-flow steps unless the script actually hits them
 - [feedback_os_input_focus_safety.md](feedback_os_input_focus_safety.md) — When using PowerShell SendKeys / Win32 SendInput to drive a browser login, NEVER send keys without triple-verifying focus is on the intended input element
+- [feedback_cross_machine_workflows.md](feedback_cross_machine_workflows.md) — Cross-machine sync contract for /sellside-login, /sellside, @third-party-research — 2-layer model (synced code + per-machine state), routine flow, common breakages
+- [feedback_research_chat_only_default.md](feedback_research_chat_only_default.md) — Research-output agents (@third-party-research, @sellside, @ratings-research, etc.) should stay chat-only by default; only save to disk when user explicitly asks
