@@ -250,15 +250,6 @@ const PRODUCT_PRIMERS = {
         { name: "Logistics", sub: "Sea + air freight · GPU shipped value ~$1M+/box", color: T_.textDim },
       ]},
     ],
-    drivers: [
-      { metric: "TSMC CoWoS WPM", current: "75K (Q1 2026)", target: "130K (end 2026)", status: "constrained", note: "The single most constrained GPU input. Every 5K WPM uplift = ~30K racks. Sole-sourced at TSMC." },
-      { metric: "HBM3E / HBM4 capacity", current: "Capacity-tight (2026)", target: "+30-50% in 2027", status: "constrained", note: "SK Hynix M15X first cleanroom pilot May 2026 (~50-60K wpm by mid-27). Samsung HBM4 mass prod Feb 2026, NVDA-qualified. Micron ramping HBM3E + HBM4." },
-      { metric: "TSMC N3 / N2 wafer starts", current: "~30K wpm leading-edge", target: "Expansion via Arizona N2", status: "constrained", note: "Allocates to Apple first, then Nvidia/AMD/MediaTek." },
-      { metric: "ABF substrate volume", current: "Capacity-tight", target: "+15% in 2026 (Ibiden expansion)", status: "constrained", note: "Single biggest non-CoWoS package bottleneck." },
-      { metric: "ASML EUV deliveries", current: "60+ systems planned 2026", target: "~70 systems/yr 2027", status: "constrained", note: "Each ~$200M (Low-NA), $380M (High-NA). Intel deployed first commercial High-NA tool Dec 2025; ~10 High-NA shipments planned 2026 (Intel 14A + SK Hynix)." },
-      { metric: "Power-delivery (VRMs)", current: "Adequate", target: "Adequate", status: "ok", note: "MPS, ON Semi, ADI, Vicor — multiple suppliers. Not the binding constraint." },
-      { metric: "Liquid cooling (rack-scale)", current: "Constrained for NVL72-class", target: "Vertiv, BE Semi, Asetek ramping", status: "constrained", note: "Rack-scale GB200/Vera Rubin requires direct-to-chip liquid — niche supply chain." },
-    ],
     bottlenecks: [
       { node: "TSMC CoWoS", layer: "Packaging & Memory", supplier: "TSMC (sole)", leadTime: "12-18 mo", relief: "Ramp to 130K WPM end 2026; additional fabs Taiwan + Arizona", beneficiaries: "TSM directly. Resolves NVDA / AMD GPU supply." },
       { node: "HBM3E / HBM4", layer: "Packaging & Memory", supplier: "SK Hynix, Samsung, Micron", leadTime: "18-24 mo for new capacity", relief: "SK Hynix M15X + M16 mass prod, Micron HBM4 ramp 2027", beneficiaries: "000660.KS, 005930.KS, MU. Resolves Nvidia/AMD inventory." },
@@ -328,15 +319,6 @@ const PRODUCT_PRIMERS = {
         { name: "Water (Taiwan / Korea / Arizona)", sub: "Fab water-intensive · drought risk · ~10M gal/day per fab", color: T_.amber },
         { name: "Logistics", sub: "Sea + air freight · CPU value $1-15K/unit", color: T_.textDim },
       ]},
-    ],
-    drivers: [
-      { metric: "Intel 18A yields", current: "Clearwater Forest launched MWC Mar 2026 (288-core E-core); 18A yields ok for compute tile", target: "Diamond Rapids 2H 2026 — leaks suggest slip to mid-2027", status: "tight", note: "Clearwater Forest validated 18A + advanced packaging. Diamond Rapids slip risk to 2027 is the new concern. AMD harvests share if Diamond slips further." },
-      { metric: "TSMC N3 / N2 wafer starts", current: "~30K wpm leading-edge (shared w/ GPU)", target: "Expansion via Arizona N2 2027+", status: "constrained", note: "Allocates Apple → Nvidia/AMD → ARM AGI → Vera → Graviton5 → MediaTek. CPU competes with GPU for same wafers." },
-      { metric: "DDR5 / MRDIMM capacity", current: "Adequate; MRDIMM tight", target: "DDR5 capacity expanding 2026-2027", status: "tight", note: "Less constrained than HBM. MRDIMM (1.6x DDR5 BW) is the niche supply for top-end CPUs." },
-      { metric: "ABF substrate volume", current: "Capacity-tight (shared w/ GPU)", target: "+15% in 2026 (Ibiden expansion)", status: "constrained", note: "Same Ibiden/Shinko/Unimicron capacity that bottlenecks GPU." },
-      { metric: "ASML EUV deliveries", current: "~50-60 systems/yr (shared)", target: "~70 systems/yr 2027", status: "constrained", note: "Shared with GPU + DRAM. Each ~$200M, multi-yr lead time." },
-      { metric: "Server motherboard / OEM capacity", current: "Adequate", target: "Adequate", status: "ok", note: "Dell, HPE, Supermicro, ZT, Foxconn — multiple suppliers. Not the binding constraint." },
-      { metric: "Power delivery (VRMs)", current: "Constrained for 600W+ (Venice, Diamond Rapids)", target: "Adequate for mainstream", status: "tight", note: "Top-end CPUs need higher-density VRMs. MPS, ON Semi, ADI, Vicor — multiple suppliers." },
     ],
     bottlenecks: [
       { node: "Intel 18A yield (Diamond Rapids)", layer: "Foundry / Logic", supplier: "Intel Foundry (sole)", leadTime: "Diamond Rapids slip risk to mid-2027", relief: "Clearwater Forest launched MWC Mar 2026 (good sign); Diamond Rapids ramp 2H 2026 / 2027; fallback = TSMC N2", beneficiaries: "INTC if resolves; AMD harvests share if slips further." },
@@ -476,15 +458,6 @@ const PRODUCT_PRIMERS = {
         { name: "Rare earths (Ga, Ge)", sub: "China dominance · Ga/Ge export ban suspended Nov 2025–Nov 2026 · DRAM uses gallium", color: "#DC2626", flag: "concentration" },
         { name: "Logistics", sub: "HBM ships to TSMC CoWoS for GPU integration · time-sensitive", color: T_.textDim },
       ]},
-    ],
-    drivers: [
-      { metric: "DRAM 1a/1b/1c wafer capacity", current: "Capacity-tight (2026)", target: "+30-50% in 2027 (M15X + SK Hynix M16)", status: "constrained", note: "The single biggest HBM constraint. SK Hynix 1c-node leadership is the moat." },
-      { metric: "Hybrid bonding tool capacity", current: "BE Semi + ASMPT delivery-bound", target: "Tool capacity expanding 2026-2027", status: "constrained", note: "Hybrid bonding is the gating equipment for HBM stacks. Multi-yr tool lead times." },
-      { metric: "HBM test capacity (Advantest + Teradyne)", current: "Multi-month test lead times", target: "Both vendors expanding", status: "constrained", note: "HBM test cycles unusually long. Teradyne Magnum EPIC has become HBM-stack standard, narrowing Advantest's lead — duopoly tightening." },
-      { metric: "TSV throughput per die", current: "1024+ TSVs per die at HBM3E", target: "More + smaller for HBM4/HBM4e", status: "tight", note: "TSV count rising every gen. Lam Research etch capacity is the binding tool." },
-      { metric: "Stack height (8H → 12H → 16H)", current: "12H HBM3E shipping; 16H HBM4e in dev", target: "16H by 2027-2028", status: "tight", note: "Yield drops sharply at 16H. SK Hynix process leadership widens here." },
-      { metric: "Logic base die (HBM4)", current: "New dependency · TSMC N5/N3", target: "Adequate if TSMC allocates", status: "tight", note: "HBM4 introduces logic-class base die — first time HBM ties to TSMC. SK Hynix outsourcing." },
-      { metric: "Korean fab continuity", current: "Iran-war PGME/PGMEA risk", target: "Korean alt-supplier qualification ~1 yr", status: "tight", note: "Samsung + SK Hynix uniquely exposed to Japanese photoresist solvent disruption." },
     ],
     bottlenecks: [
       { node: "HBM3E / HBM4 capacity", layer: "Finished Product", supplier: "SK Hynix, Samsung, Micron (only 3 globally)", leadTime: "18-24 mo for new capacity", relief: "SK Hynix M15X + M16 mass prod, Micron HBM4 ramp 2027", beneficiaries: "000660.KS, 005930.KS, MU. Resolves Nvidia/AMD GPU inventory." },
@@ -643,15 +616,6 @@ const PRODUCT_PRIMERS = {
         { name: "Logistics", sub: "NAND ships globally · less time-sensitive than HBM (no CoWoS chase)", color: T_.textDim },
       ]},
     ],
-    drivers: [
-      { metric: "Enterprise SSD demand (AI-driven)", current: "~30-40% YoY growth in eSSD bits", target: "Accelerating through 2028", status: "ok", note: "AI training drives model storage + vector DB + checkpoint demand. Hyperscalers shifting HDD→QLC for warm tier. Strongest AI-driven NAND tailwind." },
-      { metric: "3D NAND layer count", current: "232L mainstream", target: "300L by 2027, 400L+ by 2028", status: "tight", note: "HAR etch difficulty rises sharply with layers. String stacking + hybrid bonding extend roadmap. Lam Cryo-etch tools are gating." },
-      { metric: "NAND wafer capacity", current: "Recovering · 2023 cuts unwinding", target: "Adequate through 2027 absent further discipline", status: "ok", note: "Micron Singapore $24B expansion. Samsung/SK Hynix more measured. Supplier discipline = pricing power." },
-      { metric: "HDD → QLC transition", current: "QLC 122TB eSSDs shipping (Samsung BM1743, Solidigm D5-P5336)", target: "Accelerating 2026-2028", status: "ok", note: "$/GB gap narrowing. Power + density advantage compelling for hyperscalers. Material tailwind for NAND bit demand." },
-      { metric: "SSD controller IP (PCIe Gen5/6)", current: "Gen5 ramping, Gen6 in design", target: "Gen6 ecosystem 2027-2028", status: "tight", note: "Marvell + Phison + SMI lead. Gen6 needs full controller refresh — design-cycle gating." },
-      { metric: "Capex reallocation risk (vs DRAM/HBM)", current: "Memory cos prioritizing HBM/DRAM capex", target: "NAND capex catch-up 2027+", status: "tight", note: "HBM consumes 2-3x DRAM wafer per bit. Every HBM dollar is a NAND dollar not spent. Could tighten NAND supply by 2027." },
-      { metric: "China YMTC ramp / US export controls", current: "YMTC ~5-7% rev / ~8% cap (volatile)", target: "Status quo through 2028 absent policy shift", status: "ok", note: "US export controls limit YMTC fab equipment. Korean + Japanese makers benefit." },
-    ],
     bottlenecks: [
       { node: "HAR etch capacity (Lam Cryo)", layer: "Stacking & Layer Tech", supplier: "Lam Research (Cryo-etch lead)", leadTime: "12-18 mo for tools", relief: "Lam Cryo-etch capacity ramping; AMAT entering selectively", beneficiaries: "LRCX. Resolves 300L+ layer scaling. Shared upstream constraint across all NAND makers." },
       { node: "Enterprise SSD controller IP (Gen5/6)", layer: "SSD Controllers", supplier: "Marvell, Phison, Silicon Motion", leadTime: "12-18 mo for new controller silicon", relief: "Multiple vendors competing; in-house at Samsung/SK Hynix", beneficiaries: "MRVL, Phison (8299.TWO), SIMO. Resolves Gen5/6 eSSD ramp + AI-server bandwidth headroom." },
@@ -679,7 +643,6 @@ export default function ProductPrimer() {
   const product = PRODUCT_PRIMERS[activeProduct] || PRODUCT_PRIMERS.gpu;
   const flagColor = (f) => f === "bottleneck" ? T_.red : f === "concentration" ? T_.amber : null;
   const flagLabel = (f) => f === "bottleneck" ? "BOTTLENECK" : f === "concentration" ? "CONCENTRATED" : "";
-  const driverColor = (s) => s === "constrained" ? T_.red : s === "tight" ? T_.amber : T_.green;
 
   const filteredLayers = bottleneckOnly
     ? product.layers.map(l => ({ ...l, items: l.items.filter(it => it.flag === "bottleneck" || it.flag === "concentration") })).filter(l => l.items.length > 0)
@@ -790,6 +753,28 @@ export default function ProductPrimer() {
         }}>{bottleneckOnly ? "✓ Showing bottlenecks/concentration only" : "Show bottlenecks/concentration only"}</button>
       </div>
 
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 14, marginBottom: 16 }}>
+        <div style={{ fontSize: 12, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 10 }}>Bottleneck Watch — what&apos;s stuck &amp; who benefits when it loosens</div>
+        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 11 }}>
+          <thead>
+            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+              {["Pinch Point", "What Relieves It", "Beneficiaries"].map(h => (
+                <th key={h} style={{ padding: "5px 8px", textAlign: "left", fontSize: 9, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {product.bottlenecks.map((b, i) => (
+              <tr key={i} style={{ borderBottom: "1px solid #0B0F19" }}>
+                <td style={{ padding: "5px 8px", color: T_.red, fontWeight: 700, whiteSpace: "nowrap" }}>● {b.node}</td>
+                <td style={{ padding: "5px 8px", color: T_.textDim, fontSize: 10 }}>{b.relief}</td>
+                <td style={{ padding: "5px 8px", color: T_.green, fontWeight: 600, fontSize: 10 }}>{b.beneficiaries}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
         <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 16 }}>{product.label} Supply Chain &amp; Input Map</div>
         <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -825,60 +810,6 @@ export default function ProductPrimer() {
           ))}
         </div>
         <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 14, fontStyle: "italic" }}>Reads top-down: finished product at top, raw inputs at bottom. Arrows indicate dependency direction (each layer depends on the layers below).</div>
-      </div>
-
-      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Drivers of Output — what gates {product.label} supply</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-          <thead>
-            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-              {["Driver", "Current", "Target / Trajectory", "Status", "Note"].map(h => (
-                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {product.drivers.map((d, i) => (
-              <tr key={i} style={{ borderBottom: "1px solid #0B0F19" }}>
-                <td style={{ padding: "8px 10px", color: T_.textMid, fontWeight: 700, whiteSpace: "nowrap" }}>{d.metric}</td>
-                <td style={{ padding: "8px 10px", color: T_.text, fontWeight: 600, whiteSpace: "nowrap" }}>{d.current}</td>
-                <td style={{ padding: "8px 10px", color: T_.textDim, whiteSpace: "nowrap" }}>{d.target}</td>
-                <td style={{ padding: "8px 10px", whiteSpace: "nowrap" }}>
-                  <span style={{ fontSize: 10, fontWeight: 700, padding: "3px 8px", borderRadius: 4, background: `${driverColor(d.status)}20`, color: driverColor(d.status) }}>
-                    {d.status === "constrained" ? "● CONSTRAINED" : d.status === "tight" ? "◐ TIGHT" : "○ OK"}
-                  </span>
-                </td>
-                <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11 }}>{d.note}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
-        <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.8px", marginBottom: 14 }}>Bottleneck Watch — what's stuck and who benefits when it loosens</div>
-        <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
-          <thead>
-            <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
-              {["Node", "Layer", "Supplier(s)", "Lead Time", "What Relieves It", "Beneficiaries / Read-Through"].map(h => (
-                <th key={h} style={{ padding: "8px 10px", textAlign: "left", fontSize: 10, fontWeight: 700, color: T_.textGhost, textTransform: "uppercase", letterSpacing: "0.5px", whiteSpace: "nowrap" }}>{h}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {product.bottlenecks.map((b, i) => (
-              <tr key={i} style={{ borderBottom: "1px solid #0B0F19" }}>
-                <td style={{ padding: "8px 10px", color: T_.red, fontWeight: 700, whiteSpace: "nowrap" }}>● {b.node}</td>
-                <td style={{ padding: "8px 10px", color: T_.textDim, whiteSpace: "nowrap", fontSize: 11 }}>{b.layer}</td>
-                <td style={{ padding: "8px 10px", color: T_.textMid, fontSize: 11 }}>{b.supplier}</td>
-                <td style={{ padding: "8px 10px", color: T_.amber, fontWeight: 600, whiteSpace: "nowrap", fontSize: 11 }}>{b.leadTime}</td>
-                <td style={{ padding: "8px 10px", color: T_.textDim, fontSize: 11 }}>{b.relief}</td>
-                <td style={{ padding: "8px 10px", color: T_.green, fontWeight: 600, fontSize: 11 }}>{b.beneficiaries}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div style={{ fontSize: 10, color: T_.textGhost, marginTop: 12, fontStyle: "italic" }}>Sources: TSMC IR, SK Hynix / Samsung / Micron earnings, ASML guidance, TrendForce, SemiAnalysis, Marathon Fund research notes.</div>
       </div>
     </div>
   );

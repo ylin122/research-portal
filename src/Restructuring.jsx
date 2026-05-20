@@ -44,6 +44,7 @@ const CASES = [
   { key: "caesars", label: "Caesars Entertainment", sector: "Gaming / Hospitality", year: "2015-17", color: "#EAB308" },
   { key: "trinseo", label: "Trinseo plc", sector: "Specialty Chemicals · ONGOING", year: "2023-26", color: "#F472B6" },
   { key: "xerox", label: "Xerox Holdings", sector: "Document / Print · ONGOING", year: "2025-26", color: T_.red },
+  { key: "usrenalcare", label: "U.S. Renal Care", sector: "Dialysis · LME THAT WORKED", year: "2023-25", color: "#10B981" },
 ];
 
 function WindstreamCase() {
@@ -5276,6 +5277,624 @@ function XeroxCase() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   U.S. RENAL CARE — THE LME THAT WORKED
+   ═══════════════════════════════════════════════════════ */
+
+function USRenalCareCase() {
+  const [detail, setDetail] = useState(null);
+  const toggle = (k) => setDetail(detail === k ? null : k);
+
+  const panels = {
+    sponsor: (
+      <DetailPanel title="Bain Capital — Passive Sponsor Through the LME" onClose={() => setDetail(null)}>
+        <p>Bain Capital acquired U.S. Renal Care in 2019 (re-leveraged the cap stack with $1.5B TL '26 + $505M 10.625% unsecs '27). By Q3 2022 stress was acute: TLs quoted 56–73, unsecs 21–48, gross margin -400 bps YoY on labor inflation, cash $200M from $262M mid-year, LFCF -$46M for the quarter (-$82M for FY21).</p>
+        <p style={{ color: T_.amber }}><strong>What Bain DID NOT do:</strong> contribute equity to the 2023 LME. Across all four sources (Reorg, CreditSights, 9fin, Third Bridge), there is <strong>zero evidence of a Bain equity injection</strong> during the May or July 2023 transactions. No sponsor preferred. No backstop fee paid to Bain. Bain remained passive equity holder.</p>
+        <p style={{ color: T_.green }}>This is unusual for 2023-vintage LMEs of this magnitude — in Envision (KKR participated as $146M lender), Instant Brands (Cornell Capital led the uptier), and AMC the sponsor was active. USRC's deal was fully lender-led. <strong>Bain's equity option is what got rescued by the operating inflection</strong> — without writing a check.</p>
+        <p>Cross-checked via Reorg article 304485 (Octus Feb 2025 retrospective), Moody's Dec 2025, S&amp;P Nov 2025 — none reference Bain participation.</p>
+      </DetailPanel>
+    ),
+    dropdown: (
+      <DetailPanel title="Phase 1 — Drop-Down (May 15–16, 2023)" onClose={() => setDetail(null)}>
+        <p><strong>The move:</strong> USRC dropped down <strong>124 clinics in Georgia, Hawaii, Texas, Indiana, and South Texas</strong> into a new unrestricted subsidiary (Dialysis Holdco LLC + USRC South Texas L.P.). The UnSub raised a <strong>$328M five-year term loan at S+875 bps with 2% OID</strong>.</p>
+        <p><strong>Who funded it:</strong> Centerbridge (lead) and King Street as new-money lenders. Both are repeat LME participants and same names that funded Envision's AmSurg dropdown — signals informed risk-taking, not desperation capital.</p>
+        <p style={{ color: T_.amber }}><strong>PIMCO was conspicuously NOT in the new financing</strong>, despite being part of the ad-hoc lender group working with Milbank + Houlihan Lokey. Worth flagging — sometimes the lender who DOESN'T participate is the most informative.</p>
+        <p><strong>Where the money went:</strong> Per Reorg article 304485, only <strong>~50% of the $328M proceeds went to the RemainCo balance sheet</strong>. The rest funded the unsecured notes exchange cash consideration, unsec redemption, and transaction fees. <em>This is the most important fact in this case study.</em> The $328M was NOT a $328M cash war chest — it was ~$164M of true new liquidity plus ~$164M used to clean the cap stack.</p>
+        <p><strong>Advisors — ad-hoc lender group:</strong> Evercore (financial) + Milbank (legal). Company-side: PJT Partners + Kirkland &amp; Ellis. Bain Capital sponsor.</p>
+      </DetailPanel>
+    ),
+    uptier: (
+      <DetailPanel title="Phase 2 — Uptier Exchange (July 24–25, 2023)" onClose={() => setDetail(null)}>
+        <p>Two months after the drop-down. Two-stage execution: ad-hoc group closed first, then identical terms offered to all other lenders.</p>
+        <p><strong>The TL exchange:</strong> $1.47B of existing TLs due 2026 exchanged for <strong>new S+500 bps first-lien TL due 2028 at 85¢ on the dollar</strong>. Incremental L+550 TL holders received a <strong>1.5% cash kicker</strong> for the margin step-down.</p>
+        <p><strong>The unsec take-out (the key move):</strong> $344M of the $505M 10.625% unsecs due 2027 were taken out via combined exchange/tender:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Exchanged into <strong>new 10.625% first-lien notes due 2028 at 35¢ + 20¢ cash consideration</strong></li>
+          <li>Additional $78M of unsecs (15%) repurchased for cash at 40¢ tender</li>
+          <li>Result: $422M of $505M (84%) of unsecs cleared; only $82M (16%) stub remained</li>
+        </ul>
+        <p style={{ color: T_.green }}><strong>Participation: 83.5% of term loans (per Reorg 304485) and 68% of unsecured notes.</strong> Non-participants were subordinated to the new first lien — classic uptier prime — but the structurally small minority ($82M stub unsecs + ~16% TLs) was too small to incentivize litigation.</p>
+        <p style={{ color: T_.amber }}><strong>The 50¢ unsec exchange (35¢ paper + 20¢ cash = 55¢ total consideration)</strong> + the 40¢ open-market tender meant the unsec class actually got reasonable economics. Pre-deal the 10.625% unsecs traded at 22; by Feb 2025 the new 10.625% '28 notes traded at 86. The stub '27 unsecs traded at 71 — temporal seniority + balance-sheet cleanup lifted everything.</p>
+      </DetailPanel>
+    ),
+    capstack: (
+      <DetailPanel title="Capital Structure — Pre-LME, Post-LME, Post-Refi" onClose={() => setDetail(null)}>
+        <p><strong>Pre-LME (Q4 2022):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>L+500 First Lien TLB due 2026 — ~$1.5B (with $225M incremental L+550 sleeve)</li>
+          <li>10.625% Senior Unsecured Notes due July 2027 — <strong>$505M</strong></li>
+          <li>L+425 RCF due June 2024 — drawn</li>
+          <li>Consolidated net leverage: ~10x · TLs at 56–73 · unsecs at 21–48</li>
+        </ul>
+        <p><strong>Post-LME (July 2023, pro forma as of LTM 2024 per Reorg 293449):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>RemainCo first-lien:</strong> $1.494B new TL due 2028 (S+500) + $121M new first-lien notes due 2028 (10.625%)</li>
+          <li><strong>UnSub:</strong> $328M S+875 bps TL due June 2028 (5.1x net at UnSub on $60M UnSub EBITDA)</li>
+          <li><strong>Stub unsecs:</strong> $82M of original 10.625% notes due July 2027 (held by the 16% that didn't participate)</li>
+          <li>RCF: L+425 due June 2024 (subsequently extended)</li>
+          <li>Pro forma consolidated net leverage: <strong>~10.1x</strong> · RemainCo standalone: <strong>12.9x</strong></li>
+          <li>Cash interest cut from $280M to $220M (~$50M annual savings — company-disclosed, not third-party-validated)</li>
+        </ul>
+        <p><strong>Post-2025 Super-Priority Refi (per Moody's Dec 2025, S&amp;P Nov 2025):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>RemainCo: $100M RCF + $1.463B 1L TL + $121M first-lien notes (unchanged)</li>
+          <li>UnSub: $75M RCF (+ $25M drawn) + <strong>$301M 1L TL — REFINANCED</strong> (this is what Moody's calls "super priority first lien TL refinancing (unrated)")</li>
+          <li>Cash $153M PF as of Sept 30, 2025; RCF fully available at RemainCo</li>
+          <li>Old TLB '26 and unsec '27 effectively zeroed: $0.9M residual TLB '26, $0.5M residual $225M '26, $31.6M residual stub unsec '27</li>
+        </ul>
+        <p style={{ color: T_.green }}><strong>Octus Loan Document Score on Sept 2025 Draft Amendment No. 2: 2.65 / 5</strong> (Reorg article 351280, Nov 12 2025). 1 = most lender-protective, 5 = least. Liberty Tire comp scores 3.88. <strong>USRC's new docs are materially more lender-protective</strong> — the 2025 refi closed loopholes the 2023 LME exploited.</p>
+      </DetailPanel>
+    ),
+    participation: (
+      <DetailPanel title="Why It Worked #1 — High Participation = No Litigation" onClose={() => setDetail(null)}>
+        <p><strong>The numbers:</strong> 83.5% TL participation. 68% unsec participation (+ 15% tendered at 40¢ = 83% total unsec class touched). Only ~16% TLs and $82M unsec stub were "excluded."</p>
+        <p><strong>The comparison that matters (Reorg 304485 Feb 2025 retrospective):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li><strong>AMC:</strong> first-lien noteholders filed adversary Sept 2024</li>
+          <li><strong>Del Monte:</strong> Black Diamond suit Oct 2024 (non-participants lost 64% of value)</li>
+          <li><strong>Instant Brands:</strong> trustee adversary Nov 2024 (filed Ch.11 6 months post-LME)</li>
+          <li><strong>Envision:</strong> excluded-lender adversary Aug 2023 + uptier suit (filed Ch.11 12 months post-LME; lost 53% of value as participating non-ad-hoc)</li>
+          <li><strong>U.S. Renal Care:</strong> <span style={{ color: T_.green }}>NO LITIGATION FILED.</span> Conspicuously absent from Octus's litigation list despite being one of the seven case studies.</li>
+        </ul>
+        <p style={{ color: T_.green }}><strong>The structural reason:</strong> the August 2023 deadline opened identical terms to all creditors, so non-participants self-excluded. That weakens any "I was primed without choice" claim — vs AMC's 1L noteholders and Envision's non-ad-hoc TLs who were excluded BY STRUCTURE, not by their own choice not to participate.</p>
+        <p>The economic outcome: USRC TL lenders lost ~20% of pre-deal value (Octus estimate) — least aggressive of the 7-deal cohort except Rackspace (19%) and AMC (6-9%). Not a steal; not a giveaway. That's why no one sued.</p>
+      </DetailPanel>
+    ),
+    newmoney: (
+      <DetailPanel title="Why It Worked #2 — New Money Went to Balance Sheet, Not Cash Burn" onClose={() => setDetail(null)}>
+        <p>Of the $328M Centerbridge/King Street UnSub loan, <strong>~50% went to RemainCo balance sheet, ~50% to junior take-out + fees</strong> (Reorg 304485, Octus estimate).</p>
+        <p style={{ color: T_.green }}><strong>The diagnostic:</strong> <em>"About 50% of [USRC's] proceeds were transferred to the Remainco balance sheet, with the remainder used for the unsecured notes exchange cash consideration, the unsecured notes redemption, and transaction fees and expenses."</em></p>
+        <p><strong>Compare to Envision (the counterexample):</strong> AmSurg's $1.1B new-money 1L TL was distributed upstream to Envision Remainco and <em>assumed by Octus to be fully spent on operating cash burn</em>. Envision's Q1 2022 Remainco EBITDA collapsed -$443M YoY to <em>negative $146M</em>. The LME bought ~12 months. Then Ch.11.</p>
+        <p><strong>The principle:</strong> companies that need an LME to fund cash burn die within 12 months. Companies that need an LME to bridge a 6–12 month operating inflection survive. USRC was the latter; Envision was the former. The diagnostic isn't the LME mechanics — it's what the new money is funding.</p>
+        <p style={{ color: T_.amber }}><strong>The myth this dispels:</strong> the original Reorg framing of "$328M new money" as a $328M cash war chest is misleading. The real number is ~$164M of new liquidity + ~$164M of capital structure cleanup. Less new cash than headline suggests, but more accretive use of the cash that was there.</p>
+      </DetailPanel>
+    ),
+    operating: (
+      <DetailPanel title="Why It Worked #3 — Operating Inflection Within 6 Months" onClose={() => setDetail(null)}>
+        <p><strong>Q3 2023 (first post-LME quarter, Reorg 241077):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Revenue +19.6% YoY to <strong>$391M</strong></li>
+          <li>Adjusted EBITDA <strong>doubled to $60M</strong></li>
+          <li>Liquidity $330M</li>
+          <li>TL bounced from low-60s to 67–70</li>
+        </ul>
+        <p><strong>Q1 2024 (Reorg 266683):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Revenue <strong>+35% to $450M</strong></li>
+          <li>LTM EBITDA <strong>$182M</strong> (vs. $111M projected at deal time — a 64% beat)</li>
+          <li>Cash $173M · TL at 87–89</li>
+        </ul>
+        <p><strong>Q3 2024 (Reorg 293449):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Revenue +24% to $484M · EBITDA ex-NCI +33% to $58.5M</li>
+          <li><strong>First positive FCF quarter post-LME: +$21M</strong> for Q3 (reversed cash burn)</li>
+          <li>Liquidity &gt;$250M · TL at 95.5</li>
+        </ul>
+        <p><strong>Key contrast (Reorg's own Q3 2024 commentary):</strong> <em>"DaVita has seen muted volume growth over the past eight quarters... management is guiding toward 0.75% YoY growth for FY 2024"</em> — yet USRC was growing treatment volumes ~2%. <strong>USRC was taking SHARE during a dialysis industry mortality-rate headwind that crushed DaVita.</strong></p>
+        <p style={{ color: T_.green }}>The S&amp;P upgrade to B- (Nov 2025) and Moody's outlook positive (Dec 2025) didn't drive the recovery — they confirmed it. Moody's expects leverage to trend to 7x within 12–18 months and FCF turn positive 2027.</p>
+      </DetailPanel>
+    ),
+    tdapa: (
+      <DetailPanel title="Why It Worked #4 — TDAPA Reimbursement Tailwind" onClose={() => setDetail(null)}>
+        <p><strong>TDAPA = Transitional Drug Add-on Payment Adjustment.</strong> CMS mechanism that gives dialysis providers <em>separate</em> reimbursement for high-margin new drug therapies (Vafseo / HIF-PHI, DefenCath / antibiotic lock, new phosphate binders) for a <strong>two-year window</strong> before they bundle back into the standard Medicare ESRD payment.</p>
+        <p>S&amp;P's Nov 5 2025 upgrade thesis (Reorg 349615) explicitly credits <em>"the full rollout of TDAPA"</em> as the primary driver of USRC's continued growth. USRC has <strong>direct drug contracting (no PBM intermediation)</strong> and negotiated favorable rebates.</p>
+        <p style={{ color: T_.amber }}><strong>The mechanism Reorg never captured — from Third Bridge USRC TDAPA call (Apr 15 2026, former USRC SVP business development):</strong></p>
+        <p style={{ fontStyle: "italic", padding: "8px 12px", borderLeft: `3px solid ${T_.amber}`, background: `${T_.amber}08`, marginLeft: 12 }}>"Mark-up companies want to do these volume-based bonus reimbursement contracts. The more of the product on TDAPA that US Renal utilises, the more bonus reimbursement they get from the pharmaceutical company, which is why they were showing such large increases in their margins Q3 and Q4."</p>
+        <p>The real EBITDA driver is the <strong>pharma volume-rebate structure</strong>, not just the CMS add-on payment. DefenCath alone "is probably representing about 40% in addition that's adding to their margins." DaVita declined to adopt DefenCath; Fresenius was cautious. USRC's willingness to be an early adopter is partly cultural / leadership-driven.</p>
+        <p style={{ color: T_.red }}><strong>The cliff risk:</strong> TB expert estimates the post-TDAPA EBITDA hit at <strong>30–50% on the TDAPA revenue stream</strong> (not on total revenue) when drugs bundle back into the Medicare bundle. The <strong>CMS final rule for the post-TDAPA bundle pricing comes in October</strong> — that's the binary catalyst event. Until then, USRC is harvesting.</p>
+        <p>Cross-check: Third Bridge transcript uuid c123b03b327adf13559865a6e94a1574.</p>
+      </DetailPanel>
+    ),
+    jv: (
+      <DetailPanel title="Why It Worked #5 — The JV-with-Nephrologists Volume Engine" onClose={() => setDetail(null)}>
+        <p>USRC's structural differentiator vs DaVita and Fresenius — and the reason USRC takes share while peers shrink.</p>
+        <p style={{ fontStyle: "italic", padding: "8px 12px", borderLeft: `3px solid ${T_.blue}`, background: `${T_.blue}08`, marginLeft: 12 }}>"What US Renal does is their business development team... we would seek out independent physicians to joint venture in existing clinics. Whereas DaVita and Fresenius' model, the only time they allow as a general rule, JV buy-in is when it's a new clinic that's being built. It's a one-shot deal." (TB USRC expert, Apr 15 2026)</p>
+        <p style={{ color: T_.green }}><strong>The result:</strong> +2% organic volume growth at USRC vs DaVita -1.1% / +0.1% normalized (per CreditSights DaVita 1Q26 upgrade note, May 6 2026). USRC was the only one of the three major dialysis providers actually growing volume during the COVID mortality-headwind period.</p>
+        <p style={{ color: T_.red }}><strong>The cost:</strong> noncontrolling-interest distributions of <strong>$55M in 2025</strong>, projected <strong>$70–75M in 2026</strong> (per S&amp;P Nov 2025). This is what Moody's calls a "sizeable minority distribution that constrains free cash flow." USRC gives away meaningful FCF to the physician partners in exchange for the volume.</p>
+        <p>Net assessment: the JV model trades FCF for volume. In a steady-state industry that's a fair trade. In a cyclical inflection (TDAPA window), volume is more valuable than FCF — USRC outperformed because its model is volume-biased and the window favored that. <strong>Bain's operating thesis vindicated.</strong></p>
+      </DetailPanel>
+    ),
+    refi2025: (
+      <DetailPanel title="The Sept 2025 Super-Priority Refi — The Second Step" onClose={() => setDetail(null)}>
+        <p>Moody's December 12 2025 report (Reorg article 356815) references <em>"$153 million of cash on the balance sheet as of September 30, 2025, pro forma for the refinancing of its super priority first lien term loan (unrated)."</em></p>
+        <p>S&amp;P's Nov 5 2025 cap-stack table (Reorg 349615) shows the post-refi UnSub structure: $75M revolver + <strong>$301M first-lien TL at Dialysis Holdco LLC / USRC South Texas L.P.</strong> — the refinanced version of the original $328M Centerbridge/King Street UnSub TL from 2023.</p>
+        <p><strong>What this means:</strong> the 2023 LME wasn't the full deleveraging — it was Step 1. The 2025 super-priority refi (Step 2) cleaned up the UnSub silo with materially more lender-protective documentation. <strong>Octus Loan Document Score 2.65 / 5</strong> on Draft Amendment No. 2 (Reorg article 351280, Nov 12 2025). For context Liberty Tire scored 3.88 (less protective) — USRC's new docs are notably more lender-friendly than typical post-LME credits.</p>
+        <p style={{ color: T_.amber }}><strong>The takeaway for the framework:</strong> "LME that worked" doesn't mean "one-shot-and-done." It means USRC executed a two-step deleveraging where Step 2 (refi) was made POSSIBLE by Step 1's operating inflection. Without the EBITDA recovery, lenders wouldn't have agreed to refi the UnSub TL.</p>
+        <p>The same lenders who funded the original UnSub at S+875 (Centerbridge / King Street) presumably refinanced themselves at tighter spreads — earning a double-dip on the trade. <strong>Lender selection in an LME matters: repeat distressed-debt funds that can underwrite operating inflection are the right counterparties.</strong></p>
+      </DetailPanel>
+    ),
+    davita: (
+      <DetailPanel title="Sector Comp — DaVita as the Public Read-Through (CreditSights)" onClose={() => setDetail(null)}>
+        <p>USRC is private; the public dialysis comp is <strong>DaVita (DVA)</strong>. Fresenius Medical Care (FMS) is a distant third. CreditSights upgraded DaVita to <strong>Outperform on May 6 2026</strong> (article 699167) on the same volume inflection narrative that drove USRC's recovery.</p>
+        <div style={{ overflowX: "auto", margin: "10px 0" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 12 }}>
+            <thead>
+              <tr style={{ borderBottom: `1px solid ${T_.border}` }}>
+                <th style={{ padding: "6px 8px", textAlign: "left", color: T_.textGhost, fontSize: 10, textTransform: "uppercase" }}>Metric</th>
+                <th style={{ padding: "6px 8px", textAlign: "left", color: T_.green, fontSize: 10, textTransform: "uppercase" }}>U.S. Renal Care</th>
+                <th style={{ padding: "6px 8px", textAlign: "left", color: T_.blue, fontSize: 10, textTransform: "uppercase" }}>DaVita (DVA)</th>
+              </tr>
+            </thead>
+            <tbody style={{ color: T_.textMid }}>
+              <tr style={{ borderBottom: "1px solid #0B0F19" }}><td style={{ padding: "6px 8px" }}>Revenue growth FY25</td><td style={{ padding: "6px 8px" }}>+17.5% est</td><td style={{ padding: "6px 8px" }}>+6.5%</td></tr>
+              <tr style={{ borderBottom: "1px solid #0B0F19" }}><td style={{ padding: "6px 8px" }}>Treatment volume</td><td style={{ padding: "6px 8px", color: T_.green }}>+2% H1 2025</td><td style={{ padding: "6px 8px", color: T_.amber }}>-1.1% FY25 / +0.1% 1Q26 normalized</td></tr>
+              <tr style={{ borderBottom: "1px solid #0B0F19" }}><td style={{ padding: "6px 8px" }}>Adj EBITDA margin</td><td style={{ padding: "6px 8px", color: T_.amber }}>16.5% FY25</td><td style={{ padding: "6px 8px", color: T_.green }}>20.6% FY25 / 21.3% 4Q25</td></tr>
+              <tr style={{ borderBottom: "1px solid #0B0F19" }}><td style={{ padding: "6px 8px" }}>Net leverage</td><td style={{ padding: "6px 8px", color: T_.amber }}>6.5x post-LME</td><td style={{ padding: "6px 8px", color: T_.green }}>3.4–3.5x</td></tr>
+              <tr><td style={{ padding: "6px 8px" }}>FCF profile</td><td style={{ padding: "6px 8px" }}>Breakeven 2026, +$40M DCF 2027</td><td style={{ padding: "6px 8px" }}>$1.0–1.25bn FY26</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p><strong>What CreditSights' DaVita coverage tells us about USRC's runway:</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>DaVita guides "modest treatment volume growth (+25–50 bp YoY)" for FY26, "due to lower underlying mortality and a benefit from Fresenius clinic closures" — so part of DaVita's 2026 lift is <strong>Fresenius shrinking</strong>, a sector consolidation tailwind that USRC also captures</li>
+          <li><strong>ACA enhanced subsidy expiration is a 2026 revenue-per-treatment headwind</strong> affecting all three players — payor mix matters</li>
+          <li>DaVita's long-term operating income growth target is <strong>3–7%</strong> — modest, single-digit. USRC's 17.5% revenue growth in FY25 is largely a one-time TDAPA + Satellite integration step-up, NOT a run rate. Modeling beyond 2027 should assume convergence</li>
+          <li>DaVita's $200M Elara Caring at-home dialysis minority investment (mid-2026) — moving into the at-home space where TB expert says USRC is "positioned pretty well"</li>
+        </ul>
+        <p style={{ color: T_.amber }}>DVA yields mid-to-high 5%, modestly wide to BB Index — this is the ceiling on what USRC's eventual return-to-market pricing could look like as it deleverages toward 4–5x.</p>
+      </DetailPanel>
+    ),
+    framework: (
+      <DetailPanel title="What Makes an LME Stick — The Framework" onClose={() => setDetail(null)}>
+        <p>USRC vs the 2022–2024 failed-LME cohort (Envision, Diamond Sports, Wheel Pros, Robertshaw, Air Methods, Apex Tool, Pluralsight, Incora, Belk, Instant Brands). Four conditions; USRC met all four.</p>
+        <ol style={{ margin: "8px 0", paddingLeft: 20, lineHeight: 1.8 }}>
+          <li><strong>High participation cleans the cap stack.</strong> &ge;75% in each tranche → no fractured creditor base → no excluded-lender adversary. USRC: 83.5% TL / 68% unsec / 15% tendered = effectively only 16% TL and $82M unsec excluded. <em>Envision</em>: 91% non-ad-hoc TL participation but Class 6/Class 7 carve-outs left adversary-incentivized stubs. USRC's small stubs benefited (lien-stripped but cleaned cap stack lifted secondary trading) so no one sued.</li>
+          <li><strong>New money does balance-sheet work, not cash-burn funding.</strong> USRC: ~50% of $328M went to RemainCo cash, ~50% to junior take-out. <em>Envision / Instant Brands / Diamond Sports</em>: new money funded operating burn that didn't reverse. <strong>Companies that need an LME to fund cash burn die within 6–12 months. Companies that need it to bridge an imminent operating inflection survive.</strong></li>
+          <li><strong>Operating inflection materializes within 6–12 months.</strong> USRC: Q3'23 EBITDA doubled; Q1'24 +35% revenue; Q3'24 first positive FCF. The thesis didn't take years to validate — it took quarters. <em>Envision</em>: Q1 2022 Remainco EBITDA collapsed -$443M YoY to <em>negative $146M</em> AFTER the LME. The thesis never inflected; the LME just delayed the inevitable.</li>
+          <li><strong>A non-company-specific sector tailwind that the company can monetize.</strong> USRC: TDAPA is industry-wide, but USRC monetized it harder via lean operating model + JV-physician volume engine + willingness to be early TDAPA adopter (DefenCath, Vafseo). <em>Most failed LMEs lacked tailwinds entirely</em> — Diamond Sports' RSN model was structurally broken, Envision's No Surprises Act headwind got worse not better.</li>
+        </ol>
+        <p style={{ color: T_.amber }}><strong>Non-transferable features (why USRC isn't a generalized template):</strong></p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>TDAPA is unique to dialysis sector and binary on October CMS rulings</li>
+          <li>USRC's JV-with-nephrologists model is the volume engine — not transferable to most LMEs</li>
+          <li>Centerbridge + King Street as repeat distressed-debt LME lenders implies they saw the operating inflection coming. Lender selection matters.</li>
+          <li>The 2025 super-priority refi suggests two-step deleveraging is often required — pure-LME-and-done rarely captures the full path</li>
+        </ul>
+      </DetailPanel>
+    ),
+    litigation: (
+      <DetailPanel title="Litigation Cross-Check — Confirmed Zero" onClose={() => setDetail(null)}>
+        <p>Reorg's own cross-LME analysis (article 304485, Feb 13 2025) explicitly enumerates which 2022–2024 LMEs drew excluded-lender litigation:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>AMC — first-lien noteholders sued Sept 2024 over intercreditor breach</li>
+          <li>Del Monte — Black Diamond suit Oct 2024</li>
+          <li>Instant Brands — trustee adversary Nov 2024</li>
+          <li>Envision — excluded-lender adversary Aug 2023 + uptier suit</li>
+        </ul>
+        <p style={{ color: T_.green }}><strong>U.S. Renal Care is conspicuously absent from the litigation list</strong> despite being one of the seven case studies in that retrospective. 9fin and CreditSights show no USRC litigation in their feeds either. Third Bridge expert calls do not reference any pending litigation.</p>
+        <p style={{ color: T_.amber }}><strong>Why no one sued:</strong> the 16% TL stub + $82M unsec stub were too small to incentivize litigation. The unsec class actually got cleaned out at 50–55¢ blended (35¢ exchange + 20¢ cash + 40¢ tender) — meaningful economics. The stub '27 unsecs traded UP from 22 to 71 post-deal because temporal seniority + balance-sheet cleanup lifted all paper. <strong>You don't sue when you got paid.</strong></p>
+      </DetailPanel>
+    ),
+    remainco: (
+      <DetailPanel title="RemainCo — Restricted Group Operating Entities" onClose={() => setDetail(null)}>
+        <p>The legacy USRC operating entities that <strong>stayed inside the restricted group</strong> after the May 2023 drop-down. Roughly <strong>~430 of USRC's ~554 total clinics</strong> at the time, plus Satellite Healthcare (acquired pre-LME). The most recent count includes ~5 acquired clinics in 1H'25 net of closures.</p>
+        <p><strong>The RemainCo bucket contains:</strong> the bulk of the dialysis business in states OUTSIDE the dropped-down geographies — i.e., NOT Georgia / Hawaii / Texas / Indiana / South Texas. Continues to generate the vast majority of consolidated revenue (USRC reported $1.65B+ in LTM revenue at last public Reorg datapoint).</p>
+        <p style={{ color: T_.green }}>RemainCo is what got rescued by the LME — the entity that benefited from TDAPA reimbursement uplift, the Satellite integration, and labor normalization. Q3'23 EBITDA doubled (per Reorg 241077). Q1'24 revenue +35% (Reorg 266683). Q3'24 first positive FCF post-LME (+$21M, per Reorg 293449).</p>
+        <p>Critically: <strong>~50% of the $328M UnSub TL proceeds were transferred back to RemainCo</strong> (per Reorg 304485) — funding the unsec cash consideration + open-market tender of the 10.625% '27 unsecs. So the "UnSub" wasn't economically isolated from RemainCo; it was a financing vehicle that pushed cash up to clean the RemainCo cap stack.</p>
+      </DetailPanel>
+    ),
+    newTL: (
+      <DetailPanel title="New 1L TL $1.494B '28 (S+500) — The Uptier Beneficiary" onClose={() => setDetail(null)}>
+        <p>The fulcrum tranche of the post-LME RemainCo cap stack. Created in the <strong>July 24–25 2023 uptier exchange</strong>. Exchanged from the existing $1.47B of L+500 TL '26 at <strong>85¢ on the dollar</strong>, with an extended maturity to 2028.</p>
+        <p style={{ color: T_.green }}><strong>Participation: 83.5% of pre-LME term loan principal</strong> (per Reorg article 304485, refining the headline "84%" figure). Two-stage execution — ad-hoc lender group closed first, then identical terms opened to all other lenders by an August deadline. Incremental L+550 holders received a 1.5% cash kicker for the margin step-down.</p>
+        <p>Why this tranche is the fulcrum:</p>
+        <ul style={{ margin: "6px 0", paddingLeft: 18 }}>
+          <li>Pari with the new $121M 10.625% 1L notes '28 — together they form the 1L class</li>
+          <li>Super-priority over the ~16% TL stub that didn't participate (subordinated via the uptier)</li>
+          <li>Liens on substantially all RemainCo assets (NOT on the UnSub clinics, which sit outside the restricted group)</li>
+          <li>By Feb 2025 the new TL traded at <strong>93 cents</strong> (Reorg 304485) — meaningful recovery on the 15-point exchange haircut</li>
+        </ul>
+        <p>The 2025 super-priority refi (Sept 2025) did NOT refinance this RemainCo TL — only the UnSub TL was refinanced. So this is still the post-LME tranche, now ~12 months from its '28 maturity at the next refi window.</p>
+      </DetailPanel>
+    ),
+    new1LNotes: (
+      <DetailPanel title="New 1L Notes $121M 10.625% '28 — Unsec Take-Out" onClose={() => setDetail(null)}>
+        <p>Created in the July 2023 uptier as a 1L-secured replacement for the unsecured 10.625% '27 notes. Exchanged at <strong>35¢ on the dollar + 20¢ cash consideration = 55¢ blended take-out value</strong> for participating unsec holders.</p>
+        <p>Participation: <strong>68% of the $505M unsec '27 class</strong> ($344M of $505M) participated via this exchange. An additional <strong>15% ($78M) tendered for cash at 40¢</strong>, and ~16% ($82M stub) chose not to participate at all (see "Stub Unsecs" box).</p>
+        <p style={{ color: T_.green }}>Per Reorg 304485, by Feb 2025 these new 10.625% '28 notes traded at <strong>86 cents</strong> — strong recovery considering holders took a paper exchange at 35¢. The 1L collateral + temporal seniority + the operating inflection that materialized in Q3'23 lifted these substantially above their exchange-day economics.</p>
+        <p><strong>The structural insight:</strong> giving the unsec class a meaningful blended take-out (~50-55¢) was what avoided the excluded-lender adversary lawsuits that Envision, AMC, Del Monte, and Instant Brands all faced. Cf. those deals where unsec recoveries were 0–20¢. USRC's unsec take-out cost ~$164M of the $328M new money — half the cash war chest. <strong>That cost bought zero litigation.</strong></p>
+      </DetailPanel>
+    ),
+    stubUnsec: (
+      <DetailPanel title="Stub Unsecs $82M 10.625% '27 — Left Behind But Lifted" onClose={() => setDetail(null)}>
+        <p>The <strong>16% of the original $505M 10.625% unsecured '27 notes</strong> held by lenders who chose not to participate in either the July 2023 exchange (at 35¢ + 20¢ cash) or the open-market tender (at 40¢). They keep the original 2027 maturity but are now structurally junior to the new $121M 1L notes '28.</p>
+        <p style={{ color: T_.amber }}><strong>The lien-stripping mechanic:</strong> the uptier exchange amended the credit-agreement collateral pool to give the new 1L tranches priority. Existing unsecs are unsecured — the priming is in the form of senior-secured paper sitting above them, not new liens on previously-unencumbered collateral. Structurally junior, not technically primed.</p>
+        <p style={{ color: T_.green }}><strong>Recovery: ~71¢ secondary by Feb 2025 (Reorg 304485) — UP from 22¢ pre-deal.</strong> Why? (1) Balance-sheet cleanup: $400M of debt taken out elevated the entire stack; (2) Temporal seniority: $82M of stub vs $1.5B+ of new 1L means the stub gets paid (small) but in cash, not in equity; (3) Operating inflection: Q3'23 EBITDA doubled, restoring solvency expectations.</p>
+        <p>Per Moody's Dec 2025 report, only <strong>$31.6M residual on the '27 unsec</strong> at the latest reading — meaning roughly $50M of the $82M stub was repaid or repurchased in the interim, likely via opportunistic open-market repurchases by USRC.</p>
+        <p style={{ color: T_.green }}><strong>This is why no one sued:</strong> when the "primed" minority is trading at 71¢ a year after the LME, the litigation incentive is gone. Compare to AMC 2L excluded (trading at single digits) where lenders sued.</p>
+      </DetailPanel>
+    ),
+    excludedTLs: (
+      <DetailPanel title="Excluded TLs (~16%) — Subordinated But Self-Excluded" onClose={() => setDetail(null)}>
+        <p>Roughly <strong>~16% of the pre-LME $1.47B TL '26 class</strong> chose not to participate in the July 2023 uptier exchange (despite identical terms being offered to all lenders in the second-stage open-to-all window, not just the ad-hoc group).</p>
+        <p style={{ color: T_.amber }}><strong>The structural fate:</strong> their loans were NOT amended out of the credit agreement, but the credit-agreement collateral pool was reordered to give the new $1.494B 1L TL '28 first priority. So the excluded ~16% TLs now sit BEHIND the new 1L tranche in waterfall priority — economically subordinated even though contractually still "1L."</p>
+        <p style={{ color: T_.green }}><strong>Why no litigation:</strong> the critical legal/structural point is that the August 2023 deadline opened the SAME TERMS to all creditors. Lenders who didn't participate self-excluded. That weakens any "I was primed without choice" claim — which is the foundational argument in AMC, Envision, Del Monte excluded-lender suits where those lenders were excluded BY STRUCTURE (selectively offered worse terms or no offer at all), not by their own choice not to participate.</p>
+        <p style={{ color: T_.amber }}><strong>Best read on who didn't participate:</strong> likely a mix of small CLO managers without the legal/financial advisory bandwidth to engage, and a few lenders who held the view that the LME was unfair and would be litigated successfully (a view that has not panned out). PIMCO was a notable name in the ad-hoc lender group but did NOT participate in the new-money UnSub funding — that's a separate puzzle.</p>
+      </DetailPanel>
+    ),
+    rcf: (
+      <DetailPanel title="$100M RCF '27 — RemainCo Revolver" onClose={() => setDetail(null)}>
+        <p>The L+425 revolving credit facility that originally had a <strong>June 2024 maturity</strong> — an immediate liquidity overhang at the time of the LME (less than 12 months from maturity, no clear refinancing path given the leverage profile).</p>
+        <p><strong>Extended through the LME process</strong> to a 2027 maturity, sized at $100M at the RemainCo level. Per Moody's Dec 2025, the RCF was <strong>fully available</strong> as of September 30, 2025 (pro forma for the super-priority refi which freed RCF capacity).</p>
+        <p>Significance: revolver availability is the cleanest signal of credit strength post-LME. Pre-LME this revolver was dangerously close to maturity; post-LME it's fully undrawn with a 2027 maturity that gives USRC ~18 months of additional refi runway. <strong>Cash + RCF = liquidity buffer that lets USRC absorb the post-TDAPA bundle pricing cliff (CMS final rule October 2026) without needing to come back to market under duress.</strong></p>
+      </DetailPanel>
+    ),
+    unsub: (
+      <DetailPanel title="Dialysis Holdco LLC + USRC South Texas L.P. — The UnSub" onClose={() => setDetail(null)}>
+        <p>The unrestricted-subsidiary entity created in <strong>May 2023</strong> as the destination for the drop-down of <strong>124 USRC clinics across Georgia, Hawaii, Texas, Indiana, and South Texas</strong>. Sits OUTSIDE the restricted group under the existing credit-agreement definitions.</p>
+        <p><strong>Why these states:</strong> the geographies were chosen partly for clinic-level profitability (the dropped clinics generated ~$60M of UnSub EBITDA, ~35% of pro forma 2023 EBITDA) and partly for state-regulatory considerations — dialysis clinics are state-licensed and physician-JV arrangements vary materially by state.</p>
+        <p><strong>The structural mechanism:</strong> the original 2019 credit agreement contained investment baskets that permitted up to a substantial dollar amount of assets to be transferred to unrestricted subsidiaries. The May 2023 drop-down used those existing baskets — no consent required from the existing lender group beyond what the docs already allowed. The drop-down is what created the COLLATERAL for the new $328M Centerbridge/King Street UnSub TL.</p>
+        <p style={{ color: T_.amber }}>USRC South Texas L.P. existed as a pre-LME entity (a JV with South Texas Dialysis Holdings, hence the L.P. structure rather than LLC). Dialysis Holdco LLC was newly created as part of the May 2023 transaction.</p>
+        <p style={{ color: T_.green }}>Today (post-Sept 2025 refi) the UnSub silo carries $301M of debt against ~$60M of UnSub EBITDA = ~5x net leverage at the UnSub level alone — meaningfully lower than the RemainCo standalone leverage of 9.8x. The UnSub IS the lower-risk silo because the dropped clinics are higher-quality assets at lower leverage.</p>
+      </DetailPanel>
+    ),
+    unsubTL: (
+      <DetailPanel title="UnSub 1L TL $301M '28 — Post-Sept-2025 Super-Priority Refi" onClose={() => setDetail(null)}>
+        <p><strong>Original (May 2023):</strong> $328M five-year term loan at <strong>S+875 bps with 2% OID</strong>, funded by Centerbridge (lead) and King Street as new-money lenders. This is the cash that came into the UnSub and ~50% of which was distributed up to RemainCo for the unsec take-out.</p>
+        <p><strong>Refinanced (September 2025):</strong> The UnSub TL was refinanced down to <strong>$301M</strong> at improved spread (exact spread unrated, hence undisclosed, but Moody's December 2025 framing as "super priority first lien term loan" with implied tighter docs suggests S+500-600 range). The refi was Step 2 of the deleveraging — made possible by the operating inflection that materialized between May 2023 and September 2025.</p>
+        <p style={{ color: T_.green }}><strong>The Octus Loan Document Score on Draft Amendment No. 2 (the new docs): 2.65 / 5</strong> (Reorg article 351280, November 12 2025). For context, Liberty Tire comp scores 3.88. USRC's 2025 refi docs are materially more lender-protective than typical post-LME credits — the lenders used the operational improvement to push for tighter J. Crew / Serta / Wesco blockers and lower asset-sale baskets.</p>
+        <p style={{ color: T_.amber }}><strong>Why "super-priority":</strong> Moody's nomenclature for the structural priority this tranche has within the UnSub silo — it sits ahead of any subordinated UnSub debt (currently none) and ahead of any equity claims at the UnSub level. Within the broader USRC structure, the UnSub TL is structurally senior to RemainCo claims via the cross-collateralization mechanics in the original LME.</p>
+        <p>Lender selection: <strong>Centerbridge + King Street are repeat LME participants</strong> — same names that funded Envision's AmSurg drop-down a year earlier. Their willingness to take first-loss position in the UnSub at S+875 (May 2023) implies they underwrote the operating inflection. The Sept 2025 refi presumably let them refinance themselves at tighter spreads, earning a double-dip on the trade.</p>
+      </DetailPanel>
+    ),
+    unsubRCF: (
+      <DetailPanel title="$75M UnSub Revolver" onClose={() => setDetail(null)}>
+        <p>A separate <strong>$75M revolving credit facility at the UnSub level</strong>, with $25M drawn as of September 30 2025 (per Moody's Dec 2025). Provides working-capital liquidity for the 124-clinic UnSub operations independent of the RemainCo cap stack.</p>
+        <p>Structurally similar to the RemainCo RCF in mechanics but sized for the smaller UnSub clinic base. Likely also pari with the UnSub TL in priority.</p>
+        <p>The fact that this RCF is partially drawn while RemainCo's $100M is fully available is interesting — suggests UnSub operations are slightly more working-capital intensive (likely because the dropped clinics include some lower-performing assets that needed working capital support during the post-LME integration).</p>
+      </DetailPanel>
+    ),
+    newMoneyLenders: (
+      <DetailPanel title="New Money Lenders — Centerbridge + King Street" onClose={() => setDetail(null)}>
+        <p>The two distressed-debt funds that funded the <strong>$328M UnSub TL in May 2023</strong>. Both are repeat LME participants and were the SAME NAMES that funded Envision's AmSurg drop-down a year earlier — though Envision filed Ch.11 12 months post-LME while USRC did not.</p>
+        <p><strong>Centerbridge Partners (lead):</strong> $9bn+ AUM distressed debt + private equity manager. Known for being highly analytical on operating thesis, not just structural arbitrage. Their willingness to lead the USRC UnSub at S+875 / 2% OID implies they had high conviction in the post-TDAPA operating inflection — and were right.</p>
+        <p><strong>King Street Capital Management:</strong> $25bn+ AUM. Heavy LME participant — also showed up as the largest single member of the Envision 21-member ad hoc group ($548M position). In USRC's case they participated as new-money lender, not just exchange participant.</p>
+        <p style={{ color: T_.amber }}><strong>Conspicuously NOT in the new financing: PIMCO.</strong> PIMCO was part of the ad-hoc lender group working with Milbank + Houlihan Lokey, but did NOT participate in the new-money UnSub. Worth flagging — sometimes the lender who DOESN'T participate is the most informative. Possible interpretations: (1) PIMCO took the view that the LME structure was insufficiently protective and walked away; (2) PIMCO had concentration limits on USRC; (3) PIMCO held the view that the LME would be litigated.</p>
+        <p style={{ color: T_.green }}><strong>The lesson for LME diligence:</strong> Track which distressed-debt funds repeatedly anchor successful LMEs vs failed ones. Centerbridge + King Street are on the right side of the cohort (USRC works, Envision fails — but they participated in both). Hard to draw clean conclusions on the funds themselves; easier to draw conclusions on the operating-thesis quality the funds underwrote at each deal.</p>
+      </DetailPanel>
+    ),
+  };
+
+  return (
+    <div>
+      {/* ── Summary Bar ── */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px", marginBottom: 24 }}>
+        <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.8, marginBottom: 12 }}>
+          Bain-owned dialysis provider that executed <span style={{ color: T_.amber }}>one of the few 2022–2024 LMEs that actually worked</span> — no second restructuring, no excluded-lender litigation, ratings upgraded by both S&amp;P and Moody's two years post-deal. Two-step structure: a May 2023 <span style={{ color: T_.amber }}>drop-down</span> of 124 clinics into an UnSub funded by <span style={{ color: T_.accent }}>$328M from Centerbridge + King Street</span>, followed by a July 2023 <span style={{ color: T_.amber }}>uptier exchange</span> that took out 84% of the unsecs and pushed maturities from 2026/27 to 2028. <span style={{ color: T_.green }}>~$164M of the $328M went to RemainCo balance sheet</span> (the other half funded junior take-out) — and that liquidity bridged a 6-month operating inflection driven by <span style={{ color: T_.accent }}>TDAPA reimbursement</span> (high-margin new dialysis drugs reimbursed separately), the Satellite Healthcare integration, and labor cost normalization. The September 2025 super-priority refi (Octus Loan Document Score 2.65 / 5) cleaned up the UnSub silo with materially tighter docs. <span style={{ color: T_.green }}>Bain contributed zero equity</span> — the entire deal was lender-led.
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 8 }}>
+          {[
+            { l: "Pre-LME Lev", v: "~10x", c: T_.red },
+            { l: "TL Participation", v: "83.5%", c: T_.green },
+            { l: "Unsec Cleared", v: "84%", c: T_.green },
+            { l: "Maturity Push", v: "'26 → '28", c: T_.blue },
+            { l: "Q3'23 EBITDA", v: "doubled", c: T_.green },
+            { l: "Re-default?", v: "NO", c: T_.green },
+          ].map(m => (
+            <div key={m.l} style={{ background: T_.bgInput, borderRadius: 6, padding: "8px 12px", border: `1px solid ${T_.border}` }}>
+              <div style={{ fontSize: 9, color: T_.textGhost, textTransform: "uppercase", fontWeight: 600 }}>{m.l}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: m.c, marginTop: 2 }}>{m.v}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         CORPORATE & CAPITAL STRUCTURE (Post-LME, Post-Sept-2025 Refi)
+         ════════════════════════════════════════════════════ */}
+      <div style={{ margin: "0 auto", marginBottom: 24 }}>
+        <div style={{ marginBottom: 8 }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 2 }}>Corporate &amp; Capital Structure (Post-LME, Post-Sept-2025 Refi)</div>
+          <div style={{ fontSize: 10, color: T_.textGhost, marginBottom: 6 }}>After the May/July 2023 drop-down + uptier and the Sept 2025 super-priority refi. Two separately capitalized silos. Click any box for details.</div>
+          <div style={{ display: "flex", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px solid ${T_.green}50`, background: `${T_.green}08`, display: "inline-block" }} /><span style={{ color: T_.green }}>Restricted Group (RemainCo)</span></span>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, border: `2px dashed ${T_.red}50`, background: `${T_.red}08`, display: "inline-block" }} /><span style={{ color: T_.red }}>Unrestricted Sub (Dropped May 2023)</span></span>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, background: T_.green, display: "inline-block" }} /><span style={{ color: T_.green }}>Participated / Uptiered</span></span>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, background: T_.red, display: "inline-block" }} /><span style={{ color: T_.red }}>Left Behind</span></span>
+            <span style={{ fontSize: 9, display: "flex", alignItems: "center", gap: 4 }}><span style={{ width: 14, height: 8, borderRadius: 2, background: T_.accent, display: "inline-block" }} /><span style={{ color: T_.accent }}>New Money (Outside Credit Group)</span></span>
+          </div>
+        </div>
+
+        <div style={{ padding: "24px 16px", background: T_.bgPanel, borderRadius: 12, border: `1px solid ${T_.border}`, marginBottom: 4 }}>
+
+          {/* ROW 1: Bain Capital */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="Bain Capital Americas Fund XII"
+              sub="PE Sponsor · Acquired USRC 2019"
+              color={T_.purple}
+              badges={[{ text: "PASSIVE THROUGH LME", color: T_.amber }, { text: "ZERO EQUITY CONTRIBUTION", color: T_.green }]}
+              onClick={() => toggle("sponsor")} selected={detail === "sponsor"}
+              width={380}
+            />
+          </div>
+
+          <VLineLabel label="100% equity" color={T_.purple} />
+
+          {/* ROW 2: USRC Holdings */}
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <Box
+              label="U.S. Renal Care Holdings"
+              sub="Parent · Borrower under 2019 credit agreement · pre-LME ~$2B funded debt"
+              color={T_.red}
+              badges={[{ text: "PARENT ENTITY", color: T_.textMid }]}
+              onClick={() => toggle("capstack")} selected={detail === "capstack"}
+              width={420}
+            />
+          </div>
+
+          <VLine h={14} />
+
+          {/* DUAL SILO SPLIT */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, position: "relative" }}>
+            {/* Horizontal connector line */}
+            <div style={{ position: "absolute", top: 0, left: "25%", right: "25%", height: 0, borderTop: `2px solid ${T_.border}` }} />
+
+            {/* ─── LEFT: RemainCo SILO (RESTRICTED GROUP) ─── */}
+            <div>
+              <VLine h={14} />
+              <div style={{ border: `2px solid ${T_.green}30`, borderRadius: 12, padding: "16px 12px 12px", background: `${T_.green}04`, position: "relative" }}>
+                <div style={{ position: "absolute", top: -10, left: 10, background: T_.bgPanel, padding: "0 6px" }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: T_.green, textTransform: "uppercase", letterSpacing: "0.5px" }}>Restricted Group · RemainCo</span>
+                </div>
+                <Box
+                  label="RemainCo Operating Entities"
+                  sub="~430 clinics across the US (post-Satellite acquisition)"
+                  color={T_.blue}
+                  badges={[
+                    { text: "OPERATING ENTITY", color: T_.blue },
+                    { text: "RESTRICTED SUBS", color: T_.green },
+                  ]}
+                  onClick={() => toggle("remainco")} selected={detail === "remainco"}
+                />
+                <VLine h={10} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Box
+                    label="New 1L TL $1.494B '28 (S+500)"
+                    sub="UPTIERED · 83.5% participation · exchanged from $1.5B '26 TL at 85¢ · trading 93 Feb 2025"
+                    color={T_.green}
+                    badges={[{ text: "FULCRUM", color: T_.green }]}
+                    onClick={() => toggle("newTL")} selected={detail === "newTL"}
+                  />
+                  <Box
+                    label="New 1L Notes $121M 10.625% '28"
+                    sub="UPTIERED · 68% unsec participation · 35¢ + 20¢ cash = 55¢ blended take-out · trading 86 Feb 2025"
+                    color={T_.green}
+                    badges={[{ text: "PARI WITH 1L TL", color: T_.green }]}
+                    onClick={() => toggle("new1LNotes")} selected={detail === "new1LNotes"}
+                  />
+                  <Box
+                    label="Stub Unsecs $82M 10.625% '27"
+                    sub="LEFT BEHIND · 16% of unsec class · lien-stripped but recovered (22 → 71 secondary)"
+                    color={T_.red}
+                    borderColor={T_.red}
+                    badges={[{ text: "LIEN-STRIPPED", color: T_.red }, { text: "NO LITIGATION", color: T_.green }]}
+                    onClick={() => toggle("stubUnsec")} selected={detail === "stubUnsec"}
+                    dashed
+                  />
+                  <Box
+                    label="Excluded TLs (~16%)"
+                    sub="LEFT BEHIND · subordinated to new 1L · self-excluded by August 2023 deadline"
+                    color={T_.red}
+                    borderColor={T_.red}
+                    badges={[{ text: "SUBORDINATED", color: T_.red }, { text: "SELF-EXCLUDED", color: T_.amber }]}
+                    onClick={() => toggle("excludedTLs")} selected={detail === "excludedTLs"}
+                    dashed
+                  />
+                  <Box
+                    label="$100M RemainCo RCF '27"
+                    sub="Extended from June 2024 maturity · fully available as of Sept 2025"
+                    color={T_.blue}
+                    badges={[{ text: "UNDRAWN", color: T_.green }]}
+                    onClick={() => toggle("rcf")} selected={detail === "rcf"}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* ─── RIGHT: UnSub SILO (UNRESTRICTED, DROPPED MAY 2023) ─── */}
+            <div>
+              <VLine h={14} />
+              <div style={{ border: `2px dashed ${T_.red}50`, borderRadius: 12, padding: "16px 12px 12px", background: `${T_.red}04`, position: "relative" }}>
+                <div style={{ position: "absolute", top: -10, left: 10, background: T_.bgPanel, padding: "0 6px" }}>
+                  <span style={{ fontSize: 9, fontWeight: 700, color: T_.red, textTransform: "uppercase", letterSpacing: "0.5px" }}>Unrestricted Sub · Dropped May 15–16, 2023</span>
+                </div>
+                <Box
+                  label="Dialysis Holdco LLC + USRC South Texas L.P."
+                  sub="124 clinics · GA, HI, TX, IN, South TX · ~$60M UnSub EBITDA · ~5x net at UnSub"
+                  color={T_.amber}
+                  badges={[
+                    { text: "OPERATING ENTITY", color: T_.amber },
+                    { text: "OUTSIDE CREDIT GROUP", color: T_.red },
+                  ]}
+                  onClick={() => toggle("unsub")} selected={detail === "unsub"}
+                />
+                <VLine h={10} />
+                <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                  <Box
+                    label="UnSub 1L TL $301M '28 (post-Sept 2025 refi)"
+                    sub="REFINANCED · original $328M S+875 from Centerbridge/King Street (May 2023) refi to $301M Sept 2025 · Octus Loan Doc Score 2.65/5"
+                    color={T_.accent}
+                    badges={[{ text: "SUPER-PRIORITY", color: T_.amber }, { text: "TIGHTER 2025 DOCS", color: T_.green }]}
+                    onClick={() => toggle("unsubTL")} selected={detail === "unsubTL"}
+                  />
+                  <Box
+                    label="$75M UnSub RCF"
+                    sub="$25M drawn at Sept 2025"
+                    color={T_.blue}
+                    badges={[{ text: "PARTIAL DRAW", color: T_.amber }]}
+                    onClick={() => toggle("unsubRCF")} selected={detail === "unsubRCF"}
+                  />
+                  <Box
+                    label="New Money Lenders"
+                    sub="Centerbridge (lead) + King Street · PIMCO NOT in deal despite being in ad-hoc group"
+                    color={T_.purple}
+                    badges={[{ text: "REPEAT LME LENDERS", color: T_.purple }]}
+                    onClick={() => toggle("newMoneyLenders")} selected={detail === "newMoneyLenders"}
+                    dashed
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Pre-LME → Post-LME → Post-Refi summary band */}
+          <div style={{ marginTop: 18, padding: "10px 14px", background: T_.bgInput, borderRadius: 8, border: `1px solid ${T_.border}` }}>
+            <div style={{ fontSize: 10, color: T_.textGhost, textTransform: "uppercase", fontWeight: 700, marginBottom: 6 }}>Net effect — three snapshots</div>
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.7 }}>
+              <strong style={{ color: T_.red }}>Pre-LME (Q4 2022):</strong> $1.5B L+500 TL '26 + $225M L+550 TLB '26 + $505M 10.625% unsec '27 + RCF '24 · <em>all sitting at the parent</em> · ~10x consolidated leverage · TLs 56–73 · unsecs 21–48 →{" "}
+              <strong style={{ color: T_.green }}>Post-LME (Jul 2023):</strong> RemainCo $1.494B S+500 1L TL '28 + $121M 10.625% 1L notes '28 + $82M stub 10.625% '27 + UnSub $328M S+875 TL '28 + RCF · <em>84% of unsec class taken out at 50–55¢ blended</em> · maturity wall pushed 2026/27 → 2028 →{" "}
+              <strong style={{ color: T_.green }}>Post-Sept 2025 Refi:</strong> RemainCo 1L unchanged + UnSub TL refinanced to $301M with tighter docs (Octus Loan Doc Score 2.65/5) · cash $153M PF Sept 30 2025 · Moody's expects leverage to trend to ~7x in 12–18 months
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── Deal Mechanics — 3 click-through tiles (LME phases summary) ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Deal Mechanics — The Three Phases</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 8 }}>
+          {[
+            { k: "dropdown", l: "Phase 1 — Drop-Down (May 2023)", s: "124 clinics → UnSub. $328M from Centerbridge + King Street at S+875. ~50% of proceeds back to RemainCo.", c: T_.amber },
+            { k: "uptier",   l: "Phase 2 — Uptier Exchange (Jul 2023)", s: "TL at 85¢ to '28; unsecs at 35¢+20¢ cash; 40¢ open-market tender. 83.5% TL / 68% unsec participation.", c: T_.amber },
+            { k: "refi2025", l: "Phase 3 — Super-Priority Refi (Sep 2025)", s: "UnSub TL refinanced $328M → $301M. Tighter docs. Octus Loan Doc Score 2.65/5.", c: T_.accent },
+          ].map(t => (
+            <div key={t.k} onClick={() => toggle(t.k)} style={{
+              padding: "10px 12px", borderRadius: 8, cursor: "pointer",
+              background: detail === t.k ? `${t.c}12` : T_.bgInput,
+              border: `1px solid ${detail === t.k ? t.c : T_.border}`, transition: "all .15s",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: t.c }}>{t.l}</div>
+              <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2, lineHeight: 1.5 }}>{t.s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Why It Worked — 5 click-through tiles ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 4 }}>Why It Worked — Four Legs of the Stool</div>
+        <div style={{ fontSize: 11, color: T_.textDim, marginBottom: 10 }}>Each tile is a necessary condition. USRC met all four. Failed LMEs (Envision, Instant Brands, Diamond Sports) failed at least one.</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 8 }}>
+          {[
+            { k: "participation", l: "#1 — High Participation = No Litigation", s: "83.5% TL / 68% unsec → no excluded-lender adversary. Stubs too small to sue.", c: T_.green },
+            { k: "newmoney",      l: "#2 — New Money to Balance Sheet", s: "~50% of $328M went to RemainCo cash, ~50% to junior take-out. NOT cash burn.", c: T_.green },
+            { k: "operating",     l: "#3 — Operating Inflection in 6 Months", s: "Q3'23 EBITDA doubled. Q1'24 revenue +35%. Q3'24 first positive FCF.", c: T_.green },
+            { k: "tdapa",         l: "#4 — TDAPA Reimbursement Tailwind", s: "Industry-wide tailwind USRC monetized harder via direct drug contracting.", c: T_.green },
+            { k: "jv",            l: "Volume Engine — JV with Nephrologists", s: "+2% volume vs DaVita -1.1%. FCF cost via $70-75M NCI distributions.", c: T_.blue },
+          ].map(t => (
+            <div key={t.k} onClick={() => toggle(t.k)} style={{
+              padding: "10px 12px", borderRadius: 8, cursor: "pointer",
+              background: detail === t.k ? `${t.c}12` : T_.bgInput,
+              border: `1px solid ${detail === t.k ? t.c : T_.border}`, transition: "all .15s",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: t.c }}>{t.l}</div>
+              <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2, lineHeight: 1.5 }}>{t.s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Validation + Framework + Litigation ── */}
+      <div style={{ marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Read-Through &amp; Validation</div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 8 }}>
+          {[
+            { k: "refi2025",   l: "Sept 2025 Super-Priority Refi (Step 2)", s: "Refinanced UnSub TL at tighter docs. Octus Loan Doc Score 2.65/5.", c: T_.accent },
+            { k: "davita",     l: "Sector Comp — DaVita (CreditSights)", s: "USRC growing volume +2% vs DaVita -1.1%. DVA upgraded to Outperform May 2026.", c: T_.blue },
+            { k: "framework",  l: "What Makes an LME Stick — Framework", s: "Four conditions; USRC met all four. Envision missed two; filed Ch.11 12mo later.", c: T_.purple },
+            { k: "litigation", l: "Litigation Cross-Check — Zero Suits", s: "Reorg lists AMC, Del Monte, Instant Brands, Envision as sued. USRC absent.", c: T_.green },
+          ].map(t => (
+            <div key={t.k} onClick={() => toggle(t.k)} style={{
+              padding: "10px 12px", borderRadius: 8, cursor: "pointer",
+              background: detail === t.k ? `${t.c}12` : T_.bgInput,
+              border: `1px solid ${detail === t.k ? t.c : T_.border}`, transition: "all .15s",
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 600, color: t.c }}>{t.l}</div>
+              <div style={{ fontSize: 10, color: T_.textDim, marginTop: 2, lineHeight: 1.5 }}>{t.s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Detail Panel ── */}
+      {detail && panels[detail] && panels[detail]}
+
+      {/* ════════════════════════════════════════════════════
+         KEY CONCEPTS
+         ════════════════════════════════════════════════════ */}
+      <div style={{ marginTop: 28, marginBottom: 24 }}>
+        <div style={{ fontSize: 15, fontWeight: 700, color: T_.text, marginBottom: 10 }}>Key Concepts</div>
+        <ConceptAccordion items={[
+          { label: "The ~50% Myth — New Money Wasn't a Cash War Chest", color: T_.amber, summary: "Only ~$164M of the $328M Centerbridge/King Street UnSub TL actually went to RemainCo balance sheet.", detail: "Per Reorg article 304485 (Octus Feb 2025 retrospective): 'About 50% of [USRC's] proceeds were transferred to the Remainco balance sheet, with the remainder used for the unsecured notes exchange cash consideration, the unsecured notes redemption, and transaction fees and expenses.' This is the most important fact in the case study — the original Reorg framing of the LME as injecting $328M of new liquidity is misleading. The real number is ~$164M of fresh cash + ~$164M of capital structure cleanup (taking out $422M of $505M unsecs). LESS new cash than headline suggests, but MORE accretive use of the cash because it went to delever junior debt, not to fund operating burn. The diagnostic for LMEs that work vs LMEs that fail isn't the size of the new money — it's what the new money is funding." },
+          { label: "Two-Step Deleveraging Beats One-Shot LME", color: T_.accent, summary: "USRC needed both the 2023 LME and the Sept 2025 super-priority refi. Step 1 created the conditions for Step 2.", detail: "Most case studies frame USRC as a single 2023 LME event. The reality per Moody's Dec 2025 and S&P Nov 2025 is a two-step deleveraging: (1) the May/July 2023 drop-down + uptier extended maturities to 2028 and bought operating runway; (2) the Sept 2025 super-priority refi (unrated, but confirmed by both rating agencies) refinanced the UnSub $328M TL down to $301M with materially tighter documentation. Octus Loan Document Score on Draft Amendment No. 2 = 2.65 / 5 (where 1 = most lender-protective). Liberty Tire comp at 3.88. Lesson: 'LME that worked' rarely means one-shot-and-done. The 2023 LME bought time; the 2025 refi capitalized on the operating inflection that materialized in the interim to clean up the rest of the cap stack at tighter terms. Pure single-event LMEs that don't permit a follow-on refi typically don't stick." },
+          { label: "TDAPA Volume-Rebate Mechanism", color: T_.purple, summary: "The pharma volume-rebate structure on TDAPA drugs is the real EBITDA driver — not the CMS add-on payment itself.", detail: "Per the Third Bridge USRC TDAPA call (April 15 2026, former USRC SVP business development): 'Mark-up companies want to do these volume-based bonus reimbursement contracts. The more of the product on TDAPA that US Renal utilises, the more bonus reimbursement they get from the pharmaceutical company, which is why they were showing such large increases in their margins Q3 and Q4.' Reorg and S&P/Moody's coverage attributes USRC's margin expansion to 'TDAPA rollout' without explaining this mechanism. The reality: USRC's direct drug contracting (no PBM intermediation) lets it negotiate volume-tiered rebates with pharma manufacturers (Akebia / Vafseo, CorMedix / DefenCath, AstraZeneca / phosphate binders). The MORE volume USRC pushes through these drugs, the higher the rebate tier — which is partly why USRC was the early DefenCath adopter while DaVita declined and Fresenius was cautious. Risk: the post-TDAPA EBITDA cliff (30-50% on the TDAPA revenue stream when drugs bundle back into Medicare) hits when CMS publishes the final post-TDAPA bundle pricing rule in October. Binary catalyst event." },
+          { label: "Lender Selection in an LME Matters", color: T_.blue, summary: "Centerbridge + King Street as new-money lenders signals informed risk-taking, not desperation capital.", detail: "Both Centerbridge and King Street are repeat LME participants — the SAME names that funded Envision's AmSurg dropdown a year earlier. In USRC's case they took first-loss position in the UnSub at S+875 with 2% OID — pricing that implies they saw the operating inflection coming. Their willingness to take that risk is partly the validation that the LME could work. By contrast, when LMEs are funded by sponsor-related entities (Cornell Capital at Instant Brands) or by lenders who can't underwrite the operating thesis, the cap stack is fragile. Worth tracking which distressed-debt funds repeatedly anchor successful LMEs vs failed ones — Centerbridge + King Street appear to be on the right side of the cohort. The September 2025 super-priority refi presumably allowed them to refinance themselves at tighter spreads, earning a double-dip on the trade." },
+          { label: "JV-with-Nephrologists — The Structural Differentiator", color: T_.cyan, summary: "USRC's whole model is JVs with independent nephrologists in existing clinics, not a new-build-only model like DaVita and Fresenius.", detail: "Per Third Bridge USRC expert: 'What US Renal does is their business development team... we would seek out independent physicians to joint venture in existing clinics. Whereas DaVita and Fresenius' model, the only time they allow as a general rule, JV buy-in is when it's a new clinic that's being built. It's a one-shot deal.' The result: physician partners are economically incentivized to refer patients to USRC clinics, driving +2% organic volume growth vs DaVita's -1.1% over the same period. The cost: NCI distributions of $55M (2025) projected to $70-75M (2026) — what Moody's calls 'sizeable minority distributions that constrain free cash flow.' Trade-off: USRC gives away meaningful FCF to physician partners in exchange for volume. In a steady-state industry that's a fair trade. In the TDAPA window where volume is more valuable than FCF (because each TDAPA-eligible treatment captures rebate), the JV model is structurally advantaged. The model is not transferable to most LMEs — most failed-LME companies don't have a comparable volume-engine structural advantage." },
+          { label: "Stubs Don't Sue When They Got Paid", color: T_.green, summary: "USRC's 16% TL stub + $82M unsec stub didn't file adversaries because the cleanup lifted secondary trading meaningfully.", detail: "Reorg cross-LME analysis (article 304485) explicitly enumerates which 2022-2024 LMEs drew excluded-lender litigation: AMC (1L noteholder adversary Sept 2024), Del Monte (Black Diamond suit Oct 2024), Instant Brands (trustee adversary Nov 2024), Envision (excluded-lender adversary Aug 2023). USRC is conspicuously absent. The structural reason: the unsec class actually got cleaned out at 50-55¢ blended (35¢ exchange + 20¢ cash + 40¢ open-market tender) — meaningful economics, not the 5-10¢ recoveries that incentivize litigation. The stub '27 unsecs (16% non-participation) traded UP from pre-deal 22 to 71 post-deal because temporal seniority + balance-sheet cleanup lifted all paper. You don't sue when you got paid. Lesson for LME design: make the unsec recovery good enough that the excluded minority doesn't have litigation incentive. The cost of paying off the unsecs (~$164M of the $328M new money) was the cost of avoiding adversary litigation that would have constrained the company through 2024." },
+          { label: "Companies Bridge Inflections; They Don't Outrun Burn", color: T_.red, summary: "Companies that LME to fund cash burn die within 6-12 months. Companies that LME to bridge an imminent operating inflection survive.", detail: "The single best diagnostic for whether an LME will stick. USRC: TDAPA + Satellite + labor normalization were all imminent and visible at deal time. New money bridged a 6-month gap. EBITDA doubled in Q3'23 (first quarter post-LME). Envision: No Surprises Act + payor cuts + COVID labor inflation were structural and getting WORSE. New money funded -$146M Remainco EBITDA in 2022. Burn never reversed. Ch.11 filed 12 months post-LME. Diamond Sports: linear TV decline + RSN model structurally broken. Burn never reversed. Ch.11. Instant Brands: kitchenware demand pulled forward by COVID then normalized. Burn never reversed. Ch.11 6 months post-LME. The framework: stress-test the operating inflection BEFORE underwriting the LME. If the company can't articulate a specific 6-12 month catalyst (regulatory ruling, drug approval, capex coming online, integration synergies hitting), the LME is funding death — not survival." },
+        ]} />
+      </div>
+
+      {/* ════════════════════════════════════════════════════
+         TIMELINE
+         ════════════════════════════════════════════════════ */}
+      <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: "18px 22px" }}>
+        <div style={{ fontSize: 14, fontWeight: 700, color: T_.accent, marginBottom: 12 }}>Timeline</div>
+        {[
+          { date: "Jun 2019", event: "Bain Capital acquires USRC. Cap stack re-leveraged: $1.5B TL '26 (S+500) + $505M 10.625% unsec notes '27. Sponsor: Bain Capital Americas Fund XII.", color: T_.purple },
+          { date: "Q3 2022", event: "Stress acute. TLs quoted 56–73, unsecs 21–48. Gross margin -400 bps YoY on labor inflation. Cash $200M (from $262M mid-year). LFCF -$46M Q3, -$82M FY21. Oaktree begins building TL stake.", color: T_.red },
+          { date: "Feb 2023", event: "Ad-hoc lender group forms with Milbank (legal) + Houlihan Lokey (financial). PIMCO part of group. Company retains Kirkland & Ellis + PJT Partners.", color: T_.amber },
+          { date: "May 15–16, 2023", event: "★ PHASE 1 — DROP-DOWN. 124 clinics (GA, HI, TX, IN, South TX) transferred to UnSub (Dialysis Holdco LLC + USRC South Texas L.P.). UnSub raises $328M five-year TL at S+875 / 2% OID. Centerbridge (lead) + King Street as new-money lenders. PIMCO conspicuously NOT in new financing.", color: T_.red },
+          { date: "Jul 24–25, 2023", event: "★ PHASE 2 — UPTIER EXCHANGE. 83.5% TL participation: $1.47B '26 TLs exchanged for new S+500 1L TL '28 at 85¢. Incremental L+550 TL holders get 1.5% cash kicker. 68% unsec participation: $344M unsecs exchanged for new 10.625% 1L notes '28 at 35¢ + 20¢ cash. Additional $78M unsecs tendered at 40¢. Non-participants subordinated.", color: T_.red },
+          { date: "Q3 2023", event: "FIRST POST-LME QUARTER. Revenue +19.6% YoY to $391M. Adjusted EBITDA DOUBLED to $60M. Liquidity $330M. TL bounces from low-60s to 67–70.", color: T_.green },
+          { date: "Q1 2024", event: "Revenue +35% YoY to $450M. LTM EBITDA $182M (vs $111M projected at deal time — 64% beat). Cash $173M. TL at 87–89.", color: T_.green },
+          { date: "Q3 2024", event: "First POSITIVE FCF QUARTER post-LME: +$21M for Q3. Revenue +24% to $484M. EBITDA ex-NCI +33% to $58.5M. Liquidity >$250M. TL at 95.5. RemainCo net leverage 9.8x; consolidated 10.3x.", color: T_.green },
+          { date: "Feb 13, 2025", event: "Octus publishes 7-drop-down comparative analysis (Reorg article 304485). Positions USRC at less-aggressive end of 2022–2024 LME cohort: TL lenders lost ~20% of pre-deal value vs Envision 53%, Del Monte 64%, AMC 6–9%, Rackspace 19%. Octus quantifies ~50% of $328M went to RemainCo balance sheet.", color: T_.textMid },
+          { date: "Sep 2025", event: "★ STEP 2 DELEVERAGING — SUPER-PRIORITY REFI. UnSub $328M TL refinanced down to $301M with materially tighter documentation. Cash $153M PF at Sept 30. RemainCo RCF fully available. Old TLB '26 and unsec '27 effectively cleaned out.", color: T_.amber },
+          { date: "Nov 5, 2025", event: "S&P upgrades USRC from CCC+ to B-. Cites 'full rollout of TDAPA' as primary driver. Revenue +18% 1H25. EBITDA margin 16.5% (+50 bps). Projects DCF of +$40M by 2027.", color: T_.green },
+          { date: "Nov 12, 2025", event: "Octus Covenants publishes Loan Document Score on Draft Amendment No. 2: 2.65 / 5 (Reorg article 351280). Notably more lender-protective than typical post-LME credits (Liberty Tire comp 3.88).", color: T_.textMid },
+          { date: "Dec 12, 2025", event: "Moody's affirms Caa1; outlook POSITIVE (Reorg article 356815). References 'super priority first lien term loan (unrated)' refinancing. Expects leverage to trend toward 7x over next 12–18 months and positive FCF by 2027.", color: T_.green },
+          { date: "Apr 15, 2026", event: "Third Bridge USRC TDAPA call (former USRC SVP business development, uuid c123b03b327adf13559865a6e94a1574). Validates operating thesis intact: JV model driving volume, pharma volume-rebate mechanism driving margins, post-TDAPA cliff sized at 30-50% on TDAPA revenue stream. CMS final rule for post-TDAPA bundle pricing comes in October — binary catalyst.", color: T_.textMid },
+          { date: "May 6, 2026", event: "CreditSights upgrades DaVita to Outperform (article 699167). Cites volume inflection (+0.1% normalized vs -1.1% FY25). Same sector tailwind narrative that drove USRC's recovery — read-through is that 2026 dialysis demand backdrop supports continued USRC normalization.", color: T_.textMid },
+        ].map((e, i) => (
+          <div key={i} style={{ display: "flex", gap: 12, marginBottom: 4, alignItems: "flex-start" }}>
+            <div style={{ width: 100, flexShrink: 0, fontSize: 10, fontWeight: 600, color: e.color, paddingTop: 2 }}>{e.date}</div>
+            <div style={{ width: 6, height: 6, borderRadius: "50%", background: e.color, flexShrink: 0, marginTop: 5 }} />
+            <div style={{ fontSize: 11, color: T_.textMid, lineHeight: 1.5 }}>{e.event}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Sources footer ── */}
+      <div style={{ marginTop: 24, padding: "12px 16px", background: T_.bgPanel, borderRadius: 8, border: `1px solid ${T_.borderLight}`, fontSize: 10, color: T_.textGhost, lineHeight: 1.7 }}>
+        <strong style={{ color: T_.textMid }}>Sources:</strong> <em>Reorg / Octus</em> — articles 186196 + 197884 (pre-LME stress), 216548 + 216565 + 216781 + 216848 + 216860 (May 2023 drop-down mechanics), 224590 + 224794 + 224828 (July 2023 uptier exchange), 241077 (Q3'23 first post-LME quarter), 266683 (Q1'24 recovery), 293449 (Q3'24 first positive FCF), 304485 (Octus Feb 2025 7-drop-down comparative analysis — the cornerstone source), 349615 (S&amp;P upgrade Nov 2025), 351280 (Octus Covenants Loan Document Score 2.65/5), 356815 (Moody's outlook positive Dec 2025) · <em>CreditSights</em> — DaVita 1Q26 upgrade to Outperform (article 699167, May 6 2026) + DaVita 4Q25 (Feb 3 2026). USRC private, sector read-through only · <em>9fin</em> — cap-stack mapping (company_id 2060) but no LFI editorial coverage on the name (private credit) · <em>Third Bridge Forum</em> — USRC TDAPA EBITDA Outlook (April 15 2026, uuid c123b03b327adf13559865a6e94a1574, former USRC SVP business development, ~55 min) + Dialysis Thematic — Two is Better Than None (April 10 2026, uuid 32b59a0315ebcd9dcefe6177381a750f, former nephrologist on volume/GLP-1) · <em>Cross-source cross-check</em>: $400M debt reduction figure and $50M cash interest savings figure are company-disclosed and NOT independently corroborated by third-party sources — flagging for honest framing. Three-source-confirmed: $328M new-money tranche, ~50% to RemainCo balance sheet, 83.5% TL / 68% unsec participation rates, 2026→2028 maturity push, NO Bain equity contribution, NO excluded-lender litigation. The Sept 2025 super-priority refi is unrated but explicitly confirmed by both Moody's and S&amp;P. All figures and characterizations current as of May 2026.
+      </div>
+
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -5304,6 +5923,7 @@ export default function Restructuring({ initialTab }) {
       {activeCase === "caesars" && <CaesarsCase />}
       {activeCase === "trinseo" && <TrinseoCase />}
       {activeCase === "xerox" && <XeroxCase />}
+      {activeCase === "usrenalcare" && <USRenalCareCase />}
     </div>
   );
 }

@@ -1144,6 +1144,21 @@ const CHIP_ROADMAP = [
   { vendor: "Meta", type: "ASIC", chip: "MTIA v2", arch: "Custom", node: "5nm", year: 2025, status: "Internal", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "Inference at scale", notes: "Scaled up for Llama inference. Still relies on Nvidia GPUs for training.", color: "#DB2777" },
   // OpenAI
   { vendor: "OpenAI", type: "ASIC", chip: "Titan (Custom ASIC w/ Broadcom)", arch: "Custom", node: "N3", year: 2026, status: "In Development", vram: 0, hbm: "HBM4", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "TBD", notes: "Broadcom co-design (18+ months), TSMC N3 fab, Samsung HBM4 (exclusive deal, Mar 2026). $10B Broadcom order. Deployment H2 2026 thru 2029. 2nd-gen planned on TSMC A16.", color: "#6366F1" },
+  // Cerebras — wafer-scale challenger
+  { vendor: "Cerebras", type: "Wafer-Scale", chip: "WSE-2", arch: "Wafer-Scale Engine", node: "TSMC 7nm", year: 2021, status: "EOL", vram: 40, hbm: "—", bw: 20.0, tdp: 23000, fp8: 0, fp4: 0, system: "CS-2", notes: "2.6T transistors · 850K cores · 40 GB on-die SRAM · 20 PB/s aggregate memory bw · ~23 kW per CS-2. Wafer-scale eliminates inter-chip latency.", color: "#0891B2" },
+  { vendor: "Cerebras", type: "Wafer-Scale", chip: "WSE-3", arch: "Wafer-Scale Engine", node: "TSMC 5nm", year: 2024, status: "Shipping", vram: 44, hbm: "—", bw: 21.0, tdp: 23000, fp8: 0, fp4: 0, system: "CS-3", notes: "4T transistors · 900K cores · 44 GB on-die SRAM · 125 PF dense FP16 (1.25 EF sparse). Largest chip ever made (~46,225 mm²). AWS cloud deal 2026. IPO filed Feb 2026 @ ~$23B.", color: "#06B6D4" },
+  { vendor: "Cerebras", type: "Wafer-Scale", chip: "WSE-4 (planned)", arch: "Wafer-Scale Engine", node: "TSMC 3nm?", year: 2027, status: "Announced", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "CS-4 (TBD)", notes: "Roadmap placeholder — cadence implies ~2027 on 3nm. Details unconfirmed pending post-IPO communications.", color: "#0E7490" },
+  // Groq — deterministic-latency inference; $20B NVDA license Dec 2025
+  { vendor: "Groq", type: "LPU (Inference)", chip: "LPU v1", arch: "TSP", node: "GF 14nm", year: 2020, status: "Shipping", vram: 0, hbm: "—", bw: 80.0, tdp: 375, fp8: 0, fp4: 0, system: "GroqRack", notes: "230 MB on-chip SRAM · deterministic dataflow · no HBM. Tensor Streaming Processor architecture — single instruction stream, no reorder buffer, no caches.", color: "#FB923C" },
+  { vendor: "Groq", type: "LPU (Inference)", chip: "LPU v2", arch: "TSP v2", node: "4nm (est.)", year: 2024, status: "Shipping", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "GroqCloud", notes: "Powers GroqCloud. Claimed 4-7x faster token generation vs GPUs with deterministic latency. ~$500M 2025 revenue target. Pre-license valuation $6.9B ($750M Series).", color: "#F97316" },
+  { vendor: "Groq", type: "LPU (Inference)", chip: "LPU 3 / LPX", arch: "TSP v3", node: "TBD", year: 2026, status: "Licensed → NVDA", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "Vera Rubin (decode co-processor)", notes: "Dec 2025: NVIDIA licensed for ~$20B (largest NVDA deal ever). Integrates into Vera Rubin as decode-phase co-processor — ~25% of cluster compute per Jensen. Groq remains independent; key leadership joined NVDA. Ships H2 2026.", color: "#EA580C" },
+  // SambaNova — reconfigurable dataflow, sovereign-AI focus
+  { vendor: "SambaNova", type: "RDU (Dataflow)", chip: "SN30", arch: "Cardinal RDU", node: "TSMC 7nm", year: 2023, status: "Shipping", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "DataScale SN30", notes: "Reconfigurable Dataflow Unit. Full-stack appliance approach. ~1.5 TB DDR5 per node. Argonne National Lab anchor customer.", color: "#FB7185" },
+  { vendor: "SambaNova", type: "RDU (Dataflow)", chip: "SN40L", arch: "Cardinal RDU v2", node: "TSMC 5nm", year: 2024, status: "Shipping", vram: 64, hbm: "HBM3", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "DataScale SN40L", notes: "1040 PCU/PMU dataflow units. Three-tier memory: 64 GB HBM3 + 1.5 TB DDR5 + SRAM. Targets sovereign / federal / regulated enterprise where GPU clouds are politically constrained.", color: "#E11D48" },
+  // Tenstorrent — RISC-V open-IP play (Jim Keller)
+  { vendor: "Tenstorrent", type: "RISC-V AI", chip: "Wormhole", arch: "Tensix + RISC-V", node: "GF 12nm", year: 2024, status: "Shipping", vram: 12, hbm: "GDDR6", bw: 0, tdp: 160, fp8: 0, fp4: 0, system: "n150 / n300 PCIe cards", notes: "RISC-V CPU + Tensix tensor cores. Open-source SDK (Metalium/TT-NN). PCIe cards <$1.5K — explicit anti-CUDA positioning targeting developer mindshare.", color: "#5EEAD4" },
+  { vendor: "Tenstorrent", type: "RISC-V AI", chip: "Blackhole", arch: "Tensix v2 + RISC-V", node: "TSMC 6nm", year: 2025, status: "Shipping", vram: 32, hbm: "GDDR6", bw: 0, tdp: 300, fp8: 0, fp4: 0, system: "p150 card · Galaxy systems", notes: "16-chiplet Tensix + 16-core RISC-V CPU on-die. ~$1.3K retail card. Open IP licensing (RISC-V cores licensed to Hyundai, Bosch, SK).", color: "#14B8A6" },
+  { vendor: "Tenstorrent", type: "RISC-V AI", chip: "Quasar (planned)", arch: "Next-gen", node: "TBD", year: 2027, status: "Announced", vram: 0, hbm: "—", bw: 0, tdp: 0, fp8: 0, fp4: 0, system: "TBD", notes: "Roadmap next-gen platform. Details unannounced. Likely HBM transition.", color: "#0F766E" },
 ];
 
 // CPU Industry News — Update during refresh
@@ -1878,6 +1893,7 @@ export default function IndustryResearch({ initialTab }) {
   useEffect(() => { if (initialTab) setMainTab(initialTab); }, [initialTab]);
   const [activeLab, setActiveLab] = useState("OpenAI");
   const [chipVendorFilter, setChipVendorFilter] = useState("All");
+  const [chipSpecsExpanded, setChipSpecsExpanded] = useState(true);
   const [chipDeliverySort, setChipDeliverySort] = useState({ key: "shipDate", dir: "desc" });
   const [chipHistSort, setChipHistSort] = useState({ key: "q", dir: "desc" });
   const [cpuVendorFilter, setCpuVendorFilter] = useState("All");
@@ -3360,8 +3376,8 @@ export default function IndustryResearch({ initialTab }) {
       {/* ===== GPU & ASIC ROADMAP TAB ===== */}
 
       {mainTab === "chiproadmap" && (() => {
-        const vendors = ["NVIDIA", "AMD", "Google", "Amazon", "Microsoft", "Meta", "OpenAI"];
-        const vendorColors = { NVIDIA: T_.green, AMD: T_.red, Google: T_.blue, Amazon: T_.amber, Microsoft: T_.purple, Meta: "#EC4899", OpenAI: "#6366F1" };
+        const vendors = ["NVIDIA", "AMD", "Google", "Amazon", "Microsoft", "Meta", "OpenAI", "Cerebras", "Groq", "SambaNova", "Tenstorrent"];
+        const vendorColors = { NVIDIA: T_.green, AMD: T_.red, Google: T_.blue, Amazon: T_.amber, Microsoft: T_.purple, Meta: "#EC4899", OpenAI: "#6366F1", Cerebras: "#06B6D4", Groq: "#F97316", SambaNova: "#E11D48", Tenstorrent: "#14B8A6" };
         const filtered = chipVendorFilter === "All" ? CHIP_ROADMAP : CHIP_ROADMAP.filter(c => c.vendor === chipVendorFilter);
         const sorted = [...filtered].sort((a, b) => b.year - a.year || a.vendor.localeCompare(b.vendor));
         // Timeline data by year
@@ -3374,7 +3390,7 @@ export default function IndustryResearch({ initialTab }) {
         return (<>
         <div style={{ marginBottom: 28, borderBottom: `1px solid ${T_.border}`, paddingBottom: 20 }}>
           <div style={{ fontSize: 24, fontWeight: 700, color: T_.text, letterSpacing: "-0.5px" }}>GPU/ASIC</div>
-          <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Tracking AI accelerator generations across NVIDIA, AMD, Google, Amazon, Microsoft, Meta &amp; OpenAI</div>
+          <div style={{ fontSize: 14, color: T_.textDim, marginTop: 5 }}>Tracking AI accelerator generations across incumbents (NVIDIA, AMD), hyperscaler ASICs (Google, Amazon, Microsoft, Meta, OpenAI), and merchant-silicon challengers (Cerebras, Groq, SambaNova, Tenstorrent)</div>
         </div>
 
         {/* Visual Timeline */}
@@ -3471,10 +3487,36 @@ export default function IndustryResearch({ initialTab }) {
               next: { date: "H2 2026", chip: "Titan (Broadcom-designed ASIC)", detail: "TSMC N3 · Samsung HBM4 exclusive · $10B Broadcom order · deployment thru 2029" },
               roadmap: "2nd-gen Titan on TSMC A16",
             },
+            {
+              vendor: "Cerebras",
+              position: "Wafer-scale design (single ~46,225 mm² die per CS-3) eliminates inter-chip latency that bottlenecks GPU clusters. AWS cloud deal validates merchant scale. IPO filed Feb 2026 at ~$23B (Series H $1B closed prior).",
+              shipping: "WSE-3 / CS-3 (4T transistors · 900K cores · 44 GB on-die SRAM)",
+              next: { date: "~2027", chip: "WSE-4 / CS-4", detail: "Likely TSMC 3nm. Details TBD pending post-IPO communications." },
+              roadmap: "Bet is wafer-scale memory bandwidth scales while GPU-cluster inter-chip latency hits a wall. Sovereign-AI and AWS-cloud channels are the demand thesis.",
+            },
+            {
+              vendor: "Groq",
+              position: "Deterministic-latency inference (Tensor Streaming Processor) — claimed 4-7x faster token gen vs GPUs. Dec 2025: $20B license to NVIDIA (largest NVDA deal ever); LPX becomes decode-phase co-processor inside Vera Rubin. Groq remains independent entity; key leadership joined NVDA.",
+              shipping: "LPU v2 (GroqCloud · ~$500M 2025 revenue target)",
+              next: { date: "H2 2026", chip: "LPU 3 / LPX (via NVDA Vera Rubin)", detail: "Slots in as decode co-processor — ~25% of cluster compute per Jensen. Effectively absorbed into NVDA roadmap." },
+              roadmap: "Independent product future unclear post-license. Watch for Groq enterprise/on-prem positioning distinct from NVDA cluster integration.",
+            },
+            {
+              vendor: "SambaNova",
+              position: "Reconfigurable Dataflow Unit (RDU) — full-stack appliance approach. Targets sovereign / federal / regulated enterprise where GPU clouds are politically constrained. Argonne National Lab anchor customer.",
+              shipping: "SN40L (1040 PCU/PMU · 64 GB HBM3 + 1.5 TB DDR5 three-tier memory)",
+              next: { date: "TBD", chip: "Next-gen RDU", detail: "Cadence has lagged GPU vendors. Funding pressure post-2024 down rounds." },
+              roadmap: "Sovereign-AI niche play. Unlikely to challenge NVIDIA at hyperscaler scale; the question is whether the niche is defensible against AWS Trainium / Azure Maia.",
+            },
+            {
+              vendor: "Tenstorrent",
+              position: "RISC-V open-IP play (Jim Keller-led). Tensix tensor cores + RISC-V CPU on-die. Open SDK (Metalium) and per-card pricing ~$1.3K — explicit anti-CUDA positioning. Hyundai / Bosch / SK licensing the RISC-V cores.",
+              shipping: "Wormhole (n150/n300) · Blackhole (p150)",
+              next: { date: "Shipping", chip: "Blackhole p150", detail: "16-chiplet Tensix + 16-core RISC-V CPU · TSMC 6nm · ~$1.3K retail. Galaxy multi-chip systems." },
+              roadmap: "Quasar next-gen ~2027. Strategy is to win developer mindshare via open IP + cheap dev cards, not flagship-perf parity.",
+            },
           ];
-          const vendorList = chipVendorFilter === "All"
-            ? VENDOR_SUMMARIES
-            : VENDOR_SUMMARIES.filter(v => v.vendor === chipVendorFilter);
+          const vendorList = VENDOR_SUMMARIES;
           return (
         <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 20, marginBottom: 20 }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 4 }}>
@@ -3507,20 +3549,27 @@ export default function IndustryResearch({ initialTab }) {
           );
         })()}
 
-        {/* Full Specs Table — filterable by vendor */}
-        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "auto" }}>
-          <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: `1px solid ${T_.border}` }}>
-            <div style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px" }}>Accelerator Specs</div>
-            <div style={{ display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid ${T_.border}` }}>
-              {["All", ...vendors].map(v => (
-                <button key={v} onClick={() => setChipVendorFilter(v)} style={{
-                  padding: "5px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer", border: "none",
-                  background: chipVendorFilter === v ? (v === "All" ? T_.blue : vendorColors[v] || T_.blue) : T_.bgPanel,
-                  color: chipVendorFilter === v ? "#FFF" : T_.textDim, transition: "all 0.15s",
-                }}>{v}</button>
-              ))}
+        {/* Full Specs Table — collapsible, filterable by vendor, fixed-height scroll (~15 rows) */}
+        <div style={{ background: T_.bgPanel, borderRadius: 10, border: `1px solid ${T_.border}`, padding: 0, marginBottom: 24, overflow: "hidden" }}>
+          <div style={{ padding: "14px 16px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: chipSpecsExpanded ? `1px solid ${T_.border}` : "none", flexWrap: "wrap", gap: 8 }}>
+            <div onClick={() => setChipSpecsExpanded(!chipSpecsExpanded)} style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", userSelect: "none" }}>
+              <span style={{ fontSize: 12, color: T_.textDim, width: 14, textAlign: "center" }}>{chipSpecsExpanded ? "▾" : "▸"}</span>
+              <span style={{ fontSize: 14, fontWeight: 600, color: T_.textDim, textTransform: "uppercase", letterSpacing: "0.6px" }}>Accelerator Specs <span style={{ color: T_.textGhost, fontWeight: 500, textTransform: "none", letterSpacing: 0, marginLeft: 6 }}>· {chipSpecsExpanded ? `${sorted.length} chips · scroll for more` : `${CHIP_ROADMAP.length} chips · click to expand`}</span></span>
             </div>
+            {chipSpecsExpanded && (
+              <div style={{ display: "flex", gap: 0, borderRadius: 8, overflow: "hidden", border: `1px solid ${T_.border}`, flexWrap: "wrap" }}>
+                {["All", ...vendors].map(v => (
+                  <button key={v} onClick={() => setChipVendorFilter(v)} style={{
+                    padding: "5px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer", border: "none",
+                    background: chipVendorFilter === v ? (v === "All" ? T_.blue : vendorColors[v] || T_.blue) : T_.bgPanel,
+                    color: chipVendorFilter === v ? "#FFF" : T_.textDim, transition: "all 0.15s",
+                  }}>{v}</button>
+                ))}
+              </div>
+            )}
           </div>
+          {chipSpecsExpanded && (
+          <div style={{ height: 560, overflowY: "auto", overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: 0, fontSize: 12 }}>
             <thead>
               <tr>
@@ -3529,6 +3578,7 @@ export default function IndustryResearch({ initialTab }) {
                     textAlign: i >= 6 ? "right" : "left",
                     padding: "8px 10px", fontSize: 10, fontWeight: 600, color: T_.textDim,
                     textTransform: "uppercase", letterSpacing: "0.5px", borderBottom: `1px solid ${T_.border}`, whiteSpace: "nowrap",
+                    position: "sticky", top: 0, background: T_.bgPanel, zIndex: 1,
                   }}>{h}</th>
                 ))}
               </tr>
@@ -3555,6 +3605,8 @@ export default function IndustryResearch({ initialTab }) {
               ))}
             </tbody>
           </table>
+          </div>
+          )}
         </div>
 
         {/* NVIDIA Datacenter GPU — Spec & Pricing Comparison */}

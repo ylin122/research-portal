@@ -19,13 +19,22 @@ const AGENT_COLORS = {
 };
 const DEFAULT_COLOR = { bg: `${T_.textGhost}22`, color: T_.textDim, border: `${T_.textGhost}44` };
 
-// Hide automated cron jobs, unclassified runs, and one-off test artifacts.
-// The audit log surfaces what *you* did — subagents, skills, slash commands — not background machinery.
+// Hide automated cron jobs, unclassified runs, one-off test artifacts, AND
+// config-only slash commands (effort, fast, model, etc.) that aren't real agent/skill runs.
+// The audit log surfaces actual *work* you did — subagents and skills — not session settings.
+const CONFIG_SLASH_COMMANDS = new Set([
+  "effort", "fast", "model", "clear", "help", "config", "exit", "compact",
+  "status", "login", "logout", "theme", "doctor", "mcp", "cost", "agents", "hooks",
+  "output-style", "terminal-setup", "ide", "permissions", "resume", "reset",
+  "upgrade", "feedback", "bug", "vim", "pr_comments", "release-notes",
+  "install-github-app", "migrate-installer",
+]);
 const isUserAction = (name) => {
   if (!name) return false;
   if (name.startsWith("refresh-")) return false;  // hides refresh-prices etc; keeps plain "refresh" subagent
   if (name === "unknown") return false;  // hook couldn't classify the run — noise, not a real subagent
   if (name === "hook-test" || name === "manual-test") return false;
+  if (CONFIG_SLASH_COMMANDS.has(name)) return false;
   return true;
 };
 
@@ -87,7 +96,7 @@ export default function AuditLog() {
         </div>
       </div>
       <p style={{ fontSize: 13, color: T_.textDim, marginBottom: 20, lineHeight: 1.6 }}>
-        Subagents, skills, and slash commands you've run. Background cron jobs hidden.
+        Agents and skills you've run recently. Config slash commands (/effort, /fast, /clear, etc.) and background cron jobs hidden.
         <span style={{ color: T_.textGhost, marginLeft: 8 }}>{runs.length} runs</span>
       </p>
 
@@ -148,9 +157,7 @@ export default function AuditLog() {
                     fontSize: 10, padding: "2px 8px", borderRadius: 4, fontFamily: FONT, flexShrink: 0,
                     background: ac.bg, color: ac.color, border: `1px solid ${ac.border}`,
                   }}>{run.agent_name}</span>
-                  <span style={{ fontSize: 13, fontWeight: 500, color: T_.text, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                    {run.task}
-                  </span>
+                  <span style={{ flex: 1 }} />
                   <div style={{ display: "flex", alignItems: "center", gap: 8, flexShrink: 0 }}>
                     {run.issues_found != null && (
                       <span style={{ fontSize: 11, color: run.issues_fixed === run.issues_found ? T_.green : T_.amber }}>
@@ -164,6 +171,11 @@ export default function AuditLog() {
 
                 {expanded && (
                   <div style={{ marginTop: 10, paddingTop: 10, borderTop: `1px solid ${T_.borderLight}` }}>
+                    {run.task && (
+                      <div style={{ fontSize: 12, color: T_.textDim, lineHeight: 1.6, whiteSpace: "pre-wrap", marginBottom: 10, fontStyle: "italic" }}>
+                        <span style={{ color: T_.textGhost, fontStyle: "normal", marginRight: 6 }}>Prompt:</span>{run.task}
+                      </div>
+                    )}
                     {run.changes && (
                       <div style={{ fontSize: 13, color: T_.textMid, lineHeight: 1.6, whiteSpace: "pre-wrap", marginBottom: files.length ? 10 : 0 }}>
                         {run.changes}

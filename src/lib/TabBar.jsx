@@ -41,6 +41,8 @@ export default function TabBar({ tabs, active, onChange, size = "sm", trailing =
             fontFamily: FONT,
             transition: "all 0.15s",
             whiteSpace: "nowrap",
+            flex: 1,
+            textAlign: "center",
           }}>{t.label}</button>
         );
       })}
