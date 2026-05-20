@@ -41,3 +41,5 @@
 - [feedback_research_pdf_naming.md](feedback_research_pdf_naming.md) — When saving research PDFs (sellside or third-party), use the original source title verbatim and aggregate into per-company subfolders
 - [feedback_sellside_auth_automation.md](feedback_sellside_auth_automation.md) — Reauth flow for all 8 sell-side brokers — credentials in .env, scripts auto-fill+submit, no MFA push approval needed; only BofA has a 2nd-step email token. WF must be logged in last (1hr TTL).
 - [user_investable_universe.md](user_investable_universe.md) — User focuses PA single-name investments on tech + semis (domain expertise). Open to outside-scope ideas only if they qualify as a "free money trade" (asymmetric, near-certain, low-effort edge).
+- [feedback_no_assumed_mfa.md](feedback_no_assumed_mfa.md) — When walking the user through a login, don't preemptively mention MFA, SSO, or other auth-flow steps unless the script actually hits them
+- [feedback_os_input_focus_safety.md](feedback_os_input_focus_safety.md) — When using PowerShell SendKeys / Win32 SendInput to drive a browser login, NEVER send keys without triple-verifying focus is on the intended input element
