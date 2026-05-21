@@ -44,6 +44,7 @@ function findRepo(name) {
   const repos = [
     { name: 'research-portal', dir: path.join(__dirname, '..'), branch: 'main' },
     { name: 'pa-dashboard', dir: findRepo('pa-dashboard'), branch: 'master' },
+    { name: 'sellside-broker-tools', dir: findRepo('sellside-broker-tools'), branch: 'master' },
   ];
   for (const r of repos) {
     if (!r.dir || !fs.existsSync(r.dir)) {
