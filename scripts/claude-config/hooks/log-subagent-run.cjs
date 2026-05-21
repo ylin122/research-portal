@@ -88,21 +88,6 @@ function readSubagentTranscript(transcriptPath) {
   return { firstUserPrompt, files: [...files], firstTs, lastTs };
 }
 
-function findAgentCallFromMain(transcriptPath) {
-  let text;
-  try { text = fs.readFileSync(transcriptPath, 'utf8'); } catch { return null; }
-  const lines = text.trim().split(/\r?\n/);
-  for (let i = lines.length - 1; i >= 0; i--) {
-    let obj;
-    try { obj = JSON.parse(lines[i]); } catch { continue; }
-    const content = obj?.message?.content;
-    if (!Array.isArray(content)) continue;
-    const tu = content.find(c => c && c.type === 'tool_use' && /^(Agent|Task)$/i.test(c.name));
-    if (tu) return { input: tu.input || {}, timestamp: obj.timestamp };
-  }
-  return null;
-}
-
 function postJSON(urlStr, headers, body) {
   return new Promise((resolve) => {
     const u = new URL(urlStr);
@@ -135,27 +120,25 @@ async function main() {
   let payload = {};
   try { payload = JSON.parse(raw || '{}'); } catch {}
 
-  const agentType = payload.agent_type || 'unknown';
-  const mainTranscript = payload.transcript_path;
+  const agentType = payload.agent_type;
   const subTranscript = payload.agent_transcript_path;
   const cwd = payload.cwd || process.cwd();
 
-  let task = '', files = [], duration_ms = null, fallbackText = '';
-  if (subTranscript && fs.existsSync(subTranscript)) {
-    const info = readSubagentTranscript(subTranscript);
-    task = info.firstUserPrompt || agentType;
-    files = info.files || [];
-    fallbackText = info.firstUserPrompt || '';
-    if (info.firstTs && info.lastTs) {
-      duration_ms = Math.max(0, new Date(info.lastTs).getTime() - new Date(info.firstTs).getTime());
-    }
-  } else if (mainTranscript) {
-    const agent = findAgentCallFromMain(mainTranscript);
-    if (agent) {
-      task = (agent.input.description || agent.input.subagent_type || 'subagent').slice(0, 200);
-      fallbackText = `${agent.input.description || ''} ${agent.input.prompt || ''}`;
-      if (agent.timestamp) duration_ms = Math.max(0, Date.now() - new Date(agent.timestamp).getTime());
-    }
+  // Only log when both a real subagent transcript AND a known agent_type are present.
+  // The previous mainTranscript-fallback path re-logged the same Agent call on every
+  // SubagentStop fired later in the session, producing duplicate "unknown" rows.
+  if (!subTranscript || !fs.existsSync(subTranscript) || !agentType) {
+    debug(`skipping: subTranscript=${!!subTranscript}, agent_type=${agentType || '(missing)'}`);
+    return;
+  }
+
+  const info = readSubagentTranscript(subTranscript);
+  const task = info.firstUserPrompt || agentType;
+  const files = info.files || [];
+  const fallbackText = info.firstUserPrompt || '';
+  let duration_ms = null;
+  if (info.firstTs && info.lastTs) {
+    duration_ms = Math.max(0, new Date(info.lastTs).getTime() - new Date(info.firstTs).getTime());
   }
 
   const project = detectProject(cwd, fallbackText);
