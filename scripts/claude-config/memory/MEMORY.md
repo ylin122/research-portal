@@ -45,3 +45,5 @@
 - [feedback_os_input_focus_safety.md](feedback_os_input_focus_safety.md) — When using PowerShell SendKeys / Win32 SendInput to drive a browser login, NEVER send keys without triple-verifying focus is on the intended input element
 - [feedback_cross_machine_workflows.md](feedback_cross_machine_workflows.md) — Cross-machine sync contract for /sellside-login, /sellside, @third-party-research — 2-layer model (synced code + per-machine state), routine flow, common breakages
 - [feedback_research_chat_only_default.md](feedback_research_chat_only_default.md) — Research-output agents (@third-party-research, @sellside, @ratings-research, etc.) should stay chat-only by default; only save to disk when user explicitly asks
+- [feedback_sellside_login_verify.md](feedback_sellside_login_verify.md) — In /sellside-login, a broker is only confirmed authed after the Step 4 re-preflight (a real query) — the state.json-mtime watcher only proves login.js wrote the file, not that the session is valid
+- [project_pa_return_stats_panel.md](project_pa_return_stats_panel.md) — Deferred PA Dashboard work — add return-distribution / tail-risk stats analytics

@@ -471,7 +471,17 @@
       "WebFetch(domain:developer.nvidia.com)",
       "Bash(netstat -ano -p tcp)",
       "Bash(findstr \":3001\")",
-      "PowerShell(Copy-Item *)"
+      "PowerShell(Copy-Item *)",
+      "Bash(ls -la .env*)",
+      "Bash(grep -o '^[A-Z_]*=' .env.local)",
+      "PowerShell($ts = [DateTimeOffset]::UtcNow.ToUnixTimeSeconds\\(\\); \"LAUNCH_TS=$ts\"; node \"$HOME\\\\sellside-broker-tools\\\\bin\\\\preflight.mjs\"; \"PREFLIGHT_EXIT=$LASTEXITCODE\")",
+      "PowerShell(node \"$HOME\\\\sellside-broker-tools\\\\bin\\\\preflight.mjs\"; \"PREFLIGHT_EXIT=$LASTEXITCODE\")",
+      "PowerShell(Wait-Process *)",
+      "PowerShell(\"=== sellside-broker-tools git ===\"; git -C \"$HOME\\\\sellside-broker-tools\" status -sb; \"--- remote ---\"; git -C \"$HOME\\\\sellside-broker-tools\" remote -v; \"--- last commit ---\"; git -C \"$HOME\\\\sellside-broker-tools\" log -1 --oneline)",
+      "PowerShell(node \"$HOME\\\\projects\\\\research-portal\\\\scripts\\\\sync-agents.cjs\"; \"SYNC_EXIT=$LASTEXITCODE\")",
+      "PowerShell($rp=\"$HOME\\\\projects\\\\research-portal\"; git -C $rp add scripts/sync-agents.cjs; git -C $rp commit -m \"sync-agents: also pull sellside-broker-tools on sync\" -m \"Adds sellside-broker-tools to the Step 1 repo pull list so /sync-pull and the SessionStart hook keep the sell-side broker login/query engine code in sync across machines. The existing pull loop already handles skip-if-not-cloned and error-catching. The /sellside-login skill already documented sync-pull as covering this repo, but the script did not. This closes that gap.\" -m \"Co-Authored-By: Claude Opus 4.7 \\(1M context\\) <noreply@anthropic.com>\"; \"--- push ---\"; git -C $rp push; \"--- result ---\"; git -C $rp log -1 --oneline; git -C $rp status -sb)",
+      "PowerShell(\"=== third-party-research-tools git ===\"; git -C \"$HOME\\\\third-party-research-tools\" pull; \"--- status ---\"; git -C \"$HOME\\\\third-party-research-tools\" status -sb; \"--- last commit ---\"; git -C \"$HOME\\\\third-party-research-tools\" log -1 --oneline)",
+      "PowerShell($rp=\"$HOME\\\\projects\\\\research-portal\"; \"=== research-portal git status ===\"; git -C $rp status --short --branch; \"--- last commit ---\"; git -C $rp log -1 --oneline; \"--- unpushed commits \\(local ahead of origin\\) ---\"; git -C $rp log --oneline origin/main..HEAD)"
     ]
   }
 }
